@@ -1,6 +1,9 @@
 # File with login and password
 secret.txt
 
+# Files with downloaded data
+*.csv
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
