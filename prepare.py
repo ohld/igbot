@@ -1,6 +1,17 @@
 #!/usr/bin/env python
 import os, sys
 
+def get_credentials():
+    "Returns login and password stored in secret.txt"
+    while not check_secret():
+        pass
+
+    with open("secret.txt", "r") as f:
+        login = f.readline().strip()
+        password = f.readline().strip()
+
+    return login, password
+
 def check_secret():
     while True:
         if os.path.exists("secret.txt"):
