@@ -2,7 +2,7 @@
 Instagram python API. Made without the official API.
 
 ## TODO:
-* Add more exapmples
+* Add more examples
 * Create Instagram Bot based on my written functions
 * Upload lib in pip.
 
