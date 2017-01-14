@@ -24,7 +24,7 @@ def get_followers(self, username):
               }
         }'''%(userid),
       'ref': 'relationships::follow_list',
-      'query_id': '17867281162062470' # I will figure out how to generate this id
+      'query_id': '%d'%random.randint(0, 99999999999)
     })
 
     if response.status_code != 200:
@@ -48,7 +48,7 @@ def get_followers(self, username):
                   }
             }'''%(userid, cursor),
           'ref': 'relationships::follow_list',
-          'query_id': '17867281162062470' # I will figure out how to generate this id
+          'query_id': '%d'%random.randint(0, 99999999999)
         })
 
         if response.status_code != 200:
