@@ -96,6 +96,9 @@ class Instacore:
 
 ###### Finctions from other files ######
 
+    def get_profile_info(self, username):
+        return get_profile_info(self, username)
+
     def get_followers(self, username):
         return get_followers(self, username)
 
