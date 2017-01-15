@@ -5,10 +5,14 @@ Fox example if you want to run __get_my_followers.py__ script type in your comma
 `python get_my_followers.py`
 
 ## Descriptions
-* get_my_followers.py
+* save_my_followers.py
 
 Gets followers of your account. Stores locally in *.csv file.
 
-* get_my_stats.py
+* save_my_stats.py
 
 Saves the number of medias, followers and followed into *.csv file by for future analysis.
+
+* unsubscribe_not_mutually_followers.py
+
+Bot's script that unfollows people that don't follow you. It will be used in future bot methods.
