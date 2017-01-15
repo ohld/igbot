@@ -7,7 +7,7 @@ sys.path.append(os.path.join(sys.path[0],'../src'))
 from core import Instacore
 from prepare import get_credentials
 
-def save_stats(username):
+def save_stats(core, username):
     """ Saves the number of medias, followers and followed
         into *.csv file by for future analysis."""
 
@@ -35,6 +35,6 @@ if __name__ == "__main__":
     login, password = get_credentials()
     core = Instacore(login, password)
     while True:
-        save_stats(login)
+        save_stats(core, login)
         time.sleep(1 * 60 * 60)
     core.logout()
