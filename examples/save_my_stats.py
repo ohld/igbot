@@ -8,8 +8,8 @@ from core import Instacore
 from prepare import get_credentials
 
 def save_stats(username):
-    """ Saves the number of medias, followers and followed by
-        for future analysis."""
+    """ Saves the number of medias, followers and followed
+        into *.csv file by for future analysis."""
 
     # get info
     info = core.get_profile_info(username)
