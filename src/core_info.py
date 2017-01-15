@@ -2,6 +2,7 @@ import requests
 import json
 import time, datetime
 import random
+import sys
 
 def get_user_id_by_username(self, username):
     url_info= self.url_user_info % (username)
@@ -32,6 +33,7 @@ def get_followers(self, username):
         return False
     data = response.json()
     persons = data["follows"]["nodes"]
+    total_follows = data["follows"]["count"]
 
     while data["follows"]["page_info"]["has_next_page"]:
         time.sleep(3 * random.random())
@@ -57,6 +59,7 @@ def get_followers(self, username):
             return persons
         data = response.json()
         persons.extend(data["follows"]["nodes"])
+        print ("Done %d of %d"%(len(persons), total_follows))
     return persons
 
 def get_profile_info (self, username):
