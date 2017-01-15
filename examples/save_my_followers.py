@@ -7,7 +7,7 @@ sys.path.append(os.path.join(sys.path[0],'../src'))
 from core import Instacore
 from prepare import get_credentials
 
-def get_followers(username):
+def save_followers(username):
     """Gets followers of username. Stores locally in *.csv."""
     followers = core.get_followers(username)
     df = pd.DataFrame(followers)
@@ -22,5 +22,5 @@ def get_followers(username):
 if __name__ == "__main__":
     login, password = get_credentials()
     core = Instacore(login, password)
-    get_followers(login)
+    save_followers(login)
     core.logout()
