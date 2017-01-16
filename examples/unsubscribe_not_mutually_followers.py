@@ -25,7 +25,7 @@ def unsubscribe_not_mutually_followers(core):
                 print ("%s is not following you! Unsubscribe!"%follower)
                 if core.unfollow(core.get_user_id_by_username(follower)):
                     total_unsubscribed += 1
-                    print ("  Done. Toatal unsubscribed: %d"%total_unsubscribed)
+                    print ("  Done. Total unsubscribed: %d"%total_unsubscribed)
                 else:
                     print ("  Something broke up. I can't unsubscribe.")
                 time.sleep(30 + 30 * random.random())
