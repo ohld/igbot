@@ -10,7 +10,7 @@ from prepare import get_credentials
 
 def unsubscribe_not_mutually_followers(core):
     """ Unsubscribes from people that don't follow you.
-        I know that the name of this exmaple and function is bad.
+        I know that the name of this example and function is bad.
         Feel free to give me an advice."""
     all_followers_data = core.get_followers(core.user_login)
     followers = [item["username"] for item in all_followers_data][::-1]
