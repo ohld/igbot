@@ -3,6 +3,7 @@ import json
 import time, datetime
 import random
 import sys
+from tqdm import tqdm
 
 def get_user_id_by_username(self, username):
     url_info= self.url_user_info % (username)
@@ -12,6 +13,7 @@ def get_user_id_by_username(self, username):
     return id_user
 
 def get_followers(self, username):
+    print ("Getting followers of %s"%username)
     userid = self.get_user_id_by_username(username)
     response = self.post('https://www.instagram.com/query/', {
         'q': '''ig_user(%s) {
@@ -34,32 +36,33 @@ def get_followers(self, username):
     data = response.json()
     persons = data["follows"]["nodes"]
     total_follows = data["follows"]["count"]
+    with tqdm(total=total_follows) as pbar:
+        pbar.update(len(persons))
+        while data["follows"]["page_info"]["has_next_page"]:
+            time.sleep(3 * random.random())
+            cursor = data["follows"]["page_info"]["end_cursor"]
+            response = self.post('https://www.instagram.com/query/', {
+                'q': '''ig_user(%s) {
+                      follows.after(%s, 20) {
+                        count,
+                        page_info {
+                          end_cursor, has_next_page
+                        },
+                        nodes {
+                          id, is_verified, full_name, username
+                        }
+                      }
+                }'''%(userid, cursor),
+              'ref': 'relationships::follow_list',
+              'query_id': '%d'%random.randint(0, 99999999999)
+            })
 
-    while data["follows"]["page_info"]["has_next_page"]:
-        time.sleep(3 * random.random())
-        cursor = data["follows"]["page_info"]["end_cursor"]
-        response = self.post('https://www.instagram.com/query/', {
-            'q': '''ig_user(%s) {
-                  follows.after(%s, 20) {
-                    count,
-                    page_info {
-                      end_cursor, has_next_page
-                    },
-                    nodes {
-                      id, is_verified, full_name, username
-                    }
-                  }
-            }'''%(userid, cursor),
-          'ref': 'relationships::follow_list',
-          'query_id': '%d'%random.randint(0, 99999999999)
-        })
-
-        if response.status_code != 200:
-            print ("Error while requesting more followers")
-            return persons
-        data = response.json()
-        persons.extend(data["follows"]["nodes"])
-        print ("Done %d of %d"%(len(persons), total_follows))
+            if response.status_code != 200:
+                print ("Error while requesting more followers")
+                return persons
+            data = response.json()
+            pbar.update(len(data["follows"]["nodes"]))
+            persons.extend(data["follows"]["nodes"])
     return persons
 
 def get_profile_info (self, username):
