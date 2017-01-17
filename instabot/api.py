@@ -1,9 +1,10 @@
 import requests, json
 import time, random
 
-from core_info import *
+from api_info import *
+from prepare import get_credentials
 
-class Instacore:
+class API:
 
     user_agent = ("Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 "
               "(KHTML, like Gecko) Chrome/48.0.2564.103 Safari/537.36")
@@ -20,7 +21,8 @@ class Instacore:
     url_media_info = 'https://www.instagram.com/p/%s/?__a=1'
     url_user_info  = 'https://www.instagram.com/%s/?__a=1'
 
-    def __init__(self, login, password):
+    def __init__(self):
+        login, password = get_credentials()
         self.user_login = login.lower()
         self.user_password = password
         self.s = requests.Session()
@@ -45,12 +47,12 @@ class Instacore:
                                'X-Requested-With': 'XMLHttpRequest'})
         r = self.s.get(self.url)
         self.s.headers.update({'X-CSRFToken': r.cookies['csrftoken']})
-        time.sleep(5 * random.random())
+        time.sleep(2 * random.random())
         login = self.s.post(self.url_login, data=self.login_post,
                             allow_redirects=True)
         self.s.headers.update({'X-CSRFToken': login.cookies['csrftoken']})
         self.csrftoken = login.cookies['csrftoken']
-        time.sleep(5 * random.random())
+        time.sleep(2 * random.random())
 
         if login.status_code == 200:
             r = self.s.get('https://www.instagram.com/')
@@ -59,8 +61,10 @@ class Instacore:
                 self.login_status = True
             else:
                 self.login_status = False
+                print ("Can't login: Invalid login or password.")
         else:
             self.login_status = False
+            print ("Can't login. Status code: %s"%(login.status_code))
 
     def logout(self):
         ret = self.post(self.url_logout,
@@ -91,6 +95,7 @@ class Instacore:
                 response = self.s.post(url, data=data)
                 return response
             except:
+                print ("Can't send post request to %s"%url)
                 pass
         return False
 

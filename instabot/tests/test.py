@@ -1,37 +1,40 @@
 #!/usr/bin/env python
-from core import Instacore
+import time, random, sys, os
+
+sys.path.append(os.path.join(sys.path[0],'../../'))
+from instabot import API
 from prepare import check_secret
-import time, random
 
 def test():
-    while not check_secret():
-        pass
 
-    with open("secret.txt", "r") as f:
-        login = f.readline().strip()
-        password = f.readline().strip()
-
-    core = Instacore(login, password)
+    core = API()
+    if not core.login_status:
+        print ("Test failed: Can't login.")
+        return False
 
     test_media_id = "1338417063622201481"
     test_user_id  = "352300017"
-    if core.like(test_media_id).status_code != 200:
+    if not core.like(test_media_id):
         print ("Test failed: Can't like")
         return False
     time.sleep(2 * random.random())
-    if core.unlike(test_media_id).status_code != 200:
+
+    if not core.unlike(test_media_id):
         print ("Test failed: Can't unlike")
         return False
     time.sleep(2 * random.random())
-    if core.follow(test_user_id).status_code != 200:
+
+    if not core.follow(test_user_id):
         print ("Test failed: Can't follow")
         return False
     time.sleep(2 * random.random())
-    if core.unfollow(test_user_id).status_code != 200:
+
+    if not core.unfollow(test_user_id):
         print ("Test failed: Can't unfollow")
         return False
     time.sleep(2 * random.random())
-    if core.comment(test_media_id, "Test passed!").status_code != 200:
+
+    if not core.comment(test_media_id, "Test passed!"):
         print ("Test failed: Can't comment")
         return False
     core.logout()
