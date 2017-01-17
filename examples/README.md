@@ -1,8 +1,8 @@
-# instacore examples
+# instabot examples
 
 ## How to run
-Fox example if you want to run __get_my_followers.py__ script type in your command line:
-`python get_my_followers.py`
+Fox example if you want to run __save_my_followers.py__ script type in your command line:
+`python save_my_followers.py`
 
 ## Descriptions
 * save_my_followers.py
