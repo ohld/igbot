@@ -1,8 +1,8 @@
 import requests, json
 import time, random
 
-from api_info import *
-from prepare import get_credentials
+from .api_info import *
+from .prepare import get_credentials
 
 class API:
 
