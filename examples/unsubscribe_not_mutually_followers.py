@@ -7,7 +7,7 @@ import sys, os
 sys.path.append(os.path.join(sys.path[0],'../'))
 from instabot import API
 
-def unsubscribe_not_mutually_followers(api):
+def unsubscribe_from_not_mutually_followers(api):
     """ Unsubscribes from people that don't follow you.
         I know that the name of this example and function is bad.
         Feel free to give me an advice."""
@@ -39,5 +39,5 @@ def unsubscribe_not_mutually_followers(api):
 
 if __name__ == "__main__":
     api = API()
-    unsubscribe_not_mutually_followers(api)
+    unsubscribe_from_not_mutually_followers(api)
     api.logout()
