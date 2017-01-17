@@ -3,16 +3,16 @@ import pandas as pd
 import datetime, time
 import sys, os
 
-sys.path.append(os.path.join(sys.path[0],'../src'))
-from core import Instacore
+sys.path.append(os.path.join(sys.path[0],'../'))
+from instabot import API
 from prepare import get_credentials
 
-def save_stats(core, username):
+def save_stats(api, username):
     """ Saves the number of medias, followers and followed
-        into *.csv file by for future analysis."""
+        into *.tsv file by for future analysis."""
 
     # get info
-    info = core.get_profile_info(username)
+    info = api.get_profile_info(username)
     stats = {
         info["date"]: {
                 "media": info["media"],
@@ -22,19 +22,20 @@ def save_stats(core, username):
     }
 
     # save
-    path_to_csv = "stats_%s.csv"%(username)
+    path_to_tsv = "stats_%s.tsv"%(username)
     df = pd.DataFrame.from_dict(stats).T
-    if os.path.exists(path_to_csv):
-        df.to_csv(path_to_csv, mode='a', header=False)
+    if os.path.exists(path_to_tsv):
+        df.to_csv(path_to_tsv, mode='a', header=False, sep="\t")
     else:
-        df.to_csv(path_to_csv, header=True)
+        df.to_csv(path_to_tsv, header=True, sep="\t")
 
     return True
 
 if __name__ == "__main__":
     login, password = get_credentials()
-    core = Instacore(login, password)
+    api = API()
     while True:
-        save_stats(core, login)
+        save_stats(api, login)
+        print ("Saved at %s"%(datetime.datetime.now()))
         time.sleep(1 * 60 * 60)
-    core.logout()
+    api.logout()

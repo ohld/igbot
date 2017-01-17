@@ -4,26 +4,25 @@ import datetime, time
 import random
 import sys, os
 
-sys.path.append(os.path.join(sys.path[0],'../src'))
-from core import Instacore
-from prepare import get_credentials
+sys.path.append(os.path.join(sys.path[0],'../'))
+from instabot import API
 
-def unsubscribe_not_mutually_followers(core):
+def unsubscribe_not_mutually_followers(api):
     """ Unsubscribes from people that don't follow you.
         I know that the name of this example and function is bad.
         Feel free to give me an advice."""
-    all_followers_data = core.get_followers(core.user_login)
+    all_followers_data = api.get_followers(api.user_login)
     followers = [item["username"] for item in all_followers_data][::-1]
     print ("You follow %d people."%len(followers))
 
     total_unsubscribed = 0
     for follower in followers:
-        info = core.get_profile_info(follower)
+        info = api.get_profile_info(follower)
         time.sleep(5 * random.random())
         if info:
             if not info["follows_viewer"]:
                 print ("%s is not following you! Unsubscribe!"%follower)
-                if core.unfollow(core.get_user_id_by_username(follower)):
+                if api.unfollow(api.get_user_id_by_username(follower)):
                     total_unsubscribed += 1
                     print ("  Done. Total unsubscribed: %d"%total_unsubscribed)
                 else:
@@ -39,7 +38,6 @@ def unsubscribe_not_mutually_followers(core):
     return True
 
 if __name__ == "__main__":
-    login, password = get_credentials()
-    core = Instacore(login, password)
-    unsubscribe_not_mutually_followers(core)
-    core.logout()
+    api = API()
+    unsubscribe_not_mutually_followers(api)
+    api.logout()
