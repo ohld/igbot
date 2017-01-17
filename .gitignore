@@ -3,6 +3,7 @@ secret.txt
 
 # Files with downloaded data
 *.csv
+*.tsv
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
