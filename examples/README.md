@@ -16,3 +16,9 @@ Saves the number of medias, followers and followed into *.csv file by for future
 * unsubscribe_not_mutually_followers.py
 
 Bot's script that unfollows people that don't follow you. It will be used in future bot methods.
+
+* subscribe_to_following.py
+
+Bot subscribes to people that are followed by user and not followed by you.
+
+``python subscribe_to_following.py <username>``
