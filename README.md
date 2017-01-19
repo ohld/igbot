@@ -21,6 +21,11 @@ Or from github
 pip install git+git://github.com/ohld/instabot.git
 ```
 
+If you have problems like "some package not found" try
+```
+pip install -r requirements.txt
+```
+
 ## Sample usage
 
 ```
