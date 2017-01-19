@@ -11,12 +11,12 @@ def unsubscribe_from_not_mutually_followers(api):
     """ Unsubscribes from people that don't follow you.
         I know that the name of this example and function is bad.
         Feel free to give me an advice."""
-    all_followers_data = api.get_followers(api.user_login)
-    followers = [item["username"] for item in all_followers_data][::-1]
-    print ("You follow %d people."%len(followers))
+    all_following_data = api.get_following(api.user_login)
+    following = [item["username"] for item in all_following_data][::-1]
+    print ("You follow %d people."%len(following))
 
     total_unsubscribed = 0
-    for follower in followers:
+    for follower in following:
         info = api.get_profile_info(follower)
         time.sleep(5 * random.random())
         if info:
@@ -34,7 +34,7 @@ def unsubscribe_from_not_mutually_followers(api):
         if total_unsubscribed >= 200:
             print ("You have unsubscribed from 200 people. That's enought. I'll be stopped.")
             break
-    print ("Now you follow %d people."%(len(followers) - total_unsubscribed))
+    print ("Now you follow %d people."%(len(following) - total_unsubscribed))
     return True
 
 if __name__ == "__main__":
