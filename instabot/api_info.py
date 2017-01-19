@@ -35,6 +35,9 @@ def get_following(self, username):
     if response.status_code != 200:
         return False
     data = response.json()
+    if "nodes" not in data["follows"]:
+        print ("  This is a closed account. Can't get following list.")
+        return []
     persons = data["follows"]["nodes"]
     total_follows = data["follows"]["count"]
     with tqdm(total=total_follows) as pbar:
