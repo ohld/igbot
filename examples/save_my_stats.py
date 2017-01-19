@@ -5,7 +5,6 @@ import sys, os
 
 sys.path.append(os.path.join(sys.path[0],'../'))
 from instabot import API
-from prepare import get_credentials
 
 def save_stats(api, username):
     """ Saves the number of medias, followers and followed
@@ -32,10 +31,9 @@ def save_stats(api, username):
     return True
 
 if __name__ == "__main__":
-    login, password = get_credentials()
     api = API()
     while True:
-        save_stats(api, login)
+        save_stats(api, api.user_login)
         print ("Saved at %s"%(datetime.datetime.now()))
         time.sleep(1 * 60 * 60)
     api.logout()
