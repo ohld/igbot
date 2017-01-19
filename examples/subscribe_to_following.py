@@ -13,7 +13,8 @@ def subscribe_to_following(api, username):
     all_following_data = api.get_following(username)
     if len(all_following_data) == 0:
         return True
-    followers = [item["username"] for item in all_following_data if item["followed_by_viewer"]][::-1]
+    followers = [item["username"] for item in all_following_data
+                                  if not item["followed_by_viewer"]][::-1]
     print ("%s follows %d people. You are not follow %d of them."%(username, len(all_following_data), len(followers)))
 
     total_subscribed = 0
