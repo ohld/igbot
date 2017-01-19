@@ -22,19 +22,24 @@ class API:
     url_user_info  = 'https://www.instagram.com/%s/?__a=1'
 
     def __init__(self):
-        login, password = get_credentials()
-        self.user_login = login.lower()
-        self.user_password = password
         self.s = requests.Session()
 
-        self.login()
+    def login(self, login=None, password=None):
+        ''' If login or password is not passed function will take them from secret.txt'''
+        if login is not None and password is not None:
+            self.user_login = login
+            self.user_password = password
+        else:
+            login, password = get_credentials()
+            self.user_login = login.lower()
+            self.user_password = password
 
-    def login(self):
+        self.login_post = {'username': self.user_login,
+                           'password': self.user_password}
+
         self.s.cookies.update({'sessionid': '', 'mid': '', 'ig_pr': '1',
                                'ig_vw': '1920', 'csrftoken': '',
                                's_network': '', 'ds_user_id': ''})
-        self.login_post = {'username': self.user_login,
-                           'password': self.user_password}
         self.s.headers.update({'Accept-Encoding': 'gzip, deflate',
                                'Accept-Language': self.accept_language,
                                'Connection': 'keep-alive',
