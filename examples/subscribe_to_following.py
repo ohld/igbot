@@ -9,7 +9,7 @@ from instabot import API
 
 def subscribe_to_following(api, username):
     """ Subscribes to people that are followed by username. """
-    print ("Going to subscribe to persons who are followed by %s"%username)
+    print ("Going to subscribe to persons who are followed by %s"%(username))
     all_following_data = api.get_following(username)
     followers = [item["username"] for item in all_following_data if item["followed_by_viewer"]][::-1]
     print ("%s follows %d people. You are not follow %d of them."%(username, len(all_following_data), len(followers)))
@@ -19,7 +19,7 @@ def subscribe_to_following(api, username):
         info = api.get_profile_info(follower)
         if api.follow(api.get_user_id_by_username(follower)):
             total_subscribed += 1
-            print ("  Done. Total subscribed: %d"%total_subscribed)
+            print ("  Done. Total subscribed: %d"%(total_subscribed))
         else:
             print ("  Something broke up. I can't subscribe to %s"%(follower))
         time.sleep(10 + 10 * random.random())
