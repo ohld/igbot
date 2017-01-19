@@ -84,10 +84,12 @@ class API:
                          {'comment_text': comment_text})
 
     def follow(self, user_id):
-        return self.post(self.url_follow % (user_id), None)
+        ''' You can pass username or user_id of person to follow'''
+        return self.post(self.url_follow % self.convert_to_id(user_id), None)
 
     def unfollow(self, user_id):
-        return self.post(self.url_unfollow % (user_id), None)
+        ''' You can pass username or user_id of person to unfollow'''
+        return self.post(self.url_unfollow % self.convert_to_id(user_id), None)
 
     def post(self, url, data):
         if (self.login_status):
@@ -98,6 +100,14 @@ class API:
                 print ("Can't send post request to %s"%url)
                 pass
         return False
+
+    def convert_to_id(self, inp):
+        ''' If input is not digit - it is a username.
+            So we should convert it to user_id'''
+        if type(inp) == str:
+            if not inp.isdigit():
+                return self.get_user_id_by_username(inp)
+        return str(inp)
 
 ###### Finctions from other files ######
 
