@@ -40,5 +40,6 @@ def unsubscribe_from_not_mutually_followers(api):
 
 if __name__ == "__main__":
     api = API()
+    api.login()
     unsubscribe_from_not_mutually_followers(api)
     api.logout()

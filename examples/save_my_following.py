@@ -19,5 +19,6 @@ def save_following(api, username):
 
 if __name__ == "__main__":
     api = API()
+    api.login()
     save_following(api, api.user_login)
     api.logout()

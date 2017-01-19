@@ -32,6 +32,7 @@ def save_stats(api, username):
 
 if __name__ == "__main__":
     api = API()
+    api.login()
     while True:
         save_stats(api, api.user_login)
         print ("Saved at %s"%(datetime.datetime.now()))
