@@ -21,6 +21,16 @@ Or from github
 pip install git+git://github.com/ohld/instabot.git
 ```
 
+## Sample usage
+
+```
+import instabot
+api = instabot.API()
+api.login()
+api.follow('ohld')
+api.logout()
+```
+
 ## How to run
 Choose any example from [examples](https://github.com/ohld/instabot/tree/master/examples) and run
 ```
