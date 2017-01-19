@@ -104,8 +104,8 @@ class API:
     def get_profile_info(self, username):
         return get_profile_info(self, username)
 
-    def get_followers(self, username):
-        return get_followers(self, username)
+    def get_following(self, username):
+        return get_following(self, username)
 
     def get_user_id_by_username(self, username):
         return get_user_id_by_username(self, username)

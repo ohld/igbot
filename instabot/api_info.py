@@ -12,8 +12,8 @@ def get_user_id_by_username(self, username):
     id_user = all_data['user']['id']
     return id_user
 
-def get_followers(self, username):
-    print ("Getting followers of %s"%username)
+def get_following(self, username):
+    print ("Getting persons who are followed by %s"%username)
     userid = self.get_user_id_by_username(username)
     response = self.post('https://www.instagram.com/query/', {
         'q': '''ig_user(%s) {
@@ -23,7 +23,8 @@ def get_followers(self, username):
                   end_cursor, has_next_page
                 },
                 nodes {
-                  id, is_verified, full_name, username
+                  id, is_verified, full_name, username,
+                  followed_by_viewer, requested_by_viewer
                 }
               }
         }'''%(userid),
@@ -49,7 +50,8 @@ def get_followers(self, username):
                           end_cursor, has_next_page
                         },
                         nodes {
-                          id, is_verified, full_name, username
+                          id, is_verified, full_name, username,
+                          followed_by_viewer, requested_by_viewer
                         }
                       }
                 }'''%(userid, cursor),
@@ -58,7 +60,7 @@ def get_followers(self, username):
             })
 
             if response.status_code != 200:
-                print ("Error while requesting more followers")
+                print ("Error while requesting more following")
                 return persons
             data = response.json()
             pbar.update(len(data["follows"]["nodes"]))
