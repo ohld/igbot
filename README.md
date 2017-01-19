@@ -1,15 +1,24 @@
 # instabot
 Cool instagram scripts and API wrapper. Written in Python.
 
-As you may know, Instagram closed it's API in summer 2016. This Python module can do the same thing without any effort. 
+As you may know, Instagram closed it's API in summer 2016. This Python module can do the same thing without any effort.
 
 If you have any ideas, please, leave them in [issues section](https://github.com/ohld/instabot/issues).
 
 *Your Contribution and Support through Stars will be highly appreciated.*
 
 ## How to install
+
+Install latest stable version from pip
+
 ```
 pip install -U instabot
+```
+
+Or from github
+
+```
+pip install git+git://github.com/ohld/instabot.git
 ```
 
 ## How to run
