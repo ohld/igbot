@@ -79,7 +79,7 @@ def get_profile_info(self, username):
         if self.login_status == 1:
             url = 'https://www.instagram.com/%s/' % username
             try:
-                r = self.s.get(url)
+                r = self.session.get(url)
                 text = r.text
                 finder_text_start = ('<script type="text/javascript">'
                                      'window._sharedData = ')
