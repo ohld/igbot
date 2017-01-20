@@ -65,7 +65,7 @@ python example.py
 
 subscribes to person's following
 
-* unsubscribe_not_mutually_followers.py
+* unfollow_non_followers.py
 
 unsubscribes from persons that are not follow you
 

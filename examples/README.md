@@ -13,7 +13,7 @@ Gets followers of your account. Stores locally in *.csv file.
 
 Saves the number of medias, followers and followed into *.csv file by for future analysis.
 
-* unsubscribe_not_mutually_followers.py
+* unfollow_non_followers.py
 
 Bot's script that unfollows people that don't follow you. It will be used in future bot methods.
 
