@@ -50,12 +50,10 @@ python example.py
 * like / unlike
 * follow / unfollow
 * comment
-
-### API info getters
-
-* get_profile_info
-* get_following
-* get_user_id_by_username
+* get profile info
+* get following
+* get user id by username
+* get current feed
 
 ## Examples
 
@@ -68,6 +66,10 @@ subscribes to person's following
 * unfollow_non_followers.py
 
 unsubscribes from persons that are not follow you
+
+* like_current_feed.py
+
+likes last medias from your feed
 
 ### Statistics
 

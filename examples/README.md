@@ -22,3 +22,9 @@ Bot's script that unfollows people that don't follow you. It will be used in fut
 Bot subscribes to people that are followed by user and not followed by you.
 
 ``python subscribe_to_following.py <username>``
+
+* like_current_feed.py
+
+Likes last N medias from your feed.
+
+``python like_current_feed.py <number of medias to like``
