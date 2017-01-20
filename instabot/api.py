@@ -2,6 +2,7 @@ import requests, json
 import time, random
 
 from .api_info import *
+from .api_feed import *
 from .prepare import get_credentials
 
 class API:
@@ -124,3 +125,6 @@ class API:
 
     def get_user_id_by_username(self, username):
         return get_user_id_by_username(self, username)
+
+    def get_feed(self, amount):
+        return get_feed(self, amount)
