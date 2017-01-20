@@ -3,5 +3,6 @@ setup.cfg
 setup.py
 instabot/__init__.py
 instabot/api.py
+instabot/api_feed.py
 instabot/api_info.py
 instabot/prepare.py
