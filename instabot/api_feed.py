@@ -1,13 +1,12 @@
 import requests
-import json
-import time, datetime
+import time
 import random
-import sys
 from tqdm import tqdm
 
-def get_feed(self, amount):
-    print ("Getting %d medias from your current feed"%(amount))
-    response = self.post('https://www.instagram.com/query/',      {
+
+def get_feed(api_instance, amount):
+    print("Getting %d medias from your current feed" % (amount))
+    response = api_instance.post('https://www.instagram.com/query/',      {
       'q': '''ig_me() {
               feed {
                 media.first(20) {
@@ -35,7 +34,7 @@ def get_feed(self, amount):
               username
       }''',
       'ref': 'feed::show',
-      'query_id': '%d'%random.randint(0, 99999999999)
+      'query_id': '%d' % random.randint(0, 99999999999)
     })
 
     if response.status_code != 200:
@@ -55,10 +54,11 @@ def get_feed(self, amount):
 
     with tqdm(total=amount) as pbar:
         pbar.update(len(feed_media))
-        while len(feed_media) < amount and data["feed"]["media"]["page_info"]["has_next_page"]:
+        has_next_page = data["feed"]["media"]["page_info"]["has_next_page"]
+        while len(feed_media) < amount and has_next_page:
             time.sleep(3 * random.random())
             cursor = data["feed"]["media"]["page_info"]["end_cursor"]
-            response = self.post('https://www.instagram.com/query/', {
+            response = api_instance.post('https://www.instagram.com/query/', {
                 'q': '''ig_me() {
                         feed {
                           media.after(%s, 20) {
@@ -84,9 +84,9 @@ def get_feed(self, amount):
                         },
                         id,
                         username
-                }'''%(cursor),
+                }''' % cursor,
                 'ref': 'feed::show',
-                'query_id': '%d'%random.randint(0, 99999999999)
+                'query_id': '%d' % random.randint(0, 99999999999)
             })
 
             if response.status_code != 200:
