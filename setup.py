@@ -10,4 +10,5 @@ setup(
   download_url = 'https://github.com/ohld/instabot/tarball/0.1.3', # I'll explain this in a second
   keywords = ['instagram', 'bot', 'api'], # arbitrary keywords
   classifiers = [],
+  install_requires=['tqdm', 'pandas'],
 )
