@@ -1,12 +1,12 @@
-import requests
 import time
 import random
-import config
-
-from api_info import get_profile_info, get_following, get_user_id_by_username
-from api_feed import get_feed
-from prepare import get_credentials
+import requests
 from requests.exceptions import RequestException
+
+from .api_info import get_profile_info, get_following, get_user_id_by_username
+from .api_feed import get_feed
+from .prepare import get_credentials
+from . import config
 
 
 class API:
@@ -71,7 +71,7 @@ class API:
                 print("Can't login: Invalid login or password.")
         else:
             self.login_status = False
-            print("Can't login. Status code: %s" % (login.status_code))
+            print("Can't login. Status code: %s" % login.status_code)
 
     def logout(self):
         ret = self.post(self.url_logout,
@@ -110,7 +110,7 @@ class API:
     def convert_to_id(self, inp):
         ''' If input is not digit - it is a username.
             So we should convert it to user_id'''
-        if type(inp) == str:
+        if isinstance(inp) == str:
             if not inp.isdigit():
                 return self.get_user_id_by_username(inp)
         return str(inp)
