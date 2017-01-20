@@ -1,14 +1,15 @@
 #!/usr/bin/env python
-import datetime, time
+import datetime
+import time
 import random
 import sys, os
 
-sys.path.append(os.path.join(sys.path[0],'../'))
+sys.path.append(os.path.join(sys.path[0], '../'))
 from instabot import API
 
 def like_current_feed(api, amount):
     """ Subscribes to people that are followed by username. """
-    print ("Going to like %d medias of your feed."%(amount))
+    print ("Going to like %d medias of your feed." % amount)
     all_feed = api.get_feed(amount)
     not_liked_feed = [item["id"] for item in all_feed if not item["likes"]["viewer_has_liked"]]
     print ("  Recieved %d of your last feed. You have already liked %d on them."%\
@@ -17,7 +18,7 @@ def like_current_feed(api, amount):
     total_liked = 0
     for media in not_liked_feed:
         if total_liked % 10 == 0:
-            print ("  Total liked: %d"%(total_liked))
+            print ("  Total liked: %d" % total_liked)
         if api.like(media):
             total_liked += 1
         else:
@@ -28,7 +29,7 @@ def like_current_feed(api, amount):
             print ("""You have liked 1000 media. That's enought. I'll be stopped.
                       If you want more - just rerun this script. But it isn't safe.""")
             break
-    print ("      DONE: Total liked: %d"%(total_liked))
+    print ("      DONE: Total liked: %d" % total_liked)
     return True
 
 if __name__ == "__main__":
