@@ -5,7 +5,7 @@ import sys
 SECRET_FILE = "secret.txt"
 
 def get_credentials():
-    "Returns login and password stored in secret.txt"
+    "Returns login and password stored in SECRET_FILE"
     while not check_secret():
         pass
     with open(SECRET_FILE, "r") as f:
