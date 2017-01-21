@@ -21,6 +21,11 @@ from .api_search import searchUsers
 from .api_search import searchUsername
 from .api_search import searchTags
 from .api_search import searchLocation
+from .api_profile import removeProfilePicture
+from .api_profile import setPrivateAccount
+from .api_profile import setPublicAccount
+from .api_profile import getProfileData
+from .api_profile import editProfile
 from .prepare import get_credentials
 
 class API:
@@ -69,6 +74,39 @@ class API:
                     print ("Login success!\n")
                     return True
 
+    def logout(self):
+        return self.SendRequest('accounts/logout/')
+
+    def SendRequest(self, endpoint, post = None, login = False):
+        if (not self.isLoggedIn and not login):
+            raise Exception("Not logged in!\n")
+
+        self.session.headers.update({'Connection' : 'close',
+                                'Accept' : '*/*',
+                                'Content-type' : 'application/x-www-form-urlencoded; charset=UTF-8',
+                                'Cookie2' : '$Version=1',
+                                'Accept-Language' : 'en-US',
+                                'User-Agent' : config.USER_AGENT})
+
+        if (post != None): # POST
+            response = self.session.post(config.API_URL + endpoint, data=post) # , verify=False
+        else: # GET
+            response = self.session.get(config.API_URL + endpoint) # , verify=False
+
+        if response.status_code == 200:
+            self.LastResponse = response
+            self.LastJson = json.loads(response.text)
+            return True
+        else:
+            print ("Request return " + str(response.status_code) + " error!")
+            # for debugging
+            try:
+                self.LastResponse = response
+                self.LastJson = json.loads(response.text)
+            except:
+                pass
+            return False
+
     def syncFeatures(self):
         data = json.dumps({
         '_uuid'         : self.uuid,
@@ -82,7 +120,7 @@ class API:
     def autoCompleteUserList(self):
         return self.SendRequest('friendships/autocomplete_user_list/')
 
-    def timelineFeed(self):
+    def getTimelineFeed(self):
         """ Returns 8 medias from timeline feed of logged user """
         return self.SendRequest('feed/timeline/')
 
@@ -98,9 +136,6 @@ class API:
         'experiment'   : 'ig_android_profile_contextual_feed'
         })
         return self.SendRequest('qe/expose/', self.generateSignature(data))
-
-    def logout(self):
-        return self.SendRequest('accounts/logout/')
 
     def uploadPhoto(self, photo, caption = None, upload_id = None):
         return uploadPhoto(self, photo, caption, upload_id)
@@ -181,51 +216,19 @@ class API:
         return self.SendRequest('media/'+ str(mediaId) +'/comment/'+ str(commentId) +'/delete/', self.generateSignature(data))
 
     def removeProfilePicture(self):
-        data = json.dumps({
-        '_uuid'        : self.uuid,
-        '_uid'         : self.username_id,
-        '_csrftoken'   : self.token
-        })
-        return self.SendRequest('accounts/remove_profile_picture/', self.generateSignature(data))
+        return removeProfilePicture(self)
 
     def setPrivateAccount(self):
-        data = json.dumps({
-        '_uuid'        : self.uuid,
-        '_uid'         : self.username_id,
-        '_csrftoken'   : self.token
-        })
-        return self.SendRequest('accounts/set_private/', self.generateSignature(data))
+        return setPrivateAccount(self)
 
     def setPublicAccount(self):
-        data = json.dumps({
-        '_uuid'        : self.uuid,
-        '_uid'         : self.username_id,
-        '_csrftoken'   : self.token
-        })
-        return self.SendRequest('accounts/set_public/', self.generateSignature(data))
+        return setPublicAccount(self)
 
     def getProfileData(self):
-        data = json.dumps({
-        '_uuid'        : self.uuid,
-        '_uid'         : self.username_id,
-        '_csrftoken'   : self.token
-        })
-        return self.SendRequest('accounts/current_user/?edit=true', self.generateSignature(data))
+        return getProfileData(self)
 
     def editProfile(self, url, phone, first_name, biography, email, gender):
-        data = json.dumps({
-        '_uuid'        : self.uuid,
-        '_uid'         : self.username_id,
-        '_csrftoken'   : self.token,
-        'external_url' : url,
-        'phone_number' : phone,
-        'username'     : self.username,
-        'full_name'    : first_name,
-        'biography'    : biography,
-        'email'        : email,
-        'gender'       : gender,
-        })
-        return self.SendRequest('accounts/edit_profile/', self.generateSignature(data))
+        return editProfile(self, url, phone, first_name, biography, email, gender)
 
     def getUsernameInfo(self, usernameId):
         return self.SendRequest('users/'+ str(usernameId) +'/info/')
@@ -402,9 +405,6 @@ class API:
         })
         return self.SendRequest('friendships/show/'+ str(userId) +'/', self.generateSignature(data))
 
-    def getLikedMedia(self,maxid=''):
-        return self.SendRequest('feed/liked/?max_id='+str(maxid))
-
     def generateSignature(self, data):
         try:
             parsedData = urllib.parse.quote(data)
@@ -426,35 +426,8 @@ class API:
         else:
             return generated_uuid.replace('-', '')
 
-    def SendRequest(self, endpoint, post = None, login = False):
-        if (not self.isLoggedIn and not login):
-            raise Exception("Not logged in!\n")
-
-        self.session.headers.update({'Connection' : 'close',
-                                'Accept' : '*/*',
-                                'Content-type' : 'application/x-www-form-urlencoded; charset=UTF-8',
-                                'Cookie2' : '$Version=1',
-                                'Accept-Language' : 'en-US',
-                                'User-Agent' : config.USER_AGENT})
-
-        if (post != None): # POST
-            response = self.session.post(config.API_URL + endpoint, data=post) # , verify=False
-        else: # GET
-            response = self.session.get(config.API_URL + endpoint) # , verify=False
-
-        if response.status_code == 200:
-            self.LastResponse = response
-            self.LastJson = json.loads(response.text)
-            return True
-        else:
-            print ("Request return " + str(response.status_code) + " error!")
-            # for debugging
-            try:
-                self.LastResponse = response
-                self.LastJson = json.loads(response.text)
-            except:
-                pass
-            return False
+    def getLikedMedia(self,maxid=''):
+        return self.SendRequest('feed/liked/?max_id='+str(maxid))
 
     def getTotalFollowers(self,usernameId):
         followers = []
