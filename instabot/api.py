@@ -14,18 +14,23 @@ if sys.version_info.major == 3:
 from . import config
 from .api_photo import configurePhoto
 from .api_photo import uploadPhoto
+
 from .api_video import configureVideo
 from .api_video import uploadVideo
+
 from .api_search import fbUserSearch
 from .api_search import searchUsers
 from .api_search import searchUsername
 from .api_search import searchTags
 from .api_search import searchLocation
+
 from .api_profile import removeProfilePicture
 from .api_profile import setPrivateAccount
 from .api_profile import setPublicAccount
 from .api_profile import getProfileData
 from .api_profile import editProfile
+from .api_profile import setNameAndPhone
+
 from .prepare import get_credentials
 
 class API:
@@ -348,14 +353,7 @@ class API:
         return self.SendRequest('media/'+ mediaId +'/comments/?')
 
     def setNameAndPhone(self, name = '', phone = ''):
-        data = json.dumps({
-        '_uuid'         : self.uuid,
-        '_uid'          : self.username_id,
-        'first_name'    : name,
-        'phone_number'  : phone,
-        '_csrftoken'    : self.token
-        })
-        return self.SendRequest('accounts/set_phone_and_name/', self.generateSignature(data))
+        return setNameAndPhone(self, name, phone)
 
     def getDirectShare(self):
         return self.SendRequest('direct_share/inbox/?')
@@ -478,7 +476,7 @@ class API:
     def getTotalSelfFollowings(self):
         return self.getTotalFollowings(self.username_id)
 
-    def getTotalLikedMedia(self,scan_rate = 1):
+    def getTotalLikedMedia(self, scan_rate = 1):
         next_id = ''
         liked_items = []
         for _ in range(0,scan_rate):

@@ -24,6 +24,16 @@ def setPublicAccount(self):
     })
     return self.SendRequest('accounts/set_public/', self.generateSignature(data))
 
+def setNameAndPhone(self, name = '', phone = ''):
+    data = json.dumps({
+    '_uuid'         : self.uuid,
+    '_uid'          : self.username_id,
+    'first_name'    : name,
+    'phone_number'  : phone,
+    '_csrftoken'    : self.token
+    })
+    return self.SendRequest('accounts/set_phone_and_name/', self.generateSignature(data))
+
 def getProfileData(self):
     data = json.dumps({
     '_uuid'        : self.uuid,
