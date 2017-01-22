@@ -33,7 +33,7 @@ from .api_profile import setNameAndPhone
 
 from .prepare import get_credentials
 
-class API:
+class API(object):
     def __init__(self, username = None, password = None):
         if username is None or password is  None:
             username, password = get_credentials()
