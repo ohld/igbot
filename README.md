@@ -29,11 +29,11 @@ pip install -r requirements.txt
 ## Sample usage
 
 ```
-import instabot
-api = instabot.API()
-api.login()
-api.follow('ohld')
-api.logout()
+from instabot import Bot
+bot = Bot()
+bot.login()
+bot.like_timeline()
+bot.logout()
 ```
 
 ## How to run
@@ -44,43 +44,12 @@ python example.py
 
 ## Implemented methods
 
-### API
+Almost all Instagram API methods are implemented.
+Bot can do:
 
-* login / logout
-* like / unlike
-* follow / unfollow
-* comment
-* get profile info
-* get following
-* get user id by username
-* get current feed
+  * like logged user's feed
+  * like person's last medias
 
-## Examples
 
-### Bot
-
-* subscribe_to_following.py
-
-subscribes to person's following
-
-* unfollow_non_followers.py
-
-unsubscribes from persons that are not follow you
-
-* like_current_feed.py
-
-likes last medias from your feed
-
-### Statistics
-
-* save_my_stats.py
-
-Saves every hour to track your growth
-
-* save_my_following.py
-
-Saves your followings list into *.tsv format
-
-*More information you can find in examples folder.*
 ___
 _inspired by @mgp25 and @LevPasha_
