@@ -35,11 +35,11 @@ from .prepare import get_credentials
 
 class API:
     def __init__(self, username = None, password = None):
-        if username is not None and password is not None:
-            m = hashlib.md5()
-            m.update(username.encode('utf-8') + password.encode('utf-8'))
-        else:
+        if username is None or password is  None:
             username, password = get_credentials()
+
+        m = hashlib.md5()
+        m.update(username.encode('utf-8') + password.encode('utf-8'))
         self.device_id = self.generateDeviceId(m.hexdigest())
         self.setUser(username, password)
         self.isLoggedIn = False
@@ -71,11 +71,11 @@ class API:
                     self.rank_token = "%s_%s" % (self.username_id, self.uuid)
                     self.token = self.LastResponse.cookies["csrftoken"]
 
-                    self.syncFeatures()
-                    self.autoCompleteUserList()
-                    self.timelineFeed()
-                    self.getv2Inbox()
-                    self.getRecentActivity()
+                    # self.syncFeatures()
+                    # self.autoCompleteUserList()
+                    # self.getTimelineFeed()
+                    # self.getv2Inbox()
+                    # self.getRecentActivity()
                     print ("Login success!\n")
                     return True
 
