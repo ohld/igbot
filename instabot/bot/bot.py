@@ -9,6 +9,14 @@ from .bot_like_feed import like_user_id
 class Bot(API):
     def __init__(self):
         super(self.__class__, self).__init__()
+        self.total_liked = 0
+        self.total_followed = 0
+
+    def logout(self):
+        super(self.__class__, self).logout()
+        print ("""Total liked: %d, Total followed: %d""" % (
+                self.total_liked, self.total_followed
+        ))
 
     def like_medias(self, medias):
         """ medias - list of ["pk"] fields of response """
@@ -21,6 +29,21 @@ class Bot(API):
                 pass
             time.sleep(10 * random.random())
         print ("    DONE: Total liked %d medias. " % total_liked)
+        self.total_liked += total_liked
+        return True
+
+    def follow_users(self, user_ids):
+        """ user_ids - list of user_id to follow """
+        print ("    Going to follow %d users." % len(user_ids))
+        total_followed = 0
+        for user_id in user_ids:
+            if self.follow(user_id):
+                total_followed += 1
+            else:
+                pass
+            time.sleep(10 * random.random())
+        print ("    DONE: Total followed %d users. " % total_followed)
+        self.total_followed += total_followed
         return True
 
     def like_timeline(self):
