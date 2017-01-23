@@ -22,8 +22,8 @@ class Bot(API):
 
     def logout(self):
         super(self.__class__, self).logout()
-        print ("Bot stopped.")
-        print ("""Total liked: %d,
+        print ("""Bot stopped.
+                  Total liked: %d,
                   Total followed: %d,
                   Total unfollowed: %d""" % (
             self.total_liked, self.total_followed, self.total_unfollowed
