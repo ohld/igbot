@@ -15,9 +15,6 @@ from . import config
 from .api_photo import configurePhoto
 from .api_photo import uploadPhoto
 
-from .api_video import configureVideo
-from .api_video import uploadVideo
-
 from .api_search import fbUserSearch
 from .api_search import searchUsers
 from .api_search import searchUsername
@@ -144,12 +141,6 @@ class API(object):
 
     def uploadPhoto(self, photo, caption = None, upload_id = None):
         return uploadPhoto(self, photo, caption, upload_id)
-
-    def uploadVideo(self, video, thumbnail, caption = None, upload_id = None):
-        return uploadVideo(self, video, thumbnail, caption, upload_id)
-
-    def configureVideo(self, upload_id, video, thumbnail, caption = ''):
-        return configureVideo(self, upload_id, video, thumbnail, caption)
 
     def configurePhoto(self, upload_id, photo, caption = ''):
         return configurePhoto(self, upload_id, photo, caption)
