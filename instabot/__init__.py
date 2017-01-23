@@ -1,2 +1,2 @@
-from . import api
-from . import bot
+from .api import API
+from .bot import Bot
