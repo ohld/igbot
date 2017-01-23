@@ -33,6 +33,8 @@ from instabot import Bot
 bot = Bot()
 bot.login()
 bot.like_timeline()
+bot.like_hashtag("dog")
+bot.unfollow_non_followers()
 bot.logout()
 ```
 
@@ -49,7 +51,8 @@ Bot can do:
 
   * like logged user's feed
   * like person's last medias
-
+  * like medias by hashtag
+  * unfollow non followers
 
 ___
 _inspired by @mgp25 and @LevPasha_
