@@ -8,6 +8,6 @@ from instabot import Bot
 bot = Bot()
 bot.login()
 bot.like_timeline()
-bot.like_user_id("352300017")
-bot.follow_users(["352300017"])
+# bot.like_user_id("352300017")
+# bot.follow_users(["352300017"])
 bot.logout()

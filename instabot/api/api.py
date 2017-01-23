@@ -31,14 +31,7 @@ from .api_profile import setNameAndPhone
 from .prepare import get_credentials
 
 class API(object):
-    def __init__(self, username = None, password = None):
-        if username is None or password is  None:
-            username, password = get_credentials()
-
-        m = hashlib.md5()
-        m.update(username.encode('utf-8') + password.encode('utf-8'))
-        self.device_id = self.generateDeviceId(m.hexdigest())
-        self.setUser(username, password)
+    def __init__(self):
         self.isLoggedIn = False
         self.LastResponse = None
 
@@ -47,7 +40,15 @@ class API(object):
         self.password = password
         self.uuid = self.generateUUID(True)
 
-    def login(self, force = False):
+    def login(self, username = None, password = None, force = False):
+        if username is None or password is None:
+            username, password = get_credentials()
+
+        m = hashlib.md5()
+        m.update(username.encode('utf-8') + password.encode('utf-8'))
+        self.device_id = self.generateDeviceId(m.hexdigest())
+        self.setUser(username, password)
+
         if (not self.isLoggedIn or force):
             self.session = requests.Session()
             # if you need proxy make something like this:
