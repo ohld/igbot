@@ -28,7 +28,7 @@ pip install -r requirements.txt
 
 ## Sample usage
 
-```
+```python
 from instabot import Bot
 bot = Bot()
 bot.login()
