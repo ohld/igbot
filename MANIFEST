@@ -2,3 +2,15 @@
 setup.cfg
 setup.py
 instabot/__init__.py
+instabot/api/__init__.py
+instabot/api/api.py
+instabot/api/api_photo.py
+instabot/api/api_profile.py
+instabot/api/api_search.py
+instabot/api/config.py
+instabot/api/prepare.py
+instabot/bot/__init__.py
+instabot/bot/bot.py
+instabot/bot/bot_like_feed.py
+instabot/bot/bot_like_hashtag.py
+instabot/bot/bot_unfollow_non_followers.py
