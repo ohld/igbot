@@ -60,7 +60,7 @@ class Bot(API):
                 total_unfollowed += 1
             else:
                 pass
-            time.sleep(10 + 10 * random.random())
+            time.sleep(15 + 30 * random.random())
         print ("    DONE: Total unfollowed %d users. " % total_unfollowed)
         self.total_unfollowed += total_unfollowed
         return True
