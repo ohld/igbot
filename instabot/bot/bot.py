@@ -7,6 +7,7 @@ from .. import API
 from .bot_like_feed import like_timeline
 from .bot_like_feed import like_user_id
 from .bot_unfollow_non_followers import unfollow_non_followers
+from .bot_like_hashtag import like_hashtag
 
 class Bot(API):
     def __init__(self):
@@ -17,6 +18,7 @@ class Bot(API):
 
     def logout(self):
         super(self.__class__, self).logout()
+        print ("Bot stopped.")
         print ("""Total liked: %d, Total followed: %d""" % (
                 self.total_liked, self.total_followed
         ))
@@ -71,3 +73,6 @@ class Bot(API):
 
     def unfollow_non_followers(self):
         unfollow_non_followers(self)
+
+    def like_hashtag(self, tag):
+        like_hashtag(self, tag)
