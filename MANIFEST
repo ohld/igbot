@@ -12,6 +12,7 @@ instabot/api/prepare.py
 instabot/bot/__init__.py
 instabot/bot/bot.py
 instabot/bot/bot_checkpoint.py
+instabot/bot/bot_like_and_follow.py
 instabot/bot/bot_like_feed.py
 instabot/bot/bot_like_hashtag.py
 instabot/bot/bot_unfollow_non_followers.py
