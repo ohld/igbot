@@ -8,10 +8,16 @@ from .bot_like_feed import like_timeline
 from .bot_like_feed import like_user_id
 from .bot_unfollow_non_followers import unfollow_non_followers
 from .bot_like_hashtag import like_hashtag
+
 from .bot_checkpoint import save_checkpoint
 from .bot_checkpoint import load_checkpoint
 from .bot_checkpoint import checkpoint_followers_diff
 from .bot_checkpoint import checkpoint_following_diff
+from .bot_checkpoint import load_last_checkpoint
+from .bot_checkpoint import revert_to_checkpoint
+
+from .bot_like_and_follow import like_and_follow
+from .bot_like_and_follow import like_and_follow_your_feed_likers
 
 class Bot(API):
     def __init__(self):
@@ -71,17 +77,17 @@ class Bot(API):
         self.total_unfollowed += total_unfollowed
         return True
 
-    def like_timeline(self, amount):
+    def like_timeline(self, amount=None):
         return like_timeline(self, amount)
 
-    def like_user_id(self, user_id, amount):
+    def like_user_id(self, user_id, amount=None):
         return like_user_id(self, user_id, amount)
 
     def unfollow_non_followers(self):
         return unfollow_non_followers(self)
 
-    def like_hashtag(self, tag):
-        return like_hashtag(self, tag)
+    def like_hashtag(self, tag, amount=None):
+        return like_hashtag(self, tag, amount)
 
     def save_checkpoint(self):
         return save_checkpoint(self)
@@ -94,3 +100,15 @@ class Bot(API):
 
     def checkpoint_following_diff(self, cp):
         return checkpoint_following_diff(self, cp)
+
+    def load_last_checkpoint(self):
+        return load_last_checkpoint(self)
+
+    def revert_to_checkpoint(self, cp):
+        return revert_to_checkpoint(self, cp)
+
+    def like_and_follow(self, user_id, nlikes=3):
+        return like_and_follow(self, user_id, nlikes)
+
+    def like_and_follow_your_feed_likers(self, nlikes=3):
+        return like_and_follow_your_feed_likers(self, nlikes)
