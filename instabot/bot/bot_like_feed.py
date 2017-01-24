@@ -14,7 +14,7 @@ def like_timeline(bot, amount=None):
     return bot.like_medias(not_liked_feed)
 
 def like_user_id(bot, user_id, amount=None):
-    """ Likes last username's medias """
+    """ Likes last user_id's medias """
     print ("Liking user_%s's feed:" % user_id)
     if isinstance(user_id, int):
         user_id = str(user_id)
