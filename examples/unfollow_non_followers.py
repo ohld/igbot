@@ -1,3 +1,10 @@
+"""
+    instabot example
+
+    Workflow:
+        1) unfollows users that don't follow you.
+"""
+
 import sys
 import os
 
