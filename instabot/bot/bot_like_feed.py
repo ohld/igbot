@@ -24,6 +24,9 @@ def like_user_id(bot, user_id, amount=None):
         amount = 16
         print ("  Can't request more that 16 medias from user's feed... yet")
     bot.getUserFeed(user_id)
+    if bot.LastJson["status"] == 'fail':
+        print ("  This is a closed account")
+        return False
     not_liked_feed = filter_not_liked(bot.LastJson["items"][:amount])
     return bot.like_medias(not_liked_feed)
 
