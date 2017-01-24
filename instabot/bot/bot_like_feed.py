@@ -16,6 +16,8 @@ def like_timeline(bot, amount=None):
 def like_user_id(bot, user_id, amount=None):
     """ Likes last username's medias """
     print ("Liking user_%s's feed:" % user_id)
+    if isinstance(user_id, int):
+        user_id = str(user_id)
     if not user_id.isdigit():
         print ("You should pass user_id, not user's login.")
     if amount is not None and amount > 16:
