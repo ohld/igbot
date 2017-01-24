@@ -1,6 +1,11 @@
 """
-    Example checkpoints usage:
-    Saves checkpoint, follow some users, loads checkpoint, unfollows new users.
+    instabot example
+
+    Workflow:
+        1) Saves checkpoint
+        2) follows some users
+        3) loads checkpoint
+        4) unfollows new users.
 """
 
 import sys
@@ -11,12 +16,8 @@ from instabot import Bot
 
 bot = Bot()
 bot.login()
-# saves checkpoint
 bot.save_checkpoint()
-# follow some users
 bot.follow_users(["2188662326", "6424540"])
-# load saved checkpoint
-cp = bot.load_checkpoint(bot.last_checkpoint_path)
-# unfollow new users
-bot.unfollow_users(bot.checkpoint_following_diff(cp))
+cp = bot.load_last_checkpoint()
+bot.revert_to_checkpoint(cp)
 bot.logout()
