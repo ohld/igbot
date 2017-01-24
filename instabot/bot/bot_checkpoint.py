@@ -78,3 +78,9 @@ def checkpoint_followers_diff(bot, cp):
     current_followers = [item["pk"] for item in bot.getTotalSelfFollowers()]
     old_following = cp.followers
     return list(set(current_followers) - set(old_followers))
+
+def load_last_checkpoint(bot):
+    return bot.load_checkpoint(bot.last_checkpoint_path)
+
+def revert_to_checkpoint(bot, cp):
+    return bot.unfollow_users(bot.checkpoint_following_diff(cp))
