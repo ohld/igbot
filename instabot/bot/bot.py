@@ -71,11 +71,11 @@ class Bot(API):
         self.total_unfollowed += total_unfollowed
         return True
 
-    def like_timeline(self):
-        return like_timeline(self)
+    def like_timeline(self, amount):
+        return like_timeline(self, amount)
 
-    def like_user_id(self, user_id):
-        return like_user_id(self, user_id)
+    def like_user_id(self, user_id, amount):
+        return like_user_id(self, user_id, amount)
 
     def unfollow_non_followers(self):
         return unfollow_non_followers(self)
