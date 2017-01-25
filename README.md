@@ -49,6 +49,7 @@ bot = Bot()
 | unfollow_non_followers()| Unfollow users that don't follow you| bot.unfollow_non_followers()|
 | like_hashtag(tag, amount=None)| Like last medias by hashtag| bot.like_hashtag("mipt)|
 | like_and_follow(user_id, nlikes=None)| Likes last person's medias and follow him. | bot.like_and_follow("352300017")|
+| like_and_follow_media_likers(media, nlikes=3)| Take likers of media and do like_and_follow() with them| bot.like_and_follow_your_feed_likers()|
 | like_and_follow_your_feed_likers(nlikes=3)| Take likers of your last media and do like_and_follow() with them| bot.like_and_follow_your_feed_likers()|
 
 
