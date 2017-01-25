@@ -17,6 +17,7 @@ from .bot_checkpoint import load_last_checkpoint
 from .bot_checkpoint import revert_to_checkpoint
 
 from .bot_like_and_follow import like_and_follow
+from .bot_like_and_follow import like_and_follow_media_likers
 from .bot_like_and_follow import like_and_follow_your_feed_likers
 
 class Bot(API):
@@ -109,6 +110,9 @@ class Bot(API):
 
     def like_and_follow(self, user_id, nlikes=3):
         return like_and_follow(self, user_id, nlikes)
+
+    def like_and_follow_media_likers(self, media, nlikes=3):
+        return like_and_follow_media_likers(self, media, nlikes)
 
     def like_and_follow_your_feed_likers(self, nlikes=3):
         return like_and_follow_your_feed_likers(self, nlikes)
