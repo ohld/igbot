@@ -27,5 +27,8 @@ def like_user_id(bot, user_id, amount=None):
     if amount is not None and amount > 16:
         amount = 16
         print ("  Can't request more that 16 medias from user's feed... yet")
-    medias = bot.get_user_medias(user_id)[:amount]
-    return bot.like_medias(medias)
+    medias = bot.get_user_medias(user_id)
+    if not medias:
+        print ("  Can't like user: account is closed!")
+        return False
+    return bot.like_medias(medias[:amount])
