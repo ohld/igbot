@@ -79,7 +79,6 @@ class Bot(API):
                 pass
             time.sleep(10 * random.random())
         print ("    DONE: Total liked %d medias. " % total_liked)
-        self.total_liked += total_liked
         return True
 
     def follow_users(self, user_ids):
@@ -93,7 +92,6 @@ class Bot(API):
                 pass
             time.sleep(15 + 30 * random.random())
         print ("    DONE: Total followed %d users. " % total_followed)
-        self.total_followed += total_followed
         return True
 
     def unfollow_users(self, user_ids):
@@ -107,7 +105,6 @@ class Bot(API):
                 pass
             time.sleep(15 + 30 * random.random())
         print ("    DONE: Total unfollowed %d users. " % total_unfollowed)
-        self.total_unfollowed += total_unfollowed
         return True
 
     def get_timeline_medias(self):
