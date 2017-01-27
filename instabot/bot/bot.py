@@ -29,17 +29,44 @@ class Bot(API):
     def __init__(self):
         super(self.__class__, self).__init__()
         self.total_liked = 0
+        self.total_unliked = 0
         self.total_followed = 0
         self.total_unfollowed = 0
+        self.total_commented = 0
 
     def logout(self):
         super(self.__class__, self).logout()
-        print ("""Bot stopped.
-                  Total liked: %d,
-                  Total followed: %d,
-                  Total unfollowed: %d""" % (
-            self.total_liked, self.total_followed, self.total_unfollowed
-        ))
+        print ("Bot stopped.")
+        if self.total_liked:
+            print ("Total liked: %d" % self.total_liked)
+        if self.total_unliked:
+            print ("Total unliked: %d" % self.total_unliked)
+        if self.total_followed:
+            print ("Total followed: %d" % self.total_followed)
+        if self.total_unfollowed:
+            print ("Total unfollowed: %d" % self.total_unfollowed)
+        if self.total_commented:
+            print ("Total commented: %d" % self.total_commented)
+
+    def like(self, media_id):
+        if super(self.__class__, self).like(media_id):
+            self.total_unliked += 1
+
+    def unlike(self, media_id):
+        if super(self.__class__, self).unlike(media_id):
+            self.total_liked += 1
+
+    def follow(self, user_id):
+        if super(self.__class__, self).follow(user_id):
+            self.total_followed += 1
+
+    def unfollow(self, user_id):
+        if super(self.__class__, self).unfollow(user_id):
+            self.total_unfollowed += 1
+
+    def comment(self, media_id, comment_text):
+        if super(self.__class__, self).comment(media_id, comment_text):
+            self.total_commented += 1
 
     def like_medias(self, medias):
         """ medias - list of ["pk"] fields of response """
