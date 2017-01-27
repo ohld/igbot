@@ -1,5 +1,7 @@
 import time
 import random
+import atexit
+import signal
 from tqdm import tqdm
 
 from .. import API
@@ -33,6 +35,9 @@ class Bot(API):
         self.total_followed = 0
         self.total_unfollowed = 0
         self.total_commented = 0
+
+        signal.signal(signal.SIGTERM, self.logout)
+        atexit.register(self.logout)
 
     def logout(self):
         super(self.__class__, self).logout()
