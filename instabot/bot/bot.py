@@ -4,6 +4,9 @@ from tqdm import tqdm
 
 from .. import API
 
+from .bot_get_medias import get_timeline_medias
+from .bot_get_medias import get_user_medias
+
 from .bot_like_feed import like_timeline
 from .bot_like_feed import like_user_id
 from .bot_unfollow_non_followers import unfollow_non_followers
@@ -19,6 +22,8 @@ from .bot_checkpoint import revert_to_checkpoint
 from .bot_like_and_follow import like_and_follow
 from .bot_like_and_follow import like_and_follow_media_likers
 from .bot_like_and_follow import like_and_follow_your_feed_likers
+
+from .bot_comment import get_comment
 
 class Bot(API):
     def __init__(self):
@@ -78,6 +83,12 @@ class Bot(API):
         self.total_unfollowed += total_unfollowed
         return True
 
+    def get_timeline_medias(self):
+        return get_timeline_medias(self)
+
+    def get_user_medias(self, user_id):
+        return get_user_medias(self, user_id)
+
     def like_timeline(self, amount=None):
         return like_timeline(self, amount)
 
@@ -116,3 +127,6 @@ class Bot(API):
 
     def like_and_follow_your_feed_likers(self, nlikes=3):
         return like_and_follow_your_feed_likers(self, nlikes)
+
+    def get_comment(self, comment_base_file=None):
+        return get_comment(self, comment_base_file)
