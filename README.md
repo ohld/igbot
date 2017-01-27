@@ -15,11 +15,6 @@ Install latest stable version from pip
 pip install -U instabot
 ```
 
-If you have problems like "some package not found" try
-```
-pip install -r requirements.txt
-```
-
 ## Implemented [bot](https://github.com/ohld/instabot/blob/master/instabot/bot/bot.py) methods
 
   * like logged user's feed
