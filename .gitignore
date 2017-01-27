@@ -94,3 +94,6 @@ ENV/
 
 # Rope project settings
 .ropeproject
+
+# Bot checkpoints
+bot_cp_*
