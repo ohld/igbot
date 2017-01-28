@@ -3,7 +3,7 @@
 
     Dependencies:
         You must have a "comments_emojie.txt" file which you can find here:
-        https://github.com/ohld/instabot/tree/master/examples
+        https://github.com/ohld/instabot/tree/master/examples/comment
         This files contains comments to comment.
 
     Workflow:
@@ -19,7 +19,7 @@ import sys
 import os
 from tqdm import tqdm
 
-sys.path.append(os.path.join(sys.path[0],'../'))
+sys.path.append(os.path.join(sys.path[0],'../../'))
 from instabot import Bot
 
 comments_file_name = "comments_emojie.txt"
