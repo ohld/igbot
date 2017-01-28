@@ -1,14 +1,6 @@
 import time
 import random
 
-def check_user_id(user_id):
-    if isinstance(user_id, int):
-        user_id = str(user_id)
-    if not user_id.isdigit():
-        print ("You should pass user_id, not user's login.")
-        return False
-    return user_id
-
 def like_timeline(bot, amount=None):
     """ Likes last 8 medias from timeline feed """
     print ("Liking timeline feed:")
@@ -17,7 +9,6 @@ def like_timeline(bot, amount=None):
 
 def like_user_id(bot, user_id, amount=None):
     """ Likes last user_id's medias """
-    user_id = check_user_id(user_id)
     if not user_id:
         return False
     print ("Liking user_%s's feed:" % user_id)
