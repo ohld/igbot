@@ -40,8 +40,7 @@ def check_secret():
                 print("Enter your login: ")
                 f.write(str(sys.stdin.readline()))
                 print("Enter your password: ")
-                pswd = getpass.getpass()
-                f.write(pswd)
+                f.write(getpass.getpass())
 
 def delete_credentials():
     if os.path.exists(SECRET_FILE):
