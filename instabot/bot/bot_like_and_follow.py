@@ -44,4 +44,4 @@ def like_and_follow_your_feed_likers(bot, nlikes=3):
     print ("Going to like & follow users who like your last media")
     bot.getSelfUserFeed()
     last_media = bot.LastJson["items"][0]["pk"]
-    return like_and_follow_media_likers(last_media, nlikes=3)
+    return like_and_follow_media_likers(bot, last_media, nlikes=3)
