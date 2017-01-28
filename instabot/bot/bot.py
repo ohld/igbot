@@ -31,6 +31,12 @@ from .bot_like_and_follow import like_and_follow_your_feed_likers
 
 from .bot_comment import get_comment
 
+from .bot_filter import add_whitelist
+from .bot_filter import add_blacklist
+from .bot_filter import get_media_owner
+from .bot_filter import check_media
+from .bot_filter import check_user
+
 class Bot(API):
     def __init__(self):
         super(self.__class__, self).__init__()
@@ -60,30 +66,40 @@ class Bot(API):
             print ("  Total commented: %d" % self.total_commented)
 
     def like(self, media_id):
+        if not self.check_media(media_id):
+            return False
         if super(self.__class__, self).like(media_id):
             self.total_unliked += 1
             return True
         return False
 
     def unlike(self, media_id):
+        if not self.check_media(media_id):
+            return False
         if super(self.__class__, self).unlike(media_id):
             self.total_liked += 1
             return True
         return False
 
     def follow(self, user_id):
+        if not self.check_user(user_id):
+            return False
         if super(self.__class__, self).follow(user_id):
             self.total_followed += 1
             return True
         return False
 
     def unfollow(self, user_id):
+        if not self.check_user(user_id):
+            return False
         if super(self.__class__, self).unfollow(user_id):
             self.total_unfollowed += 1
             return True
         return False
 
     def comment(self, media_id, comment_text):
+        if not self.check_media(media_id):
+            return False
         if super(self.__class__, self).comment(media_id, comment_text):
             self.total_commented += 1
             return True
@@ -175,3 +191,18 @@ class Bot(API):
 
     def get_comment(self, comment_base_file=None):
         return get_comment(self, comment_base_file)
+
+    def add_whitelist(self, file_path):
+        return add_whitelist(self, file_path)
+
+    def add_blacklist(self, file_path):
+        return add_blacklist(self, file_path)
+
+    def get_media_owner(self, media):
+        return get_media_owner(self, media)
+
+    def check_media(self, media):
+        return check_media(self, media)
+
+    def check_user(self, user):
+        return check_user(self, user)
