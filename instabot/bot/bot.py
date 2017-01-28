@@ -58,22 +58,32 @@ class Bot(API):
     def like(self, media_id):
         if super(self.__class__, self).like(media_id):
             self.total_unliked += 1
+            return True
+        return False
 
     def unlike(self, media_id):
         if super(self.__class__, self).unlike(media_id):
             self.total_liked += 1
+            return True
+        return False
 
     def follow(self, user_id):
         if super(self.__class__, self).follow(user_id):
             self.total_followed += 1
+            return True
+        return False
 
     def unfollow(self, user_id):
         if super(self.__class__, self).unfollow(user_id):
             self.total_unfollowed += 1
+            return True
+        return False
 
     def comment(self, media_id, comment_text):
         if super(self.__class__, self).comment(media_id, comment_text):
             self.total_commented += 1
+            return True
+        return False
 
     def like_medias(self, medias):
         """ medias - list of ["pk"] fields of response """
