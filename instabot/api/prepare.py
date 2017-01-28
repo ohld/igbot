@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import os
 import sys
+import getpass
 
 SECRET_FILE = "secret.txt"
 
@@ -39,7 +40,7 @@ def check_secret():
                 print("Enter your login: ")
                 f.write(str(sys.stdin.readline()))
                 print("Enter your password: ")
-                f.write(str(sys.stdin.readline()))
+                f.write(getpass.getpass())
 
 def delete_credentials():
     if os.path.exists(SECRET_FILE):
