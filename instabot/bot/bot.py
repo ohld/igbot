@@ -6,6 +6,8 @@ from tqdm import tqdm
 
 from .. import API
 
+from . import limits
+
 from .bot_get_medias import get_timeline_medias
 from .bot_get_medias import get_user_medias
 
