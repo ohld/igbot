@@ -1,4 +1,5 @@
 import time
+import datetime
 import random
 import atexit
 import signal
@@ -37,23 +38,25 @@ class Bot(API):
         self.total_followed = 0
         self.total_unfollowed = 0
         self.total_commented = 0
+        self.start_time = datetime.datetime.now()
 
         signal.signal(signal.SIGTERM, self.logout)
         atexit.register(self.logout)
 
     def logout(self):
         super(self.__class__, self).logout()
-        print ("Bot stopped.")
+        print ("Bot stopped. "
+               "Worked: %s" % (datetime.datetime.now() - self.start_time))
         if self.total_liked:
-            print ("Total liked: %d" % self.total_liked)
+            print ("  Total liked: %d" % self.total_liked)
         if self.total_unliked:
-            print ("Total unliked: %d" % self.total_unliked)
+            print ("  Total unliked: %d" % self.total_unliked)
         if self.total_followed:
-            print ("Total followed: %d" % self.total_followed)
+            print ("  Total followed: %d" % self.total_followed)
         if self.total_unfollowed:
-            print ("Total unfollowed: %d" % self.total_unfollowed)
+            print ("  Total unfollowed: %d" % self.total_unfollowed)
         if self.total_commented:
-            print ("Total commented: %d" % self.total_commented)
+            print ("  Total commented: %d" % self.total_commented)
 
     def like(self, media_id):
         if super(self.__class__, self).like(media_id):
