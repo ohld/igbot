@@ -5,7 +5,7 @@
         1) Reads user_ids from blacklist and whitelist
 
     Notes:
-        blacklist and whitelist files should contain user_id - each one on the
+        blacklist and whitelist files should contain user_ids - each one on the
         separate line.
         Example:
             1234125
