@@ -11,11 +11,12 @@ from . import limits
 
 from .bot_get_medias import get_timeline_medias
 from .bot_get_medias import get_user_medias
+from .bot_get_medias import get_hashtag_medias
 
 from .bot_like_feed import like_timeline
 from .bot_like_feed import like_user_id
+from .bot_like_feed import like_hashtag
 from .bot_unfollow_non_followers import unfollow_non_followers
-from .bot_like_hashtag import like_hashtag
 
 from .bot_checkpoint import save_checkpoint
 from .bot_checkpoint import load_checkpoint
