@@ -28,8 +28,11 @@ def add_blacklist(bot, file_path):
     return not not bot.blacklist
 
 def get_media_owner(bot, media_id):
-    pass
-    return False
+    bot.mediaInfo(media_id)
+    try:
+        return bot.LastJson["items"][0]["user"]["pk"]
+    except:    
+        return False
 
 def check_media(bot, media_id):
     return check_user(bot, get_media_owner(bot, media_id))
