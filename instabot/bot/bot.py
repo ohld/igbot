@@ -31,14 +31,15 @@ from .bot_like_and_follow import like_and_follow_your_feed_likers
 
 from .bot_comment import get_comment
 
-from .bot_filter import add_whitelist
-from .bot_filter import add_blacklist
+from .bot_filter import read_list
 from .bot_filter import get_media_owner
 from .bot_filter import check_media
 from .bot_filter import check_user
 
 class Bot(API):
-    def __init__(self):
+    def __init__(self,
+                 whitelist=False,
+                 blacklist=False):
         super(self.__class__, self).__init__()
         self.total_liked = 0
         self.total_unliked = 0
@@ -46,6 +47,10 @@ class Bot(API):
         self.total_unfollowed = 0
         self.total_commented = 0
         self.start_time = datetime.datetime.now()
+        if whitelist:
+            self.whitelist = read_list(whitelist)
+        if blacklist:
+            self.blacklist = read_list(blacklist)
 
         signal.signal(signal.SIGTERM, self.logout)
         atexit.register(self.logout)
