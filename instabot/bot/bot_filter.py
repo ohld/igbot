@@ -11,13 +11,16 @@ def read_list(file_path):
         Reads whitelist/blacklist users from input file.
         Returns the list if file items
     """
-    if not os.path.exists(file_path):
-        print ("file %s does not exist." % file_path)
+    try:
+        if not os.path.exists(file_path):
+            print ("file %s does not exist." % file_path)
+            return False
+        with open(file_path, "r") as f:
+            content = f.readlines()
+            content = [item.strip() for item in content if len(item.strip()) > 0]
+            return content
+    except:
         return False
-    with open(file_path, "r") as f:
-        content = f.readlines()
-        content = [item.strip() for item in content if len(item.strip()) > 0]
-        return content
 
 def add_whitelist(bot, file_path):
     bot.whitelist = read_list(file_path)
@@ -31,7 +34,7 @@ def get_media_owner(bot, media_id):
     bot.mediaInfo(media_id)
     try:
         return bot.LastJson["items"][0]["user"]["pk"]
-    except:    
+    except:
         return False
 
 def check_media(bot, media_id):
@@ -48,4 +51,8 @@ def check_user(bot, user_id):
     """
     if not user_id:
         return True
+    if user_id in bot.whitelist:
+        return True
+    if user_id in bot.blacklist:
+        return False
     return True
