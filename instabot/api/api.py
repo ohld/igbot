@@ -29,6 +29,7 @@ from .api_profile import editProfile
 from .api_profile import setNameAndPhone
 
 from .prepare import get_credentials
+from .prepare import delete_credentials
 
 class API(object):
     def __init__(self):
@@ -76,8 +77,14 @@ class API(object):
                     # self.getRecentActivity()
                     print ("Login success!\n")
                     return True
+                else:
+                    print ("Login or password is incorrect.")
+                    delete_credentials()
+                    exit()
 
     def logout(self):
+        if not self.isLoggedIn:
+            return True
         return self.SendRequest('accounts/logout/')
 
     def SendRequest(self, endpoint, post = None, login = False):

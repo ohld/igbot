@@ -11,11 +11,12 @@ from . import limits
 
 from .bot_get_medias import get_timeline_medias
 from .bot_get_medias import get_user_medias
+from .bot_get_medias import get_hashtag_medias
 
 from .bot_like_feed import like_timeline
 from .bot_like_feed import like_user_id
+from .bot_like_feed import like_hashtag
 from .bot_unfollow_non_followers import unfollow_non_followers
-from .bot_like_hashtag import like_hashtag
 
 from .bot_checkpoint import save_checkpoint
 from .bot_checkpoint import load_checkpoint
@@ -30,8 +31,15 @@ from .bot_like_and_follow import like_and_follow_your_feed_likers
 
 from .bot_comment import get_comment
 
+from .bot_filter import read_list
+from .bot_filter import get_media_owner
+from .bot_filter import check_media
+from .bot_filter import check_user
+
 class Bot(API):
-    def __init__(self):
+    def __init__(self,
+                 whitelist=False,
+                 blacklist=False):
         super(self.__class__, self).__init__()
         self.total_liked = 0
         self.total_unliked = 0
@@ -39,6 +47,12 @@ class Bot(API):
         self.total_unfollowed = 0
         self.total_commented = 0
         self.start_time = datetime.datetime.now()
+        if whitelist:
+            self.whitelist = read_list(whitelist)
+            print ("Size of whitelist: %d" % len(self.whitelist))
+        if blacklist:
+            self.blacklist = read_list(blacklist)
+            print ("Size of blacklist: %d" % len(self.blacklist))
 
         signal.signal(signal.SIGTERM, self.logout)
         atexit.register(self.logout)
@@ -59,30 +73,40 @@ class Bot(API):
             print ("  Total commented: %d" % self.total_commented)
 
     def like(self, media_id):
+        if not self.check_media(media_id):
+            return False
         if super(self.__class__, self).like(media_id):
-            self.total_unliked += 1
-            return True
-        return False
-
-    def unlike(self, media_id):
-        if super(self.__class__, self).unlike(media_id):
             self.total_liked += 1
             return True
         return False
 
+    def unlike(self, media_id):
+        if not self.check_media(media_id):
+            return False
+        if super(self.__class__, self).unlike(media_id):
+            self.total_unliked += 1
+            return True
+        return False
+
     def follow(self, user_id):
+        if not self.check_user(user_id):
+            return False
         if super(self.__class__, self).follow(user_id):
             self.total_followed += 1
             return True
         return False
 
     def unfollow(self, user_id):
+        if not self.check_user(user_id):
+            return False
         if super(self.__class__, self).unfollow(user_id):
             self.total_unfollowed += 1
             return True
         return False
 
     def comment(self, media_id, comment_text):
+        if not self.check_media(media_id):
+            return False
         if super(self.__class__, self).comment(media_id, comment_text):
             self.total_commented += 1
             return True
@@ -174,3 +198,18 @@ class Bot(API):
 
     def get_comment(self, comment_base_file=None):
         return get_comment(self, comment_base_file)
+
+    def add_whitelist(self, file_path):
+        return add_whitelist(self, file_path)
+
+    def add_blacklist(self, file_path):
+        return add_blacklist(self, file_path)
+
+    def get_media_owner(self, media):
+        return get_media_owner(self, media)
+
+    def check_media(self, media):
+        return check_media(self, media)
+
+    def check_user(self, user):
+        return check_user(self, user)
