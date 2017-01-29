@@ -76,7 +76,7 @@ class Bot(API):
         if not self.check_media(media_id):
             return False
         if super(self.__class__, self).like(media_id):
-            self.total_unliked += 1
+            self.total_liked += 1
             return True
         return False
 
@@ -84,7 +84,7 @@ class Bot(API):
         if not self.check_media(media_id):
             return False
         if super(self.__class__, self).unlike(media_id):
-            self.total_liked += 1
+            self.total_unliked += 1
             return True
         return False
 
