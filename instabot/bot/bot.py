@@ -50,9 +50,13 @@ class Bot(API):
         if whitelist:
             self.whitelist = read_list(whitelist)
             print ("Size of whitelist: %d" % len(self.whitelist))
+        else:
+            self.whitelist = False
         if blacklist:
             self.blacklist = read_list(blacklist)
             print ("Size of blacklist: %d" % len(self.blacklist))
+        else:
+            self.blacklist = False
 
         signal.signal(signal.SIGTERM, self.logout)
         atexit.register(self.logout)
