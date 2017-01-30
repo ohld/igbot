@@ -10,10 +10,7 @@ def filter_not_liked(media_items, log=False):
     for m in media_items:
         if 'pk' in m.keys():
             if 'has_liked' in m.keys():
-                if m['has_liked']:
-                    print("already liked") 
-                else:
-                    print(m['pk'])
+                if not m['has_liked']:
                     not_liked_medias.append(m['pk'])
         else:
             # this has no pk and is a list of suggestions
