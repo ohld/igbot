@@ -4,7 +4,25 @@
 """
 
 def filter_not_liked(media_items, log=False):
-    not_liked_medias = [item["pk"] for item in media_items if not item["has_liked"]]
+
+    not_liked_medias = []
+
+    for m in media_items:
+        if 'pk' in m.keys():
+            if 'has_liked' in m.keys():
+                if m['has_liked']:
+                    print("already liked") 
+                else:
+                    print(m)
+                    print(m['pk'])
+                    not_liked_medias.append(m['pk'])
+        else:
+            # this has no pk and is a list of suggestions
+            if m['type'] == 3:
+                print("Skipping suggestions.")
+            else:
+                # depending on type, we may get other types of objects here
+                print(".")
     if log:
         print ("  Recieved: %d. Already liked: %d." % (
                             len(media_items),
