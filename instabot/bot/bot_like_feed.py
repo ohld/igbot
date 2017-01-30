@@ -20,5 +20,5 @@ def like_user_id(bot, user_id, amount=None):
 
 def like_hashtag(bot, hashtag, amount=None):
     print ("Going to like medias by %s hashtag" % hashtag)
-    medias = bot.get_hashtag_medias(bot, hashtag)
+    medias = bot.get_hashtag_medias(hashtag)
     return bot.like_medias(medias[:amount])

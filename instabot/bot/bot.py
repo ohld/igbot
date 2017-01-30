@@ -217,3 +217,6 @@ class Bot(API):
 
     def check_user(self, user):
         return check_user(self, user)
+
+    def get_hashtag_medias(self, hashtag, amount=None):
+        return get_hashtag_medias(self, hashtag, amount)
