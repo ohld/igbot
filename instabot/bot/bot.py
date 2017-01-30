@@ -6,7 +6,6 @@ import signal
 from tqdm import tqdm
 
 from .. import API
-
 from . import limits
 
 from .bot_get_medias import get_timeline_medias
@@ -46,6 +45,7 @@ class Bot(API):
         self.total_followed = 0
         self.total_unfollowed = 0
         self.total_commented = 0
+        self.MAX_LIKES_TO_LIKE = limits.MAX_LIKES_TO_LIKE
         self.start_time = datetime.datetime.now()
         if whitelist:
             self.whitelist = read_list(whitelist)
