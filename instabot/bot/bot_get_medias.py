@@ -13,7 +13,6 @@ def filter_not_liked(media_items, log=False):
                 if m['has_liked']:
                     print("already liked") 
                 else:
-                    print(m)
                     print(m['pk'])
                     not_liked_medias.append(m['pk'])
         else:
