@@ -40,8 +40,9 @@ def get_user_medias(bot, user_id):
         return False
     return filter_not_liked(bot.LastJson["items"])
 
-def get_hashtag_medias(bot, hashtag):
+def get_hashtag_medias(bot, hashtag, amount):
     if not bot.getHashtagFeed(hashtag):
-        print ("Error while getting hashtag feed")
-        return False
+         print ("Error while getting hashtag feed")
+         return False
     return filter_not_liked(bot.LastJson["items"])
+    
