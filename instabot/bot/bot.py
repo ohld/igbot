@@ -47,11 +47,9 @@ class Bot(API):
         self.total_unfollowed = 0
         self.total_commented = 0
         self.start_time = datetime.datetime.now()
-        self.whitelist = []
         if whitelist:
             self.whitelist = read_list(whitelist)
             print ("Size of whitelist: %d" % len(self.whitelist))
-        self.blacklist = []
         if blacklist:
             self.blacklist = read_list(blacklist)
             print ("Size of blacklist: %d" % len(self.blacklist))
