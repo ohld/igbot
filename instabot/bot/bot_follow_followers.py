@@ -1,6 +1,7 @@
 import time
 import random
 import json
+from tqdm import tqdm
 
 def follow_followers(bot,user_id):
 
@@ -15,7 +16,7 @@ def follow_followers(bot,user_id):
     for f in followers:
     	follower_ids.append(f['pk'])
 
-    for i in follower_ids:
-    	print ("Following %i's feed:" % i)
+    for i in tqdm(follower_ids, desc="Following followers"):
+    	# print ("Following %i's feed:" % i)
     	bot.follow(i)
     	time.sleep(10 + 20 * random.random())
