@@ -38,6 +38,7 @@ bot = Bot()
 | revert_to_checkpoint(cp)| Unfollow the new following made after checkpoint creation| bot.revert_to_checkpoint(cp)|
 | like_medias(medias_list)| Like every media in list of media ids| bot.like_medias(medias)|
 | follow_users(userids_list)| Follow users in list | bot.follow_users(userids)|
+| follow_followers(user_id)| Follow users that follow a user | bot.follow_followers(175639808)|
 | unfollow_users(userids)| Unfollow users in list | bot.unfollow_users(userids)|
 | like_timeline(amount=None)| Likes your timeline feed| bot.like_timeline()|
 | like_user_id(user_id, amount=None)| Likes user_id's last medias| bot.like_user_id("352300017")|
