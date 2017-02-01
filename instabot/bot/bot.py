@@ -6,7 +6,6 @@ import signal
 from tqdm import tqdm
 
 from .. import API
-
 from . import limits
 
 from .bot_get_medias import get_timeline_medias
@@ -17,6 +16,7 @@ from .bot_like_feed import like_timeline
 from .bot_like_feed import like_user_id
 from .bot_like_feed import like_hashtag
 from .bot_unfollow_non_followers import unfollow_non_followers
+from .bot_follow_followers import follow_followers
 
 from .bot_checkpoint import save_checkpoint
 from .bot_checkpoint import load_checkpoint
@@ -46,6 +46,7 @@ class Bot(API):
         self.total_followed = 0
         self.total_unfollowed = 0
         self.total_commented = 0
+        self.MAX_LIKES_TO_LIKE = limits.MAX_LIKES_TO_LIKE
         self.start_time = datetime.datetime.now()
         if whitelist:
             self.whitelist = read_list(whitelist)
@@ -165,6 +166,9 @@ class Bot(API):
 
     def unfollow_non_followers(self):
         return unfollow_non_followers(self)
+
+    def follow_followers(self, user_id, nfollows=40):
+        return follow_followers(self, user_id, nfollows)
 
     def like_hashtag(self, tag, amount=None):
         return like_hashtag(self, tag, amount)
