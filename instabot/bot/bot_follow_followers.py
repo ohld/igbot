@@ -3,7 +3,7 @@ import random
 import json
 from tqdm import tqdm
 
-def follow_followers(bot,user_id):
+def follow_followers(bot,user_id,nfollows=40):
 
     if not user_id:
         return False
@@ -15,6 +15,9 @@ def follow_followers(bot,user_id):
 
     for f in followers:
     	follower_ids.append(f['pk'])
+
+    # slice up followers
+    follower_ids = follower_ids[0:nfollows]
 
     for i in tqdm(follower_ids, desc="Following followers"):
     	# print ("Following %i's feed:" % i)

@@ -167,8 +167,8 @@ class Bot(API):
     def unfollow_non_followers(self):
         return unfollow_non_followers(self)
 
-    def follow_followers(self, user_id):
-        return follow_followers(self, user_id)
+    def follow_followers(self, user_id, nfollows=40):
+        return follow_followers(self, user_id, nfollows)
 
     def like_hashtag(self, tag, amount=None):
         return like_hashtag(self, tag, amount)
