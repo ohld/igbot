@@ -35,3 +35,14 @@ def get_comment(bot, comment_base_file=None):
             return "lol"
     else:
         return "lol"
+
+def is_commented(bot, media_id):
+    """
+    checks if media is already commented
+    """
+    bot.getMediaComments(media_id)
+    # print (bot.LastJson)
+    if 'comments' not in bot.LastJson:
+        return False
+    usernames = [item["user"]["username"] for item in bot.LastJson['comments']]
+    return bot.username in usernames

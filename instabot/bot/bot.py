@@ -20,8 +20,6 @@ from .bot_like_feed import comment_hashtag
 from .bot_unfollow_non_followers import unfollow_non_followers
 from .bot_follow_followers import follow_followers
 
-
-
 from .bot_checkpoint import save_checkpoint
 from .bot_checkpoint import load_checkpoint
 from .bot_checkpoint import checkpoint_followers_diff
@@ -34,6 +32,7 @@ from .bot_like_and_follow import like_and_follow_media_likers
 from .bot_like_and_follow import like_and_follow_your_feed_likers
 
 from .bot_comment import get_comment
+from .bot_comment import is_commented
 
 from .bot_filter import read_list
 from .bot_filter import get_media_owner
@@ -56,7 +55,7 @@ class Bot(API):
         if whitelist:
             self.whitelist = read_list(whitelist)
             print ("Size of whitelist: %d" % len(self.whitelist))
-        self.blacklist = []            
+        self.blacklist = []
         if blacklist:
             self.blacklist = read_list(blacklist)
             print ("Size of blacklist: %d" % len(self.blacklist))
@@ -228,6 +227,9 @@ class Bot(API):
 
     def get_comment(self, comment_base_file=None):
         return get_comment(self, comment_base_file)
+
+    def is_commented(self, media_id):
+        return is_commented(self, media_id)
 
     def add_whitelist(self, file_path):
         return add_whitelist(self, file_path)
