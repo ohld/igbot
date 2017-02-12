@@ -31,6 +31,7 @@ bot = Bot()
 bot.login()
 for media in tqdm(bot.get_timeline_medias()):
     comment_text = bot.get_comment(comment_base_file=comments_file_name)
-    bot.comment(media, comment_text)
+    if not bot.is_commented(media):
+        bot.comment(media, comment_text)
     time.sleep(10)
 bot.logout()
