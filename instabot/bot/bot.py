@@ -15,8 +15,12 @@ from .bot_get_medias import get_hashtag_medias
 from .bot_like_feed import like_timeline
 from .bot_like_feed import like_user_id
 from .bot_like_feed import like_hashtag
+from .bot_like_feed import comment_hashtag
+
 from .bot_unfollow_non_followers import unfollow_non_followers
 from .bot_follow_followers import follow_followers
+
+
 
 from .bot_checkpoint import save_checkpoint
 from .bot_checkpoint import load_checkpoint
@@ -48,17 +52,14 @@ class Bot(API):
         self.total_commented = 0
         self.MAX_LIKES_TO_LIKE = limits.MAX_LIKES_TO_LIKE
         self.start_time = datetime.datetime.now()
+        self.whitelist = []
         if whitelist:
             self.whitelist = read_list(whitelist)
             print ("Size of whitelist: %d" % len(self.whitelist))
-        else:
-            self.whitelist = False
+        self.blacklist = []            
         if blacklist:
             self.blacklist = read_list(blacklist)
             print ("Size of blacklist: %d" % len(self.blacklist))
-        else:
-            self.blacklist = False
-
         signal.signal(signal.SIGTERM, self.logout)
         atexit.register(self.logout)
 
@@ -117,6 +118,24 @@ class Bot(API):
             return True
         return False
 
+    def comment_medias(self, medias):
+        """ medias - list of ["pk"] fields of response """
+        print ("    Going to comment on %d medias." % (len(medias)))
+        total_commented = 0
+        for media in tqdm(medias):
+
+            # grab a comment
+            co = self.get_comment('comments.txt')
+
+            if self.comment(media, co):
+                total_commented += 1
+            else:
+                pass
+            time.sleep(10 * random.random())
+        print ("    DONE: Total commented on %d medias. " % total_commented)
+        return True
+
+
     def like_medias(self, medias):
         """ medias - list of ["pk"] fields of response """
         print ("    Going to like %d medias." % (len(medias)))
@@ -173,6 +192,9 @@ class Bot(API):
 
     def follow_followers(self, user_id, nfollows=40):
         return follow_followers(self, user_id, nfollows)
+
+    def comment_hashtag(self, tag, ncomments=15):
+        return comment_hashtag(self,tag, ncomments)
 
     def like_hashtag(self, tag, amount=None):
         return like_hashtag(self, tag, amount)

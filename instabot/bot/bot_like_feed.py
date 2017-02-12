@@ -22,3 +22,8 @@ def like_hashtag(bot, hashtag, amount=None):
     print ("Going to like medias by %s hashtag" % hashtag)
     medias = bot.get_hashtag_medias(hashtag)
     return bot.like_medias(medias[:amount])
+
+def comment_hashtag(bot, hashtag, amount=None):
+    print ("Going to comment medias by %s hashtag" % hashtag)
+    medias = bot.get_hashtag_medias(hashtag)
+    return bot.comment_medias(medias[:amount])
