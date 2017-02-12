@@ -51,8 +51,10 @@ def check_user(bot, user_id):
     """
     if not user_id:
         return True
-    if user_id in bot.whitelist:
-        return True
-    if user_id in bot.blacklist:
-        return False
+    if bot.whitelist:
+        if user_id in bot.whitelist:
+            return True
+    if bot.blacklist:
+        if user_id in bot.blacklist:
+            return False
     return True

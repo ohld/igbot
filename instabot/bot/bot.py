@@ -60,7 +60,6 @@ class Bot(API):
         if blacklist:
             self.blacklist = read_list(blacklist)
             print ("Size of blacklist: %d" % len(self.blacklist))
-
         signal.signal(signal.SIGTERM, self.logout)
         atexit.register(self.logout)
 
