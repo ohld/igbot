@@ -194,7 +194,7 @@ class Bot(API):
     def follow_followers(self, user_id, nfollows=40):
         return follow_followers(self, user_id, nfollows)
 
-    def comment_hashtag(self, tag, ncomments=10):
+    def comment_hashtag(self, tag, ncomments=15):
         return comment_hashtag(self,tag, ncomments)
 
     def like_hashtag(self, tag, amount=None):

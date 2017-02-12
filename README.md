@@ -20,6 +20,7 @@ pip install -U instabot
   * like logged user's feed
   * like person's last medias
   * like medias by hashtag
+  * comment media by hashtag
   * unfollow non followers
 
 ``` python
@@ -43,7 +44,8 @@ bot = Bot()
 | like_timeline(amount=None)| Likes your timeline feed| bot.like_timeline()|
 | like_user_id(user_id, amount=None)| Likes user_id's last medias| bot.like_user_id("352300017")|
 | unfollow_non_followers()| Unfollow users that don't follow you| bot.unfollow_non_followers()|
-| like_hashtag(tag, amount=None)| Like last medias by hashtag| bot.like_hashtag("mipt)|
+| like_hashtag(tag, amount=None)| Like last medias by hashtag| bot.like_hashtag("mipt")|
+| comment_hashtag(tag, amount=None)| Comment on last medias by hashtag| bot.comment_hashtag("mipt")|
 | like_and_follow(user_id, nlikes=None)| Likes last person's medias and follow him. | bot.like_and_follow("352300017")|
 | like_and_follow_media_likers( media, nlikes=3)| Take likers of media and do like_and_follow() with them| bot.like_and_follow_your_feed_likers()|
 | like_and_follow_your_feed_likers( nlikes=3)| Take likers of your last media and do like_and_follow() with them| bot.like_and_follow_your_feed_likers()|
@@ -57,6 +59,7 @@ bot = Bot()
 bot.login()
 bot.like_timeline()
 bot.like_hashtag("dog")
+bot.comment_hashtag("dogs")
 bot.unfollow_non_followers()
 bot.logout()
 ```
