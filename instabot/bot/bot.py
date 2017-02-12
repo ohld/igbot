@@ -48,9 +48,11 @@ class Bot(API):
         self.total_commented = 0
         self.MAX_LIKES_TO_LIKE = limits.MAX_LIKES_TO_LIKE
         self.start_time = datetime.datetime.now()
+        self.whitelist = []
         if whitelist:
             self.whitelist = read_list(whitelist)
             print ("Size of whitelist: %d" % len(self.whitelist))
+        self.blacklist = []            
         if blacklist:
             self.blacklist = read_list(blacklist)
             print ("Size of blacklist: %d" % len(self.blacklist))
