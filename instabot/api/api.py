@@ -349,7 +349,7 @@ class API(object):
         return self.SendRequest('media/'+ str(mediaId) +'/unlike/', self.generateSignature(data))
 
     def getMediaComments(self, mediaId):
-        return self.SendRequest('media/'+ mediaId +'/comments/?')
+        return self.SendRequest('media/'+ str(mediaId) +'/comments/?')
 
     def setNameAndPhone(self, name = '', phone = ''):
         return setNameAndPhone(self, name, phone)
