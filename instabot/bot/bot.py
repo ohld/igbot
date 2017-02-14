@@ -5,6 +5,8 @@ import atexit
 import signal
 import logging
 
+import pkg_resources  # part of setuptools
+
 from tqdm import tqdm
 
 from .. import API
@@ -41,6 +43,7 @@ from .bot_filter import get_media_owner
 from .bot_filter import check_media
 from .bot_filter import check_user
 
+
 class Bot(API):
     def __init__(self,
                  whitelist=False,
@@ -63,7 +66,7 @@ class Bot(API):
         formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
         ch.setFormatter(formatter)
         self.logger.addHandler(ch)
-        self.logger.info('Started')
+        self.logger.info('Instabot Started')
 
         # white and blacklists
         self.whitelist = []
