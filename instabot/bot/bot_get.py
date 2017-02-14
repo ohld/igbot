@@ -70,3 +70,11 @@ def get_hashtag_users(bot, hashtag):
 def get_geotag_users(bot, geotag):
     # TODO: returns list userids who just posted on this geotag
     pass
+
+def get_user_followers(bot, user_id):
+    # TODO: return a list of user's followers
+    pass
+
+def get_user_following(bot, user_id):
+    # TODO: return a list of user's following
+    pass

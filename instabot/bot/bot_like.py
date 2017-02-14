@@ -44,3 +44,7 @@ def like_hashtag(bot, hashtag, amount=None):
     bot.logger.info("Going to like media with hashtag #%s" % hashtag)
     medias = bot.get_hashtag_medias(hashtag)
     return bot.like_medias(medias[:amount])
+
+def like_geotag(bot, geotag, amount=None):
+    # TODO: like medias by geotag
+    pass
