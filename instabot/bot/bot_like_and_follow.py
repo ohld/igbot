@@ -23,10 +23,10 @@ def like_and_follow_media_likers(bot, media, nlikes=3):
             bot - instance of instabot.Bot() class
             nlikes - number of likes to put on each user's media
     """
-    print ("Going to like & follow users who liked %s media" % media)
+    bot.logger.info("Going to like & follow users who liked %s media" % media)
     bot.getMediaLikers(media)
     media_likers = [item['pk'] for item in bot.LastJson["users"]]
-    print ("  I have %d likers of media." % len(media_likers))
+    bot.logger.info("  I have %d likers of media." % len(media_likers))
     for user in tqdm(media_likers, desc="Media likers"):
         bot.like_and_follow(user)
         time.sleep(10 + 20 * random.random())
@@ -41,7 +41,7 @@ def like_and_follow_your_feed_likers(bot, nlikes=3):
             bot - instance of instabot.Bot() class
             nlikes - number of likes to put on each user's media
     """
-    print ("Going to like & follow users who like your last media")
+    bot.logger.info("Going to like & follow users who like your last media")
     bot.getSelfUserFeed()
     last_media = bot.LastJson["items"][0]["pk"]
     return like_and_follow_media_likers(bot, last_media, nlikes=3)

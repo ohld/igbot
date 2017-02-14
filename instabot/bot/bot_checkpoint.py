@@ -29,7 +29,7 @@ def save_checkpoint(bot, path=None):
             date
         Returns the name of saved file
     """
-    print ("Saving checkpoint:")
+    bot.logger.info("Saving checkpoint:")
     if path is None:
         path = datetime.now().strftime("bot_cp_%Y-%m-%d_%H-%M")
 
@@ -39,7 +39,7 @@ def save_checkpoint(bot, path=None):
     with open(path, 'wb') as f:
         pickle.dump(cp, f, -1)
     bot.last_checkpoint_path = path
-    print ("  Done.")
+    bot.logger.info("  Done.")
     return path
 
 def load_checkpoint(bot, path):
@@ -47,16 +47,16 @@ def load_checkpoint(bot, path):
         Loads bot's checkpoint
         Returns Checkpoint object
     """
-    print ("Loading checkpoint:")
+    bot.logger.info("Loading checkpoint:")
     try:
         with open(path, 'rb') as f:
             cp = pickle.load(f)
         if isinstance(cp, Checkpoint):
             return cp
         else:
-            print ("  This is not checkpoint file.")
+            bot.logger.info("  This is not checkpoint file.")
     except:
-        print ("  File not found.")
+        bot.logger.info("  File not found.")
     return None
 
 def checkpoint_following_diff(bot, cp):
@@ -64,7 +64,7 @@ def checkpoint_following_diff(bot, cp):
         Returns user_ids of users that you follow now
         but didn't follow at checkpoint time.
     """
-    print ("Getting checkpoint following difference.")
+    bot.logger.info("Getting checkpoint following difference.")
     current_following = [item["pk"] for item in bot.getTotalSelfFollowings()]
     old_following = cp.following
     return list(set(current_following) - set(old_following))
@@ -74,7 +74,7 @@ def checkpoint_followers_diff(bot, cp):
         Returns user_ids of users that follows you now
         but didn't follow you at checkpoint time.
     """
-    print ("Getting checkpoint followers difference.")
+    bot.logger.info("Getting checkpoint followers difference.")
     current_followers = [item["pk"] for item in bot.getTotalSelfFollowers()]
     old_following = cp.followers
     return list(set(current_followers) - set(old_followers))
