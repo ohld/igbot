@@ -8,7 +8,7 @@ def follow_followers(bot,user_id,nfollows=40):
     if not user_id:
         return False
 
-    print("Follow followers of: %i" % user_id)
+    bot.logger.info("Follow followers of: %i" % user_id)
 
     followers = bot.getTotalFollowers(user_id)
     follower_ids = []
@@ -20,6 +20,6 @@ def follow_followers(bot,user_id,nfollows=40):
     follower_ids = follower_ids[0:nfollows]
 
     for i in tqdm(follower_ids, desc="Following followers"):
-    	# print ("Following %i's feed:" % i)
+    	bot.logger.info("Following %i's feed:" % i)
     	bot.follow(i)
     	time.sleep(10 + 20 * random.random())

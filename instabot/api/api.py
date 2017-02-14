@@ -6,6 +6,8 @@ import hmac
 import urllib
 import uuid
 import sys
+import logging
+
 
 #The urllib library was split into other modules from Python 2 to Python 3
 if sys.version_info.major == 3:
@@ -75,10 +77,10 @@ class API(object):
                     # self.getTimelineFeed()
                     # self.getv2Inbox()
                     # self.getRecentActivity()
-                    print ("Login success!\n")
+                    logging.info("Login success!")
                     return True
                 else:
-                    print ("Login or password is incorrect.")
+                    logging.warning("Login or password is incorrect.")
                     delete_credentials()
                     exit()
 
@@ -89,7 +91,8 @@ class API(object):
 
     def SendRequest(self, endpoint, post = None, login = False):
         if (not self.isLoggedIn and not login):
-            raise Exception("Not logged in!\n")
+            raise Exception("Not logged in!")
+            logging.critical("Not logged in.")
 
         self.session.headers.update({'Connection' : 'close',
                                 'Accept' : '*/*',
@@ -108,7 +111,8 @@ class API(object):
             self.LastJson = json.loads(response.text)
             return True
         else:
-            print ("Request return " + str(response.status_code) + " error!")
+            logging.warning("Request return " + str(response.status_code) + " error!")
+
             # for debugging
             try:
                 self.LastResponse = response

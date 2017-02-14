@@ -2,6 +2,7 @@
 import os
 import sys
 import getpass
+import logging
 
 SECRET_FILE = "secret.txt"
 
@@ -23,8 +24,10 @@ def check_secret():
                     login = f.readline().strip()
                     password = f.readline().strip()
                     if len(login) < 4 or len(password) < 6:
+                        
                         print("Data in 'secret.txt' file is invalid. "
                               "We will delete it and try again.")
+
                         os.remove(SECRET_FILE)
                     else:
                         return True

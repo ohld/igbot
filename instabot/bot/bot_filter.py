@@ -10,6 +10,7 @@ def read_list(file_path):
     """
         Reads whitelist/blacklist users from input file.
         Returns the list if file items
+        TODO: convert the print function to a logger
     """
     try:
         if not os.path.exists(file_path):

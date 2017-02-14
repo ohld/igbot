@@ -25,13 +25,13 @@ def get_comment(bot, comment_base_file=None):
         If comment_base_file argunment is passed, it uses the lines from file
         as comments to return.
 
-        TODO: generate more way to create comments.
+        TODO: generate more ways to create comments.
     """
     if comment_base_file is not None:
         if os.path.exists(comment_base_file):
             return get_random_comment_from_file(comment_base_file)
         else:
-            print ("Can't find your file with comments.")
+            bot.logger.info("Can't find your file with comments.")
             return "lol"
     else:
         return "lol"

@@ -7,6 +7,8 @@ from . import limits
 
 def filter_not_liked(media_items, log=False):
 
+    # TODO: convert these print functions to logging
+
     not_liked_medias = []
 
     for m in media_items:
@@ -32,21 +34,21 @@ def filter_not_liked(media_items, log=False):
 
 def get_timeline_medias(bot):
     if not bot.getTimelineFeed():
-        print ("  Error while getting timeline feed")
+        bot.logger.info("  Error while getting timeline feed")
         return False
     return filter_not_liked(bot.LastJson["items"])
 
 def get_user_medias(bot, user_id):
     bot.getUserFeed(user_id)
     if bot.LastJson["status"] == 'fail':
-        print ("  This is a closed account")
+        bot.logger.info("  This is a closed account")
         return False
     return filter_not_liked(bot.LastJson["items"])
 
 def get_hashtag_medias(bot, hashtag, amount):
 
     if not bot.getHashtagFeed(hashtag):
-         print ("Error while getting hashtag feed")
+         bot.logger.info("Error while getting hashtag feed")
          return False
     return filter_not_liked(bot.LastJson["items"])
     
