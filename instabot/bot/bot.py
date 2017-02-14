@@ -72,28 +72,28 @@ class Bot(API):
         self.whitelist = []
         if whitelist:
             self.whitelist = read_list(whitelist)
-            self.logger.warning("Size of whitelist: %d" % len(self.whitelist))
+            self.logger.info("Size of whitelist: %d" % len(self.whitelist))
         self.blacklist = []
         if blacklist:
             self.blacklist = read_list(blacklist)
-            self.logger.warning(("Size of blacklist: %d" % len(self.blacklist)))
+            self.logger.info(("Size of blacklist: %d" % len(self.blacklist)))
         signal.signal(signal.SIGTERM, self.logout)
         atexit.register(self.logout)
 
     def logout(self):
         super(self.__class__, self).logout()
-        self.logger.warning("Bot stopped. "
+        self.logger.info("Bot stopped. "
                "Worked: %s" % (datetime.datetime.now() - self.start_time))
         if self.total_liked:
-            self.logger.warning("  Total liked: %d" % self.total_liked)
+            self.logger.info("  Total liked: %d" % self.total_liked)
         if self.total_unliked:
-            self.logger.warning("  Total unliked: %d" % self.total_unliked)
+            self.logger.info("  Total unliked: %d" % self.total_unliked)
         if self.total_followed:
-            self.logger.warning("  Total followed: %d" % self.total_followed)
+            self.logger.info("  Total followed: %d" % self.total_followed)
         if self.total_unfollowed:
-            self.logger.warning("  Total unfollowed: %d" % self.total_unfollowed)
+            self.logger.info("  Total unfollowed: %d" % self.total_unfollowed)
         if self.total_commented:
-            self.logger.warning("  Total commented: %d" % self.total_commented)
+            self.logger.info("  Total commented: %d" % self.total_commented)
 
     def like(self, media_id):
         if not self.check_media(media_id):
@@ -137,7 +137,7 @@ class Bot(API):
 
     def comment_medias(self, medias):
         """ medias - list of ["pk"] fields of response """
-        self.logger.warning("    Going to comment on %d medias." % (len(medias)))
+        self.logger.info("    Going to comment on %d medias." % (len(medias)))
         total_commented = 0
         for media in tqdm(medias):
 
@@ -149,13 +149,13 @@ class Bot(API):
             else:
                 pass
             time.sleep(10 * random.random())
-        self.logger.warning("    DONE: Total commented on %d medias. " % total_commented)
+        self.logger.info("    DONE: Total commented on %d medias. " % total_commented)
         return True
 
 
     def like_medias(self, medias):
         """ medias - list of ["pk"] fields of response """
-        self.logger.warning("    Going to like %d medias." % (len(medias)))
+        self.logger.info("    Going to like %d medias." % (len(medias)))
         total_liked = 0
         for media in tqdm(medias):
             if self.like(media):
@@ -163,12 +163,12 @@ class Bot(API):
             else:
                 pass
             time.sleep(10 * random.random())
-        self.logger.warning("    DONE: Total liked %d medias. " % total_liked)
+        self.logger.info("    DONE: Total liked %d medias. " % total_liked)
         return True
 
     def follow_users(self, user_ids):
         """ user_ids - list of user_id to follow """
-        self.logger.warning("    Going to follow %d users." % len(user_ids))
+        self.logger.info("    Going to follow %d users." % len(user_ids))
         total_followed = 0
         for user_id in tqdm(user_ids):
             if self.follow(user_id):
@@ -176,12 +176,12 @@ class Bot(API):
             else:
                 pass
             time.sleep(15 + 30 * random.random())
-        self.logger.warning("    DONE: Total followed %d users. " % total_followed)
+        self.logger.info("    DONE: Total followed %d users. " % total_followed)
         return True
 
     def unfollow_users(self, user_ids):
         """ user_ids - list of user_id to unfollow """
-        logging.warning("    Going to unfollow %d users." % len(user_ids))
+        logging.info("    Going to unfollow %d users." % len(user_ids))
         total_unfollowed = 0
         for user_id in tqdm(user_ids):
             if self.unfollow(user_id):
@@ -189,7 +189,7 @@ class Bot(API):
             else:
                 pass
             time.sleep(15 + 30 * random.random())
-        self.logger.warning("    DONE: Total unfollowed %d users. " % total_unfollowed)
+        self.logger.info("    DONE: Total unfollowed %d users. " % total_unfollowed)
         return True
 
     def get_timeline_medias(self):
