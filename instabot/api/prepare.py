@@ -2,6 +2,7 @@
 import os
 import sys
 import getpass
+import logging
 
 SECRET_FILE = "secret.txt"
 
@@ -23,23 +24,25 @@ def check_secret():
                     login = f.readline().strip()
                     password = f.readline().strip()
                     if len(login) < 4 or len(password) < 6:
-                        print("Data in 'secret.txt' file is invalid. "
+                        
+                        logging.warning("Data in 'secret.txt' file is invalid. "
                               "We will delete it and try again.")
+
                         os.remove(SECRET_FILE)
                     else:
                         return True
                 except IOError:
-                    print("Your file is broken. We will delete it "
+                    logging.warning("Your file is broken. We will delete it "
                           "and try again.")
                     os.remove(SECRET_FILE)
         else:
             with open(SECRET_FILE, "w") as f:
-                print("We need to create a text file 'secret.txt' where "
+                logging.warning("We need to create a text file 'secret.txt' where "
                       "we will store your login and password from Instagram.")
-                print("Don't worry. It will be stored locally.")
-                print("Enter your login: ")
+                logging.warning("Don't worry. It will be stored locally.")
+                logging.warning("Enter your login: ")
                 f.write(str(sys.stdin.readline()))
-                print("Enter your password: ")
+                logging.warning("Enter your password: ")
                 f.write(getpass.getpass())
 
 def delete_credentials():
