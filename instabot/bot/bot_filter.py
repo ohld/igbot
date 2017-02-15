@@ -23,25 +23,25 @@ def read_list(file_path):
     except:
         return False
 
-def add_whitelist(bot, file_path):
-    bot.whitelist = read_list(file_path)
-    return not not bot.whitelist
+def add_whitelist(self, file_path):
+    self.whitelist = read_list(file_path)
+    return not not self.whitelist
 
-def add_blacklist(bot, file_path):
-    bot.blacklist = read_list(file_path)
-    return not not bot.blacklist
+def add_blacklist(self, file_path):
+    self.blacklist = read_list(file_path)
+    return not not self.blacklist
 
-def get_media_owner(bot, media_id):
-    bot.mediaInfo(media_id)
+def get_media_owner(self, media_id):
+    self.mediaInfo(media_id)
     try:
-        return bot.LastJson["items"][0]["user"]["pk"]
+        return self.LastJson["items"][0]["user"]["pk"]
     except:
         return False
 
-def check_media(bot, media_id):
-    return check_user(bot, get_media_owner(bot, media_id))
+def check_media(self, media_id):
+    return check_user(self, get_media_owner(self, media_id))
 
-def check_user(bot, user_id):
+def check_user(self, user_id):
     """
         Decide should you interract with that user_id or not.
         Decision based on
@@ -52,10 +52,10 @@ def check_user(bot, user_id):
     """
     if not user_id:
         return True
-    if bot.whitelist:
-        if user_id in bot.whitelist:
+    if self.whitelist:
+        if user_id in self.whitelist:
             return True
-    if bot.blacklist:
-        if user_id in bot.blacklist:
+    if self.blacklist:
+        if user_id in self.blacklist:
             return False
     return True

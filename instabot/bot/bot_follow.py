@@ -3,11 +3,11 @@ import random
 import json
 from tqdm import tqdm
 
-def follow(bot, user_id):
-    if not bot.check_user(user_id):
+def follow(self, user_id):
+    if not self.check_user(user_id):
         return False
-    if super(bot.__class__, bot).follow(user_id):
-        bot.total_followed += 1
+    if super(self.__class__, self).follow(user_id):
+        self.total_followed += 1
         return True
     return False
 
@@ -24,13 +24,13 @@ def follow_users(self, user_ids):
     self.logger.info("    DONE: Total followed %d users. " % total_followed)
     return True
 
-def follow_followers(bot, user_id, nfollows=40):
+def follow_followers(self, user_id, nfollows=40):
     if not user_id:
         return False
 
-    bot.logger.info("Follow followers of: %i" % user_id)
+    self.logger.info("Follow followers of: %i" % user_id)
 
-    followers = bot.getTotalFollowers(user_id)
+    followers = self.getTotalFollowers(user_id)
     follower_ids = []
 
     for f in followers:
@@ -40,6 +40,6 @@ def follow_followers(bot, user_id, nfollows=40):
     follower_ids = follower_ids[0:nfollows]
 
     for i in tqdm(follower_ids, desc="Following followers"):
-    	bot.logger.info("Following %i's feed:" % i)
-    	bot.follow(i)
+    	self.logger.info("Following %i's feed:" % i)
+    	self.follow(i)
     	time.sleep(10 + 20 * random.random())

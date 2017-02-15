@@ -36,45 +36,68 @@ def filter_users(user_items, log=False):
 
 # getters
 
-def get_timeline_medias(bot):
-    if not bot.getTimelineFeed():
-        bot.logger.info("  Error while getting timeline feed")
+def get_timeline_medias(self):
+    if not self.getTimelineFeed():
+        self.logger.info("  Error while getting timeline feed")
         return False
-    return filter_media(bot.LastJson["items"])
+    return filter_media(self.LastJson["items"])
 
-def get_user_medias(bot, user_id):
-    bot.getUserFeed(user_id)
-    if bot.LastJson["status"] == 'fail':
-        bot.logger.info("  This is a closed account")
+def get_user_medias(self, user_id):
+    self.getUserFeed(user_id)
+    if self.LastJson["status"] == 'fail':
+        self.logger.info("  This is a closed account")
         return False
-    return filter_media(bot.LastJson["items"])
+    return filter_media(self.LastJson["items"])
 
-def get_hashtag_medias(bot, hashtag):
-    if not bot.getHashtagFeed(hashtag):
-         bot.logger.info("Error while getting hashtag feed")
+def get_hashtag_medias(self, hashtag):
+    if not self.getHashtagFeed(hashtag):
+         self.logger.info("Error while getting hashtag feed")
          return False
-    return filter_media(bot.LastJson["items"])
+    return filter_media(self.LastJson["items"])
 
-def get_geotag_medias(bot, geotag):
+def get_geotag_medias(self, geotag):
     # TODO: returns list of medias from geotag
     pass
 
-def get_timeline_users(bot):
+def get_timeline_users(self):
     # TODO: returns list userids who just posted on your timeline feed
     pass
 
-def get_hashtag_users(bot, hashtag):
+def get_hashtag_users(self, hashtag):
     # TODO: returns list userids who just posted on this hashtag
     pass
 
-def get_geotag_users(bot, geotag):
+def get_geotag_users(self, geotag):
     # TODO: returns list userids who just posted on this geotag
     pass
 
-def get_user_followers(bot, user_id):
+def get_userid_from_username(self, username):
+    # TODO:
+    pass
+
+def get_user_followers(self, user_id):
     # TODO: return a list of user's followers
     pass
 
-def get_user_following(bot, user_id):
+def get_user_following(self, user_id):
     # TODO: return a list of user's following
     pass
+
+def get_media_likers(self, media_id):
+    # TODO:
+    pass
+
+def get_media_comments(self, media_id):
+    # TODO:
+    pass
+
+def get_media_commenters(self, media_id):
+    self.getMediaComments(media_id)
+    if 'comments' not in self.LastJson:
+        return []
+    return [item["user"]["username"] for item in self.LastJson['comments']]
+
+def get_comment(self):
+    if len(self.comments):
+        return random.choice(self.comments).strip()
+    return "lol"

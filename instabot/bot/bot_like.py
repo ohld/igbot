@@ -1,11 +1,12 @@
 import time
 import random
+from tqdm import tqdm
 
-def like(bot, media_id):
-    if not bot.check_media(media_id):
+def like(self, media_id):
+    if not self.check_media(media_id):
         return False
-    if super(bot.__class__, bot).like(media_id):
-        bot.total_liked += 1
+    if super(self.__class__, self).like(media_id):
+        self.total_liked += 1
         return True
     return False
 
@@ -22,29 +23,29 @@ def like_medias(self, medias):
     self.logger.info("    DONE: Total liked %d medias. " % total_liked)
     return True
 
-def like_timeline(bot, amount=None):
+def like_timeline(self, amount=None):
     """ Likes last 8 medias from timeline feed """
-    bot.logger.info("Liking timeline feed:")
-    medias = bot.get_timeline_medias()[:amount]
-    return bot.like_medias(medias)
+    self.logger.info("Liking timeline feed:")
+    medias = self.get_timeline_medias()[:amount]
+    return self.like_medias(medias)
 
-def like_user_id(bot, user_id, amount=None):
+def like_user_id(self, user_id, amount=None):
     """ Likes last user_id's medias """
     if not user_id:
         return False
-    bot.logger.info("Liking user_%s's feed:" % user_id)
-    medias = bot.get_user_medias(user_id)
+    self.logger.info("Liking user_%s's feed:" % user_id)
+    medias = self.get_user_medias(user_id)
     if not medias:
-        bot.logger.info("  Can't like user: account is closed!")
+        self.logger.info("  Can't like user: account is closed!")
         return False
-    return bot.like_medias(medias[:amount])
+    return self.like_medias(medias[:amount])
 
-def like_hashtag(bot, hashtag, amount=None):
+def like_hashtag(self, hashtag, amount=None):
     """ Likes last medias from hashtag """
-    bot.logger.info("Going to like media with hashtag #%s" % hashtag)
-    medias = bot.get_hashtag_medias(hashtag)
-    return bot.like_medias(medias[:amount])
+    self.logger.info("Going to like media with hashtag #%s" % hashtag)
+    medias = self.get_hashtag_medias(hashtag)
+    return self.like_medias(medias[:amount])
 
-def like_geotag(bot, geotag, amount=None):
+def like_geotag(self, geotag, amount=None):
     # TODO: like medias by geotag
     pass

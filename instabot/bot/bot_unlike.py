@@ -1,11 +1,11 @@
-def unlike(bot, media_id):
-    if not bot.check_media(media_id):
+def unlike(self, media_id):
+    if not self.check_media(media_id):
         return False
-    if super(bot.__class__, bot).unlike(media_id):
-        bot.total_unliked += 1
+    if super(self.__class__, self).unlike(media_id):
+        self.total_unliked += 1
         return True
     return False
 
-def unlike_medias(bot, media_ids):
+def unlike_medias(self, media_ids):
     # TODO: unlike each media from list
     pass

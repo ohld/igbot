@@ -4,6 +4,7 @@ import random
 import atexit
 import signal
 import logging
+import io
 
 import pkg_resources  # part of setuptools
 
@@ -19,8 +20,13 @@ from .bot_get import get_geotag_medias
 from .bot_get import get_timeline_users
 from .bot_get import get_hashtag_users
 from .bot_get import get_geotag_users
+from .bot_get import get_userid_from_username
 from .bot_get import get_user_followers
 from .bot_get import get_user_following
+from .bot_get import get_media_likers
+from .bot_get import get_media_comments
+from .bot_get import get_comment
+from .bot_get import get_media_commenters
 
 from .bot_like import like
 from .bot_like import like_medias
@@ -43,7 +49,7 @@ from .bot_comment import comment
 from .bot_comment import comment_hashtag
 from .bot_comment import comment_users
 from .bot_comment import comment_geotag
-from .bot_comment import get_comment
+from .bot_comment import comment_medias
 from .bot_comment import is_commented
 
 from .bot_checkpoint import save_checkpoint
@@ -62,8 +68,12 @@ from .bot_filter import check_user
 class Bot(API):
     def __init__(self,
                  whitelist=False,
-                 blacklist=False):
+                 blacklist=False,
+                 comments_file=False):
         super(self.__class__, self).__init__()
+
+        self.user_id = None # TODO
+
         self.total_liked = 0
         self.total_unliked = 0
         self.total_followed = 0
@@ -91,9 +101,18 @@ class Bot(API):
         self.blacklist = []
         if blacklist:
             self.blacklist = read_list(blacklist)
-            self.logger.info(("Size of blacklist: %d" % len(self.blacklist)))
+            self.logger.info("Size of blacklist: %d" % len(self.blacklist))
         signal.signal(signal.SIGTERM, self.logout)
         atexit.register(self.logout)
+
+        # comment file
+        self.comments = []
+        if comments_file:
+            if os.path.exists(comments_file):
+                with io.open(file_path, "r", encoding="utf8") as f:
+                    self.comments = f.readlines()
+            else:
+                self.logger.info("Can't find comment file")
 
     def logout(self):
         super(self.__class__, self).logout()
@@ -116,28 +135,43 @@ class Bot(API):
         return get_timeline_medias(self)
 
     def get_user_medias(self, user_id):
-        return get_timeline_medias(self, user_id)
+        return get_user_medias(self, user_id)
 
     def get_hashtag_medias(self, hashtag):
-        return get_timeline_medias(self, hashtag)
+        return get_hashtag_medias(self, hashtag)
 
     def get_geotag_medias(self, geotag):
-        return get_timeline_medias(self, geotag)
+        return get_geotag_medias(self, geotag)
 
     def get_timeline_users(self):
         return get_timeline_users(self)
 
     def get_hashtag_users(self, hashtag):
-        return get_timeline_users(self, hashtag)
+        return get_hashtag_users(self, hashtag)
 
     def get_geotag_users(self, geotag):
-        return get_timeline_users(self, geotag)
+        return get_geotag_users(self, geotag)
+
+    def get_userid_from_username(self, username):
+        return get_userid_from_username(self, username)
 
     def get_user_followers(self, user_id):
         return get_user_followers(self, user_id)
 
     def get_user_following(self, user_id):
         return get_user_following(self, user_id)
+
+    def get_media_likers(self, media_id):
+        return get_media_likers(self, media_id)
+
+    def get_media_comments(self, media_id):
+        return get_media_likers(self, media_id)
+
+    def get_comment(self):
+        return get_comment(self)
+
+    def get_media_commenters(bot, media_id):
+        return get_media_commenters(bot, media_id)
 
 # like
 
@@ -202,6 +236,9 @@ class Bot(API):
 
     def comment_geotag(self, geotag):
         return comment_geotag(self, geotag)
+
+    def is_commented(self, media_id):
+        return is_commented(self, media_id)
 
 # checkpoint
 
