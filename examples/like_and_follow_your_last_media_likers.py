@@ -38,7 +38,7 @@ def like_and_follow_media_likers(bot, media, nlikes=3):
     media_likers = [item['pk'] for item in bot.LastJson["users"]]
     bot.logger.info("  I have %d likers of media." % len(media_likers))
     for user in tqdm(media_likers, desc="Media likers"):
-        bot.like_and_follow(user)
+        like_and_follow(bot, user)
         time.sleep(10 + 20 * random.random())
     return True
 
