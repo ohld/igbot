@@ -3,6 +3,8 @@
     passed into e.g. like() or comment() functions.
 """
 
+import time
+import random
 from . import limits
 
 # filters
