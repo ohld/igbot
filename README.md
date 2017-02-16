@@ -27,6 +27,17 @@ pip install -U instabot
 from instabot import Bot
 bot = Bot()
 ```
+
+### Bot Class
+
+| parameter| description | example |
+| ------------- |:-------------:| ------:|
+| whitelist | Path to the file with user_ids that shoudn't be unfollowed| bot = Bot(whitelist="whitelist.txt")|
+| blacklist | Path to the file with user_ids that shoudn't be followed, liked or commented | bot = Bot(blacklist="blacklist.txt")|
+| comments_file | Path to the comments database | bot = Bot(comments_file="comments.txt")|
+
+In all files one line - one item (comment or user_id).
+
 ### Get
 
 | method        | description | example  |
