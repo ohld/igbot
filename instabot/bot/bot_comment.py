@@ -28,7 +28,9 @@ def comment_medias(self, medias):
     self.logger.info("Going to comment on %d medias." % (len(medias)))
     for media in tqdm(medias):
         if not self.is_commented(media):
-            self.comment(media, self.get_comment())
+            text = self.get_comment()
+            self.logger.info("Commented with text: %s" % text)
+            self.comment(media, text)
             time.sleep(30 * random.random() + 30)
     self.logger.info("DONE: Total commented on %d medias. " % self.total_commented)
     return True
