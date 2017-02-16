@@ -2,6 +2,8 @@ import time
 import random
 from tqdm import tqdm
 
+from . import limits
+
 def like(self, media_id):
     if not self.check_media(media_id):
         return False
