@@ -1,3 +1,5 @@
+import os
+import sys
 import time
 import datetime
 import random
@@ -109,10 +111,10 @@ class Bot(API):
         self.comments = []
         if comments_file:
             if os.path.exists(comments_file):
-                with io.open(file_path, "r", encoding="utf8") as f:
+                with io.open(comments_file, "r", encoding="utf8") as f:
                     self.comments = f.readlines()
             else:
-                self.logger.info("Can't find comment file")
+                self.logger.info("Can't find comment file!")
 
     def logout(self):
         super(self.__class__, self).logout()
