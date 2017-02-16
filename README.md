@@ -44,7 +44,7 @@ bot = Bot()
 | get_media_likers | Get list of media likers| TODO |
 | get_media_comments | Get list of media's comments| TODO |
 | get_comment | Get comment from comment file| bot.get_comment()|
-| get_media_commenters| Get list of users who commented media||
+| get_media_commenters| Get list of users who commented media| bot.get_media_commenters("12321")|
 
 
 ### Like
@@ -62,21 +62,34 @@ bot = Bot()
 
 | method        | description | example  |
 | ------------- |:-------------:| ------:|
+| unlike | Remove like from media | bot.unlike("12321412512")|
+| unlike_medias | Remove likes from medias in list| bot.unlike_medias(["123", "321"])|
 
 ### Follow
 
 | method        | description | example  |
 | ------------- |:-------------:| ------:|
+| follow | Follow user_id| bot.follow("352300017")|
+| follow_users | Follow users from list | bot.follow(["123", "321"])|
 
 ### Unfollow
 
 | method        | description | example  |
 | ------------- |:-------------:| ------:|
+| unfollow | Unfollow user_id | bot.unfollow("352300017")|
+| unfollow_users | Unfollow users from list | bot.unfollow(["123", "321"])|
+| unfollow_non_followers | Unfollow users who don't follow you | bot.unfollow_non_followers()|
 
 ### Comment
 
 | method        | description | example  |
 | ------------- |:-------------:| ------:|
+| comment | Put a comment under media | bot.comment("1231234", "Nice pic!")|
+| comment_medias | Put comments under medias from list | bot.comment_medias(["123", "321"])|
+| comment_hashtag | Put comments under medias by hashtag| bot.comment_hashtag("Dog")|
+| comment_geotag | Put comments under medias by geotag | TODO |
+| comment_users | Put comments under users' last medias | TODO |
+| is_commented | Check if media is already commented | bot.is_commented("123321") |
 
 ### Checkpoints
 
@@ -108,4 +121,4 @@ Choose any example from [examples](https://github.com/ohld/instabot/tree/master/
 python example.py
 ```
 ___
-_inspired by @mgp25 and @LevPasha_
+_by @ohld_
