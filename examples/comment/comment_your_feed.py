@@ -27,7 +27,7 @@ if not os.path.exists(comments_file_name):
     print ("Can't find '%s' file." % comments_file_name)
     exit()
 
-bot = Bot()
+bot = Bot(comments_file="comments_emojie.txt")
 bot.login()
 bot.comment_medias(bot.get_timeline_medias())
 bot.logout()
