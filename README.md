@@ -1,5 +1,5 @@
 # instabot
-Cool instagram scripts and API wrapper. Written in Python.
+Cool instagram scripts for promotion and API wrapper. Written in Python.
 ___
 As you may know, Instagram closed it's API in summer 2016. This Python module can do the same thing without any effort. Also it has lots of example scripts to start with.
 
