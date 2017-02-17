@@ -427,19 +427,20 @@ class API(object):
         else:
             return generated_uuid.replace('-', '')
 
-    def getLikedMedia(self,maxid=''):
+    def getLikedMedia(self, maxid=''):
         return self.SendRequest('feed/liked/?max_id='+str(maxid))
 
-    def getTotalFollowers(self,usernameId):
+    def getTotalFollowers(self, usernameId):
         followers = []
         next_max_id = ''
         while 1:
             self.getUserFollowers(usernameId,next_max_id)
             temp = self.LastJson
-
-            for item in temp["users"]:
-                followers.append(item)
-
+            try:
+                for item in temp["users"]:
+                    followers.append(item)
+            except:
+                return followers
             if temp["big_list"] == False:
                 return followers
             next_max_id = temp["next_max_id"]
@@ -450,10 +451,11 @@ class API(object):
         while 1:
             self.getUserFollowings(usernameId,next_max_id)
             temp = self.LastJson
-
-            for item in temp["users"]:
-                followers.append(item)
-
+            try:
+                for item in temp["users"]:
+                    followers.append(item)
+            except:
+                return followers
             if temp["big_list"] == False:
                 return followers
             next_max_id = temp["next_max_id"]
