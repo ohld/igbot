@@ -6,23 +6,24 @@ from . import limits
 
 def like(self, media_id):
     if not self.check_media(media_id):
-        return False
-    if super(self.__class__, self).like(media_id):
-        self.total_liked += 1
         return True
+    if limits.check_if_bot_can_like(self):
+        if super(self.__class__, self).like(media_id):
+            self.total_liked += 1
+            return True
+    else:
+        self.logger.info("Out of likes for today.")
     return False
 
 def like_medias(self, medias):
-    """ medias - list of ["pk"] fields of response """
-    self.logger.info("    Going to like %d medias." % (len(medias)))
-    total_liked = 0
+    self.logger.info("Going to like %d medias." % (len(medias)))
     for media in tqdm(medias):
-        if self.like(media):
-            total_liked += 1
-        else:
-            pass
+        if not self.like(media):
+            time.sleep(120)
+            while not self.like(media):
+                time.sleep(120)
         time.sleep(10 * random.random())
-    self.logger.info("    DONE: Total liked %d medias. " % total_liked)
+    self.logger.info("DONE: Total liked %d medias." % self.total_liked)
     return True
 
 def like_timeline(self, amount=None):

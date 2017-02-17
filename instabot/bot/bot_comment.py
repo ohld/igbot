@@ -15,22 +15,29 @@ import os
 import io
 from tqdm import tqdm
 
+from . import limits
+
 def comment(self, media_id, comment_text):
     if not self.check_media(media_id):
-        return False
-    if super(self.__class__, self).comment(media_id, comment_text):
-        self.total_commented += 1
         return True
+    if limits.check_if_bot_can_comment(self):
+        if super(self.__class__, self).comment(media_id, comment_text):
+            self.total_commented += 1
+            return True
+    else:
+        self.logger.info("Out of comments for today.")
     return False
 
 def comment_medias(self, medias):
-    """ medias - list of ["pk"] fields of response """
-    self.logger.info("Going to comment on %d medias." % (len(medias)))
+    self.logger.info("Going to comment %d medias." % (len(medias)))
     for media in tqdm(medias):
         if not self.is_commented(media):
             text = self.get_comment()
             self.logger.info("Commented with text: %s" % text)
-            self.comment(media, text)
+            if not self.comment(media, text):
+                time.sleep(240)
+                while not self.comment(media, text):
+                    time.sleep(240)
             time.sleep(30 * random.random() + 30)
     self.logger.info("DONE: Total commented on %d medias. " % self.total_commented)
     return True

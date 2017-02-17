@@ -1,45 +1,37 @@
 import time
 import random
-import json
 from tqdm import tqdm
+
+from . import limits
 
 def follow(self, user_id):
     if not self.check_user(user_id):
-        return False
-    if super(self.__class__, self).follow(user_id):
-        self.total_followed += 1
         return True
+    if limits.check_if_bot_can_follow(self):
+        if super(self.__class__, self).follow(user_id):
+            self.total_followed += 1
+            return True
+    else:
+        self.logger.info("Out of follows for today.")
     return False
 
 def follow_users(self, user_ids):
-    """ user_ids - list of user_id to follow """
-    self.logger.info("    Going to follow %d users." % len(user_ids))
-    total_followed = 0
+    self.logger.info("Going to follow %d users." % len(user_ids))
     for user_id in tqdm(user_ids):
-        if self.follow(user_id):
-            total_followed += 1
-        else:
-            pass
+        if not self.follow(user_id):
+            time.sleep(180)
+            while not self.follow(user_id):
+                time.sleep(180)
         time.sleep(15 + 30 * random.random())
-    self.logger.info("    DONE: Total followed %d users. " % total_followed)
+    self.logger.info("DONE: Total followed %d users." % self.total_followed)
     return True
 
-def follow_followers(self, user_id, nfollows=40):
-    if not user_id:
-        return False
+def follow_followers(self, user_id, nfollows=None):
+    self.logger.info("Follow followers of: %s" % user_id)
+    follower_ids = self.get_user_followers(user_id)[:nfollows]
+    self.follow_users(follower_ids)
 
-    self.logger.info("Follow followers of: %i" % user_id)
-
-    followers = self.getTotalFollowers(user_id)
-    follower_ids = []
-
-    for f in followers:
-    	follower_ids.append(f['pk'])
-
-    # slice up followers
-    follower_ids = follower_ids[0:nfollows]
-
-    for i in tqdm(follower_ids, desc="Following followers"):
-    	self.logger.info("Following %i's feed:" % i)
-    	self.follow(i)
-    	time.sleep(10 + 20 * random.random())
+def follow_following(self, user_id, nfollows=None):
+    self.logger.info("Follow following of: %s" % user_id)
+    following_ids = self.get_user_following(user_id)[:nfollows]
+    self.follow_users(following_ids)
