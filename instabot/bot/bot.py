@@ -15,6 +15,7 @@ from tqdm import tqdm
 from .. import API
 from . import limits
 
+from .bot_get import get_your_medias
 from .bot_get import get_timeline_medias
 from .bot_get import get_user_medias
 from .bot_get import get_hashtag_medias
@@ -42,6 +43,8 @@ from .bot_unlike import unlike_medias
 
 from .bot_follow import follow
 from .bot_follow import follow_users
+from .bot_follow import follow_followers
+from .bot_follow import follow_following
 
 from .bot_unfollow import unfollow
 from .bot_unfollow import unfollow_users
@@ -71,7 +74,10 @@ class Bot(API):
     def __init__(self,
                  whitelist=False,
                  blacklist=False,
-                 comments_file=False):
+                 comments_file=False,
+                 max_likes_per_day=False,
+                 max_follows_per_day=False,
+                 max_comments_per_day=False):
         super(self.__class__, self).__init__()
 
         self.user_id = None # TODO
@@ -82,6 +88,20 @@ class Bot(API):
         self.total_unfollowed = 0
         self.total_commented = 0
         self.start_time = datetime.datetime.now()
+
+        # limits
+        self.max_likes_per_day = max_likes_per_day
+        if not self.max_likes_per_day:
+            self.max_likes_per_day = limits.MAX_LIKES_PER_DAY
+
+        self.max_follows_per_day = max_follows_per_day
+        if not self.max_follows_per_day:
+            self.max_follows_per_day = limits.MAX_FOLLOWS_PER_DAY
+
+        self.max_comments_per_day = max_comments_per_day
+        if not self.max_comments_per_day:
+            self.max_comments_per_day = limits.MAX_COMMENTS_PER_DAY
+
 
         # handle logging
         self.logger = logging.getLogger('[instabot]')
@@ -131,6 +151,9 @@ class Bot(API):
             self.logger.info("  Total commented: %d" % self.total_commented)
 
 # getters
+
+    def get_your_medias(self):
+        return get_your_medias(self)
 
     def get_timeline_medias(self):
         return get_timeline_medias(self)
@@ -209,6 +232,12 @@ class Bot(API):
 
     def follow_users(self, user_ids):
         return follow_users(self, user_ids)
+
+    def follow_followers(self, user_id):
+        return follow_followers(self, user_id)
+
+    def follow_following(self, user_id):
+        return follow_following(self, user_id)
 
 # unfollow
 
