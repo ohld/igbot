@@ -32,6 +32,18 @@ bot = Bot()
 
 ### Bot Class
 
+``` python
+from instabot import Bot
+bot = Bot(
+            whitelist=False,
+            blacklist=False,
+            comments_file=False,
+            max_likes_per_day=False,
+            max_follows_per_day=False,
+            max_comments_per_day=False
+)
+```
+
 | parameter| description | example |
 | ------------- |:-------------:| ------:|
 | max_likes_per_day| How many likes will bot put per day| max_likes_per_day = 1000|
