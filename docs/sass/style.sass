@@ -37,11 +37,11 @@ html
 	height: 100%
 	font:
 		size: 14px
-	
+
 	@media (min-width: 768px)
 		font:
 			size: 16px
-	
+
 body
 	position: relative
 	min-height: 100%
@@ -52,7 +52,7 @@ body
 h1,h2,h3,h4,h5,h6
 	margin-top: 0
 
-h1	
+h1
 	font:
 		size: 2rem
 		weight: 300
@@ -63,7 +63,7 @@ h1
 		font:
 			size: 2.375rem
 		line-height: 2.75rem
-	
+
 p
 	margin-bottom: 20px
 	font:
@@ -77,14 +77,14 @@ p
 			weight: 600
 			// size: 1.2rem
 		color: $primary
-	
+
 	&:last-child
 		margin-bottom: 0
-	
+
 code
-	font: 
+	font:
 		size: 0.875rem
-	
+
 // Styles ================================
 
 nav.navbar
@@ -93,12 +93,12 @@ nav.navbar
 	border: none
 	transition: background-color 0.3s
 	will-change: transform
-	
+
 	// Class based state
 	&.show-color
 		background: white
 		box-shadow: 0px 6px 16px -2px rgba(0,0,0,0.3)
-	
+
 		.navbar-home
 			visibility: visible
 			+translate(100%,0)
@@ -117,12 +117,12 @@ nav.navbar
 	+translate(100%,-50%)
 	transition: transform 0.2s ease-in, opacity 0.2s ease-in, visibilit 0.2s ease-in
 	opacity: 0
-	
+
 	svg
 		width: 20px
 		height: 20px
 		fill: $grey
-	
+
 .navbar-brand
 	position: relative
 	height: 70px
@@ -171,10 +171,10 @@ nav.navbar
 .navbar-collapse
 	@media (max-width: 767px)
 		background: $accent
-	
+
 ul.navbar-nav
 	color: $font-dark
-	
+
 	@media (min-width: 768px)
 		display: flex
 		flex:
@@ -189,7 +189,7 @@ ul.navbar-nav
 		@media (min-width: 768px)
 			float: none
 			display: inline-block
-	
+
 		> a
 			padding: 0 20px
 			font:
@@ -200,25 +200,25 @@ ul.navbar-nav
 			line-height: 70px
 			letter-spacing: 1px
 			color: currentColor
-	
+
 			// CSS States ========
 			&:hover
 				background: rgba(0,0,0,0.15)
 
 			&:focus
 				background: rgba(0,0,0,0.20)
-	
+
 	> li.active
 		@media (max-width: 767px)
 			background: rgba(0,0,0,0.10)
-	
+
 		@media (min-width: 768px)
 			color: $primary
 			background: rgba(255,255,255,0.15)
 			box-shadow: inset 0 -3px 0 0 $primary
-	
+
 		> a
-		
+
 			// CSS States ========
 			&:hover, &:focus
 				background: none
@@ -235,11 +235,11 @@ section
 	&.focus
 		.page-header
 			color: $primary
-	
+
 			&:after
 				visibility: visible
 				opacity: 1
-	
+
 .section-header
 	position: relative
 	margin-bottom: 40px
@@ -251,7 +251,7 @@ section
 		align: center
 	line-height: 60px
 	letter-spacing: 1px
-	
+
 	&:after
 		content: ''
 		display: block
@@ -276,11 +276,11 @@ section
 	.banner-child
 		padding: 25px 15px
 		height: 500px
-	
+
 	.bc-left
 		color: $font-light
 		background: $primary
-	
+
 	.bc-right
 		color: $font-dark
 		background: $background-light
@@ -305,7 +305,7 @@ section
 			size: 16px
 		transition: opacity 0.2s ease-in, visibility 0.2s ease-in
 		opacity: 0
-	
+
 footer
 	min-height: 240px
 	position: relative
@@ -326,13 +326,13 @@ a.tutorials-link
 	padding: 15px 0
 	font:
 		size: 0.875rem
-		weight: 600	
+		weight: 600
 	text:
 		align: center
 		transform: uppercase
 		decoration: none
 	letter-spacing: 2px
-	color: $primary	
+	color: $primary
 	border: 2px solid $primary
 	transition: background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease
 
@@ -341,7 +341,7 @@ a.tutorials-link
 		color: $font-light
 		background: $primary
 		box-shadow: 0 6px 12px -4px rgba(0,0,0,0.3)
-	
+
 .scrollTop
 	display: flex
 	flex:
@@ -387,12 +387,12 @@ a.tutorials-link
 	min-height: 400px
 	height: 60vh
 	padding: 50px 0
-	
+
 	// Media queries ----
 	@media (min-width: 768px)
 		height: 80vh
 		min-height: 640px
-	
+
 	&:before
 		content: ''
 		display: block
@@ -405,28 +405,28 @@ a.tutorials-link
 		background:
 			image: url('https://hd.unsplash.com/photo-1457365050282-c53d772ef8b2')
 			size: cover
-			position: center bottom	
+			position: center bottom
 		will-change: transform
 		z-index: 0
-	
+
 		// Media queries ----
 		@media (min-width: 768px)
 			height: 80vh
-			min-height: 640px	
-	
+			min-height: 640px
+
 	// Pseudos ----
 	&:after
 		content: ''
 		display: block
 		+absolute(0,0,0,0)
-		background: 
+		background:
 			image: radial-gradient(transparent, rgba(0,0,0,0.4))
 		z-index: 0
-	
+
 	/* Layering due to Psuedo overlay */
 	.container
 		z-index: 1
-	
+
 	.mouse
 		position: relative
 		width: calc(28px * 2)
@@ -434,9 +434,9 @@ a.tutorials-link
 		margin: 0 auto 20px
 		background: none
 		border: 2px solid white
-		border-radius: calc(16px * 2) 
+		border-radius: calc(16px * 2)
 		z-index: 1
-	
+
 		// Media queries ----
 		@media (min-width: 768px)
 			width: calc(28px * 4)
@@ -444,8 +444,8 @@ a.tutorials-link
 			margin: 0 auto 30px
 			background: none
 			border: 2px solid white
-			border-radius: calc(16px * 4) 
-	
+			border-radius: calc(16px * 4)
+
 		&:after
 			display: block
 			content: ''
@@ -462,16 +462,16 @@ a.tutorials-link
 				iteration-count: infinite
 				timing-function: ease
 			will-change: transform
-	
+
 			// Media queries ----
-			@media (min-width: 768px)	
+			@media (min-width: 768px)
 				+absolute(25px,50%,null,null)
 				width: calc(5px * 4)
-				height: calc(5px * 4)	
+				height: calc(5px * 4)
 	h1
 		text:
 			align: center
-			shadow: 0px 0px 20px rgba(0,0,0,0.5)	
+			shadow: 0px 0px 20px rgba(0,0,0,0.5)
 		color: $font-light
 
 	h4
@@ -479,28 +479,28 @@ a.tutorials-link
 			size: 14px
 			weight: 600
 		text:
-			align: center	
+			align: center
 			transform: uppercase
 			shadow: 0px 0px 20px rgba(0,0,0,0.5)
 		letter-spacing: 2px
 		color: $primary
-	
+
 	p
 		margin: 0
 		padding: 25px 0
 		text:
-			align: center	
+			align: center
 			shadow: 0px 0px 40px rgba(0,0,0,0.5), 1px 1px 3px rgba(0,0,0,0.3)
 		line-height: 26px
-		color: $font-light	
-	
+		color: $font-light
+
 #about
 	p
 		text:
 			align: center
 		color: #333
-	
-#demo	
+
+#demo
 	background: $background-light
 
 	h4
@@ -508,7 +508,7 @@ a.tutorials-link
 		margin-bottom: 0px
 		font:
 			size: 0.875rem
-			weight: 400	
+			weight: 400
 		text:
 			transform: uppercase
 		line-height: 24px
@@ -517,10 +517,10 @@ a.tutorials-link
 
 	.video-roll--container
 		padding: 0
-	
+
 		@media (min-width: 768px)
 			padding: 0 15px
-	
+
 	.video-roll
 		display: flex
 		flex:
@@ -529,15 +529,15 @@ a.tutorials-link
 		align-items: center
 		position: relative
 		width: 100%
-		max-width: 1000px 
+		max-width: 1000px
 		// height: 240px
 		margin: 0 auto 80px
 		padding: 25px 0 0
 		list-style: none
-	
+
 		@media (min-width: 768px)
 			margin: 0 auto 120px
-	
+
 		// Pseudo -------
 		&:after
 			content: ''
@@ -549,10 +549,10 @@ a.tutorials-link
 			background: transparent
 			border-radius: 50%
 			box-shadow: 0 50px 40px rgba(0,0,0,0.4)
-	
+
 			@media (min-width: 768px)
 				margin: 0px auto 0
-	
+
 		li
 			display: flex
 			flex:
@@ -563,14 +563,14 @@ a.tutorials-link
 			align-content: stretch
 			position: relative
 			background: transparent
-	
+
 			// Pseudo -------------
-	
+
 			&:before
 				content: ''
 				display: block
 				padding-top: 56.25%
-	
+
 			&:after
 				content: ''
 				display: block
@@ -582,64 +582,64 @@ a.tutorials-link
 				border-radius: 50%
 				box-shadow: 0 50px 40px rgba(0,0,0,0.25)
 				+translate(-50%,0)
-	
+
 			// nth Child -----------
-	
+
 			&:first-child
 				visibility: hidden
 				flex:
 					basis: 10%
 				+translate(50%,0)
 				opacity: 0
-				
+
 				@media (min-width: 768px)
 					visibility: visible
 					flex:
-						basis: 30%	
+						basis: 30%
 					opacity: 1
-				
+
 				a
 					background:
-						image: url('https://i.ytimg.com/vi/kLiMpaMKal8/maxresdefault.jpg')			
+						image: url('https://i.ytimg.com/vi/kLiMpaMKal8/maxresdefault.jpg')
 					transform-origin: left center
 
 			&:nth-child(2)
 				flex:
-					basis: 80%		
+					basis: 80%
 				z-index: 2
 
 				@media (min-width: 768px)
 					flex:
-						basis: 40%	
-		
+						basis: 40%
+
 				&:after
 					display: none
-		
+
 				a
 					flex:
 						grow: 1
 					background:
-						image: url('https://i.ytimg.com/vi/aVFYHGtf6So/maxresdefault.jpg')			
+						image: url('https://i.ytimg.com/vi/aVFYHGtf6So/maxresdefault.jpg')
 					transform-origin: center center
-	
+
 			&:last-child
 				visibility: hidden
 				flex:
-					basis: 10%		
+					basis: 10%
 				+translate(-50%,0)
 				opacity: 0
 
 				@media (min-width: 768px)
 					visibility: visible
 					flex:
-						basis: 30%	
+						basis: 30%
 					opacity: 1
-		
+
 				a
 					background:
-						image: url('https://i.ytimg.com/vi/OKxASY7ABfs/maxresdefault.jpg')			
+						image: url('https://i.ytimg.com/vi/OKxASY7ABfs/maxresdefault.jpg')
 					transform-origin: right center
-		
+
 			a
 				+absolute(0,0,0,0)
 				background:
@@ -650,54 +650,54 @@ a.tutorials-link
 				+translate(0,0)
 				transition: transform 0.2s ease-out
 				will-change: transform
-		
+
 				&:hover
 					+translate(0,-4px)
-				
-	
+
+
 #features
 	padding-bottom: 0
 	color: #333
 
 	.feature-container
 		margin-bottom: 80px
-	
+
 		@media (min-width: 768px)
 			margin-bottom: 80px
 
 	.feature
 		padding: 25px 0
-	
+
 		@media (min-width: 768px)
 			padding: 50px 0
-	
+
 		svg
 			width: 40px
 			height: 40px
 			margin-bottom: 15px
 			fill: currentColor
-	
+
 			@media (min-width: 768px)
 				width: 60px
 				height: 60px
-		
+
 		h4
 			font:
 				size: 14px
-				weight: 600	
+				weight: 600
 			text:
 				transform: uppercase
 			line-height: 24px
 			letter-spacing: 2px
 			color: $primary
-	
+
 		p
 			font:
 				size: 14px
-				weight: 300		
+				weight: 300
 			color: $grey
 			letter-spacing: 1px
-	
+
 	.animated-scroll
 		display: flex
 		flex:
@@ -711,7 +711,7 @@ a.tutorials-link
 		border-bottom-color: transparent
 		border-radius: 6px
 		overflow: hidden
-		
+
 		.scroll-header
 			display: flex
 			flex:
@@ -722,13 +722,13 @@ a.tutorials-link
 			align-items: center
 			justify-content: center
 			background: $primary-dark
-	
+
 			.scroll-nav
 				width: 15%
 				height: 8px
 				margin-right: 5%
 				border-radius: 4px
-		
+
 			.sn-1
 				animation:
 					name: scrollColor-1
@@ -736,7 +736,7 @@ a.tutorials-link
 					timing-function: linear
 					duration: 5s
 					// direction: alternate
-					fill-mode: forwards	
+					fill-mode: forwards
 
 			.sn-2
 				animation:
@@ -745,8 +745,8 @@ a.tutorials-link
 					timing-function: linear
 					duration: 5s
 					// direction: alternate
-					fill-mode: forwards	
-		
+					fill-mode: forwards
+
 			.sn-3
 				margin-right: 0
 				animation:
@@ -755,8 +755,8 @@ a.tutorials-link
 					timing-function: linear
 					duration: 5s
 					// direction: alternate
-					fill-mode: forwards		
-	
+					fill-mode: forwards
+
 			svg.cursor
 				+absolute(28px,50%,null,null)
 				width: 20%
@@ -768,7 +768,7 @@ a.tutorials-link
 					duration: 5s
 					fill-mode: forwards
 				z-index: 2
-	
+
 		.scroll-body
 			display: flex
 			flex:
@@ -778,7 +778,7 @@ a.tutorials-link
 				basis: auto
 			padding-top: 20px
 			overflow: hidden
-	
+
 		.scroll-child
 			flex:
 				grow: 0
@@ -795,7 +795,7 @@ a.tutorials-link
 				timing-function: linear
 				duration: 5s
 				fill-mode: forwards
-		
+
 		.sc-back-to-top
 			flex:
 				basis: 40px
@@ -807,10 +807,10 @@ a.tutorials-link
 				iteration-count: infinite
 				timing-function: linear
 				duration: 5s
-				fill-mode: forwards	
+				fill-mode: forwards
 			z-index: 0
-	
-			
+
+
 	.focus-events
 		display: flex
 		flex:
@@ -824,7 +824,7 @@ a.tutorials-link
 		border-bottom-color: transparent
 		border-radius: 6px
 		overflow: hidden
-		
+
 		.scroll-header
 			display: flex
 			flex:
@@ -833,32 +833,32 @@ a.tutorials-link
 				shrink: 0
 				basis: 60px
 			align-items: center
-			justify-content: center		
+			justify-content: center
 			background: darken($background-light, 4%)
-	
+
 			.scroll-nav
 				width: 15%
 				height: 8px
 				margin-right: 5%
-				border-radius: 4px	
+				border-radius: 4px
 				// background: darken($background-light, 12%)
-		
+
 			.sn-1
 				animation:
 					name: focusColor-1
 					iteration-count: infinite
 					timing-function: linear
 					duration: 4s
-					fill-mode: forwards	
-		
+					fill-mode: forwards
+
 			.sn-2
 				animation:
 					name: focusColor-2
 					iteration-count: infinite
 					timing-function: linear
 					duration: 4s
-					fill-mode: forwards			
-	
+					fill-mode: forwards
+
 			svg.cursor
 				+absolute(28px,50%,null,null)
 				width: 20%
@@ -868,9 +868,9 @@ a.tutorials-link
 					iteration-count: infinite
 					timing-function: linear
 					duration: 4s
-					fill-mode: forwards	
+					fill-mode: forwards
 				z-index: 2
-	
+
 		.scroll-body
 			display: flex
 			flex:
@@ -880,7 +880,7 @@ a.tutorials-link
 				basis: auto
 			padding-top: 20px
 			overflow: hidden
-	
+
 		.scroll-child
 			flex:
 				grow: 0
@@ -897,8 +897,8 @@ a.tutorials-link
 				iteration-count: infinite
 				timing-function: ease-in
 				duration: 4s
-				fill-mode: forwards	
-	
+				fill-mode: forwards
+
 			.header
 				height: 14px
 				width: 50%
@@ -918,7 +918,7 @@ a.tutorials-link
 				height: 8px
 				margin: 0 auto 8px
 				background: darken($background-light, 6%)
-		
+
 		.sc-2
 			.header
 				animation:
@@ -926,10 +926,10 @@ a.tutorials-link
 					iteration-count: infinite
 					timing-function: linear
 					duration: 4s
-					fill-mode: forwards	
-		
+					fill-mode: forwards
+
 #howto
-		
+
 @keyframes scrollWheel
 	from
 		+translate(-50%,0)
@@ -937,8 +937,8 @@ a.tutorials-link
 
 	to
 		+translate(-50%,20px)
-		opacity: 0	
-	
+		opacity: 0
+
 	@media (min-width: 768px)
 		from
 			+translate(-50%,0)
@@ -947,23 +947,23 @@ a.tutorials-link
 		to
 			+translate(-50%,40px)
 			opacity: 0
-	
+
 @keyframes scrollDemo
 	from, 30%
-		+translate(0,0px)	
+		+translate(0,0px)
 	40%, 60%
 		+translate(0,-170px)
 	70%, 90%
 		+translate(0,-340px)
 	to
 		+translate(0,0px)
-	
+
 @keyframes scrollColor-1
 	from, 39.9%
-		background: rgba(255,255,255,0.7)	
+		background: rgba(255,255,255,0.7)
 	40%, to
 		background: $primary
-	
+
 @keyframes scrollColor-2
 	from, 24%
 		background: $primary
@@ -975,7 +975,7 @@ a.tutorials-link
 		background: rgba(255,255,255,0.7)
 	70%, to
 		background: $primary
-	
+
 @keyframes scrollColor-3
 	from, 53.8%
 		background: $primary
@@ -986,11 +986,11 @@ a.tutorials-link
 	70%, 99.9%
 		background: rgba(255,255,255,0.7)
 	to
-		background: $primary	
-	
+		background: $primary
+
 @keyframes scrollBackToTop
 	from, 30%
-		+translate(0,0px)	
+		+translate(0,0px)
 		background: rgba(255,255,255,0.2)
 	40%, 60%
 		+translate(0,-170px)
@@ -1004,12 +1004,12 @@ a.tutorials-link
 		background: rgba(255,255,255,0.2)
 	to
 		+translate(0,0px)
-		background: rgba(255,255,255,0.2)	
-	
+		background: rgba(255,255,255,0.2)
+
 @keyframes scrollCursor
 	from
 		+translate(-50%, 236px)
-	15%, 30% 
+	15%, 30%
 		+translate(-50%,0)
 	35%, 65%
 		+translate(50%,0)
@@ -1021,10 +1021,10 @@ a.tutorials-link
 		+translate(0,0px)
 	40%, to
 		+translate(0,-170px)
-	
+
 @keyframes focusColor-1
 	from, 39.9%
-		background: darken($background-light,10%)	
+		background: darken($background-light,10%)
 	40%, to
 		background: $background-light
 
@@ -1037,15 +1037,15 @@ a.tutorials-link
 		background: $background-light
 	40.1%, to
 		background: darken($background-light,10%)
-	
+
 @keyframes focusHeaderColor
 	from, 40%
-		background: darken($background-light, 7%)	
+		background: darken($background-light, 7%)
 	40.2%, 70%
 		background: $primary
 	75%, to
 		background: darken($background-light, 7%)
-	
+
 @keyframes focusCursor
 	from
 		+translate(-50%, 200px)
@@ -1057,15 +1057,15 @@ a.tutorials-link
 		+translate(-10%, 0)
 	45%, to
 		opacity: 0
-	
-.highlight 
+
+.highlight
 	padding: 9px 14px
 	margin-bottom: 14px
 	background-color: #f7f7f9
 	border: 1px solid #e1e1e8
 	border-radius: 4px
 
-.highlight pre 
+.highlight pre
 	padding: 0
 	margin-top: 0
 	margin-bottom: 0
@@ -1074,11 +1074,10 @@ a.tutorials-link
 	background-color: transparent
 	border: 0
 
-.highlight pre code 
+.highlight pre code
 	font-size: inherit
 	color: #333 /* Effectively the base text color */
 
 .highlight pre code:first-child
 	display: inline-block
 	padding-right: 45px
-	
