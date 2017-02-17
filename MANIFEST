@@ -14,9 +14,9 @@ instabot/bot/bot.py
 instabot/bot/bot_checkpoint.py
 instabot/bot/bot_comment.py
 instabot/bot/bot_filter.py
-instabot/bot/bot_follow_followers.py
-instabot/bot/bot_get_medias.py
-instabot/bot/bot_like_and_follow.py
-instabot/bot/bot_like_feed.py
-instabot/bot/bot_unfollow_non_followers.py
+instabot/bot/bot_follow.py
+instabot/bot/bot_get.py
+instabot/bot/bot_like.py
+instabot/bot/bot_unfollow.py
+instabot/bot/bot_unlike.py
 instabot/bot/limits.py
