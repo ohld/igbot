@@ -25,12 +25,6 @@ If you have any problems with script, please ask questions in [telegram chat](ht
 
 ## Implemented [bot](https://github.com/ohld/instabot/blob/master/instabot/bot/bot.py) methods
 
-  * like logged user's feed
-  * like person's last medias
-  * like medias by hashtag
-  * comment media by hashtag
-  * unfollow non followers
-
 ``` python
 from instabot import Bot
 bot = Bot()
@@ -137,5 +131,7 @@ bot.comment_hashtag("dogs")
 bot.unfollow_non_followers()
 bot.logout()
 ```
+
+The best way to start is to go to [examples](https://github.com/ohld/instabot/tree/master/examples) and play with them.
 ___
 _by @ohld_
