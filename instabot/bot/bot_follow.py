@@ -29,9 +29,15 @@ def follow_users(self, user_ids):
 def follow_followers(self, user_id, nfollows=None):
     self.logger.info("Follow followers of: %s" % user_id)
     follower_ids = self.get_user_followers(user_id)[:nfollows]
-    self.follow_users(follower_ids)
+    if len(follower_ids) == 0:
+        self.logger.info("%s is closed." % user_id)
+    else:
+        self.follow_users(follower_ids)
 
 def follow_following(self, user_id, nfollows=None):
     self.logger.info("Follow following of: %s" % user_id)
     following_ids = self.get_user_following(user_id)[:nfollows]
-    self.follow_users(following_ids)
+    if len(following_ids) == 0:
+        self.logger.info("%s is closed." % user_id)
+    else:
+        self.follow_users(following_ids)
