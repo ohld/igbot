@@ -38,6 +38,10 @@ def filter_users(user_items, log=False):
 
 # getters
 
+def get_your_medias(self):
+    self.getSelfUserFeed()
+    return [item["pk"] for item in self.LastJson["items"]]
+
 def get_timeline_medias(self):
     if not self.getTimelineFeed():
         self.logger.info("  Error while getting timeline feed")
@@ -81,16 +85,16 @@ def get_userid_from_username(self, username):
     pass
 
 def get_user_followers(self, user_id):
-    # TODO: return a list of user's followers
-    pass
+    followers = self.getTotalFollowers(user_id)
+    return [item['pk'] for item in followers]
 
 def get_user_following(self, user_id):
-    # TODO: return a list of user's following
-    pass
+    following = self.getTotalFollowings(user_id)
+    return [item['pk'] for item in following]
 
 def get_media_likers(self, media_id):
-    # TODO:
-    pass
+    self.getMediaLikers(media_id)
+    return [item['pk'] for item in self.LastJson["users"]]
 
 def get_media_comments(self, media_id):
     # TODO:
