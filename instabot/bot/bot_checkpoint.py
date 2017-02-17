@@ -21,66 +21,66 @@ class Checkpoint(object):
         self.date = datetime.now()
 
 
-def save_checkpoint(bot, path=None):
+def save_checkpoint(self, path=None):
     """
-        Saves bot's checkpoint:
+        Saves self's checkpoint:
             followers
             following
             date
         Returns the name of saved file
     """
-    bot.logger.info("Saving checkpoint:")
+    self.logger.info("Saving checkpoint:")
     if path is None:
         path = datetime.now().strftime("bot_cp_%Y-%m-%d_%H-%M")
 
     cp = Checkpoint()
-    cp.fill(bot)
+    cp.fill(self)
 
     with open(path, 'wb') as f:
         pickle.dump(cp, f, -1)
-    bot.last_checkpoint_path = path
-    bot.logger.info("  Done.")
+    self.last_checkpoint_path = path
+    self.logger.info("  Done.")
     return path
 
-def load_checkpoint(bot, path):
+def load_checkpoint(self, path):
     """
-        Loads bot's checkpoint
+        Loads self's checkpoint
         Returns Checkpoint object
     """
-    bot.logger.info("Loading checkpoint:")
+    self.logger.info("Loading checkpoint:")
     try:
         with open(path, 'rb') as f:
             cp = pickle.load(f)
         if isinstance(cp, Checkpoint):
             return cp
         else:
-            bot.logger.info("  This is not checkpoint file.")
+            self.logger.info("This is not checkpoint file.")
     except:
-        bot.logger.info("  File not found.")
+        self.logger.info("File not found.")
     return None
 
-def checkpoint_following_diff(bot, cp):
+def checkpoint_following_diff(self, cp):
     """
         Returns user_ids of users that you follow now
         but didn't follow at checkpoint time.
     """
-    bot.logger.info("Getting checkpoint following difference.")
-    current_following = [item["pk"] for item in bot.getTotalSelfFollowings()]
+    self.logger.info("Getting checkpoint following difference.")
+    current_following = [item["pk"] for item in self.getTotalSelfFollowings()]
     old_following = cp.following
     return list(set(current_following) - set(old_following))
 
-def checkpoint_followers_diff(bot, cp):
+def checkpoint_followers_diff(self, cp):
     """
         Returns user_ids of users that follows you now
         but didn't follow you at checkpoint time.
     """
-    bot.logger.info("Getting checkpoint followers difference.")
-    current_followers = [item["pk"] for item in bot.getTotalSelfFollowers()]
+    self.logger.info("Getting checkpoint followers difference.")
+    current_followers = [item["pk"] for item in self.getTotalSelfFollowers()]
     old_following = cp.followers
     return list(set(current_followers) - set(old_followers))
 
-def load_last_checkpoint(bot):
-    return bot.load_checkpoint(bot.last_checkpoint_path)
+def load_last_checkpoint(self):
+    return self.load_checkpoint(self.last_checkpoint_path)
 
-def revert_to_checkpoint(bot, cp):
-    return bot.unfollow_users(bot.checkpoint_following_diff(cp))
+def revert_to_checkpoint(self, cp):
+    return self.unfollow_users(self.checkpoint_following_diff(cp))

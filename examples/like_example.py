@@ -18,6 +18,22 @@ from instabot import Bot
 
 bot = Bot()
 bot.login()
-bot.like_timeline()
+
+# like media by a single user_id
 bot.like_user_id("352300017")
+
+# likes all media from timeline
+bot.like_timeline()
+
+# likes all media from timeline
+bot.like_medias(bot.get_timeline_medias())
+
+# likes media by hashtag(s)
+tags = ["l4l","selfie"]
+
+for t in tags:
+   bot.like_hashtag(t)
+
+
+# logout
 bot.logout()

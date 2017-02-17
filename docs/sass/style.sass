@@ -1,0 +1,1083 @@
+// Variables ==========================
+$font-family: "Open Sans", Helvetica, Arial, sans-serif
+
+$primary: #907dda
+$primary-dark: darken(#907dda,4%)
+$accent: #e5e4ea
+$font-light: #e7e6f1
+$font-dark: #333
+$grey: #BDC4D0
+$background-light: #F3F4F8
+$background-dark: #2F3032
+$border-light: darken($background-light, 2%)
+$border-dark: darken($background-dark, 2%)
+
+// Mixins =============================
+=absolute($top, $left, $right, $bottom)
+	position: absolute
+	top: $top
+	left: $left
+	right: $right
+	bottom: $bottom
+
+=translate($x,$y)
+	-webkit-transform: translate($x,$y)
+	-webkit-transform: translate3d($x,$y,0)
+	-ms-transform: translate($x,$y)
+	-ms-transform: translate3d($x,$y,0)
+	transform: translate($x,$y)
+	transform: translate3d($x,$y,0)
+
+// Base ===============================
+
+div,h1,h2,h3,h4,h5,h6,p
+	font-family: $font-family
+
+html
+	height: 100%
+	font:
+		size: 14px
+
+	@media (min-width: 768px)
+		font:
+			size: 16px
+
+body
+	position: relative
+	min-height: 100%
+	background: $background-dark
+	box-shadow: inset 0 0 200px rgba(0,0,0,0.1), inset 0 0 20px rgba(0,0,0,0.08)
+
+// prevent margin collapse
+h1,h2,h3,h4,h5,h6
+	margin-top: 0
+
+h1
+	font:
+		size: 2rem
+		weight: 300
+	line-height: 2.5rem
+	letter-spacing: 4px
+
+	@media (min-width: 768px)
+		font:
+			size: 2.375rem
+		line-height: 2.75rem
+
+p
+	margin-bottom: 20px
+	font:
+		size: 1rem
+		weight: 300
+	letter-spacing: 0.5px
+	line-height: 1.6rem
+
+	highlight
+		font:
+			weight: 600
+			// size: 1.2rem
+		color: $primary
+
+	&:last-child
+		margin-bottom: 0
+
+code
+	font:
+		size: 0.875rem
+
+// Styles ================================
+
+nav.navbar
+	height: 70px
+	background: transparent
+	border: none
+	transition: background-color 0.3s
+	will-change: transform
+
+	// Class based state
+	&.show-color
+		background: white
+		box-shadow: 0px 6px 16px -2px rgba(0,0,0,0.3)
+
+		.navbar-home
+			visibility: visible
+			+translate(100%,0)
+			opacity: 1
+
+.navbar-home
+	visibility: hidden
+	display: flex
+	flex:
+		direction: column
+	align-items: center
+	justify-content: center
+	+absolute(0px,0px,null,null)
+	height: 70px
+	width: 10%
+	+translate(100%,-50%)
+	transition: transform 0.2s ease-in, opacity 0.2s ease-in, visibilit 0.2s ease-in
+	opacity: 0
+
+	svg
+		width: 20px
+		height: 20px
+		fill: $grey
+
+.navbar-brand
+	position: relative
+	height: 70px
+	padding: 0 28px 0 15px
+	padding: 0 28px 0 45px
+	font:
+		size: 20px
+		weight: 300
+	line-height: 80px
+	letter-spacing: 1px
+	color: $font-light
+	vertical-align: middle
+
+	// Pseudo Elements --------
+	&:before
+		display: block
+		content: ''
+		+absolute(50%,0,null,null)
+		height: 44px
+		width: 28px
+		background: none
+		border: 2px solid white
+		border-radius: 16px
+		+translate(0,-50%)
+
+	// CSS States ======
+	&:hover, &:focus
+		color: white
+
+	i.material-icons
+		position: absolute
+		top: 50%
+		right: 0
+		transform: translate(0,-50%)
+
+.navbar-toggle
+	height: 70px
+	margin: 0
+	padding: 0 20px
+	color: white
+	border: none
+
+	&.collapsed
+		color: $font-light
+
+.navbar-collapse
+	@media (max-width: 767px)
+		background: $accent
+
+ul.navbar-nav
+	color: $font-dark
+
+	@media (min-width: 768px)
+		display: flex
+		flex:
+			direction: row
+		align-items: center
+		justify-content: center
+		float: none
+		text-align: center
+		color: $grey
+
+	> li
+		@media (min-width: 768px)
+			float: none
+			display: inline-block
+
+		> a
+			padding: 0 20px
+			font:
+				size: 14px
+				weight: 400
+			text:
+				transform: uppercase
+			line-height: 70px
+			letter-spacing: 1px
+			color: currentColor
+
+			// CSS States ========
+			&:hover
+				background: rgba(0,0,0,0.15)
+
+			&:focus
+				background: rgba(0,0,0,0.20)
+
+	> li.active
+		@media (max-width: 767px)
+			background: rgba(0,0,0,0.10)
+
+		@media (min-width: 768px)
+			color: $primary
+			background: rgba(255,255,255,0.15)
+			box-shadow: inset 0 -3px 0 0 $primary
+
+		> a
+
+			// CSS States ========
+			&:hover, &:focus
+				background: none
+
+section
+	position: relative
+	// min-height: 80vh
+	padding: 30px 0 50px
+	background: white
+
+	&:last-of-type
+		min-height: 20vh
+
+	&.focus
+		.page-header
+			color: $primary
+
+			&:after
+				visibility: visible
+				opacity: 1
+
+.section-header
+	position: relative
+	margin-bottom: 40px
+	font:
+		size: 26px
+		weight: 400
+	color: #333
+	text:
+		align: center
+	line-height: 60px
+	letter-spacing: 1px
+
+	&:after
+		content: ''
+		display: block
+		+absolute(null,50%,null,0)
+		width: 70px
+		height: 2px
+		background: $primary
+		+translate(-50%,0)
+
+.section-sub-header
+	position: relative
+	margin-bottom: 40px
+	font:
+		size: 22px
+		weight: 300
+	text:
+		align: center
+	line-height: 60px
+	letter-spacing: 1px
+
+.banner
+	.banner-child
+		padding: 25px 15px
+		height: 500px
+
+	.bc-left
+		color: $font-light
+		background: $primary
+
+	.bc-right
+		color: $font-dark
+		background: $background-light
+
+.page-header
+	position: relative
+	margin-top: 0
+	margin-bottom: 50px
+	letter-spacing: 1px
+	color: $font-dark
+	transition: color 0.2s ease-in
+
+	// CSS Pseudo elements ==========
+	&:after
+		visibility: hidden
+		display: block
+		content: "Boom!!! got your focus now ay :-)"
+		position: absolute
+		top: 100%
+		padding-top: 25px
+		font:
+			size: 16px
+		transition: opacity 0.2s ease-in, visibility 0.2s ease-in
+		opacity: 0
+
+footer
+	min-height: 240px
+	position: relative
+	padding: 50px 0 150px
+	font:
+		size: 22px
+	text:
+		align: center
+	letter-spacing: 1px
+	color: $font-light
+	background: $background-dark
+
+a.tutorials-link
+	display: block
+	position: relative
+	width: 180px
+	margin: 0 auto 25px
+	padding: 15px 0
+	font:
+		size: 0.875rem
+		weight: 600
+	text:
+		align: center
+		transform: uppercase
+		decoration: none
+	letter-spacing: 2px
+	color: $primary
+	border: 2px solid $primary
+	transition: background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease
+
+	// CSS state ----
+	&:hover
+		color: $font-light
+		background: $primary
+		box-shadow: 0 6px 12px -4px rgba(0,0,0,0.3)
+
+.scrollTop
+	display: flex
+	flex:
+		direction: column
+	align-items: center
+	justify-content: center
+	position: fixed
+	right: 20px
+	bottom: 20px
+	width: 44px
+	height: 44px
+	text:
+		decoration: none
+	padding: 0
+	color: $font-light
+	background: $primary
+	border: none
+	border-radius: 100%
+	box-shadow: 2px 2px 12px rgba(0,0,0,0.2)
+	+translate(0,80px)
+	transition: transform 0.2s ease-in
+	opacity: 0.7
+
+	&:hover
+		color: $font-light
+		opacity: 1
+
+	&.show-button
+		+translate(0,0)
+
+	svg
+		width: 20px
+		height: 20px
+		fill: currentColor
+
+#home
+	display: flex
+	flex:
+		direction: column
+	align-items: center
+	justify-content: center
+	position: relative
+	min-height: 400px
+	height: 60vh
+	padding: 50px 0
+
+	// Media queries ----
+	@media (min-width: 768px)
+		height: 80vh
+		min-height: 640px
+
+	&:before
+		content: ''
+		display: block
+		position: fixed
+		top: 0
+		left: 0
+		width: 100%
+		min-height: 400px
+		height: 60vh
+		background:
+			image: url('https://hd.unsplash.com/photo-1457365050282-c53d772ef8b2')
+			size: cover
+			position: center bottom
+		will-change: transform
+		z-index: 0
+
+		// Media queries ----
+		@media (min-width: 768px)
+			height: 80vh
+			min-height: 640px
+
+	// Pseudos ----
+	&:after
+		content: ''
+		display: block
+		+absolute(0,0,0,0)
+		background:
+			image: radial-gradient(transparent, rgba(0,0,0,0.4))
+		z-index: 0
+
+	/* Layering due to Psuedo overlay */
+	.container
+		z-index: 1
+
+	.mouse
+		position: relative
+		width: calc(28px * 2)
+		height: calc(44px * 2)
+		margin: 0 auto 20px
+		background: none
+		border: 2px solid white
+		border-radius: calc(16px * 2)
+		z-index: 1
+
+		// Media queries ----
+		@media (min-width: 768px)
+			width: calc(28px * 4)
+			height: calc(44px * 4)
+			margin: 0 auto 30px
+			background: none
+			border: 2px solid white
+			border-radius: calc(16px * 4)
+
+		&:after
+			display: block
+			content: ''
+			+absolute(10px,50%,null,null)
+			width: calc(5px * 2)
+			height: calc(5px * 2)
+			background: none
+			border: 2px solid white
+			border-radius: 100%
+			animation:
+				name: scrollWheel
+				duration: 1.4s
+				fill-mode: forwards
+				iteration-count: infinite
+				timing-function: ease
+			will-change: transform
+
+			// Media queries ----
+			@media (min-width: 768px)
+				+absolute(25px,50%,null,null)
+				width: calc(5px * 4)
+				height: calc(5px * 4)
+	h1
+		text:
+			align: center
+			shadow: 0px 0px 20px rgba(0,0,0,0.5)
+		color: $font-light
+
+	h4
+		font:
+			size: 14px
+			weight: 600
+		text:
+			align: center
+			transform: uppercase
+			shadow: 0px 0px 20px rgba(0,0,0,0.5)
+		letter-spacing: 2px
+		color: $primary
+
+	p
+		margin: 0
+		padding: 25px 0
+		text:
+			align: center
+			shadow: 0px 0px 40px rgba(0,0,0,0.5), 1px 1px 3px rgba(0,0,0,0.3)
+		line-height: 26px
+		color: $font-light
+
+#about
+	p
+		text:
+			align: center
+		color: #333
+
+#demo
+	background: $background-light
+
+	h4
+		margin-bottom: 20px
+		margin-bottom: 0px
+		font:
+			size: 0.875rem
+			weight: 400
+		text:
+			transform: uppercase
+		line-height: 24px
+		letter-spacing: 1px
+		color: $grey
+
+	.video-roll--container
+		padding: 0
+
+		@media (min-width: 768px)
+			padding: 0 15px
+
+	.video-roll
+		display: flex
+		flex:
+			direction: row
+			wrap: wrap
+		align-items: center
+		position: relative
+		width: 100%
+		max-width: 1000px
+		// height: 240px
+		margin: 0 auto 80px
+		padding: 25px 0 0
+		list-style: none
+
+		@media (min-width: 768px)
+			margin: 0 auto 120px
+
+		// Pseudo -------
+		&:after
+			content: ''
+			display: block
+			width: 30%
+			height: 14px
+			margin: -90px auto 0
+			margin: -20px auto 0
+			background: transparent
+			border-radius: 50%
+			box-shadow: 0 50px 40px rgba(0,0,0,0.4)
+
+			@media (min-width: 768px)
+				margin: 0px auto 0
+
+		li
+			display: flex
+			flex:
+				direction: column
+				grow: 0
+				shrink: 1
+			align-items: stretch
+			align-content: stretch
+			position: relative
+			background: transparent
+
+			// Pseudo -------------
+
+			&:before
+				content: ''
+				display: block
+				padding-top: 56.25%
+
+			&:after
+				content: ''
+				display: block
+				+absolute(null,50%,null,0px)
+				width: 60%
+				height: 14px
+				margin: -90px auto 0
+				background: transparent
+				border-radius: 50%
+				box-shadow: 0 50px 40px rgba(0,0,0,0.25)
+				+translate(-50%,0)
+
+			// nth Child -----------
+
+			&:first-child
+				visibility: hidden
+				flex:
+					basis: 10%
+				+translate(50%,0)
+				opacity: 0
+
+				@media (min-width: 768px)
+					visibility: visible
+					flex:
+						basis: 30%
+					opacity: 1
+
+				a
+					background:
+						image: url('https://i.ytimg.com/vi/kLiMpaMKal8/maxresdefault.jpg')
+					transform-origin: left center
+
+			&:nth-child(2)
+				flex:
+					basis: 80%
+				z-index: 2
+
+				@media (min-width: 768px)
+					flex:
+						basis: 40%
+
+				&:after
+					display: none
+
+				a
+					flex:
+						grow: 1
+					background:
+						image: url('https://i.ytimg.com/vi/aVFYHGtf6So/maxresdefault.jpg')
+					transform-origin: center center
+
+			&:last-child
+				visibility: hidden
+				flex:
+					basis: 10%
+				+translate(-50%,0)
+				opacity: 0
+
+				@media (min-width: 768px)
+					visibility: visible
+					flex:
+						basis: 30%
+					opacity: 1
+
+				a
+					background:
+						image: url('https://i.ytimg.com/vi/OKxASY7ABfs/maxresdefault.jpg')
+					transform-origin: right center
+
+			a
+				+absolute(0,0,0,0)
+				background:
+					// image: url('https://i.ytimg.com/vi/kLiMpaMKal8/maxresdefault.jpg')
+					size: cover
+					position: center center
+				// box-shadow: 0px 6px 10px -2px rgba(0,0,0,0.2)
+				+translate(0,0)
+				transition: transform 0.2s ease-out
+				will-change: transform
+
+				&:hover
+					+translate(0,-4px)
+
+
+#features
+	padding-bottom: 0
+	color: #333
+
+	.feature-container
+		margin-bottom: 80px
+
+		@media (min-width: 768px)
+			margin-bottom: 80px
+
+	.feature
+		padding: 25px 0
+
+		@media (min-width: 768px)
+			padding: 50px 0
+
+		svg
+			width: 40px
+			height: 40px
+			margin-bottom: 15px
+			fill: currentColor
+
+			@media (min-width: 768px)
+				width: 60px
+				height: 60px
+
+		h4
+			font:
+				size: 14px
+				weight: 600
+			text:
+				transform: uppercase
+			line-height: 24px
+			letter-spacing: 2px
+			color: $primary
+
+		p
+			font:
+				size: 14px
+				weight: 300
+			color: $grey
+			letter-spacing: 1px
+
+	.animated-scroll
+		display: flex
+		flex:
+			direction: column
+		position: relative
+		width: 80%
+		max-width: 450px
+		height: 315px
+		margin: 0 auto
+		border: 4px solid $primary-dark
+		border-bottom-color: transparent
+		border-radius: 6px
+		overflow: hidden
+
+		.scroll-header
+			display: flex
+			flex:
+				direction: row
+				grow: 0
+				shrink: 0
+				basis: 60px
+			align-items: center
+			justify-content: center
+			background: $primary-dark
+
+			.scroll-nav
+				width: 15%
+				height: 8px
+				margin-right: 5%
+				border-radius: 4px
+
+			.sn-1
+				animation:
+					name: scrollColor-1
+					iteration-count: infinite
+					timing-function: linear
+					duration: 5s
+					// direction: alternate
+					fill-mode: forwards
+
+			.sn-2
+				animation:
+					name: scrollColor-2
+					iteration-count: infinite
+					timing-function: linear
+					duration: 5s
+					// direction: alternate
+					fill-mode: forwards
+
+			.sn-3
+				margin-right: 0
+				animation:
+					name: scrollColor-3
+					iteration-count: infinite
+					timing-function: linear
+					duration: 5s
+					// direction: alternate
+					fill-mode: forwards
+
+			svg.cursor
+				+absolute(28px,50%,null,null)
+				width: 20%
+				height: 20px
+				animation:
+					name: scrollCursor
+					iteration-count: infinite
+					timing-function: linear
+					duration: 5s
+					fill-mode: forwards
+				z-index: 2
+
+		.scroll-body
+			display: flex
+			flex:
+				direction: column
+				grow: 1
+				shrink: 1
+				basis: auto
+			padding-top: 20px
+			overflow: hidden
+
+		.scroll-child
+			flex:
+				grow: 0
+				shrink: 0
+				basis: 150px
+			width: 90%
+			margin: 0 auto 20px
+			fill: lighten($font-dark, 5%)
+			background: rgba(255,255,255,0.2)
+			border-radius: 4px
+			animation:
+				name: scrollDemo
+				iteration-count: infinite
+				timing-function: linear
+				duration: 5s
+				fill-mode: forwards
+
+		.sc-back-to-top
+			flex:
+				basis: 40px
+			width: 40px
+			margin: 0 auto
+			border-radius: 100%
+			animation:
+				name: scrollBackToTop
+				iteration-count: infinite
+				timing-function: linear
+				duration: 5s
+				fill-mode: forwards
+			z-index: 0
+
+
+	.focus-events
+		display: flex
+		flex:
+			direction: column
+		position: relative
+		width: 80%
+		max-width: 450px
+		height: 315px
+		margin: 0 auto
+		border: 4px solid darken($background-light, 4%)
+		border-bottom-color: transparent
+		border-radius: 6px
+		overflow: hidden
+
+		.scroll-header
+			display: flex
+			flex:
+				direction: row
+				grow: 0
+				shrink: 0
+				basis: 60px
+			align-items: center
+			justify-content: center
+			background: darken($background-light, 4%)
+
+			.scroll-nav
+				width: 15%
+				height: 8px
+				margin-right: 5%
+				border-radius: 4px
+				// background: darken($background-light, 12%)
+
+			.sn-1
+				animation:
+					name: focusColor-1
+					iteration-count: infinite
+					timing-function: linear
+					duration: 4s
+					fill-mode: forwards
+
+			.sn-2
+				animation:
+					name: focusColor-2
+					iteration-count: infinite
+					timing-function: linear
+					duration: 4s
+					fill-mode: forwards
+
+			svg.cursor
+				+absolute(28px,50%,null,null)
+				width: 20%
+				height: 20px
+				animation:
+					name: focusCursor
+					iteration-count: infinite
+					timing-function: linear
+					duration: 4s
+					fill-mode: forwards
+				z-index: 2
+
+		.scroll-body
+			display: flex
+			flex:
+				direction: column
+				grow: 1
+				shrink: 1
+				basis: auto
+			padding-top: 20px
+			overflow: hidden
+
+		.scroll-child
+			flex:
+				grow: 0
+				shrink: 0
+				basis: 150px
+			width: 90%
+			margin: 0 auto 20px
+			padding: 10% 5%
+			background: rgba(0,0,0,0.05)
+			background: darken($background-light, 2%)
+			border-radius: 4px
+			animation:
+				name: focusDemo
+				iteration-count: infinite
+				timing-function: ease-in
+				duration: 4s
+				fill-mode: forwards
+
+			.header
+				height: 14px
+				width: 50%
+				margin: 0 auto 8px
+				border-radius: 8px
+				background: darken($background-light, 7%)
+
+			.sub-header
+				height: 10px
+				width: 40%
+				margin: 0 auto 22px
+				border-radius: 6px
+				background: darken($background-light, 5%)
+
+			.body
+				width: 70%
+				height: 8px
+				margin: 0 auto 8px
+				background: darken($background-light, 6%)
+
+		.sc-2
+			.header
+				animation:
+					name: focusHeaderColor
+					iteration-count: infinite
+					timing-function: linear
+					duration: 4s
+					fill-mode: forwards
+
+#howto
+
+@keyframes scrollWheel
+	from
+		+translate(-50%,0)
+		opacity: 1
+
+	to
+		+translate(-50%,20px)
+		opacity: 0
+
+	@media (min-width: 768px)
+		from
+			+translate(-50%,0)
+			opacity: 1
+
+		to
+			+translate(-50%,40px)
+			opacity: 0
+
+@keyframes scrollDemo
+	from, 30%
+		+translate(0,0px)
+	40%, 60%
+		+translate(0,-170px)
+	70%, 90%
+		+translate(0,-340px)
+	to
+		+translate(0,0px)
+
+@keyframes scrollColor-1
+	from, 39.9%
+		background: rgba(255,255,255,0.7)
+	40%, to
+		background: $primary
+
+@keyframes scrollColor-2
+	from, 24%
+		background: $primary
+	24.2%, 28%
+		background: lighten($primary, 10%)
+	28.2%, 39.9%
+		background: $primary
+	40%, 69.9%
+		background: rgba(255,255,255,0.7)
+	70%, to
+		background: $primary
+
+@keyframes scrollColor-3
+	from, 53.8%
+		background: $primary
+	54%, 57.8%
+		background: lighten($primary, 10%)
+	58%, 69.9%
+		background: $primary
+	70%, 99.9%
+		background: rgba(255,255,255,0.7)
+	to
+		background: $primary
+
+@keyframes scrollBackToTop
+	from, 30%
+		+translate(0,0px)
+		background: rgba(255,255,255,0.2)
+	40%, 60%
+		+translate(0,-170px)
+	70%, 90%
+		+translate(0,-340px)
+	84.8%
+		background: rgba(255,255,255,0.2)
+	85%, 88.8%
+		background: rgba(255,255,255,0.5)
+	89%
+		background: rgba(255,255,255,0.2)
+	to
+		+translate(0,0px)
+		background: rgba(255,255,255,0.2)
+
+@keyframes scrollCursor
+	from
+		+translate(-50%, 236px)
+	15%, 30%
+		+translate(-50%,0)
+	35%, 65%
+		+translate(50%,0)
+	78%, to
+		+translate(-50%, 236px)
+
+@keyframes focusDemo
+	from, 30%
+		+translate(0,0px)
+	40%, to
+		+translate(0,-170px)
+
+@keyframes focusColor-1
+	from, 39.9%
+		background: darken($background-light,10%)
+	40%, to
+		background: $background-light
+
+@keyframes focusColor-2
+	from, 24%
+		background: $background-light
+	24.2%, 28%
+		background: darken($background-light,7%)
+	28.2%, 40%
+		background: $background-light
+	40.1%, to
+		background: darken($background-light,10%)
+
+@keyframes focusHeaderColor
+	from, 40%
+		background: darken($background-light, 7%)
+	40.2%, 70%
+		background: $primary
+	75%, to
+		background: darken($background-light, 7%)
+
+@keyframes focusCursor
+	from
+		+translate(-50%, 200px)
+		opacity: 0
+	10%
+		opacity: 1
+	15%, 30%
+		opacity: 1
+		+translate(-10%, 0)
+	45%, to
+		opacity: 0
+
+.highlight
+	padding: 9px 14px
+	margin-bottom: 14px
+	background-color: #f7f7f9
+	border: 1px solid #e1e1e8
+	border-radius: 4px
+
+.highlight pre
+	padding: 0
+	margin-top: 0
+	margin-bottom: 0
+	word-break: normal
+	white-space: nowrap
+	background-color: transparent
+	border: 0
+
+.highlight pre code
+	font-size: inherit
+	color: #333 /* Effectively the base text color */
+
+.highlight pre code:first-child
+	display: inline-block
+	padding-right: 45px

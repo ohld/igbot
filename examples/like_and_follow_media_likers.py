@@ -2,7 +2,7 @@
     instabot example
 
     Workflow:
-        Like and follow likers of last medias from your timeline feed.
+        Like and follow you last media likers.
 """
 
 import sys
@@ -25,12 +25,12 @@ def like_and_follow_media_likers(bot, media, nlikes=3):
         time.sleep(10 + 20 * random.random())
     return True
 
-def like_and_follow_your_feed_likers(bot, nlikes=3):
-    last_media = bot.get_your_medias()[0]
-    return like_and_follow_media_likers(bot, last_media, nlikes=3)
-
+if len(sys.argv) != 2:
+    print ("USAGE: Pass media_id")
+    print ("Example: %s 123123123123" % sys.argv[0])
+    exit()
 
 bot = Bot()
 bot.login()
-like_and_follow_your_feed_likers(bot)
+like_and_follow_media_likers(bot, sys.argv[1])
 bot.logout()

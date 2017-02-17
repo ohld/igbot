@@ -1,9 +1,12 @@
+import os
+import sys
 import time
 import datetime
 import random
 import atexit
 import signal
 import logging
+import io
 
 import pkg_resources  # part of setuptools
 
@@ -12,17 +15,47 @@ from tqdm import tqdm
 from .. import API
 from . import limits
 
-from .bot_get_medias import get_timeline_medias
-from .bot_get_medias import get_user_medias
-from .bot_get_medias import get_hashtag_medias
+from .bot_get import get_your_medias
+from .bot_get import get_timeline_medias
+from .bot_get import get_user_medias
+from .bot_get import get_hashtag_medias
+from .bot_get import get_geotag_medias
+from .bot_get import get_timeline_users
+from .bot_get import get_hashtag_users
+from .bot_get import get_geotag_users
+from .bot_get import get_userid_from_username
+from .bot_get import get_user_followers
+from .bot_get import get_user_following
+from .bot_get import get_media_likers
+from .bot_get import get_media_comments
+from .bot_get import get_comment
+from .bot_get import get_media_commenters
 
-from .bot_like_feed import like_timeline
-from .bot_like_feed import like_user_id
-from .bot_like_feed import like_hashtag
-from .bot_like_feed import comment_hashtag
+from .bot_like import like
+from .bot_like import like_medias
+from .bot_like import like_timeline
+from .bot_like import like_user_id
+from .bot_like import like_hashtag
+from .bot_like import like_geotag
 
-from .bot_unfollow_non_followers import unfollow_non_followers
-from .bot_follow_followers import follow_followers
+from .bot_unlike import unlike
+from .bot_unlike import unlike_medias
+
+from .bot_follow import follow
+from .bot_follow import follow_users
+from .bot_follow import follow_followers
+from .bot_follow import follow_following
+
+from .bot_unfollow import unfollow
+from .bot_unfollow import unfollow_users
+from .bot_unfollow import unfollow_non_followers
+
+from .bot_comment import comment
+from .bot_comment import comment_hashtag
+from .bot_comment import comment_users
+from .bot_comment import comment_geotag
+from .bot_comment import comment_medias
+from .bot_comment import is_commented
 
 from .bot_checkpoint import save_checkpoint
 from .bot_checkpoint import load_checkpoint
@@ -30,13 +63,6 @@ from .bot_checkpoint import checkpoint_followers_diff
 from .bot_checkpoint import checkpoint_following_diff
 from .bot_checkpoint import load_last_checkpoint
 from .bot_checkpoint import revert_to_checkpoint
-
-from .bot_like_and_follow import like_and_follow
-from .bot_like_and_follow import like_and_follow_media_likers
-from .bot_like_and_follow import like_and_follow_your_feed_likers
-
-from .bot_comment import get_comment
-from .bot_comment import is_commented
 
 from .bot_filter import read_list
 from .bot_filter import get_media_owner
@@ -47,15 +73,35 @@ from .bot_filter import check_user
 class Bot(API):
     def __init__(self,
                  whitelist=False,
-                 blacklist=False):
+                 blacklist=False,
+                 comments_file=False,
+                 max_likes_per_day=False,
+                 max_follows_per_day=False,
+                 max_comments_per_day=False):
         super(self.__class__, self).__init__()
+
+        self.user_id = None # TODO
+
         self.total_liked = 0
         self.total_unliked = 0
         self.total_followed = 0
         self.total_unfollowed = 0
         self.total_commented = 0
-        self.MAX_LIKES_TO_LIKE = limits.MAX_LIKES_TO_LIKE
         self.start_time = datetime.datetime.now()
+
+        # limits
+        self.max_likes_per_day = max_likes_per_day
+        if not self.max_likes_per_day:
+            self.max_likes_per_day = limits.MAX_LIKES_PER_DAY
+
+        self.max_follows_per_day = max_follows_per_day
+        if not self.max_follows_per_day:
+            self.max_follows_per_day = limits.MAX_FOLLOWS_PER_DAY
+
+        self.max_comments_per_day = max_comments_per_day
+        if not self.max_comments_per_day:
+            self.max_comments_per_day = limits.MAX_COMMENTS_PER_DAY
+
 
         # handle logging
         self.logger = logging.getLogger('[instabot]')
@@ -76,9 +122,18 @@ class Bot(API):
         self.blacklist = []
         if blacklist:
             self.blacklist = read_list(blacklist)
-            self.logger.info(("Size of blacklist: %d" % len(self.blacklist)))
+            self.logger.info("Size of blacklist: %d" % len(self.blacklist))
         signal.signal(signal.SIGTERM, self.logout)
         atexit.register(self.logout)
+
+        # comment file
+        self.comments = []
+        if comments_file:
+            if os.path.exists(comments_file):
+                with io.open(comments_file, "r", encoding="utf8") as f:
+                    self.comments = f.readlines()
+            else:
+                self.logger.info("Can't find comment file!")
 
     def logout(self):
         super(self.__class__, self).logout()
@@ -95,102 +150,10 @@ class Bot(API):
         if self.total_commented:
             self.logger.info("  Total commented: %d" % self.total_commented)
 
-    def like(self, media_id):
-        if not self.check_media(media_id):
-            return False
-        if super(self.__class__, self).like(media_id):
-            self.total_liked += 1
-            return True
-        return False
+# getters
 
-    def unlike(self, media_id):
-        if not self.check_media(media_id):
-            return False
-        if super(self.__class__, self).unlike(media_id):
-            self.total_unliked += 1
-            return True
-        return False
-
-    def follow(self, user_id):
-        if not self.check_user(user_id):
-            return False
-        if super(self.__class__, self).follow(user_id):
-            self.total_followed += 1
-            return True
-        return False
-
-    def unfollow(self, user_id):
-        if not self.check_user(user_id):
-            return False
-        if super(self.__class__, self).unfollow(user_id):
-            self.total_unfollowed += 1
-            return True
-        return False
-
-    def comment(self, media_id, comment_text):
-        if not self.check_media(media_id):
-            return False
-        if super(self.__class__, self).comment(media_id, comment_text):
-            self.total_commented += 1
-            return True
-        return False
-
-    def comment_medias(self, medias):
-        """ medias - list of ["pk"] fields of response """
-        self.logger.info("    Going to comment on %d medias." % (len(medias)))
-        total_commented = 0
-        for media in tqdm(medias):
-
-            # grab a comment
-            co = self.get_comment('comments.txt')
-
-            if self.comment(media, co):
-                total_commented += 1
-            else:
-                pass
-            time.sleep(10 * random.random())
-        self.logger.info("    DONE: Total commented on %d medias. " % total_commented)
-        return True
-
-
-    def like_medias(self, medias):
-        """ medias - list of ["pk"] fields of response """
-        self.logger.info("    Going to like %d medias." % (len(medias)))
-        total_liked = 0
-        for media in tqdm(medias):
-            if self.like(media):
-                total_liked += 1
-            else:
-                pass
-            time.sleep(10 * random.random())
-        self.logger.info("    DONE: Total liked %d medias. " % total_liked)
-        return True
-
-    def follow_users(self, user_ids):
-        """ user_ids - list of user_id to follow """
-        self.logger.info("    Going to follow %d users." % len(user_ids))
-        total_followed = 0
-        for user_id in tqdm(user_ids):
-            if self.follow(user_id):
-                total_followed += 1
-            else:
-                pass
-            time.sleep(15 + 30 * random.random())
-        self.logger.info("    DONE: Total followed %d users. " % total_followed)
-        return True
-
-    def unfollow_users(self, user_ids):
-        """ user_ids - list of user_id to unfollow """
-        logging.info("    Going to unfollow %d users." % len(user_ids))
-        total_unfollowed = 0
-        for user_id in tqdm(user_ids):
-            if self.unfollow(user_id):
-                total_unfollowed += 1
-            else:
-                pass
-            time.sleep(15 + 30 * random.random())
-        self.logger.info("    DONE: Total unfollowed %d users. " % total_unfollowed)
-        return True
+    def get_your_medias(self):
+        return get_your_medias(self)
 
     def get_timeline_medias(self):
         return get_timeline_medias(self)
@@ -198,23 +161,116 @@ class Bot(API):
     def get_user_medias(self, user_id):
         return get_user_medias(self, user_id)
 
+    def get_hashtag_medias(self, hashtag):
+        return get_hashtag_medias(self, hashtag)
+
+    def get_geotag_medias(self, geotag):
+        return get_geotag_medias(self, geotag)
+
+    def get_timeline_users(self):
+        return get_timeline_users(self)
+
+    def get_hashtag_users(self, hashtag):
+        return get_hashtag_users(self, hashtag)
+
+    def get_geotag_users(self, geotag):
+        return get_geotag_users(self, geotag)
+
+    def get_userid_from_username(self, username):
+        return get_userid_from_username(self, username)
+
+    def get_user_followers(self, user_id):
+        return get_user_followers(self, user_id)
+
+    def get_user_following(self, user_id):
+        return get_user_following(self, user_id)
+
+    def get_media_likers(self, media_id):
+        return get_media_likers(self, media_id)
+
+    def get_media_comments(self, media_id):
+        return get_media_likers(self, media_id)
+
+    def get_comment(self):
+        return get_comment(self)
+
+    def get_media_commenters(bot, media_id):
+        return get_media_commenters(bot, media_id)
+
+# like
+
+    def like(self, media_id):
+        return like(self, media_id)
+
+    def like_medias(self, media_ids):
+        return like_medias(self, media_ids)
+
     def like_timeline(self, amount=None):
         return like_timeline(self, amount)
 
     def like_user_id(self, user_id, amount=None):
         return like_user_id(self, user_id, amount)
 
+    def like_hashtag(self, hashtag, amount=None):
+        return like_hashtag(self, hashtag, amount)
+
+    def like_geotag(self, geotag, amount=None):
+        return like_geotag(self, geotag, amount)
+
+# unlike
+
+    def unlike(self, media_id):
+        return unlike(self, media_id)
+
+    def unlike_medias(self, media_ids):
+        return unlike_medias(self, media_ids)
+
+# follow
+
+    def follow(self, user_id):
+        return follow(self, user_id)
+
+    def follow_users(self, user_ids):
+        return follow_users(self, user_ids)
+
+    def follow_followers(self, user_id):
+        return follow_followers(self, user_id)
+
+    def follow_following(self, user_id):
+        return follow_following(self, user_id)
+
+# unfollow
+
+    def unfollow(self, user_id):
+        return unfollow(self, user_id)
+
+    def unfollow_users(self, user_ids):
+        return unfollow_users(self, user_ids)
+
     def unfollow_non_followers(self):
         return unfollow_non_followers(self)
 
-    def follow_followers(self, user_id, nfollows=40):
-        return follow_followers(self, user_id, nfollows)
+# comment
 
-    def comment_hashtag(self, tag, ncomments=15):
-        return comment_hashtag(self,tag, ncomments)
+    def comment(self, media_id, comment_text):
+        return comment(self, media_id, comment_text)
 
-    def like_hashtag(self, tag, amount=None):
-        return like_hashtag(self, tag, amount)
+    def comment_hashtag(self, hashtag):
+        return comment_hashtag(self, hashtag)
+
+    def comment_medias(self, medias):
+        return comment_medias(self, medias)
+
+    def comment_users(self, user_ids):
+        return comment_users(self, user_ids)
+
+    def comment_geotag(self, geotag):
+        return comment_geotag(self, geotag)
+
+    def is_commented(self, media_id):
+        return is_commented(self, media_id)
+
+# checkpoint
 
     def save_checkpoint(self):
         return save_checkpoint(self)
@@ -234,20 +290,7 @@ class Bot(API):
     def revert_to_checkpoint(self, cp):
         return revert_to_checkpoint(self, cp)
 
-    def like_and_follow(self, user_id, nlikes=3):
-        return like_and_follow(self, user_id, nlikes)
-
-    def like_and_follow_media_likers(self, media, nlikes=3):
-        return like_and_follow_media_likers(self, media, nlikes)
-
-    def like_and_follow_your_feed_likers(self, nlikes=3):
-        return like_and_follow_your_feed_likers(self, nlikes)
-
-    def get_comment(self, comment_base_file=None):
-        return get_comment(self, comment_base_file)
-
-    def is_commented(self, media_id):
-        return is_commented(self, media_id)
+# filter
 
     def add_whitelist(self, file_path):
         return add_whitelist(self, file_path)
@@ -263,6 +306,3 @@ class Bot(API):
 
     def check_user(self, user):
         return check_user(self, user)
-
-    def get_hashtag_medias(self, hashtag, amount=None):
-        return get_hashtag_medias(self, hashtag, amount)

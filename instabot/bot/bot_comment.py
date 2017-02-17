@@ -9,40 +9,53 @@
         kek
 
 """
-
+import time
 import random
 import os
 import io
+from tqdm import tqdm
 
-def get_random_comment_from_file(file_path):
-    with io.open(file_path, "r", encoding="utf8") as f:
-        content = f.readlines()
-        return random.choice(content).strip()
+from . import limits
 
-def get_comment(bot, comment_base_file=None):
-    """
-        Generates comment.
-        If comment_base_file argunment is passed, it uses the lines from file
-        as comments to return.
-
-        TODO: generate more ways to create comments.
-    """
-    if comment_base_file is not None:
-        if os.path.exists(comment_base_file):
-            return get_random_comment_from_file(comment_base_file)
-        else:
-            bot.logger.info("Can't find your file with comments.")
-            return "lol"
+def comment(self, media_id, comment_text):
+    if not self.check_media(media_id):
+        return True
+    if limits.check_if_bot_can_comment(self):
+        if super(self.__class__, self).comment(media_id, comment_text):
+            self.total_commented += 1
+            return True
     else:
-        return "lol"
+        self.logger.info("Out of comments for today.")
+    return False
 
-def is_commented(bot, media_id):
-    """
-    checks if media is already commented
-    """
-    bot.getMediaComments(media_id)
-    # print (bot.LastJson)
-    if 'comments' not in bot.LastJson:
-        return False
-    usernames = [item["user"]["username"] for item in bot.LastJson['comments']]
-    return bot.username in usernames
+def comment_medias(self, medias):
+    self.logger.info("Going to comment %d medias." % (len(medias)))
+    for media in tqdm(medias):
+        if not self.is_commented(media):
+            text = self.get_comment()
+            self.logger.info("Commented with text: %s" % text)
+            if not self.comment(media, text):
+                time.sleep(240)
+                while not self.comment(media, text):
+                    time.sleep(240)
+            time.sleep(30 * random.random() + 30)
+    self.logger.info("DONE: Total commented on %d medias. " % self.total_commented)
+    return True
+
+def comment_hashtag(self, hashtag, amount=None):
+    self.logger.info("Going to comment medias by %s hashtag" % hashtag)
+    medias = self.get_hashtag_medias(hashtag)
+    return self.comment_medias(medias[:amount])
+
+def comment_users(self, user_ids):
+    # TODO: Put a comment to last media of every user from list
+    pass
+
+def comment_geotag(self, geotag):
+    # TODO: comment every media from geotag
+    pass
+
+def is_commented(self, media_id):
+    # TODO: get_media_commenters returns _usernames_ not user_ids!
+    # TODO: implement self.user_id and change the method
+    return self.username in self.get_media_commenters(media_id)
