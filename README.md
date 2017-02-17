@@ -1,11 +1,11 @@
 # instabot
 Cool instagram scripts and API wrapper. Written in Python.
 ___
-As you may know, Instagram closed it's API in summer 2016. This Python module can do the same thing without any effort.
+As you may know, Instagram closed it's API in summer 2016. This Python module can do the same thing without any effort. Also it has lots of example scripts to start with.
 
 If you have any ideas, please, leave them in [issues section](https://github.com/ohld/instabot/issues) or in our [telegram chat](https://t.me/joinchat/AAAAAAuPofDcEgHBSysAGg).
 
-*Your Contribution and Support through Stars will be highly appreciated.*
+*Your **Contribution** and Support through **Stars** will be highly appreciated.*
 
 ## How to install
 
@@ -14,6 +14,14 @@ Install latest stable version from pip
 ```
 pip install -U instabot
 ```
+
+## How to run
+Choose any script from [examples](https://github.com/ohld/instabot/tree/master/examples) and run
+```
+python example.py
+```
+
+If you have any problems with script, please ask questions in telegram chat.
 
 ## Implemented [bot](https://github.com/ohld/instabot/blob/master/instabot/bot/bot.py) methods
 
@@ -32,9 +40,12 @@ bot = Bot()
 
 | parameter| description | example |
 | ------------- |:-------------:| ------:|
-| whitelist | Path to the file with user_ids that shoudn't be unfollowed| bot = Bot(whitelist="whitelist.txt")|
-| blacklist | Path to the file with user_ids that shoudn't be followed, liked or commented | bot = Bot(blacklist="blacklist.txt")|
-| comments_file | Path to the comments database | bot = Bot(comments_file="comments.txt")|
+| max_likes_per_day| How many likes will bot put per day| max_likes_per_day = 1000|
+| max_follows_per_day| Max number of follow per day| max_follows_per_day = 350|
+| max_comments_per_day| Max number of comments per day| max_comments_per_day = 100|
+| whitelist | Path to the file with user_ids that shoudn't be unfollowed| whitelist="whitelist.txt"|
+| blacklist | Path to the file with user_ids that shoudn't be followed, liked or commented | blacklist="blacklist.txt"|
+| comments_file | Path to the comments database | comments_file="comments.txt"|
 
 In all files one line - one item (comment or user_id).
 
@@ -42,6 +53,7 @@ In all files one line - one item (comment or user_id).
 
 | method        | description | example  |
 | ------------- |:-------------:| ------:|
+| get_your_medias | Get list of your last medias | bot.get_you_medias()|
 | get_timeline_medias | Get list of media_ids from you timeline feed| bot.get_timeline_medias()|
 | get_user_medias | Get list of user_id's medias | bot.get_user_medias("352300017")|
 | get_hashtag_medias| Get list of medias by hashtag| bot.get_hashtag_medias("Dog")|
@@ -50,9 +62,9 @@ In all files one line - one item (comment or user_id).
 | get_hashtag_users| Get list of users who posted with hashtag| TODO |
 | get_geotag_users| Get list of users who posted with geotag| TODO |
 | get_userid_from_username| Convert username to user_id| TODO |
-| get_user_followers| Get list of user's followers| TODO |
-| get_user_following| Get list of user's following| TODO |
-| get_media_likers | Get list of media likers| TODO |
+| get_user_followers| Get list of user's followers| bot.get_user_followers("352300017") |
+| get_user_following| Get list of user's following| bot.get_user_following("352300017") |
+| get_media_likers | Get list of media likers| bot.get_media_likers("12312412") |
 | get_media_comments | Get list of media's comments| TODO |
 | get_comment | Get comment from comment file| bot.get_comment()|
 | get_media_commenters| Get list of users who commented media| bot.get_media_commenters("12321")|
@@ -124,12 +136,6 @@ bot.like_hashtag("dog")
 bot.comment_hashtag("dogs")
 bot.unfollow_non_followers()
 bot.logout()
-```
-
-## How to run
-Choose any example from [examples](https://github.com/ohld/instabot/tree/master/examples) and run
-```
-python example.py
 ```
 ___
 _by @ohld_
