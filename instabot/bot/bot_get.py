@@ -66,8 +66,11 @@ def get_timeline_users(self):
     pass
 
 def get_hashtag_users(self, hashtag):
-    # TODO: returns list userids who just posted on this hashtag
-    pass
+    users = []
+    self.getHashtagFeed(hashtag)
+    for i in self.LastJson['items']:
+        users.append(i['user']['pk'])
+    return users
 
 def get_geotag_users(self, geotag):
     # TODO: returns list userids who just posted on this geotag
