@@ -5,7 +5,7 @@ As you may know, Instagram closed it's API in summer 2016. This Python module ca
 
 If you have any ideas, please, leave them in [issues section](https://github.com/ohld/instabot/issues) or in our [telegram chat](https://t.me/joinchat/AAAAAAuPofDcEgHBSysAGg).
 
-*Your **Contribution** and Support through **Stars** will be highly appreciated.*
+*Your __Contribution__ and Support through __Stars__ will be highly appreciated.*
 
 ## How to install
 
