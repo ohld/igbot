@@ -37,4 +37,3 @@ if users_file_name:
 bot = Bot()
 bot.login()
 bot.follow_users(users_to_follow)
-bot.logout()

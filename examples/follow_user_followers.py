@@ -22,4 +22,3 @@ if len(sys.argv) != 2:
 bot = Bot()
 bot.login()
 bot.follow_followers(sys.argv[1])
-bot.logout()

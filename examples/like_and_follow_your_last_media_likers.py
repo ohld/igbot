@@ -33,4 +33,3 @@ def like_and_follow_your_feed_likers(bot, nlikes=3):
 bot = Bot()
 bot.login()
 like_and_follow_your_feed_likers(bot)
-bot.logout()

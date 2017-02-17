@@ -33,4 +33,3 @@ if len(sys.argv) != 2:
 bot = Bot()
 bot.login()
 like_and_follow_media_likers(bot, sys.argv[1])
-bot.logout()

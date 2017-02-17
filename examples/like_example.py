@@ -33,7 +33,3 @@ tags = ["l4l","selfie"]
 
 for t in tags:
    bot.like_hashtag(t)
-
-
-# logout
-bot.logout()
