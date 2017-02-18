@@ -25,6 +25,17 @@ python example.py
 
 If you have any problems with script, please ask questions in [telegram chat](https://t.me/joinchat/AAAAAAuPofDcEgHBSysAGg).
 
+## Docker
+As long as docker is running on your machine you can build an instabot docker image like this
+```
+docker build -t instabot .
+```
+
+Then run your image with an example or your custom script:
+```
+docker run --name instabot -p 80:80 -i -t instabot python examples/like_example.py
+```
+
 ## Implemented [bot](https://github.com/ohld/instabot/blob/master/instabot/bot/bot.py) methods
 
 ``` python
