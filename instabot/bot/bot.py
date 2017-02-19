@@ -65,6 +65,7 @@ from .bot_checkpoint import checkpoint_following_diff
 from .bot_checkpoint import load_last_checkpoint
 from .bot_checkpoint import revert_to_checkpoint
 
+from .bot_filter import check_if_file_exists
 from .bot_filter import read_list_from_file
 from .bot_filter import get_media_owner
 from .bot_filter import check_media
@@ -274,8 +275,8 @@ class Bot(API):
 
 # checkpoint
 
-    def save_checkpoint(self):
-        return save_checkpoint(self)
+    def save_checkpoint(self, path=None):
+        return save_checkpoint(self, path)
 
     def load_checkpoint(self, path):
         return load_checkpoint(self, path)
@@ -289,10 +290,13 @@ class Bot(API):
     def load_last_checkpoint(self):
         return load_last_checkpoint(self)
 
-    def revert_to_checkpoint(self, cp):
-        return revert_to_checkpoint(self, cp)
+    def revert_to_checkpoint(self, file_path):
+        return revert_to_checkpoint(self, file_path)
 
 # filter
+
+    def check_if_file_exists(self, file_path):
+        return check_if_file_exists(file_path)
 
     def read_list_from_file(self, file_path):
         return read_list_from_file(file_path)

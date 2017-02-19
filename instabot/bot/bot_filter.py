@@ -7,14 +7,19 @@
 import os
 import io
 
+def check_if_file_exists(file_path):
+    if not os.path.exists(file_path):
+        print ("Can't find '%s' file." % file_path)
+        return False
+    return True
+
 def read_list_from_file(file_path):
     """
         Reads list from file. One line - one item.
         Returns the list if file items.
     """
     try:
-        if not os.path.exists(file_path):
-            print ("Can't find '%s' file." % file_path)
+        if not check_if_file_exists(file_path):
             return False
         with io.open(file_path, "r", encoding="utf8") as f:
             content = f.readlines()
