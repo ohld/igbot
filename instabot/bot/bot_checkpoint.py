@@ -76,7 +76,7 @@ def checkpoint_followers_diff(self, cp):
     """
     self.logger.info("Getting checkpoint followers difference.")
     current_followers = [item["pk"] for item in self.getTotalSelfFollowers()]
-    old_following = cp.followers
+    old_followers = cp.followers
     return list(set(current_followers) - set(old_followers))
 
 def load_last_checkpoint(self):
