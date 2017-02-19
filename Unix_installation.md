@@ -8,5 +8,5 @@ cd instabot/examples
 
 * And then you can run any example like this
 ```
-python follow_user_following.py 352300017
+python follow_user_following.py ohld
 ```
