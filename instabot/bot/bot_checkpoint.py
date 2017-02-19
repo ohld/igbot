@@ -39,7 +39,7 @@ def save_checkpoint(self, path=None):
     with open(path, 'wb') as f:
         pickle.dump(cp, f, -1)
     self.last_checkpoint_path = path
-    self.logger.info("  Done.")
+    self.logger.info("Done. Your checkpoint is at %s." % path)
     return path
 
 def load_checkpoint(self, path):
@@ -82,5 +82,9 @@ def checkpoint_followers_diff(self, cp):
 def load_last_checkpoint(self):
     return self.load_checkpoint(self.last_checkpoint_path)
 
-def revert_to_checkpoint(self, cp):
+def revert_to_checkpoint(self, file_path):
+    cp = self.load_checkpoint(file_path)
+    if not cp:
+        return False
+    self.logger.info("Revering to the checkpoint from %s." % cp.date)
     return self.unfollow_users(self.checkpoint_following_diff(cp))
