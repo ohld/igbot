@@ -37,6 +37,9 @@ from .bot_like import like_timeline
 from .bot_like import like_user_id
 from .bot_like import like_hashtag
 from .bot_like import like_geotag
+from .bot_like import like_users
+from .bot_like import like_followers
+from .bot_like import like_following
 
 from .bot_unlike import unlike
 from .bot_unlike import unlike_medias
@@ -216,6 +219,15 @@ class Bot(API):
 
     def like_geotag(self, geotag, amount=None):
         return like_geotag(self, geotag, amount)
+
+    def like_users(self, user_ids, nlikes=None):
+        return like_users(self, user_ids, nlikes)
+
+    def like_followers(self, user_id, nlikes=None):
+        return like_followers(self, user_id, nlikes)
+
+    def like_following(self, user_id, nlikes=None):
+        return like_following(self, user_id, nlikes)
 
 # unlike
 
