@@ -16,6 +16,7 @@ def follow(self, user_id):
     return False
 
 def follow_users(self, user_ids):
+    user_ids = self.convert_to_user_ids(user_ids)
     self.logger.info("Going to follow %d users." % len(user_ids))
     for user_id in tqdm(user_ids):
         if not self.follow(user_id):

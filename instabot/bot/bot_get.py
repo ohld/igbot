@@ -81,8 +81,10 @@ def get_geotag_users(self, geotag):
     pass
 
 def get_userid_from_username(self, username):
-    # TODO:
-    pass
+    self.searchUsername(username)
+    if "user" in self.LastJson:
+        return self.LastJson["user"]["pk"]
+    return None # Not found
 
 def get_user_followers(self, user_id):
     followers = self.getTotalFollowers(user_id)
