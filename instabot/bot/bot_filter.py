@@ -69,6 +69,8 @@ def convert_to_user_ids(self, usernames):
     user_ids = []
     for user_id in usernames:
         if type(user_id) == str and not user_id.isdigit():
+            if user_id[0] == "@":
+                user_id = user_id[1:]
             user_id = self.get_userid_from_username(user_id)
         if user_id is not None:
             user_ids.append(user_id)
