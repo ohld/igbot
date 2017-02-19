@@ -86,11 +86,11 @@ def get_userid_from_username(self, username):
 
 def get_user_followers(self, user_id):
     followers = self.getTotalFollowers(user_id)
-    return [item['pk'] for item in followers]
+    return [item['pk'] for item in followers] if followers else False
 
 def get_user_following(self, user_id):
     following = self.getTotalFollowings(user_id)
-    return [item['pk'] for item in following]
+    return [item['pk'] for item in following] if following else False
 
 def get_media_likers(self, media_id):
     self.getMediaLikers(media_id)
