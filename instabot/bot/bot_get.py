@@ -83,7 +83,7 @@ def get_geotag_users(self, geotag):
 def get_userid_from_username(self, username):
     self.searchUsername(username)
     if "user" in self.LastJson:
-        return self.LastJson["user"]["pk"]
+        return str(self.LastJson["user"]["pk"])
     return None # Not found
 
 def get_user_followers(self, user_id):

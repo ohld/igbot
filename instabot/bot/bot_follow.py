@@ -29,7 +29,11 @@ def follow_users(self, user_ids):
 
 def follow_followers(self, user_id, nfollows=None):
     self.logger.info("Follow followers of: %s" % user_id)
-    follower_ids = self.get_user_followers(user_id)
+    user_id = self.convert_to_user_ids([user_id])
+    if not user_id:
+        self.logger.info("User not found.")
+        return
+    follower_ids = self.get_user_followers(user_id[0])
     if not follower_ids:
         self.logger.info("%s not found / closed / has no followers." % user_id)
     else:
@@ -37,7 +41,11 @@ def follow_followers(self, user_id, nfollows=None):
 
 def follow_following(self, user_id, nfollows=None):
     self.logger.info("Follow following of: %s" % user_id)
-    following_ids = self.get_user_following(user_id)
+    user_id = self.convert_to_user_ids([user_id])
+    if not user_id:
+        self.logger.info("User not found.")
+        return
+    following_ids = self.get_user_following(user_id[0])
     if not following_ids:
         self.logger.info("%s not found / closed / has no following." % user_id)
     else:

@@ -67,8 +67,9 @@ def check_user(self, user_id):
 
 def convert_to_user_ids(self, usernames):
     user_ids = []
-    for username in usernames:
-        user_id = self.get_userid_from_username(username)
+    for user_id in usernames:
+        if type(user_id) == str and not user_id.isdigit():
+            user_id = self.get_userid_from_username(user_id)
         if user_id is not None:
             user_ids.append(user_id)
     return user_ids
