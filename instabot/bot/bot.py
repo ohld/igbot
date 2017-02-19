@@ -49,6 +49,7 @@ from .bot_follow import follow_following
 from .bot_unfollow import unfollow
 from .bot_unfollow import unfollow_users
 from .bot_unfollow import unfollow_non_followers
+from .bot_unfollow import unfollow_everyone
 
 from .bot_comment import comment
 from .bot_comment import comment_hashtag
@@ -79,8 +80,6 @@ class Bot(API):
                  max_follows_per_day=False,
                  max_comments_per_day=False):
         super(self.__class__, self).__init__()
-
-        self.user_id = None # TODO
 
         self.total_liked = 0
         self.total_unliked = 0
@@ -249,6 +248,9 @@ class Bot(API):
 
     def unfollow_non_followers(self):
         return unfollow_non_followers(self)
+
+    def unfollow_everyone(self):
+        return unfollow_everyone(self)
 
 # comment
 
