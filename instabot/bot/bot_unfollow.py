@@ -33,3 +33,7 @@ def unfollow_non_followers(bot):
     diff = followings - followers
     bot.logger.info("%d users don't follow you back." % len(diff))
     bot.unfollow_users(list(diff))
+
+def unfollow_everyone(bot):
+    your_following = bot.get_user_following(bot.user_id)
+    bot.unfollow_users(your_following)
