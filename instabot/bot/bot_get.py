@@ -81,8 +81,10 @@ def get_geotag_users(self, geotag):
     pass
 
 def get_userid_from_username(self, username):
-    # TODO:
-    pass
+    self.searchUsername(username)
+    if "user" in self.LastJson:
+        return str(self.LastJson["user"]["pk"])
+    return None # Not found
 
 def get_user_followers(self, user_id):
     followers = self.getTotalFollowers(user_id)
@@ -94,6 +96,9 @@ def get_user_following(self, user_id):
 
 def get_media_likers(self, media_id):
     self.getMediaLikers(media_id)
+    if "users" not in self.LastJson:
+        self.logger.info("Media with %s not found." % media_id)
+        return False
     return [item['pk'] for item in self.LastJson["users"]]
 
 def get_media_comments(self, media_id):

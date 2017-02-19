@@ -7,7 +7,7 @@ import urllib
 import uuid
 import sys
 import logging
-
+from tqdm import tqdm
 
 #The urllib library was split into other modules from Python 2 to Python 3
 if sys.version_info.major == 3:
@@ -68,8 +68,8 @@ class API(object):
 
                 if self.SendRequest('accounts/login/', self.generateSignature(json.dumps(data)), True):
                     self.isLoggedIn = True
-                    self.username_id = self.LastJson["logged_in_user"]["pk"]
-                    self.rank_token = "%s_%s" % (self.username_id, self.uuid)
+                    self.user_id = self.LastJson["logged_in_user"]["pk"]
+                    self.rank_token = "%s_%s" % (self.user_id, self.uuid)
                     self.token = self.LastResponse.cookies["csrftoken"]
 
                     # self.syncFeatures()
@@ -124,8 +124,8 @@ class API(object):
     def syncFeatures(self):
         data = json.dumps({
         '_uuid'         : self.uuid,
-        '_uid'          : self.username_id,
-        'id'            : self.username_id,
+        '_uid'          : self.user_id,
+        'id'            : self.user_id,
         '_csrftoken'    : self.token,
         'experiments'   : config.EXPERIMENTS
         })
@@ -144,8 +144,8 @@ class API(object):
     def expose(self):
         data = json.dumps({
         '_uuid'        : self.uuid,
-        '_uid'         : self.username_id,
-        'id'           : self.username_id,
+        '_uid'         : self.user_id,
+        'id'           : self.user_id,
         '_csrftoken'   : self.token,
         'experiment'   : 'ig_android_profile_contextual_feed'
         })
@@ -160,7 +160,7 @@ class API(object):
     def editMedia(self, mediaId, captionText = ''):
         data = json.dumps({
         '_uuid'        : self.uuid,
-        '_uid'         : self.username_id,
+        '_uid'         : self.user_id,
         '_csrftoken'   : self.token,
         'caption_text' : captionText
         })
@@ -169,7 +169,7 @@ class API(object):
     def removeSelftag(self, mediaId):
         data = json.dumps({
         '_uuid'        : self.uuid,
-        '_uid'         : self.username_id,
+        '_uid'         : self.user_id,
         '_csrftoken'   : self.token
         })
         return self.SendRequest('media/'+ str(mediaId) +'/remove/', self.generateSignature(data))
@@ -177,7 +177,7 @@ class API(object):
     def mediaInfo(self, mediaId):
         data = json.dumps({
         '_uuid'        : self.uuid,
-        '_uid'         : self.username_id,
+        '_uid'         : self.user_id,
         '_csrftoken'   : self.token,
         'media_id'     : mediaId
         })
@@ -186,7 +186,7 @@ class API(object):
     def deleteMedia(self, mediaId):
         data = json.dumps({
         '_uuid'        : self.uuid,
-        '_uid'         : self.username_id,
+        '_uid'         : self.user_id,
         '_csrftoken'   : self.token,
         'media_id'     : mediaId
         })
@@ -195,7 +195,7 @@ class API(object):
     def changePassword(self, newPassword):
         data = json.dumps({
         '_uuid'        : self.uuid,
-        '_uid'         : self.username_id,
+        '_uid'         : self.user_id,
         '_csrftoken'   : self.token,
         'old_password'  : self.password,
         'new_password1' : newPassword,
@@ -209,7 +209,7 @@ class API(object):
     def comment(self, mediaId, commentText):
         data = json.dumps({
         '_uuid'        : self.uuid,
-        '_uid'         : self.username_id,
+        '_uid'         : self.user_id,
         '_csrftoken'   : self.token,
         'comment_text' : commentText
         })
@@ -218,7 +218,7 @@ class API(object):
     def deleteComment(self, mediaId, commentId):
         data = json.dumps({
         '_uuid'        : self.uuid,
-        '_uid'         : self.username_id,
+        '_uid'         : self.user_id,
         '_csrftoken'   : self.token
         })
         return self.SendRequest('media/'+ str(mediaId) +'/comment/'+ str(commentId) +'/delete/', self.generateSignature(data))
@@ -242,7 +242,7 @@ class API(object):
         return self.SendRequest('users/'+ str(usernameId) +'/info/')
 
     def getSelfUsernameInfo(self):
-        return self.getUsernameInfo(self.username_id)
+        return self.getUsernameInfo(self.user_id)
 
     def getRecentActivity(self):
         activity = self.SendRequest('news/inbox/?')
@@ -261,7 +261,7 @@ class API(object):
         return tags
 
     def getSelfUserTags(self):
-        return self.getUserTags(self.username_id)
+        return self.getUserTags(self.user_id)
 
     def tagFeed(self, tag):
         userFeed = self.SendRequest('feed/tag/'+ str(tag) +'/?rank_token=' + str(self.rank_token) + '&ranked_content=true&')
@@ -276,7 +276,7 @@ class API(object):
         return locations
 
     def getSelfGeoMedia(self):
-        return self.getGeoMedia(self.username_id)
+        return self.getGeoMedia(self.user_id)
 
     def fbUserSearch(self, query):
         return fbUserSearch(self, query)
@@ -306,7 +306,7 @@ class API(object):
         return query
 
     def getSelfUserFeed(self, maxid = '', minTimestamp = None):
-        return self.getUserFeed(self.username_id, maxid, minTimestamp)
+        return self.getUserFeed(self.user_id, maxid, minTimestamp)
 
     def getHashtagFeed(self, hashtagString, maxid = ''):
         return self.SendRequest('feed/tag/'+hashtagString+'/?max_id='+str(maxid)+'&rank_token='+self.rank_token+'&ranked_content=true&')
@@ -323,7 +323,7 @@ class API(object):
             +'&ig_sig_key_version='+ config.SIG_KEY_VERSION +'&rank_token='+ self.rank_token)
 
     def getSelfUsersFollowing(self):
-        return self.getUserFollowings(self.username_id)
+        return self.getUserFollowings(self.user_id)
 
     def getUserFollowers(self, usernameId, maxid = ''):
         if maxid == '':
@@ -332,12 +332,12 @@ class API(object):
             return self.SendRequest('friendships/'+ str(usernameId) +'/followers/?rank_token='+ self.rank_token + '&max_id='+ str(maxid))
 
     def getSelfUserFollowers(self):
-        return self.getUserFollowers(self.username_id)
+        return self.getUserFollowers(self.user_id)
 
     def like(self, mediaId):
         data = json.dumps({
         '_uuid'         : self.uuid,
-        '_uid'          : self.username_id,
+        '_uid'          : self.user_id,
         '_csrftoken'    : self.token,
         'media_id'      : mediaId
         })
@@ -346,7 +346,7 @@ class API(object):
     def unlike(self, mediaId):
         data = json.dumps({
         '_uuid'         : self.uuid,
-        '_uid'          : self.username_id,
+        '_uid'          : self.user_id,
         '_csrftoken'    : self.token,
         'media_id'      : mediaId
         })
@@ -364,7 +364,7 @@ class API(object):
     def follow(self, userId):
         data = json.dumps({
         '_uuid'         : self.uuid,
-        '_uid'          : self.username_id,
+        '_uid'          : self.user_id,
         'user_id'       : userId,
         '_csrftoken'    : self.token
         })
@@ -373,7 +373,7 @@ class API(object):
     def unfollow(self, userId):
         data = json.dumps({
         '_uuid'         : self.uuid,
-        '_uid'          : self.username_id,
+        '_uid'          : self.user_id,
         'user_id'       : userId,
         '_csrftoken'    : self.token
         })
@@ -382,7 +382,7 @@ class API(object):
     def block(self, userId):
         data = json.dumps({
         '_uuid'         : self.uuid,
-        '_uid'          : self.username_id,
+        '_uid'          : self.user_id,
         'user_id'       : userId,
         '_csrftoken'    : self.token
         })
@@ -391,7 +391,7 @@ class API(object):
     def unblock(self, userId):
         data = json.dumps({
         '_uuid'         : self.uuid,
-        '_uid'          : self.username_id,
+        '_uid'          : self.user_id,
         'user_id'       : userId,
         '_csrftoken'    : self.token
         })
@@ -400,7 +400,7 @@ class API(object):
     def userFriendship(self, userId):
         data = json.dumps({
         '_uuid'         : self.uuid,
-        '_uid'          : self.username_id,
+        '_uid'          : self.user_id,
         'user_id'       : userId,
         '_csrftoken'    : self.token
         })
@@ -433,32 +433,50 @@ class API(object):
     def getTotalFollowers(self, usernameId):
         followers = []
         next_max_id = ''
-        while 1:
-            self.getUserFollowers(usernameId,next_max_id)
-            temp = self.LastJson
-            try:
-                for item in temp["users"]:
-                    followers.append(item)
-            except:
-                return followers
-            if temp["big_list"] == False:
-                return followers
-            next_max_id = temp["next_max_id"]
+        self.getUsernameInfo(usernameId)
+        if "user" in self.LastJson:
+            total_followers = self.LastJson["user"]['follower_count']
+        else:
+            return False
+        with tqdm(total=total_followers, desc="Getting followers") as pbar:
+            while True:
+                self.getUserFollowers(usernameId, next_max_id)
+                temp = self.LastJson
+                try:
+                    pbar.update(len(temp["users"]))
+                    for item in temp["users"]:
+                        followers.append(item)
+                    if len(temp["users"]) == 0 or len(followers) >= total_followers:
+                        return followers[:total_followers]
+                except:
+                    return followers[:total_followers]
+                if temp["big_list"] == False:
+                    return followers[:total_followers]
+                next_max_id = temp["next_max_id"]
 
-    def getTotalFollowings(self,usernameId):
-        followers = []
+    def getTotalFollowings(self, usernameId):
+        following = []
         next_max_id = ''
-        while 1:
-            self.getUserFollowings(usernameId,next_max_id)
-            temp = self.LastJson
-            try:
-                for item in temp["users"]:
-                    followers.append(item)
-            except:
-                return followers
-            if temp["big_list"] == False:
-                return followers
-            next_max_id = temp["next_max_id"]
+        self.getUsernameInfo(usernameId)
+        if "user" in self.LastJson:
+            total_following = self.LastJson["user"]['following_count']
+        else:
+            return False
+        with tqdm(total=total_following, desc="Getting following") as pbar:
+            while True:
+                self.getUserFollowings(usernameId, next_max_id)
+                temp = self.LastJson
+                try:
+                    pbar.update(len(temp["users"]))
+                    for item in temp["users"]:
+                        following.append(item)
+                    if len(temp["users"]) == 0 or len(following) >= total_following:
+                        return following[:total_following]
+                except:
+                    return following[:total_following]
+                if temp["big_list"] == False:
+                    return following[:total_following]
+                next_max_id = temp["next_max_id"]
 
     def getTotalUserFeed(self, usernameId, minTimestamp = None):
         user_feed = []
@@ -473,13 +491,13 @@ class API(object):
             next_max_id = temp["next_max_id"]
 
     def getTotalSelfUserFeed(self, minTimestamp = None):
-        return self.getTotalUserFeed(self.username_id, minTimestamp)
+        return self.getTotalUserFeed(self.user_id, minTimestamp)
 
     def getTotalSelfFollowers(self):
-        return self.getTotalFollowers(self.username_id)
+        return self.getTotalFollowers(self.user_id)
 
     def getTotalSelfFollowings(self):
-        return self.getTotalFollowings(self.username_id)
+        return self.getTotalFollowings(self.user_id)
 
     def getTotalLikedMedia(self, scan_rate = 1):
         next_id = ''

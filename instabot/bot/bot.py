@@ -37,6 +37,9 @@ from .bot_like import like_timeline
 from .bot_like import like_user_id
 from .bot_like import like_hashtag
 from .bot_like import like_geotag
+from .bot_like import like_users
+from .bot_like import like_followers
+from .bot_like import like_following
 
 from .bot_unlike import unlike
 from .bot_unlike import unlike_medias
@@ -49,6 +52,7 @@ from .bot_follow import follow_following
 from .bot_unfollow import unfollow
 from .bot_unfollow import unfollow_users
 from .bot_unfollow import unfollow_non_followers
+from .bot_unfollow import unfollow_everyone
 
 from .bot_comment import comment
 from .bot_comment import comment_hashtag
@@ -64,11 +68,12 @@ from .bot_checkpoint import checkpoint_following_diff
 from .bot_checkpoint import load_last_checkpoint
 from .bot_checkpoint import revert_to_checkpoint
 
-from .bot_filter import read_list
+from .bot_filter import check_if_file_exists
+from .bot_filter import read_list_from_file
 from .bot_filter import get_media_owner
 from .bot_filter import check_media
 from .bot_filter import check_user
-
+from .bot_filter import convert_to_user_ids
 
 class Bot(API):
     def __init__(self,
@@ -79,8 +84,6 @@ class Bot(API):
                  max_follows_per_day=False,
                  max_comments_per_day=False):
         super(self.__class__, self).__init__()
-
-        self.user_id = None # TODO
 
         self.total_liked = 0
         self.total_unliked = 0
@@ -117,11 +120,11 @@ class Bot(API):
         # white and blacklists
         self.whitelist = []
         if whitelist:
-            self.whitelist = read_list(whitelist)
+            self.whitelist = read_list_from_file(whitelist)
             self.logger.info("Size of whitelist: %d" % len(self.whitelist))
         self.blacklist = []
         if blacklist:
-            self.blacklist = read_list(blacklist)
+            self.blacklist = read_list_from_file(blacklist)
             self.logger.info("Size of blacklist: %d" % len(self.blacklist))
         signal.signal(signal.SIGTERM, self.logout)
         atexit.register(self.logout)
@@ -217,6 +220,15 @@ class Bot(API):
     def like_geotag(self, geotag, amount=None):
         return like_geotag(self, geotag, amount)
 
+    def like_users(self, user_ids, nlikes=None):
+        return like_users(self, user_ids, nlikes)
+
+    def like_followers(self, user_id, nlikes=None):
+        return like_followers(self, user_id, nlikes)
+
+    def like_following(self, user_id, nlikes=None):
+        return like_following(self, user_id, nlikes)
+
 # unlike
 
     def unlike(self, media_id):
@@ -250,6 +262,9 @@ class Bot(API):
     def unfollow_non_followers(self):
         return unfollow_non_followers(self)
 
+    def unfollow_everyone(self):
+        return unfollow_everyone(self)
+
 # comment
 
     def comment(self, media_id, comment_text):
@@ -272,8 +287,8 @@ class Bot(API):
 
 # checkpoint
 
-    def save_checkpoint(self):
-        return save_checkpoint(self)
+    def save_checkpoint(self, path=None):
+        return save_checkpoint(self, path)
 
     def load_checkpoint(self, path):
         return load_checkpoint(self, path)
@@ -287,10 +302,16 @@ class Bot(API):
     def load_last_checkpoint(self):
         return load_last_checkpoint(self)
 
-    def revert_to_checkpoint(self, cp):
-        return revert_to_checkpoint(self, cp)
+    def revert_to_checkpoint(self, file_path):
+        return revert_to_checkpoint(self, file_path)
 
 # filter
+
+    def check_if_file_exists(self, file_path):
+        return check_if_file_exists(file_path)
+
+    def read_list_from_file(self, file_path):
+        return read_list_from_file(file_path)
 
     def add_whitelist(self, file_path):
         return add_whitelist(self, file_path)
@@ -306,3 +327,6 @@ class Bot(API):
 
     def check_user(self, user):
         return check_user(self, user)
+
+    def convert_to_user_ids(self, usernames):
+        return convert_to_user_ids(self, usernames)

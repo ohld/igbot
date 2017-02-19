@@ -5,18 +5,23 @@
 """
 
 import os
+import io
 
-def read_list(file_path):
+def check_if_file_exists(file_path):
+    if not os.path.exists(file_path):
+        print ("Can't find '%s' file." % file_path)
+        return False
+    return True
+
+def read_list_from_file(file_path):
     """
-        Reads whitelist/blacklist users from input file.
-        Returns the list if file items
-        TODO: convert the print function to a logger
+        Reads list from file. One line - one item.
+        Returns the list if file items.
     """
     try:
-        if not os.path.exists(file_path):
-            print ("file %s does not exist." % file_path)
+        if not check_if_file_exists(file_path):
             return False
-        with open(file_path, "r") as f:
+        with io.open(file_path, "r", encoding="utf8") as f:
             content = f.readlines()
             content = [item.strip() for item in content if len(item.strip()) > 0]
             return content
@@ -24,11 +29,11 @@ def read_list(file_path):
         return False
 
 def add_whitelist(self, file_path):
-    self.whitelist = read_list(file_path)
+    self.whitelist = read_list_from_file(file_path)
     return not not self.whitelist
 
 def add_blacklist(self, file_path):
-    self.blacklist = read_list(file_path)
+    self.blacklist = read_list_from_file(file_path)
     return not not self.blacklist
 
 def get_media_owner(self, media_id):
@@ -59,3 +64,14 @@ def check_user(self, user_id):
         if user_id in self.blacklist:
             return False
     return True
+
+def convert_to_user_ids(self, usernames):
+    user_ids = []
+    for user_id in usernames:
+        if type(user_id) == str and not user_id.isdigit():
+            if user_id[0] == "@":
+                user_id = user_id[1:]
+            user_id = self.get_userid_from_username(user_id)
+        if user_id is not None:
+            user_ids.append(user_id)
+    return user_ids

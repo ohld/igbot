@@ -137,12 +137,12 @@ In all files one line - one item (comment or user_id).
 
 | method        | description | example  |
 | ------------- |:-------------:| ------:|
-| save_checkpoint() | Save [checkpoint](https://github.com/ohld/instabot/blob/master/instabot/bot/bot_checkpoint.py) of your account. Return path to it.|    bot.save_checkpoint() |
+| save_checkpoint() | Save [checkpoint](https://github.com/ohld/instabot/blob/master/instabot/bot/bot_checkpoint.py) of your account. Return path to it.|    bot.save_checkpoint("my_cp") |
+| revert_to_checkpoint(file_path)| Unfollow the new following made after checkpoint creation.| bot.revert_to_checkpoint("my_cp")|
 | load_checkpoint(path)| Load checkpoint from path. Return Checkpoint class.|  cp = bot.load_checkpoint( bot.last_checkpoint_path)|
-| load_last_checkpoint()| Load last checkpoint if it was in current session| bot.load_last_checkpoint()|
-| checkpoint_followers_diff(cp)| returns a list of users who become your followers after checkpoint| bot.checkpoint_followers_diff(cp)|
-| checkpoint_following_diff(cp)| returns a list of users who become your following after checkpoint| bot.checkpoint_following_diff(cp)|
-| revert_to_checkpoint(cp)| Unfollow the new following made after checkpoint creation| bot.revert_to_checkpoint(cp)|
+| load_last_checkpoint()| Load last checkpoint if it was in current session.| bot.load_last_checkpoint()|
+| checkpoint_followers_diff(cp)| returns a list of users who become your followers after checkpoint.| bot.checkpoint_followers_diff(cp)|
+| checkpoint_following_diff(cp)| returns a list of users who become your following after checkpoint.| bot.checkpoint_following_diff(cp)|
 
 ## Sample usage
 
