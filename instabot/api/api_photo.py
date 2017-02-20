@@ -40,7 +40,7 @@ def uploadPhoto(self, photo, caption = None, upload_id = None):
     'photo'             : ('pending_media_%s.jpg'%upload_id, open(photo, 'rb'), 'application/octet-stream', {'Content-Transfer-Encoding':'binary'})
     }
     m = MultipartEncoder(data, boundary=self.uuid)
-    self.s.headers.update ({'X-IG-Capabilities' : '3Q4=',
+    self.session.headers.update ({'X-IG-Capabilities' : '3Q4=',
                             'X-IG-Connection-Type' : 'WIFI',
                             'Cookie2' : '$Version=1',
                             'Accept-Language' : 'en-US',
@@ -48,9 +48,9 @@ def uploadPhoto(self, photo, caption = None, upload_id = None):
                             'Content-type': m.content_type,
                             'Connection' : 'close',
                             'User-Agent' : config.USER_AGENT})
-    response = self.s.post(config.API_URL + "upload/photo/", data=m.to_string())
+    response = self.session.post(config.API_URL + "upload/photo/", data=m.to_string())
     if response.status_code == 200:
-        if self.configure(upload_id, photo, caption):
+        if self.configurePhoto(upload_id, photo, caption):
             self.expose()
     return False
 
