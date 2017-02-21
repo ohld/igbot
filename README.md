@@ -53,9 +53,10 @@ bot = Bot(
             whitelist=False,
             blacklist=False,
             comments_file=False,
-            max_likes_per_day=False,
-            max_follows_per_day=False,
-            max_comments_per_day=False
+            max_likes_per_day=1000,
+            max_follows_per_day=350,
+            max_unfollows_per_day=350,
+            max_comments_per_day=100
 )
 ```
 
@@ -63,6 +64,7 @@ bot = Bot(
 | ------------- |:-------------:| ------:|
 | max_likes_per_day| How many likes will bot put per day| max_likes_per_day = 1000|
 | max_follows_per_day| Max number of follow per day| max_follows_per_day = 350|
+| max_unfollows_per_day| Max number of follow per day| max_unfollows_per_day = 350|
 | max_comments_per_day| Max number of comments per day| max_comments_per_day = 100|
 | whitelist | Path to the file with user_ids that shoudn't be unfollowed| whitelist="whitelist.txt"|
 | blacklist | Path to the file with user_ids that shoudn't be followed, liked or commented | blacklist="blacklist.txt"|
