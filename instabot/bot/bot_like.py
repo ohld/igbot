@@ -1,13 +1,13 @@
-import time
-import random
 from tqdm import tqdm
 
 from . import limits
+from . import delay
 
 def like(self, media_id):
     if not self.check_media(media_id):
         return True
     if limits.check_if_bot_can_like(self):
+        delay.like_delay(self)
         if super(self.__class__, self).like(media_id):
             self.total_liked += 1
             return True
@@ -19,10 +19,9 @@ def like_medias(self, medias):
     self.logger.info("Going to like %d medias." % (len(medias)))
     for media in tqdm(medias):
         if not self.like(media):
-            time.sleep(120)
+            delay.error_delay(bot)
             while not self.like(media):
-                time.sleep(120)
-        time.sleep(10 * random.random())
+                delay.error_delay(bot)
     self.logger.info("DONE: Total liked %d medias." % self.total_liked)
     return True
 

@@ -1,14 +1,14 @@
-import time
-import random
 from tqdm import tqdm
 
 from . import limits
+from . import delay
 
 def follow(self, user_id):
     user_id = self.convert_to_user_id(user_id)
     if not self.check_user(user_id):
         return True
     if limits.check_if_bot_can_follow(self):
+        delay.follow_delay(self)
         if super(self.__class__, self).follow(user_id):
             self.total_followed += 1
             return True
@@ -20,10 +20,9 @@ def follow_users(self, user_ids):
     self.logger.info("Going to follow %d users." % len(user_ids))
     for user_id in tqdm(user_ids):
         if not self.follow(user_id):
-            time.sleep(180)
+            delay.error_delay(bot)
             while not self.follow(user_id):
-                time.sleep(180)
-        time.sleep(15 + 30 * random.random())
+                delay.error_delay(bot)
     self.logger.info("DONE: Total followed %d users." % self.total_followed)
     return True
 
