@@ -1,6 +1,6 @@
 # Windows
 
-1. Download and install [Anaconda](https://www.continuum.io/downloads).
+1. Download and install [Anaconda](https://www.continuum.io/downloads) (both Python 2 and 3 versions are OK).
 2. Launch **Anaconda Prompt** via Start menu.
 3. Install `instabot` using `pip`.
 	
