@@ -6,7 +6,7 @@ import time
 import random
 
 def add_dispersion(delay_value):
-    return delay_value * 3 / 4 + delay_value * random.random()
+    return delay_value * 3 / 4 + delay_value * random.random() / 2
 
 def like_delay(bot):
     time.sleep(add_dispersion(bot.like_delay))
