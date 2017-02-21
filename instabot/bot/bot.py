@@ -73,7 +73,7 @@ from .bot_filter import read_list_from_file
 from .bot_filter import get_media_owner
 from .bot_filter import check_media
 from .bot_filter import check_user
-from .bot_filter import convert_to_user_ids
+from .bot_filter import convert_to_user_id
 
 class Bot(API):
     def __init__(self,
@@ -328,5 +328,5 @@ class Bot(API):
     def check_user(self, user):
         return check_user(self, user)
 
-    def convert_to_user_ids(self, usernames):
-        return convert_to_user_ids(self, usernames)
+    def convert_to_user_id(self, usernames):
+        return convert_to_user_id(self, usernames)
