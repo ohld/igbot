@@ -80,9 +80,10 @@ class Bot(API):
                  whitelist=False,
                  blacklist=False,
                  comments_file=False,
-                 max_likes_per_day=False,
-                 max_follows_per_day=False,
-                 max_comments_per_day=False):
+                 max_likes_per_day=1000,
+                 max_follows_per_day=350,
+                 max_unfollows_per_day=350,
+                 max_comments_per_day=100):
         super(self.__class__, self).__init__()
 
         self.total_liked = 0
@@ -94,17 +95,9 @@ class Bot(API):
 
         # limits
         self.max_likes_per_day = max_likes_per_day
-        if not self.max_likes_per_day:
-            self.max_likes_per_day = limits.MAX_LIKES_PER_DAY
-
         self.max_follows_per_day = max_follows_per_day
-        if not self.max_follows_per_day:
-            self.max_follows_per_day = limits.MAX_FOLLOWS_PER_DAY
-
+        self.max_unfollows_per_day = max_unfollows_per_day
         self.max_comments_per_day = max_comments_per_day
-        if not self.max_comments_per_day:
-            self.max_comments_per_day = limits.MAX_COMMENTS_PER_DAY
-
 
         # handle logging
         self.logger = logging.getLogger('[instabot]')
