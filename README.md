@@ -15,9 +15,9 @@ Install latest stable version or update current from pip
 pip install -U instabot
 ```
 
-Full installation steps for UNIX (Linux, OS X) users [here](https://github.com/ohld/instabot/blob/master/docs/installation/Unix_installation.md).
+Full installation steps for UNIX (Linux, macOS) users [here](https://github.com/ohld/instabot/blob/master/docs/installation/Unix_installation.md).
 
-If you are Windows user and don't know python and command line, go to [Windows installation](https://github.com/ohld/instabot/blob/master/docs/installation/Windows_installation.md).
+If you are Windows user, go to [Windows installation](https://github.com/ohld/instabot/blob/master/docs/installation/Windows_installation.md).
 
 ## How to run
 Choose any script from [examples](https://github.com/ohld/instabot/tree/master/examples) and run
