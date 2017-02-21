@@ -4,6 +4,7 @@ import json
 from tqdm import tqdm
 
 def unfollow(self, user_id):
+    user_id = self.convert_to_user_id(user_id)
     if not self.check_user(user_id):
         return False
     if super(self.__class__, self).unfollow(user_id):
@@ -12,7 +13,6 @@ def unfollow(self, user_id):
     return False
 
 def unfollow_users(self, user_ids):
-    """ user_ids - list of user_id to unfollow """
     self.logger.info("Going to unfollow %d users." % len(user_ids))
     total_unfollowed = 0
     for user_id in tqdm(user_ids):
@@ -25,8 +25,8 @@ def unfollow_users(self, user_ids):
     return True
 
 def unfollow_non_followers(bot):
-    followings = set([item["pk"] for item in bot.getTotalSelfFollowings()])
     bot.logger.info("Unfollowing non-followers")
+    followings = set([item["pk"] for item in bot.getTotalSelfFollowings()])
     bot.logger.info("You follow %d users." % len(followings))
     followers = set([item["pk"] for item in bot.getTotalSelfFollowers()])
     bot.logger.info("You are followed by %d users." % len(followers))
