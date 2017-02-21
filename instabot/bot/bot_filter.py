@@ -66,11 +66,9 @@ def check_user(self, user_id):
     return True
 
 def convert_to_user_id(self, something):
-    print (something)
     if type(something) == str and not something.isdigit():
         if something[0] == "@": # cut first @
             something = something[1:]
         something = self.get_userid_from_username(something)
     # if type is not str than it is int so user_id passed
-    print (something)
     return something
