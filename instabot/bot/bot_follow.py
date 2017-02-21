@@ -24,9 +24,9 @@ def follow_users(self, user_ids):
     self.logger.info("Going to follow %d users." % len(user_ids))
     for user_id in tqdm(user_ids):
         if not self.follow(user_id):
-            delay.error_delay(bot)
+            delay.error_delay(self)
             while not self.follow(user_id):
-                delay.error_delay(bot)
+                delay.error_delay(self)
     self.logger.info("DONE: Total followed %d users." % self.total_followed)
     return True
 
