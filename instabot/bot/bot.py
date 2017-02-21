@@ -116,6 +116,9 @@ class Bot(API):
         self.logger.addHandler(ch)
         self.logger.info('Instabot Started')
 
+        # current following
+        self.following = []
+
         # white and blacklists
         self.whitelist = []
         if whitelist:
