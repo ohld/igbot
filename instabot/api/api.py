@@ -438,7 +438,7 @@ class API(object):
             total_followers = self.LastJson["user"]['follower_count']
         else:
             return False
-        with tqdm(total=total_followers, desc="Getting followers") as pbar:
+        with tqdm(total=total_followers, desc="Getting followers", leave=False) as pbar:
             while True:
                 self.getUserFollowers(usernameId, next_max_id)
                 temp = self.LastJson
@@ -462,7 +462,7 @@ class API(object):
             total_following = self.LastJson["user"]['following_count']
         else:
             return False
-        with tqdm(total=total_following, desc="Getting following") as pbar:
+        with tqdm(total=total_following, desc="Getting following", leave=False) as pbar:
             while True:
                 self.getUserFollowings(usernameId, next_max_id)
                 temp = self.LastJson
