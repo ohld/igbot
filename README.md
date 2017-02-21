@@ -50,13 +50,17 @@ bot = Bot()
 ``` python
 from instabot import Bot
 bot = Bot(
-            whitelist=False,
-            blacklist=False,
-            comments_file=False,
             max_likes_per_day=1000,
             max_follows_per_day=350,
             max_unfollows_per_day=350,
-            max_comments_per_day=100
+            max_comments_per_day=100,
+            like_delay=10,
+            follow_delay=30,
+            unfollow_delay=30,
+            comment_delay=60,
+            whitelist=False,
+            blacklist=False,
+            comments_file=False
 )
 ```
 
@@ -66,8 +70,12 @@ bot = Bot(
 | max_follows_per_day| Max number of follow per day| max_follows_per_day = 350|
 | max_unfollows_per_day| Max number of follow per day| max_unfollows_per_day = 350|
 | max_comments_per_day| Max number of comments per day| max_comments_per_day = 100|
-| whitelist | Path to the file with user_ids that shoudn't be unfollowed| whitelist="whitelist.txt"|
-| blacklist | Path to the file with user_ids that shoudn't be followed, liked or commented | blacklist="blacklist.txt"|
+| like_delay | Delay between likes in seconds| like_delay = 10|
+| follow_delay | Delay between follows in seconds| follow_delay = 30|
+| unfollow_delay | Delay between unfollows in seconds| unfollow_delay = 30|
+| comment_delay | Delay between comments in seconds| comment_delay = 60|
+| whitelist | Path to the file with user_ids that shouldn't be unfollowed| whitelist="whitelist.txt"|
+| blacklist | Path to the file with user_ids that shouldn't be followed, liked or commented | blacklist="blacklist.txt"|
 | comments_file | Path to the comments database | comments_file="comments.txt"|
 
 In all files one line - one item (comment or user_id).
