@@ -2,7 +2,7 @@
     instabot example
 
     Workflow:
-        Follow user's followers by user_id.
+        Follow user's followers by username.
 """
 
 import sys
