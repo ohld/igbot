@@ -39,7 +39,7 @@ def like_user_id(self, user_id, amount=None):
     self.logger.info("Liking user_%s's feed:" % user_id)
     medias = self.get_user_medias(user_id)
     if not medias:
-        self.logger.info("  Can't like user: account is closed!")
+        self.logger.info("Can't like user: account is closed!")
         return False
     return self.like_medias(medias[:amount])
 
@@ -49,7 +49,7 @@ def like_users(self, user_ids, nlikes=None):
 
 def like_hashtag(self, hashtag, amount=None):
     """ Likes last medias from hashtag """
-    self.logger.info("Going to like media with hashtag #%s" % hashtag)
+    self.logger.info("Going to like media with hashtag #%s." % hashtag)
     medias = self.get_hashtag_medias(hashtag)
     return self.like_medias(medias[:amount])
 
@@ -58,7 +58,7 @@ def like_geotag(self, geotag, amount=None):
     pass
 
 def like_followers(self, user_id, nlikes=None):
-    self.logger.info("Like followers of: %s" % user_id)
+    self.logger.info("Like followers of: %s." % user_id)
     if not user_id:
         self.logger.info("User not found.")
         return
@@ -69,7 +69,7 @@ def like_followers(self, user_id, nlikes=None):
         self.like_users(follower_ids, nlikes)
 
 def like_following(self, user_id, nlikes=None):
-    self.logger.info("Like following of: %s" % user_id)
+    self.logger.info("Like following of: %s." % user_id)
     if not user_id:
         self.logger.info("User not found.")
         return
