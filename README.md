@@ -7,11 +7,11 @@ If you have any ideas, please, leave them in [issues section](https://github.com
 
 *Your __Contribution__ and Support through __Stars__ will be highly appreciated.*
 
-## How to install
+## How to install and update
 
-Install latest stable version from pip
+Install latest stable version or update current from pip
 
-```
+``` python
 pip install -U instabot
 ```
 
