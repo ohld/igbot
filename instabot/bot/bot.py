@@ -1,14 +1,10 @@
 import os
 import sys
-import time
 import datetime
-import random
 import atexit
 import signal
 import logging
 import io
-
-import pkg_resources  # part of setuptools
 
 from tqdm import tqdm
 
@@ -73,16 +69,21 @@ from .bot_filter import read_list_from_file
 from .bot_filter import get_media_owner
 from .bot_filter import check_media
 from .bot_filter import check_user
-from .bot_filter import convert_to_user_ids
+from .bot_filter import convert_to_user_id
 
 class Bot(API):
     def __init__(self,
                  whitelist=False,
                  blacklist=False,
                  comments_file=False,
-                 max_likes_per_day=False,
-                 max_follows_per_day=False,
-                 max_comments_per_day=False):
+                 max_likes_per_day=1000,
+                 max_follows_per_day=350,
+                 max_unfollows_per_day=350,
+                 max_comments_per_day=100,
+                 like_delay=10,
+                 follow_delay=30,
+                 unfollow_delay=30,
+                 comment_delay=60):
         super(self.__class__, self).__init__()
 
         self.total_liked = 0
@@ -94,17 +95,15 @@ class Bot(API):
 
         # limits
         self.max_likes_per_day = max_likes_per_day
-        if not self.max_likes_per_day:
-            self.max_likes_per_day = limits.MAX_LIKES_PER_DAY
-
         self.max_follows_per_day = max_follows_per_day
-        if not self.max_follows_per_day:
-            self.max_follows_per_day = limits.MAX_FOLLOWS_PER_DAY
-
+        self.max_unfollows_per_day = max_unfollows_per_day
         self.max_comments_per_day = max_comments_per_day
-        if not self.max_comments_per_day:
-            self.max_comments_per_day = limits.MAX_COMMENTS_PER_DAY
 
+        # delays
+        self.like_delay = like_delay
+        self.follow_delay = follow_delay
+        self.unfollow_delay = unfollow_delay
+        self.comment_delay = comment_delay
 
         # handle logging
         self.logger = logging.getLogger('[instabot]')
@@ -116,6 +115,9 @@ class Bot(API):
         ch.setFormatter(formatter)
         self.logger.addHandler(ch)
         self.logger.info('Instabot Started')
+
+        # current following
+        self.following = []
 
         # white and blacklists
         self.whitelist = []
@@ -328,5 +330,5 @@ class Bot(API):
     def check_user(self, user):
         return check_user(self, user)
 
-    def convert_to_user_ids(self, usernames):
-        return convert_to_user_ids(self, usernames)
+    def convert_to_user_id(self, usernames):
+        return convert_to_user_id(self, usernames)

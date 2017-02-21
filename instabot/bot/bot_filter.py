@@ -65,13 +65,10 @@ def check_user(self, user_id):
             return False
     return True
 
-def convert_to_user_ids(self, usernames):
-    user_ids = []
-    for user_id in usernames:
-        if type(user_id) == str and not user_id.isdigit():
-            if user_id[0] == "@":
-                user_id = user_id[1:]
-            user_id = self.get_userid_from_username(user_id)
-        if user_id is not None:
-            user_ids.append(user_id)
-    return user_ids
+def convert_to_user_id(self, something):
+    if type(something) == str and not something.isdigit():
+        if something[0] == "@": # cut first @
+            something = something[1:]
+        something = self.get_userid_from_username(something)
+    # if type is not str than it is int so user_id passed
+    return something

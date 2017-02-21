@@ -49,6 +49,7 @@ def get_timeline_medias(self):
     return filter_media(self.LastJson["items"])
 
 def get_user_medias(self, user_id):
+    user_id = self.convert_to_user_id(user_id)
     self.getUserFeed(user_id)
     if self.LastJson["status"] == 'fail':
         self.logger.info("  This is a closed account")
@@ -87,10 +88,12 @@ def get_userid_from_username(self, username):
     return None # Not found
 
 def get_user_followers(self, user_id):
+    user_id = self.convert_to_user_id(user_id)
     followers = self.getTotalFollowers(user_id)
     return [item['pk'] for item in followers] if followers else False
 
 def get_user_following(self, user_id):
+    user_id = self.convert_to_user_id(user_id)
     following = self.getTotalFollowings(user_id)
     return [item['pk'] for item in following] if following else False
 

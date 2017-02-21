@@ -15,7 +15,9 @@ Install latest stable version from pip
 pip install -U instabot
 ```
 
-If you are Windows user and don't know python and command line, go to [Windows installation](https://github.com/ohld/instabot/blob/master/Windows_installation.md).
+Full installation steps for UNIX (Linux, OS X) users [here](https://github.com/ohld/instabot/blob/master/docs/installation/Unix_installation.md).
+
+If you are Windows user and don't know python and command line, go to [Windows installation](https://github.com/ohld/instabot/blob/master/docs/installation/Windows_installation.md).
 
 ## How to run
 Choose any script from [examples](https://github.com/ohld/instabot/tree/master/examples) and run
@@ -48,12 +50,17 @@ bot = Bot()
 ``` python
 from instabot import Bot
 bot = Bot(
+            max_likes_per_day=1000,
+            max_follows_per_day=350,
+            max_unfollows_per_day=350,
+            max_comments_per_day=100,
+            like_delay=10,
+            follow_delay=30,
+            unfollow_delay=30,
+            comment_delay=60,
             whitelist=False,
             blacklist=False,
-            comments_file=False,
-            max_likes_per_day=False,
-            max_follows_per_day=False,
-            max_comments_per_day=False
+            comments_file=False
 )
 ```
 
@@ -61,9 +68,14 @@ bot = Bot(
 | ------------- |:-------------:| ------:|
 | max_likes_per_day| How many likes will bot put per day| max_likes_per_day = 1000|
 | max_follows_per_day| Max number of follow per day| max_follows_per_day = 350|
+| max_unfollows_per_day| Max number of follow per day| max_unfollows_per_day = 350|
 | max_comments_per_day| Max number of comments per day| max_comments_per_day = 100|
-| whitelist | Path to the file with user_ids that shoudn't be unfollowed| whitelist="whitelist.txt"|
-| blacklist | Path to the file with user_ids that shoudn't be followed, liked or commented | blacklist="blacklist.txt"|
+| like_delay | Delay between likes in seconds| like_delay = 10|
+| follow_delay | Delay between follows in seconds| follow_delay = 30|
+| unfollow_delay | Delay between unfollows in seconds| unfollow_delay = 30|
+| comment_delay | Delay between comments in seconds| comment_delay = 60|
+| whitelist | Path to the file with user_ids that shouldn't be unfollowed| whitelist="whitelist.txt"|
+| blacklist | Path to the file with user_ids that shouldn't be followed, liked or commented | blacklist="blacklist.txt"|
 | comments_file | Path to the comments database | comments_file="comments.txt"|
 
 In all files one line - one item (comment or user_id).

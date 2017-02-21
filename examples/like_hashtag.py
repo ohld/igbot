@@ -2,7 +2,7 @@
     instabot example
 
     Workflow:
-        Follow user's followers by username.
+        Like last images with hashtag.
 """
 
 import sys
@@ -15,10 +15,10 @@ sys.path.append(os.path.join(sys.path[0],'../'))
 from instabot import Bot
 
 if len(sys.argv) != 2:
-    print ("USAGE: Pass username")
-    print ("Example: %s ohld" % sys.argv[0])
+    print ("USAGE: Pass hashtag to like")
+    print ("Example: %s dog" % sys.argv[0])
     exit()
 
 bot = Bot()
 bot.login()
-bot.follow_followers(sys.argv[1])
+bot.like_hashtag(sys.argv[1])
