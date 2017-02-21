@@ -48,6 +48,7 @@ def comment_hashtag(self, hashtag, amount=None):
     return self.comment_medias(medias[:amount])
 
 def comment_users(self, user_ids):
+    # user_id = self.convert_to_user_id(user_id)
     # TODO: Put a comment to last media of every user from list
     pass
 

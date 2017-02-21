@@ -27,13 +27,13 @@ def like_medias(self, medias):
     return True
 
 def like_timeline(self, amount=None):
-    """ Likes last 8 medias from timeline feed """
     self.logger.info("Liking timeline feed:")
     medias = self.get_timeline_medias()[:amount]
     return self.like_medias(medias)
 
 def like_user_id(self, user_id, amount=None):
     """ Likes last user_id's medias """
+    user_id = self.convert_to_user_id(user_id)
     if not user_id:
         return False
     self.logger.info("Liking user_%s's feed:" % user_id)
@@ -59,7 +59,6 @@ def like_geotag(self, geotag, amount=None):
 
 def like_followers(self, user_id, nlikes=None):
     self.logger.info("Like followers of: %s" % user_id)
-    user_id = self.convert_to_user_ids([user_id])
     if not user_id:
         self.logger.info("User not found.")
         return
@@ -71,7 +70,6 @@ def like_followers(self, user_id, nlikes=None):
 
 def like_following(self, user_id, nlikes=None):
     self.logger.info("Like following of: %s" % user_id)
-    user_id = self.convert_to_user_ids([user_id])
     if not user_id:
         self.logger.info("User not found.")
         return
