@@ -19,9 +19,9 @@ def like_medias(self, medias):
     self.logger.info("Going to like %d medias." % (len(medias)))
     for media in tqdm(medias):
         if not self.like(media):
-            delay.error_delay(bot)
+            delay.error_delay(self)
             while not self.like(media):
-                delay.error_delay(bot)
+                delay.error_delay(self)
     self.logger.info("DONE: Total liked %d medias." % self.total_liked)
     return True
 
