@@ -5,7 +5,7 @@
 3. Install `instabot` using `pip`.
 	
 	```
-	pip install instabot
+	pip install -U instabot
 	```
 4. You are all set! 
 
@@ -17,3 +17,7 @@
 	```
 	
 	Examples are located in `./examples` folder.
+	
+	```
+	cd instabot/examples
+	```
