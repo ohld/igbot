@@ -27,7 +27,7 @@ def like_and_follow_media_likers(bot, media, nlikes=3):
 
 if len(sys.argv) != 2:
     print ("USAGE: Pass media_id")
-    print ("Example: %s 123123123123" % sys.argv[0])
+    print ("Example: python %s 123123123123" % sys.argv[0])
     exit()
 
 bot = Bot()

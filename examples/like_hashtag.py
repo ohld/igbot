@@ -16,7 +16,7 @@ from instabot import Bot
 
 if len(sys.argv) != 2:
     print ("USAGE: Pass hashtag to like")
-    print ("Example: %s dog" % sys.argv[0])
+    print ("Example: python %s dog" % sys.argv[0])
     exit()
 
 bot = Bot()

@@ -16,7 +16,7 @@ from instabot import Bot
 
 if len(sys.argv) != 2:
     print ("USAGE: Pass user to like")
-    print ("Example: %s ohld" % sys.argv[0])
+    print ("Example: python %s ohld" % sys.argv[0])
     exit()
 
 bot = Bot()

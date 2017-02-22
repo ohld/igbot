@@ -14,7 +14,7 @@ from instabot import Bot
 
 if len(sys.argv) != 2:
     print ("USAGE: Pass a path to the file with usernames")
-    print ("Example: %s users_to_follow.txt" % sys.argv[0])
+    print ("Example: python %s users_to_follow.txt" % sys.argv[0])
     exit()
 
 bot = Bot()
