@@ -28,15 +28,15 @@ def unfollow_users(self, user_ids):
     return True
 
 def unfollow_non_followers(self):
-    bot.logger.info("Unfollowing non-followers")
-    followings = set([item["pk"] for item in bot.getTotalSelfFollowings()])
-    bot.logger.info("You follow %d users." % len(followings))
-    followers = set([item["pk"] for item in bot.getTotalSelfFollowers()])
-    bot.logger.info("You are followed by %d users." % len(followers))
+    self.logger.info("Unfollowing non-followers")
+    followings = set([item["pk"] for item in self.getTotalSelfFollowings()])
+    self.logger.info("You follow %d users." % len(followings))
+    followers = set([item["pk"] for item in self.getTotalSelfFollowers()])
+    self.logger.info("You are followed by %d users." % len(followers))
     diff = followings - followers
-    bot.logger.info("%d users don't follow you back." % len(diff))
-    bot.unfollow_users(list(diff))
+    self.logger.info("%d users don't follow you back." % len(diff))
+    self.unfollow_users(list(diff))
 
 def unfollow_everyone(self):
-    your_following = bot.get_user_following(bot.user_id)
-    bot.unfollow_users(your_following)
+    your_following = self.get_user_following(self.user_id)
+    self.unfollow_users(your_following)
