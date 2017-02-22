@@ -11,7 +11,7 @@
 """
 from tqdm import tqdm
 
-from . import limits
+from . import limits, delay
 
 def comment(self, media_id, comment_text):
     if not self.check_media(media_id):
