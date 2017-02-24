@@ -21,4 +21,4 @@ def comment_delay(bot):
     time.sleep(add_dispersion(bot.comment_delay))
 
 def error_delay(bot):
-    tile.sleep(300)
+    time.sleep(300)
