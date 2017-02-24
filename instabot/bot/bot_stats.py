@@ -30,4 +30,5 @@ def save_user_stats(self, username):
         data_to_save["following"] = int(infodict["following_count"])
         data_to_save["medias"] = int(infodict["media_count"])
         dump_data(data_to_save, "%s.tsv" % username)
+    bot.logger.info("Stats saved at %s." % data_to_save["date"])
     return False
