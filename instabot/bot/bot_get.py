@@ -95,6 +95,13 @@ def get_user_followers(self, user_id):
     followers = self.getTotalFollowers(user_id)
     return [item['pk'] for item in followers] if followers else False
 
+def get_user_info(self, user_id):
+    user_id = self.convert_to_user_id(user_id)
+    self.getUsernameInfo(user_id)
+    if 'user' not in self.LastJson:
+        return False
+    return self.LastJson['user']
+
 def get_user_following(self, user_id):
     user_id = self.convert_to_user_id(user_id)
     following = self.getTotalFollowings(user_id)

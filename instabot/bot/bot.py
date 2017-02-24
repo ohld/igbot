@@ -20,6 +20,7 @@ from .bot_get import get_timeline_users
 from .bot_get import get_hashtag_users
 from .bot_get import get_geotag_users
 from .bot_get import get_userid_from_username
+from .bot_get import get_user_info
 from .bot_get import get_user_followers
 from .bot_get import get_user_following
 from .bot_get import get_media_likers
@@ -70,6 +71,8 @@ from .bot_filter import get_media_owner
 from .bot_filter import check_media
 from .bot_filter import check_user
 from .bot_filter import convert_to_user_id
+
+from .bot_stats import save_user_stats
 
 class Bot(API):
     def __init__(self,
@@ -185,6 +188,9 @@ class Bot(API):
 
     def get_userid_from_username(self, username):
         return get_userid_from_username(self, username)
+
+    def get_user_info(self, user_id):
+        return get_user_info(self, user_id)
 
     def get_user_followers(self, user_id):
         return get_user_followers(self, user_id)
@@ -334,3 +340,8 @@ class Bot(API):
 
     def convert_to_user_id(self, usernames):
         return convert_to_user_id(self, usernames)
+
+# stats
+
+    def save_user_stats(self, username):
+        return save_user_stats(self, username)
