@@ -29,11 +29,13 @@ def read_list_from_file(file_path):
         return False
 
 def add_whitelist(self, file_path):
-    self.whitelist = read_list_from_file(file_path)
+    file_contents = read_list_from_file(file_path)
+    self.whitelist = [convert_to_user_id(item) for item in file_contents]
     return not not self.whitelist
 
 def add_blacklist(self, file_path):
-    self.blacklist = read_list_from_file(file_path)
+    file_contents = read_list_from_file(file_path)
+    self.blacklist = [convert_to_user_id(item) for item in file_contents]
     return not not self.blacklist
 
 def get_media_owner(self, media_id):
