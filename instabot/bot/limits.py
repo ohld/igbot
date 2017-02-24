@@ -4,8 +4,6 @@
 
 import datetime
 
-MAX_LIKES_TO_LIKE = 80
-
 def reset_counters(bot):
     bot.total_liked = 0
     bot.total_unliked = 0

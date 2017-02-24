@@ -80,6 +80,7 @@ class Bot(API):
                  max_follows_per_day=350,
                  max_unfollows_per_day=350,
                  max_comments_per_day=100,
+                 max_likes_to_like=100,
                  like_delay=10,
                  follow_delay=30,
                  unfollow_delay=30,
@@ -98,6 +99,7 @@ class Bot(API):
         self.max_follows_per_day = max_follows_per_day
         self.max_unfollows_per_day = max_unfollows_per_day
         self.max_comments_per_day = max_comments_per_day
+        self.max_likes_to_like = max_likes_to_like
 
         # delays
         self.like_delay = like_delay

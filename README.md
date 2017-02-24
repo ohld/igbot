@@ -70,6 +70,7 @@ bot = Bot(
 | max_follows_per_day| Max number of follow per day| max_follows_per_day = 350|
 | max_unfollows_per_day| Max number of follow per day| max_unfollows_per_day = 350|
 | max_comments_per_day| Max number of comments per day| max_comments_per_day = 100|
+| max_likes_to_like | Max number of likes that can media have to be liked | max_likes_to_like = 100 |
 | like_delay | Delay between likes in seconds| like_delay = 10|
 | follow_delay | Delay between follows in seconds| follow_delay = 30|
 | unfollow_delay | Delay between unfollows in seconds| unfollow_delay = 30|
