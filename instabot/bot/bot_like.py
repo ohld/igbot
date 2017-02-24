@@ -32,10 +32,10 @@ def like_timeline(self, amount=None):
 
 def like_user_id(self, user_id, amount=None):
     """ Likes last user_id's medias """
-    user_id = self.convert_to_user_id(user_id)
     if not user_id:
         return False
     self.logger.info("Liking user_%s's feed:" % user_id)
+    user_id = self.convert_to_user_id(user_id)
     medias = self.get_user_medias(user_id)
     if not medias:
         self.logger.info("Can't like user: account is closed!")
