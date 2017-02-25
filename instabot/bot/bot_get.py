@@ -35,10 +35,6 @@ def filter_media(bot, media_items, log=False):
     media_items = filter_nlikes(media_items, bot.max_likes_to_like)
     return get_media_ids(media_items)
 
-def filter_users(user_items, log=False):
-    # TODO: filter users from blacklist and already subscribed
-    pass
-
 # getters
 
 def get_your_medias(self):
@@ -90,17 +86,17 @@ def get_userid_from_username(self, username):
         return str(self.LastJson["user"]["pk"])
     return None # Not found
 
-def get_user_followers(self, user_id):
-    user_id = self.convert_to_user_id(user_id)
-    followers = self.getTotalFollowers(user_id)
-    return [item['pk'] for item in followers] if followers else False
-
 def get_user_info(self, user_id):
     user_id = self.convert_to_user_id(user_id)
     self.getUsernameInfo(user_id)
     if 'user' not in self.LastJson:
         return False
     return self.LastJson['user']
+
+def get_user_followers(self, user_id):
+    user_id = self.convert_to_user_id(user_id)
+    followers = self.getTotalFollowers(user_id)
+    return [item['pk'] for item in followers] if followers else False
 
 def get_user_following(self, user_id):
     user_id = self.convert_to_user_id(user_id)
