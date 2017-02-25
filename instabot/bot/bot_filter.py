@@ -65,6 +65,28 @@ def check_user(self, user_id):
     if self.blacklist:
         if user_id in self.blacklist:
             return False
+
+    user_info = self.get_user_info(user_id)
+    if not user_info:
+        return True # closed acc
+    if "is_business" in user_info:
+        if user_info["is_business"]:
+            return False
+    if "is_verified" in user_info:
+        if user_info["is_verified"]:
+            return False
+    if "follower_count" in user_info and "following_count" in user_info:
+        if user_info["follower_count"] < 100:
+            return True # not famous user
+        if user_info["following_count"] < 10:
+            return False
+        if user_info["follower_count"] / user_info["following_count"] > 10:
+            return False # too many
+        if user_info["following_count"] / user_info["follower_count"] > 2:
+            return True # too many
+    if 'media_count' in user_info:
+        if user_info["media_count"] < 3:
+            return False # bot or inactive user
     return True
 
 def convert_to_user_id(self, something):
