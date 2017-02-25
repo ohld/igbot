@@ -167,7 +167,6 @@ bot.like_timeline()
 bot.like_hashtag("dog")
 bot.comment_hashtag("dogs")
 bot.unfollow_non_followers()
-bot.logout()
 ```
 
 The best way to start is to go to [examples](https://github.com/ohld/instabot/tree/master/examples) and play with them.
