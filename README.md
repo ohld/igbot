@@ -3,7 +3,7 @@ Cool instagram scripts for promotion and API wrapper. Written in Python.
 ___
 As you may know, Instagram closed it's API in summer 2016. This Python module can do the same thing without any effort. Also it has lots of example scripts to start with.
 
-If you have any ideas, please, leave them in [issues section](https://github.com/ohld/instabot/issues) or in our [telegram chat](https://t.me/joinchat/AAAAAAuPofDcEgHBSysAGg).
+If you have any ideas, please, leave them in [issues section](https://github.com/ohld/instabot/issues) or in our [telegram chat](https://t.me/joinchat/AAAAAEHxHAtKhKo4X4r7xg).
 
 *Your __Contribution__ and Support through __Stars__ will be highly appreciated.*
 
