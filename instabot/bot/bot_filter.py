@@ -23,7 +23,7 @@ def read_list_from_file(file_path):
             return False
         with io.open(file_path, "r", encoding="utf8") as f:
             content = f.readlines()
-            content = [item.strip() for item in content if len(item.strip()) > 0]
+            content = [str(item.strip()) for item in content if len(item.strip()) > 0]
             return content
     except:
         return False
@@ -90,7 +90,7 @@ def check_user(self, user_id):
     return True
 
 def convert_to_user_id(self, smth):
-    if (type(smth) == str or type(smth) == unicode) and not smth.isdigit():
+    if type(smth) == str and not smth.isdigit():
         if smth[0] == "@": # cut first @
             smth = smth[1:]
         smth = self.get_userid_from_username(smth)
