@@ -89,10 +89,10 @@ def check_user(self, user_id):
             return False # bot or inactive user
     return True
 
-def convert_to_user_id(self, something):
-    if type(something) == str and not something.isdigit():
-        if something[0] == "@": # cut first @
-            something = something[1:]
-        something = self.get_userid_from_username(something)
+def convert_to_user_id(self, smth):
+    if (type(smth) == str or type(smth) == unicode) and not smth.isdigit():
+        if smth[0] == "@": # cut first @
+            smth = smth[1:]
+        smth = self.get_userid_from_username(smth)
     # if type is not str than it is int so user_id passed
-    return something
+    return smth
