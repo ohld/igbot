@@ -3,38 +3,37 @@
     passed into e.g. like() or comment() functions.
 """
 
-import time
 import random
-from . import limits
 
 # filters
 
-def filter_not_liked(media_items, log=False):
-    # TODO: convert these print function to logging
-
-    not_liked_medias = []
+def get_media_ids(media_items):
+    result = []
     for m in media_items:
         if 'pk' in m.keys():
-            if 'has_liked' in m.keys():
-                if not m['has_liked']:
-                    if m['like_count'] <= limits.MAX_LIKES_TO_LIKE:
-                        not_liked_medias.append(m['pk'])
-    if log:
-        print ("  Recieved: %d. Already liked: %d." % (
-                            len(media_items),
-                            len(media_items) - len(not_liked_medias)
-                            )
-        )
+            result.append(m['pk'])
+    return result
+
+def filter_not_liked(media_items, log=False):
+    not_liked_medias = []
+    for m in media_items:
+        if 'has_liked' in m.keys():
+            if not m['has_liked']:
+                not_liked_medias.append(m)
     return not_liked_medias
 
-def filter_media(media_items, log=False):
-    # TODO: should return not liked and not commented medias
-    # remove filter_not_liked when implemented
-    return filter_not_liked(media_items, log=False)
+def filter_nlikes(media_items, max_likes_to_like, log=False):
+    filtered_medias = []
+    for m in media_items:
+        if 'like_count' in m.keys():
+            if m['like_count'] < max_likes_to_like:
+                filtered_medias.append(m)
+    return filtered_medias
 
-def filter_users(user_items, log=False):
-    # TODO: filter users from blacklist and already subscribed
-    pass
+def filter_media(bot, media_items, log=False):
+    media_items = filter_not_liked(media_items)
+    media_items = filter_nlikes(media_items, bot.max_likes_to_like)
+    return get_media_ids(media_items)
 
 # getters
 
@@ -44,23 +43,23 @@ def get_your_medias(self):
 
 def get_timeline_medias(self):
     if not self.getTimelineFeed():
-        self.logger.info("  Error while getting timeline feed")
+        self.logger.info("Error while getting timeline feed.")
         return False
-    return filter_media(self.LastJson["items"])
+    return filter_media(self, self.LastJson["items"])
 
 def get_user_medias(self, user_id):
     user_id = self.convert_to_user_id(user_id)
     self.getUserFeed(user_id)
     if self.LastJson["status"] == 'fail':
-        self.logger.info("  This is a closed account")
+        self.logger.info("This is a closed account.")
         return False
-    return filter_media(self.LastJson["items"])
+    return filter_media(self, self.LastJson["items"])
 
 def get_hashtag_medias(self, hashtag):
     if not self.getHashtagFeed(hashtag):
-         self.logger.info("Error while getting hashtag feed")
+         self.logger.info("Error while getting hashtag feed.")
          return False
-    return filter_media(self.LastJson["items"])
+    return filter_media(self, self.LastJson["items"])
 
 def get_geotag_medias(self, geotag):
     # TODO: returns list of medias from geotag
@@ -86,6 +85,13 @@ def get_userid_from_username(self, username):
     if "user" in self.LastJson:
         return str(self.LastJson["user"]["pk"])
     return None # Not found
+
+def get_user_info(self, user_id):
+    user_id = self.convert_to_user_id(user_id)
+    self.getUsernameInfo(user_id)
+    if 'user' not in self.LastJson:
+        return False
+    return self.LastJson['user']
 
 def get_user_followers(self, user_id):
     user_id = self.convert_to_user_id(user_id)

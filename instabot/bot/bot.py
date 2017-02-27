@@ -20,6 +20,7 @@ from .bot_get import get_timeline_users
 from .bot_get import get_hashtag_users
 from .bot_get import get_geotag_users
 from .bot_get import get_userid_from_username
+from .bot_get import get_user_info
 from .bot_get import get_user_followers
 from .bot_get import get_user_following
 from .bot_get import get_media_likers
@@ -71,6 +72,8 @@ from .bot_filter import check_media
 from .bot_filter import check_user
 from .bot_filter import convert_to_user_id
 
+from .bot_stats import save_user_stats
+
 class Bot(API):
     def __init__(self,
                  whitelist=False,
@@ -80,6 +83,7 @@ class Bot(API):
                  max_follows_per_day=350,
                  max_unfollows_per_day=350,
                  max_comments_per_day=100,
+                 max_likes_to_like=100,
                  like_delay=10,
                  follow_delay=30,
                  unfollow_delay=30,
@@ -98,6 +102,7 @@ class Bot(API):
         self.max_follows_per_day = max_follows_per_day
         self.max_unfollows_per_day = max_unfollows_per_day
         self.max_comments_per_day = max_comments_per_day
+        self.max_likes_to_like = max_likes_to_like
 
         # delays
         self.like_delay = like_delay
@@ -183,6 +188,9 @@ class Bot(API):
 
     def get_userid_from_username(self, username):
         return get_userid_from_username(self, username)
+
+    def get_user_info(self, user_id):
+        return get_user_info(self, user_id)
 
     def get_user_followers(self, user_id):
         return get_user_followers(self, user_id)
@@ -332,3 +340,8 @@ class Bot(API):
 
     def convert_to_user_id(self, usernames):
         return convert_to_user_id(self, usernames)
+
+# stats
+
+    def save_user_stats(self, username):
+        return save_user_stats(self, username)

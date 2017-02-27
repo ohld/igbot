@@ -29,11 +29,13 @@ def read_list_from_file(file_path):
         return False
 
 def add_whitelist(self, file_path):
-    self.whitelist = read_list_from_file(file_path)
+    file_contents = read_list_from_file(file_path)
+    self.whitelist = [convert_to_user_id(item) for item in file_contents]
     return not not self.whitelist
 
 def add_blacklist(self, file_path):
-    self.blacklist = read_list_from_file(file_path)
+    file_contents = read_list_from_file(file_path)
+    self.blacklist = [convert_to_user_id(item) for item in file_contents]
     return not not self.blacklist
 
 def get_media_owner(self, media_id):
@@ -63,12 +65,34 @@ def check_user(self, user_id):
     if self.blacklist:
         if user_id in self.blacklist:
             return False
+
+    user_info = self.get_user_info(user_id)
+    if not user_info:
+        return True # closed acc
+    if "is_business" in user_info:
+        if user_info["is_business"]:
+            return False
+    if "is_verified" in user_info:
+        if user_info["is_verified"]:
+            return False
+    if "follower_count" in user_info and "following_count" in user_info:
+        if user_info["follower_count"] < 100:
+            return True # not famous user
+        if user_info["following_count"] < 10:
+            return False
+        if user_info["follower_count"] / user_info["following_count"] > 10:
+            return False # too many
+        if user_info["following_count"] / user_info["follower_count"] > 2:
+            return True # too many
+    if 'media_count' in user_info:
+        if user_info["media_count"] < 3:
+            return False # bot or inactive user
     return True
 
-def convert_to_user_id(self, something):
-    if type(something) == str and not something.isdigit():
-        if something[0] == "@": # cut first @
-            something = something[1:]
-        something = self.get_userid_from_username(something)
+def convert_to_user_id(self, smth):
+    if (type(smth) == str or type(smth) == unicode) and not smth.isdigit():
+        if smth[0] == "@": # cut first @
+            smth = smth[1:]
+        smth = self.get_userid_from_username(smth)
     # if type is not str than it is int so user_id passed
-    return something
+    return smth

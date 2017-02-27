@@ -312,7 +312,7 @@ class API(object):
         return self.SendRequest('feed/tag/'+hashtagString+'/?max_id='+str(maxid)+'&rank_token='+self.rank_token+'&ranked_content=true&')
 
     def getLocationFeed(self, locationId, maxid = ''):
-        return self.SendRequest('feed/location/'+str(locationId)+'/?max_id='+maxid+'&rank_token='+self.rank_token+'&ranked_content=true&')
+        return self.SendRequest('feed/location/'+str(locationId)+'/?max_id='+str(maxid)+'&rank_token='+self.rank_token+'&ranked_content=true&')
 
     def getPopularFeed(self):
         popularFeed = self.SendRequest('feed/popular/?people_teaser_supported=1&rank_token='+ str(self.rank_token) +'&ranked_content=true&')
