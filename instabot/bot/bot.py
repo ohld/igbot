@@ -8,7 +8,7 @@ import io
 
 from tqdm import tqdm
 
-from .. import API
+from ..api import API
 from . import limits
 
 from .bot_get import *
@@ -19,6 +19,7 @@ from .bot_unfollow import *
 from .bot_comment import *
 from .bot_checkpoint import *
 from .bot_filter import *
+
 from .bot_stats import *
 
 
@@ -108,7 +109,7 @@ class Bot(API):
         if self.total_commented:
             self.logger.info("  Total commented: %d" % self.total_commented)
 
-        # getters
+            # getters
 
     def get_your_medias(self):
         return get_your_medias(self)
