@@ -13,6 +13,10 @@ from tqdm import tqdm
 
 from . import limits, delay
 
+__all__ = ('comment', 'comment_hashtag', 'comment_users', 'comment_geotag',
+           'comment_medias', 'is_commented',)
+
+
 def comment(self, media_id, comment_text):
     if not self.check_media(media_id):
         return True
@@ -24,6 +28,7 @@ def comment(self, media_id, comment_text):
     else:
         self.logger.info("Out of comments for today.")
     return False
+
 
 def comment_medias(self, medias):
     self.logger.info("Going to comment %d medias." % (len(medias)))
@@ -38,19 +43,23 @@ def comment_medias(self, medias):
     self.logger.info("DONE: Total commented on %d medias. " % self.total_commented)
     return True
 
+
 def comment_hashtag(self, hashtag, amount=None):
     self.logger.info("Going to comment medias by %s hashtag" % hashtag)
     medias = self.get_hashtag_medias(hashtag)
     return self.comment_medias(medias[:amount])
+
 
 def comment_users(self, user_ids):
     # user_id = self.convert_to_user_id(user_id)
     # TODO: Put a comment to last media of every user from list
     pass
 
+
 def comment_geotag(self, geotag):
     # TODO: comment every media from geotag
     pass
+
 
 def is_commented(self, media_id):
     # TODO: get_media_commenters returns _usernames_ not user_ids!

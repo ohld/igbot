@@ -3,6 +3,10 @@ import random
 import pickle
 from datetime import datetime
 
+__all__ = ('Checkpoint', 'save_checkpoint', 'load_checkpoint', 'checkpoint_followers_diff',
+           'checkpoint_following_diff', 'load_last_checkpoint', 'revert_to_checkpoint',)
+
+
 class Checkpoint(object):
     """
         Checkpoint for instabot.Bot which stores:
@@ -10,6 +14,7 @@ class Checkpoint(object):
             .followers (list of user_ids)
             .date (of checkpoint creation)
     """
+
     def __init__(self):
         self.following = []
         self.followers = []
@@ -42,6 +47,7 @@ def save_checkpoint(self, path=None):
     self.logger.info("Done. Your checkpoint is at %s." % path)
     return path
 
+
 def load_checkpoint(self, path):
     """
         Loads self's checkpoint
@@ -59,6 +65,7 @@ def load_checkpoint(self, path):
         self.logger.info("File not found.")
     return None
 
+
 def checkpoint_following_diff(self, cp):
     """
         Returns user_ids of users that you follow now
@@ -68,6 +75,7 @@ def checkpoint_following_diff(self, cp):
     current_following = [item["pk"] for item in self.getTotalSelfFollowings()]
     old_following = cp.following
     return list(set(current_following) - set(old_following))
+
 
 def checkpoint_followers_diff(self, cp):
     """
@@ -79,8 +87,10 @@ def checkpoint_followers_diff(self, cp):
     old_followers = cp.followers
     return list(set(current_followers) - set(old_followers))
 
+
 def load_last_checkpoint(self):
     return self.load_checkpoint(self.last_checkpoint_path)
+
 
 def revert_to_checkpoint(self, file_path):
     cp = self.load_checkpoint(file_path)

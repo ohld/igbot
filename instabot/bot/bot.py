@@ -8,71 +8,20 @@ import io
 
 from tqdm import tqdm
 
-from .. import API
+from ..api import API
 from . import limits
 
-from .bot_get import get_your_medias
-from .bot_get import get_timeline_medias
-from .bot_get import get_user_medias
-from .bot_get import get_hashtag_medias
-from .bot_get import get_geotag_medias
-from .bot_get import get_timeline_users
-from .bot_get import get_hashtag_users
-from .bot_get import get_geotag_users
-from .bot_get import get_userid_from_username
-from .bot_get import get_user_info
-from .bot_get import get_user_followers
-from .bot_get import get_user_following
-from .bot_get import get_media_likers
-from .bot_get import get_media_comments
-from .bot_get import get_comment
-from .bot_get import get_media_commenters
+from .bot_get import *
+from .bot_like import *
+from .bot_unlike import *
+from .bot_follow import *
+from .bot_unfollow import *
+from .bot_comment import *
+from .bot_checkpoint import *
+from .bot_filter import *
 
-from .bot_like import like
-from .bot_like import like_medias
-from .bot_like import like_timeline
-from .bot_like import like_user_id
-from .bot_like import like_hashtag
-from .bot_like import like_geotag
-from .bot_like import like_users
-from .bot_like import like_followers
-from .bot_like import like_following
+from .bot_stats import *
 
-from .bot_unlike import unlike
-from .bot_unlike import unlike_medias
-
-from .bot_follow import follow
-from .bot_follow import follow_users
-from .bot_follow import follow_followers
-from .bot_follow import follow_following
-
-from .bot_unfollow import unfollow
-from .bot_unfollow import unfollow_users
-from .bot_unfollow import unfollow_non_followers
-from .bot_unfollow import unfollow_everyone
-
-from .bot_comment import comment
-from .bot_comment import comment_hashtag
-from .bot_comment import comment_users
-from .bot_comment import comment_geotag
-from .bot_comment import comment_medias
-from .bot_comment import is_commented
-
-from .bot_checkpoint import save_checkpoint
-from .bot_checkpoint import load_checkpoint
-from .bot_checkpoint import checkpoint_followers_diff
-from .bot_checkpoint import checkpoint_following_diff
-from .bot_checkpoint import load_last_checkpoint
-from .bot_checkpoint import revert_to_checkpoint
-
-from .bot_filter import check_if_file_exists
-from .bot_filter import read_list_from_file
-from .bot_filter import get_media_owner
-from .bot_filter import check_media
-from .bot_filter import check_user
-from .bot_filter import convert_to_user_id
-
-from .bot_stats import save_user_stats
 
 class Bot(API):
     def __init__(self,
@@ -148,7 +97,7 @@ class Bot(API):
     def logout(self):
         super(self.__class__, self).logout()
         self.logger.info("Bot stopped. "
-               "Worked: %s" % (datetime.datetime.now() - self.start_time))
+                         "Worked: %s" % (datetime.datetime.now() - self.start_time))
         if self.total_liked:
             self.logger.info("  Total liked: %d" % self.total_liked)
         if self.total_unliked:
@@ -160,7 +109,7 @@ class Bot(API):
         if self.total_commented:
             self.logger.info("  Total commented: %d" % self.total_commented)
 
-# getters
+            # getters
 
     def get_your_medias(self):
         return get_your_medias(self)
@@ -210,7 +159,7 @@ class Bot(API):
     def get_media_commenters(bot, media_id):
         return get_media_commenters(bot, media_id)
 
-# like
+    # like
 
     def like(self, media_id):
         return like(self, media_id)
@@ -239,7 +188,7 @@ class Bot(API):
     def like_following(self, user_id, nlikes=None):
         return like_following(self, user_id, nlikes)
 
-# unlike
+    # unlike
 
     def unlike(self, media_id):
         return unlike(self, media_id)
@@ -247,7 +196,7 @@ class Bot(API):
     def unlike_medias(self, media_ids):
         return unlike_medias(self, media_ids)
 
-# follow
+    # follow
 
     def follow(self, user_id):
         return follow(self, user_id)
@@ -261,7 +210,7 @@ class Bot(API):
     def follow_following(self, user_id):
         return follow_following(self, user_id)
 
-# unfollow
+    # unfollow
 
     def unfollow(self, user_id):
         return unfollow(self, user_id)
@@ -275,7 +224,7 @@ class Bot(API):
     def unfollow_everyone(self):
         return unfollow_everyone(self)
 
-# comment
+    # comment
 
     def comment(self, media_id, comment_text):
         return comment(self, media_id, comment_text)
@@ -295,7 +244,7 @@ class Bot(API):
     def is_commented(self, media_id):
         return is_commented(self, media_id)
 
-# checkpoint
+    # checkpoint
 
     def save_checkpoint(self, path=None):
         return save_checkpoint(self, path)
@@ -315,7 +264,7 @@ class Bot(API):
     def revert_to_checkpoint(self, file_path):
         return revert_to_checkpoint(self, file_path)
 
-# filter
+    # filter
 
     def check_if_file_exists(self, file_path):
         return check_if_file_exists(file_path)
@@ -341,7 +290,7 @@ class Bot(API):
     def convert_to_user_id(self, usernames):
         return convert_to_user_id(self, usernames)
 
-# stats
+    # stats
 
     def save_user_stats(self, username):
         return save_user_stats(self, username)

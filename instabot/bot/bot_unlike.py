@@ -1,3 +1,6 @@
+__all__ = ('unlike', 'unlike_medias',)
+
+
 def unlike(self, media_id):
     if not self.check_media(media_id):
         return False
@@ -5,6 +8,7 @@ def unlike(self, media_id):
         self.total_unliked += 1
         return True
     return False
+
 
 def unlike_medias(self, media_ids):
     # TODO: unlike each media from list

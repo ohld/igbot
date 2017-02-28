@@ -3,6 +3,9 @@ from tqdm import tqdm
 from . import limits
 from . import delay
 
+__all__ = ('unfollow', 'unfollow_everyone', 'unfollow_users', 'unfollow_non_followers',)
+
+
 def unfollow(self, user_id):
     user_id = self.convert_to_user_id(user_id)
     if not self.check_user(user_id):
@@ -16,6 +19,7 @@ def unfollow(self, user_id):
         self.logger.info("Out of unfollows for today.")
     return False
 
+
 def unfollow_users(self, user_ids):
     self.logger.info("Going to unfollow %d users." % len(user_ids))
     total_unfollowed = 0
@@ -27,6 +31,7 @@ def unfollow_users(self, user_ids):
     self.logger.info("DONE: Total unfollowed %d users. " % total_unfollowed)
     return True
 
+
 def unfollow_non_followers(self):
     self.logger.info("Unfollowing non-followers")
     followings = set([item["pk"] for item in self.getTotalSelfFollowings()])
@@ -36,6 +41,7 @@ def unfollow_non_followers(self):
     diff = followings - followers
     self.logger.info("%d users don't follow you back." % len(diff))
     self.unfollow_users(list(diff))
+
 
 def unfollow_everyone(self):
     your_following = self.get_user_following(self.user_id)

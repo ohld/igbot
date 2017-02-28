@@ -3,6 +3,11 @@ from tqdm import tqdm
 from . import limits
 from . import delay
 
+__all__ = ('like', 'like_medias', 'like_timeline', 'like_user_id',
+           'like_hashtag', 'like_geotag', 'like_users', 'like_followers',
+           'like_following',)
+
+
 def like(self, media_id):
     if not self.check_media(media_id):
         return True
@@ -15,6 +20,7 @@ def like(self, media_id):
         self.logger.info("Out of likes for today.")
     return False
 
+
 def like_medias(self, medias):
     self.logger.info("Going to like %d medias." % (len(medias)))
     for media in tqdm(medias):
@@ -25,10 +31,12 @@ def like_medias(self, medias):
     self.logger.info("DONE: Total liked %d medias." % self.total_liked)
     return True
 
+
 def like_timeline(self, amount=None):
     self.logger.info("Liking timeline feed:")
     medias = self.get_timeline_medias()[:amount]
     return self.like_medias(medias)
+
 
 def like_user_id(self, user_id, amount=None):
     """ Likes last user_id's medias """
@@ -42,9 +50,11 @@ def like_user_id(self, user_id, amount=None):
         return False
     return self.like_medias(medias[:amount])
 
+
 def like_users(self, user_ids, nlikes=None):
     for user_id in user_ids:
         self.like_user_id(user_id, amount=nlikes)
+
 
 def like_hashtag(self, hashtag, amount=None):
     """ Likes last medias from hashtag """
@@ -52,9 +62,11 @@ def like_hashtag(self, hashtag, amount=None):
     medias = self.get_hashtag_medias(hashtag)
     return self.like_medias(medias[:amount])
 
+
 def like_geotag(self, geotag, amount=None):
     # TODO: like medias by geotag
     pass
+
 
 def like_followers(self, user_id, nlikes=None):
     self.logger.info("Like followers of: %s." % user_id)
@@ -66,6 +78,7 @@ def like_followers(self, user_id, nlikes=None):
         self.logger.info("%s not found / closed / has no followers." % user_id)
     else:
         self.like_users(follower_ids, nlikes)
+
 
 def like_following(self, user_id, nlikes=None):
     self.logger.info("Like following of: %s." % user_id)
