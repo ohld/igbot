@@ -75,11 +75,11 @@ bot = Bot(
 | follow_delay | Delay between follows in seconds| follow_delay = 30|
 | unfollow_delay | Delay between unfollows in seconds| unfollow_delay = 30|
 | comment_delay | Delay between comments in seconds| comment_delay = 60|
-| whitelist | Path to the file with user_ids that shouldn't be unfollowed| whitelist="whitelist.txt"|
-| blacklist | Path to the file with user_ids that shouldn't be followed, liked or commented | blacklist="blacklist.txt"|
+| whitelist | Path to the file with users that shouldn't be unfollowed| whitelist="whitelist.txt"|
+| blacklist | Path to the file with users that shouldn't be followed, liked or commented | blacklist="blacklist.txt"|
 | comments_file | Path to the comments database | comments_file="comments.txt"|
 
-In all files one line - one item (comment or user_id).
+In all files one line - one item (comment or user).
 
 ### Get
 
@@ -87,15 +87,15 @@ In all files one line - one item (comment or user_id).
 | ------------- |:-------------:| ------:|
 | get_your_medias | Get list of your last medias | bot.get_you_medias()|
 | get_timeline_medias | Get list of media_ids from you timeline feed| bot.get_timeline_medias()|
-| get_user_medias | Get list of user_id's medias | bot.get_user_medias("352300017")|
+| get_user_medias | Get list of user's medias | bot.get_user_medias("ohld")|
 | get_hashtag_medias| Get list of medias by hashtag| bot.get_hashtag_medias("Dog")|
 | get_geotag_medias| Get list of medias by geotag| TODO |
 | get_timeline_users| Get list of users from your timeline feed| bot.get_timeline_users()|
 | get_hashtag_users| Get list of users who posted with hashtag| TODO |
 | get_geotag_users| Get list of users who posted with geotag| TODO |
 | get_userid_from_username| Convert username to user_id| TODO |
-| get_user_followers| Get list of user's followers| bot.get_user_followers("352300017") |
-| get_user_following| Get list of user's following| bot.get_user_following("352300017") |
+| get_user_followers| Get list of user's followers| bot.get_user_followers("ohld") |
+| get_user_following| Get list of user's following| bot.get_user_following("ohld") |
 | get_media_likers | Get list of media likers| bot.get_media_likers("12312412") |
 | get_media_comments | Get list of media's comments| TODO |
 | get_comment | Get comment from comment file| bot.get_comment()|
@@ -106,11 +106,11 @@ In all files one line - one item (comment or user_id).
 
 | method        | description | example  |
 | ------------- |:-------------:| ------:|
-| like | Like media_id | bot.like("123124128654712904742810")|
+| like | Like media_id | bot.like("1231241210")|
 | like_medias | Like medias from list | bot.like_medias(["1323124", "123141245"])|
 | like_timeline | Like medias from your timeline feed| bot.like_timeline()|
-| like_user_id | Like last user's medias| bot.like_user_id("352300017")|
-| like_hashtag | Like last medias with hashtag | bot.like_hashtag("Dog")|
+| like_user | Like last user's medias| bot.like_user("ohld")|
+| like_hashtag | Like last medias with hashtag | bot.like_hashtag("dog")|
 | like_geotag | Like last medias with geotag| TODO|
 
 ### Unlike
@@ -124,15 +124,15 @@ In all files one line - one item (comment or user_id).
 
 | method        | description | example  |
 | ------------- |:-------------:| ------:|
-| follow | Follow user_id| bot.follow("352300017")|
-| follow_users | Follow users from list | bot.follow(["123", "321"])|
+| follow | Follow user | bot.follow("ohld")|
+| follow_users | Follow users from list | bot.follow(["ohld", "lenakolenka"])|
 
 ### Unfollow
 
 | method        | description | example  |
 | ------------- |:-------------:| ------:|
-| unfollow | Unfollow user_id | bot.unfollow("352300017")|
-| unfollow_users | Unfollow users from list | bot.unfollow(["123", "321"])|
+| unfollow | Unfollow user | bot.unfollow("ohld")|
+| unfollow_users | Unfollow users from list | bot.unfollow(["ohld", "lenakolenka"])|
 | unfollow_non_followers | Unfollow users who don't follow you | bot.unfollow_non_followers()|
 
 ### Comment
