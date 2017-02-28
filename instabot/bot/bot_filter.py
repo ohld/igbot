@@ -7,11 +7,17 @@
 import os
 import io
 
+__all__ = ('check_if_file_exists', 'read_list_from_file', 'get_media_owner',
+           'check_media', 'check_user', 'convert_to_user_id', 'add_blacklist',
+           'add_whitelist',)
+
+
 def check_if_file_exists(file_path):
     if not os.path.exists(file_path):
-        print ("Can't find '%s' file." % file_path)
+        print("Can't find '%s' file." % file_path)
         return False
     return True
+
 
 def read_list_from_file(file_path):
     """
@@ -28,15 +34,18 @@ def read_list_from_file(file_path):
     except:
         return False
 
+
 def add_whitelist(self, file_path):
     file_contents = read_list_from_file(file_path)
     self.whitelist = [convert_to_user_id(item) for item in file_contents]
     return not not self.whitelist
 
+
 def add_blacklist(self, file_path):
     file_contents = read_list_from_file(file_path)
     self.blacklist = [convert_to_user_id(item) for item in file_contents]
     return not not self.blacklist
+
 
 def get_media_owner(self, media_id):
     self.mediaInfo(media_id)
@@ -45,8 +54,10 @@ def get_media_owner(self, media_id):
     except:
         return False
 
+
 def check_media(self, media_id):
     return check_user(self, get_media_owner(self, media_id))
+
 
 def check_user(self, user_id):
     """
@@ -68,7 +79,7 @@ def check_user(self, user_id):
 
     user_info = self.get_user_info(user_id)
     if not user_info:
-        return True # closed acc
+        return True  # closed acc
     if "is_business" in user_info:
         if user_info["is_business"]:
             return False
@@ -77,21 +88,22 @@ def check_user(self, user_id):
             return False
     if "follower_count" in user_info and "following_count" in user_info:
         if user_info["follower_count"] < 100:
-            return True # not famous user
+            return True  # not famous user
         if user_info["following_count"] < 10:
             return False
         if user_info["follower_count"] / user_info["following_count"] > 10:
-            return False # too many
+            return False  # too many
         if user_info["following_count"] / user_info["follower_count"] > 2:
-            return True # too many
+            return True  # too many
     if 'media_count' in user_info:
         if user_info["media_count"] < 3:
-            return False # bot or inactive user
+            return False  # bot or inactive user
     return True
+
 
 def convert_to_user_id(self, smth):
     if type(smth) == str and not smth.isdigit():
-        if smth[0] == "@": # cut first @
+        if smth[0] == "@":  # cut first @
             smth = smth[1:]
         smth = self.get_userid_from_username(smth)
     # if type is not str than it is int so user_id passed

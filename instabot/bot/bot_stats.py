@@ -1,15 +1,20 @@
 import os
 import datetime
 
+__all__ = ('save_user_stats',)
+
+
 def get_tsv_line(dictionary):
     s = ""
     for key in sorted(dictionary):
         s += str(dictionary[key]) + "\t"
     return s[:-2] + "\n"
 
+
 def get_header_line(dictionary):
     s = "\t".join(dictionary)
     return s + "\n"
+
 
 def dump_data(data, path):
     if not os.path.exists(path):
@@ -19,6 +24,7 @@ def dump_data(data, path):
     else:
         with open(path, "a") as f:
             f.write(get_tsv_line(data))
+
 
 def save_user_stats(self, username):
     user_id = self.convert_to_user_id(username)
