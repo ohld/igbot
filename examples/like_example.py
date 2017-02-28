@@ -20,7 +20,7 @@ bot = Bot()
 bot.login()
 
 # like media by a single user_id
-bot.like_user_id("352300017")
+bot.like_user("352300017")
 
 # likes all media from timeline
 bot.like_timeline()

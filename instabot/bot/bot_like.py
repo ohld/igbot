@@ -3,7 +3,7 @@ from tqdm import tqdm
 from . import limits
 from . import delay
 
-__all__ = ('like', 'like_medias', 'like_timeline', 'like_user_id',
+__all__ = ('like', 'like_medias', 'like_timeline', 'like_user',
            'like_hashtag', 'like_geotag', 'like_users', 'like_followers',
            'like_following',)
 
@@ -38,7 +38,7 @@ def like_timeline(self, amount=None):
     return self.like_medias(medias)
 
 
-def like_user_id(self, user_id, amount=None):
+def like_user(self, user_id, amount=None):
     """ Likes last user_id's medias """
     if not user_id:
         return False
@@ -53,7 +53,7 @@ def like_user_id(self, user_id, amount=None):
 
 def like_users(self, user_ids, nlikes=None):
     for user_id in user_ids:
-        self.like_user_id(user_id, amount=nlikes)
+        self.like_user(user_id, amount=nlikes)
 
 
 def like_hashtag(self, hashtag, amount=None):

@@ -25,4 +25,4 @@ bot = Bot(whitelist="whitelist.txt",
 
 timeline_medias = bot.get_timeline_medias()
 for media in tqdm(timeline_medias, desc="timeline"):
-    bot.like_user_id(bot.get_media_owner(media))
+    bot.like_user(bot.get_media_owner(media))

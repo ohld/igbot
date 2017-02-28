@@ -22,4 +22,4 @@ if len(sys.argv) < 2:
 bot = Bot()
 bot.login()
 for username in sys.argv[1:]:
-    bot.like_user_id(username)
+    bot.like_user(username)

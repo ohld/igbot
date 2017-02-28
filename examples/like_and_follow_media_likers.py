@@ -15,7 +15,7 @@ sys.path.append(os.path.join(sys.path[0],'../'))
 from instabot import Bot
 
 def like_and_follow(bot, user_id, nlikes=3):
-    bot.like_user_id(user_id, amount=nlikes)
+    bot.like_user(user_id, amount=nlikes)
     bot.follow(user_id)
     return True
 

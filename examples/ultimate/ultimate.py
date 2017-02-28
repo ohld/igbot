@@ -38,7 +38,7 @@ for item in follow_following_list:
 for item in like_hashtags_list:
     tasks_list.append((bot.like_hashtag, item))
 for item in like_users_list:
-    tasks_list.append((bot.like_user_id, item))
+    tasks_list.append((bot.like_user, item))
 
 # shuffle(tasks_list)
 for func, arg in tasks_list:

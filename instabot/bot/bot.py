@@ -170,8 +170,8 @@ class Bot(API):
     def like_timeline(self, amount=None):
         return like_timeline(self, amount)
 
-    def like_user_id(self, user_id, amount=None):
-        return like_user_id(self, user_id, amount)
+    def like_user(self, user_id, amount=None):
+        return like_user(self, user_id, amount)
 
     def like_hashtag(self, hashtag, amount=None):
         return like_hashtag(self, hashtag, amount)
