@@ -13,7 +13,7 @@ def configurePhoto(self, upload_id, photo, caption = ''):
     '_csrftoken'    : self.token,
     'media_folder'  : 'Instagram',
     'source_type'   : 4,
-    '_uid'          : self.username_id,
+    '_uid'          : self.user_id,
     '_uuid'         : self.uuid,
     'caption'       : caption,
     'upload_id'     : upload_id,
