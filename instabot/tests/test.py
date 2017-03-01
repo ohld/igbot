@@ -2,7 +2,8 @@ import time
 import sys
 import os
 
-sys.path.append(os.path.join(sys.path[0],'../../'))
+sys.path.append(os.path.join(sys.path[0], '../../'))
+
 from instabot import Bot
 
 bot = Bot()
