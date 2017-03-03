@@ -3,8 +3,6 @@ from tqdm import tqdm
 from . import limits
 from . import delay
 
-__all__ = ('unfollow', 'unfollow_everyone', 'unfollow_users', 'unfollow_non_followers',)
-
 
 def unfollow(self, user_id):
     user_id = self.convert_to_user_id(user_id)
@@ -21,15 +19,15 @@ def unfollow(self, user_id):
 
 
 def unfollow_users(self, user_ids):
+    broken_items = []
     self.logger.info("Going to unfollow %d users." % len(user_ids))
     total_unfollowed = 0
     for user_id in tqdm(user_ids):
         if not self.unfollow(user_id):
             delay.error_delay(self)
-            while not self.unfollow(user_id):
-                delay.error_delay(self)
+            broken_items.append(user_id)
     self.logger.info("DONE: Total unfollowed %d users. " % total_unfollowed)
-    return True
+    return broken_items
 
 
 def unfollow_non_followers(self):

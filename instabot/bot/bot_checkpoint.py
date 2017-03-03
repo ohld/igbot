@@ -1,11 +1,9 @@
-import time
-import random
+"""
+    Instabot Checkpoint methods.
+"""
+
 import pickle
 from datetime import datetime
-
-__all__ = ('Checkpoint', 'save_checkpoint', 'load_checkpoint', 'checkpoint_followers_diff',
-           'checkpoint_following_diff', 'load_last_checkpoint', 'revert_to_checkpoint',)
-
 
 class Checkpoint(object):
     """

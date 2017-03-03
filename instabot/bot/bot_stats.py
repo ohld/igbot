@@ -1,19 +1,17 @@
 import os
 import datetime
 
-__all__ = ('save_user_stats',)
-
 
 def get_tsv_line(dictionary):
-    s = ""
+    line = ""
     for key in sorted(dictionary):
-        s += str(dictionary[key]) + "\t"
-    return s[:-2] + "\n"
+        line += str(dictionary[key]) + "\t"
+    return line[:-2] + "\n"
 
 
 def get_header_line(dictionary):
-    s = "\t".join(dictionary)
-    return s + "\n"
+    line = "\t".join(dictionary)
+    return line + "\n"
 
 
 def dump_data(data, path):

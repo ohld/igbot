@@ -3,8 +3,6 @@ from tqdm import tqdm
 from . import limits
 from . import delay
 
-__all__ = ('follow', 'follow_users', 'follow_followers', 'follow_following',)
-
 
 def follow(self, user_id):
     user_id = self.convert_to_user_id(user_id)
@@ -25,14 +23,14 @@ def follow(self, user_id):
 
 
 def follow_users(self, user_ids):
+    broken_items = []
     self.logger.info("Going to follow %d users." % len(user_ids))
     for user_id in tqdm(user_ids):
         if not self.follow(user_id):
             delay.error_delay(self)
-            while not self.follow(user_id):
-                delay.error_delay(self)
+            broken_items.append(user_id)
     self.logger.info("DONE: Total followed %d users." % self.total_followed)
-    return True
+    return broken_items
 
 
 def follow_followers(self, user_id, nfollows=None):
