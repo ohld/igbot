@@ -39,6 +39,7 @@ from .bot_stats import save_user_stats
 
 
 class Bot(API):
+
     def __init__(self,
                  whitelist=False,
                  blacklist=False,
@@ -83,7 +84,8 @@ class Bot(API):
                             )
         ch = logging.StreamHandler()
         ch.setLevel(logging.DEBUG)
-        formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+        formatter = logging.Formatter(
+            '%(asctime)s - %(name)s - %(levelname)s - %(message)s')
         ch.setFormatter(formatter)
         self.logger.addHandler(ch)
         self.logger.info('Instabot Started')

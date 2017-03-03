@@ -4,7 +4,7 @@
     Dependencies:
         You must have a file with comments to post.
         The file should have one comment per line.
-        
+
     Workflow:
         1) Get your timeline medias
         2) Comment them with random comments from file.
@@ -18,7 +18,7 @@ import sys
 import os
 from tqdm import tqdm
 
-sys.path.append(os.path.join(sys.path[0],'../../'))
+sys.path.append(os.path.join(sys.path[0], '../../'))
 from instabot import Bot
 
 if len(sys.argv) != 2:

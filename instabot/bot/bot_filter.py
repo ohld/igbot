@@ -4,12 +4,14 @@
 
 # filtering medias
 
+
 def filter_medias(self, media_items, filtration=True):
     if filtration:
         self.logger.info("Recieved %d medias." % len(media_items))
         media_items = _filter_medias_not_liked(media_items)
         if self.max_likes_to_like:
-            media_items = _filter_medias_nlikes(media_items, self.max_likes_to_like)
+            media_items = _filter_medias_nlikes(
+                media_items, self.max_likes_to_like)
         self.logger.info("After filtration %d medias left." % len(media_items))
     return _get_media_ids(media_items)
 
@@ -48,6 +50,7 @@ def check_media(self, media_id):
         return False
 
 # filter users
+
 
 def filter_users(self, user_id_list):
     return [user["pk"] for user in user_id_list]

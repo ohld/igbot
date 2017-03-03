@@ -2,6 +2,7 @@ from tqdm import tqdm
 
 from . import delay
 
+
 def unlike(self, media_id):
     if super(self.__class__, self).unlike(media_id):
         self.total_unliked += 1

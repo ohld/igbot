@@ -23,7 +23,8 @@ def read_list_from_file(file_path):
             return []
         with io.open(file_path, "r", encoding="utf8") as f:
             content = f.readlines()
-            content = [str(item.strip()) for item in content if len(item.strip()) > 0]
+            content = [str(item.strip())
+                       for item in content if len(item.strip()) > 0]
             return content
     except:
         return []

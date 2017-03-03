@@ -5,6 +5,7 @@
 import pickle
 from datetime import datetime
 
+
 class Checkpoint(object):
     """
         Checkpoint for instabot.Bot which stores:

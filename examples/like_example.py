@@ -13,7 +13,7 @@ import time
 import sys
 import os
 
-sys.path.append(os.path.join(sys.path[0],'../'))
+sys.path.append(os.path.join(sys.path[0], '../'))
 from instabot import Bot
 
 bot = Bot()
@@ -29,7 +29,7 @@ bot.like_timeline()
 bot.like_medias(bot.get_timeline_medias())
 
 # likes media by hashtag(s)
-tags = ["l4l","selfie"]
+tags = ["l4l", "selfie"]
 
 for t in tags:
-   bot.like_hashtag(t)
+    bot.like_hashtag(t)
