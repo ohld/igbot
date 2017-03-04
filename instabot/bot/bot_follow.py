@@ -8,10 +8,6 @@ def follow(self, user_id):
     user_id = self.convert_to_user_id(user_id)
     if not self.check_user(user_id):
         return True
-    if self.following == []:
-        self.following = self.get_user_following(self.user_id)
-    if user_id in self.following:
-        return True  # already following
     if limits.check_if_bot_can_follow(self):
         delay.follow_delay(self)
         if super(self.__class__, self).follow(user_id):

@@ -6,8 +6,8 @@ from . import delay
 
 def unfollow(self, user_id):
     user_id = self.convert_to_user_id(user_id)
-    if not self.check_user(user_id):
-        return True
+    if self.check_user(user_id):
+        return True  # whitelisted user
     if limits.check_if_bot_can_unfollow(self):
         delay.unfollow_delay(self)
         if super(self.__class__, self).unfollow(user_id):

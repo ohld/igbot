@@ -27,17 +27,6 @@ python example.py
 
 If you have any problems with script, please ask questions in [telegram chat](https://t.me/joinchat/AAAAAAuPofDcEgHBSysAGg).
 
-## Docker
-As long as docker is running on your machine you can build an instabot docker image like this
-```
-docker build -t instabot .
-```
-
-Then run your image with an example or your custom script:
-```
-docker run --name instabot -p 80:80 -i -t instabot python examples/like_example.py
-```
-
 ## Implemented [bot](https://github.com/ohld/instabot/blob/master/instabot/bot/bot.py) methods
 
 ``` python
@@ -54,30 +43,48 @@ bot = Bot(
             max_follows_per_day=350,
             max_unfollows_per_day=350,
             max_comments_per_day=100,
+            max_likes_to_like=100,
+            max_followers_to_follow=2000,
+            min_followers_to_follow=10,
+            max_following_to_follow=10000,
+            min_following_to_follow=10,
+            max_followers_to_following_ratio=10,
+            max_following_to_followers_ratio=2,
+            min_media_count_to_follow=3,
             like_delay=10,
             follow_delay=30,
             unfollow_delay=30,
             comment_delay=60,
             whitelist=False,
             blacklist=False,
-            comments_file=False
+            comments_file=False,
+            stop_words=['shop', 'store', 'free']
 )
 ```
 
 | parameter| description | example |
 | ------------- |:-------------:| ------:|
-| max_likes_per_day| How many likes will bot put per day| max_likes_per_day = 1000|
-| max_follows_per_day| Max number of follow per day| max_follows_per_day = 350|
-| max_unfollows_per_day| Max number of follow per day| max_unfollows_per_day = 350|
-| max_comments_per_day| Max number of comments per day| max_comments_per_day = 100|
-| max_likes_to_like | Max number of likes that can media have to be liked | max_likes_to_like = 100 |
-| like_delay | Delay between likes in seconds| like_delay = 10|
-| follow_delay | Delay between follows in seconds| follow_delay = 30|
-| unfollow_delay | Delay between unfollows in seconds| unfollow_delay = 30|
-| comment_delay | Delay between comments in seconds| comment_delay = 60|
-| whitelist | Path to the file with users that shouldn't be unfollowed| whitelist="whitelist.txt"|
-| blacklist | Path to the file with users that shouldn't be followed, liked or commented | blacklist="blacklist.txt"|
-| comments_file | Path to the comments database | comments_file="comments.txt"|
+| max_likes_per_day| How many likes will bot put per day| 1000|
+| max_follows_per_day| Max number of follow per day| 350|
+| max_unfollows_per_day| Max number of follow per day| 350|
+| max_comments_per_day| Max number of comments per day| 100|
+| max_likes_to_like| If the media has more likes then this value - it will be ignorred to like | 200|
+| max_followers_to_follow| If the user have more followers than this value - he will not be followed or liked. | 2000|
+| min_followers_to_follow| If the user have less followers than this value - he will not be followed or liked.| 10|
+| max_following_to_follow| If the user have more following than this value - he will not be followed or liked.| 10000|
+| min_following_to_follow| If the user have less following than this value - he will not be followed or liked.| 10|
+| max_followers_to_following_ratio| if user's followers/following is greater than this value - he will not be followed or liked.| 10|
+| max_following_to_followers_ratio| if user's following/followers is greater than this value - he will not be followed or liked.| 2|
+| min_media_count_to_follow| If the user have less medias than this value - he will not be followed. | 3|
+| max_likes_to_like | Max number of likes that can media have to be liked | 100 |
+| like_delay | Delay between likes in seconds| 10|
+| follow_delay | Delay between follows in seconds| 30|
+| unfollow_delay | Delay between unfollows in seconds| 30|
+| comment_delay | Delay between comments in seconds|  60|
+| whitelist | Path to the file with users that shouldn't be unfollowed| "whitelist.txt"|
+| blacklist | Path to the file with users that shouldn't be followed, liked or commented | "blacklist.txt"|
+| comments_file | Path to the comments database | "comments.txt" |
+| stop_words| A list of stop words: don't follow user if he has any stop word in a description| ['shop', 'store', 'free']|
 
 In all files one line - one item (comment or user).
 
@@ -166,7 +173,20 @@ bot.login()
 bot.like_timeline()
 bot.like_hashtag("dog")
 bot.comment_hashtag("dogs")
+bot.like_user("ohld")
+bot.follow("ohld")
 bot.unfollow_non_followers()
+```
+
+## Docker
+As long as docker is running on your machine you can build an instabot docker image like this
+```
+docker build -t instabot .
+```
+
+Then run your image with an example or your custom script:
+```
+docker run --name instabot -p 80:80 -i -t instabot python examples/like_example.py
 ```
 
 The best way to start is to go to [examples](https://github.com/ohld/instabot/tree/master/examples) and play with them.

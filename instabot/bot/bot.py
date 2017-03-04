@@ -11,7 +11,7 @@ from .bot_get import get_geotag_medias, get_timeline_users, get_hashtag_users
 from .bot_get import get_media_commenters, get_userid_from_username
 from .bot_get import get_user_followers, get_user_following, get_media_likers
 from .bot_get import get_media_comments, get_geotag_users, convert_to_user_id
-from .bot_get import get_comment
+from .bot_get import get_comment, get_media_info
 
 from .bot_like import like, like_medias, like_timeline, like_user, like_users
 from .bot_like import like_hashtag, like_geotag, like_followers, like_following
@@ -49,10 +49,18 @@ class Bot(API):
                  max_unfollows_per_day=350,
                  max_comments_per_day=100,
                  max_likes_to_like=100,
+                 max_followers_to_follow=2000,
+                 min_followers_to_follow=10,
+                 max_following_to_follow=10000,
+                 min_following_to_follow=10,
+                 max_followers_to_following_ratio=10,
+                 max_following_to_followers_ratio=2,
+                 min_media_count_to_follow=3,
                  like_delay=10,
                  follow_delay=30,
                  unfollow_delay=30,
-                 comment_delay=60):
+                 comment_delay=60,
+                 stop_words=['shop', 'store', 'free']):
         super(self.__class__, self).__init__()
 
         self.total_liked = 0
@@ -68,6 +76,14 @@ class Bot(API):
         self.max_unfollows_per_day = max_unfollows_per_day
         self.max_comments_per_day = max_comments_per_day
         self.max_likes_to_like = max_likes_to_like
+        self.max_followers_to_follow = max_followers_to_follow
+        self.min_followers_to_follow = min_followers_to_follow
+        self.max_following_to_follow = max_following_to_follow
+        self.min_following_to_follow = min_following_to_follow
+        self.max_followers_to_following_ratio = max_followers_to_following_ratio
+        self.max_following_to_followers_ratio = max_following_to_followers_ratio
+        self.min_media_count_to_follow = min_media_count_to_follow
+        self.stop_words = stop_words
 
         # delays
         self.like_delay = like_delay
@@ -85,7 +101,7 @@ class Bot(API):
         ch = logging.StreamHandler()
         ch.setLevel(logging.DEBUG)
         formatter = logging.Formatter(
-            '%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+            '%(asctime)s - %(levelname)s - %(message)s')
         ch.setFormatter(formatter)
         self.logger.addHandler(ch)
         self.logger.info('Instabot Started')
@@ -97,11 +113,9 @@ class Bot(API):
         self.whitelist = []
         if whitelist:
             self.whitelist = read_list_from_file(whitelist)
-            self.logger.info("Size of whitelist: %d" % len(self.whitelist))
         self.blacklist = []
         if blacklist:
             self.blacklist = read_list_from_file(blacklist)
-            self.logger.info("Size of blacklist: %d" % len(self.blacklist))
 
         # comment file
         self.comments = []
@@ -116,15 +130,25 @@ class Bot(API):
         self.logger.info("Bot stopped. "
                          "Worked: %s" % (datetime.datetime.now() - self.start_time))
         if self.total_liked:
-            self.logger.info("  Total liked: %d" % self.total_liked)
+            self.logger.info("Total liked: %d" % self.total_liked)
         if self.total_unliked:
-            self.logger.info("  Total unliked: %d" % self.total_unliked)
+            self.logger.info("Total unliked: %d" % self.total_unliked)
         if self.total_followed:
-            self.logger.info("  Total followed: %d" % self.total_followed)
+            self.logger.info("Total followed: %d" % self.total_followed)
         if self.total_unfollowed:
-            self.logger.info("  Total unfollowed: %d" % self.total_unfollowed)
+            self.logger.info("Total unfollowed: %d" % self.total_unfollowed)
         if self.total_commented:
-            self.logger.info("  Total commented: %d" % self.total_commented)
+            self.logger.info("Total commented: %d" % self.total_commented)
+
+    def login(self, *args):
+        super(self.__class__, self).login(args)
+        self.prepare()
+
+    def prepare(self):
+        self.whitelist = [
+            self.convert_to_user_id(smth) for smth in self.whitelist]
+        self.blacklist = [
+            self.convert_to_user_id(smth) for smth in self.blacklist]
 
     # getters
 
@@ -142,6 +166,9 @@ class Bot(API):
 
     def get_geotag_medias(self, geotag, filtration=True):
         return get_geotag_medias(self, geotag, filtration)
+
+    def get_media_info(self, media_id):
+        return get_media_info(self, media_id)
 
     def get_timeline_users(self):
         return get_timeline_users(self)

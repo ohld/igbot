@@ -4,7 +4,6 @@
 
 # filtering medias
 
-
 def filter_medias(self, media_items, filtration=True):
     if filtration:
         self.logger.info("Recieved %d medias." % len(media_items))
@@ -51,7 +50,6 @@ def check_media(self, media_id):
 
 # filter users
 
-
 def filter_users(self, user_id_list):
     return [user["pk"] for user in user_id_list]
 
@@ -60,15 +58,20 @@ def check_user(self, user_id):
     user_id = self.convert_to_user_id(user_id)
 
     if not user_id:
-        return True
+        return False
     if self.whitelist and user_id in self.whitelist:
         return True
     if self.blacklist and user_id in self.blacklist:
         return False
 
+    if self.following == []:
+        self.following = self.get_user_following(self.user_id)
+    if user_id in self.following:
+        return False
+
     user_info = self.get_user_info(user_id)
     if not user_info:
-        return True  # closed acc
+        return False  # closed acc
     if "is_business" in user_info:
         if user_info["is_business"]:
             return False
@@ -76,15 +79,28 @@ def check_user(self, user_id):
         if user_info["is_verified"]:
             return False
     if "follower_count" in user_info and "following_count" in user_info:
-        if user_info["follower_count"] < 100:
-            return True  # not famous user
-        if user_info["following_count"] < 10:
+        if user_info["follower_count"] < self.min_followers_to_follow:
             return False
-        if user_info["follower_count"] / user_info["following_count"] > 10:
-            return False  # too many
-        if user_info["following_count"] / user_info["follower_count"] > 2:
-            return True  # too many
+        if user_info["follower_count"] > self.max_followers_to_follow:
+            return False
+        if user_info["following_count"] < self.min_following_to_follow:
+            return False
+        if user_info["following_count"] > self.max_following_to_follow:
+            return False
+        if user_info["follower_count"] / user_info["following_count"] \
+                    > self.max_followers_to_following_ratio:
+            return False
+        if user_info["following_count"] / user_info["follower_count"] \
+                    > self.max_following_to_followers_ratio:
+            return False
     if 'media_count' in user_info:
-        if user_info["media_count"] < 3:
+        if user_info["media_count"] < self.min_media_count_to_follow:
             return False  # bot or inactive user
+
+    if 'biography' in user_info:
+        test = user_info['biography'].lower()
+        for stop_word in self.stop_words:
+            if stop_word in test:
+                return False
+
     return True
