@@ -22,6 +22,7 @@ from instabot import Bot
 
 bot = Bot(whitelist="whitelist.txt",
           blacklist="blacklist.txt")
+bot = Bot.login()
 
 timeline_medias = bot.get_timeline_medias()
 for media in tqdm(timeline_medias, desc="timeline"):
