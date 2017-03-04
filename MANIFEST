@@ -17,6 +17,7 @@ instabot/bot/bot_filter.py
 instabot/bot/bot_follow.py
 instabot/bot/bot_get.py
 instabot/bot/bot_like.py
+instabot/bot/bot_stats.py
 instabot/bot/bot_unfollow.py
 instabot/bot/bot_unlike.py
 instabot/bot/delay.py

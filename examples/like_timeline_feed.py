@@ -2,7 +2,7 @@
     instabot example
 
     Workflow:
-        1) unfollows users that don't follow you.
+        Like rescent medias from your timeline feed.
 """
 
 import sys
@@ -14,4 +14,4 @@ from instabot import Bot
 
 bot = Bot()
 bot.login()
-bot.unfollow_non_followers()
+bot.like_timeline()

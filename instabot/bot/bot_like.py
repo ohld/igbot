@@ -3,14 +3,8 @@ from tqdm import tqdm
 from . import limits
 from . import delay
 
-__all__ = ('like', 'like_medias', 'like_timeline', 'like_user',
-           'like_hashtag', 'like_geotag', 'like_users', 'like_followers',
-           'like_following',)
-
 
 def like(self, media_id):
-    if not self.check_media(media_id):
-        return True
     if limits.check_if_bot_can_like(self):
         delay.like_delay(self)
         if super(self.__class__, self).like(media_id):
@@ -22,14 +16,14 @@ def like(self, media_id):
 
 
 def like_medias(self, medias):
+    broken_items = []
     self.logger.info("Going to like %d medias." % (len(medias)))
     for media in tqdm(medias):
         if not self.like(media):
             delay.error_delay(self)
-            while not self.like(media):
-                delay.error_delay(self)
+            broken_items.append(media)
     self.logger.info("DONE: Total liked %d medias." % self.total_liked)
-    return True
+    return broken_items
 
 
 def like_timeline(self, amount=None):
@@ -40,13 +34,14 @@ def like_timeline(self, amount=None):
 
 def like_user(self, user_id, amount=None):
     """ Likes last user_id's medias """
-    if not user_id:
+    if not self.check_user(user_id):
         return False
     self.logger.info("Liking user_%s's feed:" % user_id)
     user_id = self.convert_to_user_id(user_id)
     medias = self.get_user_medias(user_id)
     if not medias:
-        self.logger.info("None medias recieved: account is closed or medias have been filtered.")
+        self.logger.info(
+            "None medias recieved: account is closed or medias have been filtered.")
         return False
     return self.like_medias(medias[:amount])
 

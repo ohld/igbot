@@ -13,12 +13,9 @@ from tqdm import tqdm
 
 from . import limits, delay
 
-__all__ = ('comment', 'comment_hashtag', 'comment_users', 'comment_geotag',
-           'comment_medias', 'is_commented',)
-
 
 def comment(self, media_id, comment_text):
-    if not self.check_media(media_id):
+    if self.is_commented(media_id):
         return True
     if limits.check_if_bot_can_comment(self):
         delay.comment_delay(self)
@@ -31,6 +28,7 @@ def comment(self, media_id, comment_text):
 
 
 def comment_medias(self, medias):
+    broken_items = []
     self.logger.info("Going to comment %d medias." % (len(medias)))
     for media in tqdm(medias):
         if not self.is_commented(media):
@@ -38,10 +36,10 @@ def comment_medias(self, medias):
             self.logger.info("Commented with text: %s" % text)
             if not self.comment(media, text):
                 delay.follow_delay(self)
-                while not self.comment(media, text):
-                    delay.follow_delay(self)
-    self.logger.info("DONE: Total commented on %d medias. " % self.total_commented)
-    return True
+                broken_items.append(media)
+    self.logger.info("DONE: Total commented on %d medias. " %
+                     self.total_commented)
+    return broken_items
 
 
 def comment_hashtag(self, hashtag, amount=None):
@@ -62,6 +60,4 @@ def comment_geotag(self, geotag):
 
 
 def is_commented(self, media_id):
-    # TODO: get_media_commenters returns _usernames_ not user_ids!
-    # TODO: implement self.user_id and change the method
-    return self.username in self.get_media_commenters(media_id)
+    return self.user_id in self.get_media_commenters(media_id)

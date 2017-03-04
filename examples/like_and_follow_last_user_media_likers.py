@@ -2,16 +2,14 @@
     instabot example
 
     Workflow:
-        Follow user's following by username.
+        Like and follow users who liked the last media of input users.
 """
 
 import sys
 import os
-import time
-import random
 from tqdm import tqdm
-
 sys.path.append(os.path.join(sys.path[0], '../'))
+
 from instabot import Bot
 
 if len(sys.argv) < 2:
@@ -21,5 +19,11 @@ if len(sys.argv) < 2:
 
 bot = Bot()
 bot.login()
+
 for username in sys.argv[1:]:
-    bot.follow_following(username)
+    medias = bot.get_user_medias(username, filtration=False)
+    if len(medias):
+        likers = bot.get_media_likers(medias[0])
+        for liker in tqdm(likers):
+            bot.like_user(liker, amount=2)
+            bot.follow(liker)
