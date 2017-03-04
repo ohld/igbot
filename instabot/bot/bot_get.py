@@ -5,13 +5,11 @@
 
 import random
 
-# filters
-
 
 def get_media_owner(self, media_id):
     self.mediaInfo(media_id)
     try:
-        return self.LastJson["items"][0]["user"]["pk"]
+        return str(self.LastJson["items"][0]["user"]["pk"])
     except:
         return False
 
@@ -49,6 +47,11 @@ def get_geotag_medias(self, geotag, filtration=True):
     pass
 
 
+def get_media_info(self, media_id):
+    self.mediaInfo(media_id)
+    return self.LastJson["items"]
+
+
 def get_timeline_users(self):
     # TODO: returns list userids who just posted on your timeline feed
     pass
@@ -58,7 +61,7 @@ def get_hashtag_users(self, hashtag):
     users = []
     self.getHashtagFeed(hashtag)
     for i in self.LastJson['items']:
-        users.append(i['user']['pk'])
+        users.append(str(i['user']['pk']))
     return users
 
 
@@ -85,13 +88,13 @@ def get_user_info(self, user_id):
 def get_user_followers(self, user_id):
     user_id = self.convert_to_user_id(user_id)
     followers = self.getTotalFollowers(user_id)
-    return [item['pk'] for item in followers] if followers else False
+    return [str(item['pk']) for item in followers] if followers else False
 
 
 def get_user_following(self, user_id):
     user_id = self.convert_to_user_id(user_id)
     following = self.getTotalFollowings(user_id)
-    return [item['pk'] for item in following] if following else False
+    return [str(item['pk']) for item in following] if following else False
 
 
 def get_media_likers(self, media_id):
@@ -111,7 +114,7 @@ def get_media_commenters(self, media_id):
     self.getMediaComments(media_id)
     if 'comments' not in self.LastJson:
         return []
-    return [item["user"]["pk"] for item in self.LastJson['comments']]
+    return [str(item["user"]["pk"]) for item in self.LastJson['comments']]
 
 
 def get_comment(self):
