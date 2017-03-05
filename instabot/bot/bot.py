@@ -45,6 +45,7 @@ class Bot(API):
                  blacklist=False,
                  comments_file=False,
                  max_likes_per_day=1000,
+                 max_unlikes_per_day=1000,
                  max_follows_per_day=350,
                  max_unfollows_per_day=350,
                  max_comments_per_day=100,
@@ -57,6 +58,7 @@ class Bot(API):
                  max_following_to_followers_ratio=2,
                  min_media_count_to_follow=3,
                  like_delay=10,
+                 unlike_delay=10,
                  follow_delay=30,
                  unfollow_delay=30,
                  comment_delay=60,
@@ -72,6 +74,7 @@ class Bot(API):
 
         # limits
         self.max_likes_per_day = max_likes_per_day
+        self.max_unlikes_per_day = max_unlikes_per_day
         self.max_follows_per_day = max_follows_per_day
         self.max_unfollows_per_day = max_unfollows_per_day
         self.max_comments_per_day = max_comments_per_day
@@ -87,6 +90,7 @@ class Bot(API):
 
         # delays
         self.like_delay = like_delay
+        self.unlike_delay = unlike_delay
         self.follow_delay = follow_delay
         self.unfollow_delay = unfollow_delay
         self.comment_delay = comment_delay

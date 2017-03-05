@@ -40,6 +40,7 @@ bot = Bot()
 from instabot import Bot
 bot = Bot(
             max_likes_per_day=1000,
+            max_unlikes_per_day=1000,
             max_follows_per_day=350,
             max_unfollows_per_day=350,
             max_comments_per_day=100,
@@ -52,6 +53,7 @@ bot = Bot(
             max_following_to_followers_ratio=2,
             min_media_count_to_follow=3,
             like_delay=10,
+            unlike_delay=10,
             follow_delay=30,
             unfollow_delay=30,
             comment_delay=60,
@@ -65,6 +67,7 @@ bot = Bot(
 | parameter| description | example |
 | ------------- |:-------------:| ------:|
 | max_likes_per_day| How many likes will bot put per day| 1000|
+| max_unlikes_per_day | How many unliked medias in a day| 1000|
 | max_follows_per_day| Max number of follow per day| 350|
 | max_unfollows_per_day| Max number of follow per day| 350|
 | max_comments_per_day| Max number of comments per day| 100|
@@ -78,6 +81,7 @@ bot = Bot(
 | min_media_count_to_follow| If the user have less medias than this value - he will not be followed. | 3|
 | max_likes_to_like | Max number of likes that can media have to be liked | 100 |
 | like_delay | Delay between likes in seconds| 10|
+| unlike_delay | Delay between unlikes in seconds | 10|
 | follow_delay | Delay between follows in seconds| 30|
 | unfollow_delay | Delay between unfollows in seconds| 30|
 | comment_delay | Delay between comments in seconds|  60|
