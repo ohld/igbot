@@ -14,6 +14,10 @@ def like_delay(bot):
     time.sleep(add_dispersion(bot.like_delay))
 
 
+def unlike_delay(bot):
+    time.sleep(add_dispersion(bot.unlike_delay))
+
+
 def follow_delay(bot):
     time.sleep(add_dispersion(bot.follow_delay))
 

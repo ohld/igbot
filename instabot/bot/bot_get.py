@@ -16,7 +16,7 @@ def get_media_owner(self, media_id):
 
 def get_your_medias(self):
     self.getSelfUserFeed()
-    return self.filter_medias(self.LastJson["items"])
+    return self.filter_medias(self.LastJson["items"], False)
 
 
 def get_timeline_medias(self, filtration=True):

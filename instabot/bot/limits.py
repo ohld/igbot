@@ -32,6 +32,11 @@ def check_if_bot_can_unfollow(bot):
 
 def check_if_bot_can_like(bot):
     reset_if_day_passed(bot)
+    return bot.max_unlikes_per_day - bot.total_unliked > 0
+
+
+def check_if_bot_can_unlike(bot):
+    reset_if_day_passed(bot)
     return bot.max_likes_per_day - bot.total_liked > 0
 
 
