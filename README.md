@@ -25,7 +25,7 @@ Choose any script from [examples](https://github.com/ohld/instabot/tree/master/e
 python example.py
 ```
 
-If you have any problems with script, please ask questions in [telegram chat](https://t.me/joinchat/AAAAAAuPofDcEgHBSysAGg).
+If you have any problems with script, please ask questions in [telegram chat](https://t.me/joinchat/AAAAAEHxHAtKhKo4X4r7xg).
 
 ## Implemented [bot](https://github.com/ohld/instabot/blob/master/instabot/bot/bot.py) methods
 
