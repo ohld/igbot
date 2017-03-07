@@ -1,3 +1,4 @@
+![Instabot is better that other open-source bots!](https://github.com/instagrambot/instabot/blob/master/docs/img/tag%20instabot.png "Instabot is better that other open-source bots!")
 # instabot
 Cool instagram scripts for promotion and API wrapper. Written in Python.
 ___
