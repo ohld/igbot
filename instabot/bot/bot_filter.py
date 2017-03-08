@@ -2,6 +2,7 @@
     Filter functions for media and user lists.
 """
 
+
 # filtering medias
 
 def filter_medias(self, media_items, filtration=True):
@@ -48,6 +49,7 @@ def check_media(self, media_id):
     else:
         return False
 
+
 # filter users
 
 def filter_users(self, user_id_list):
@@ -88,10 +90,10 @@ def check_user(self, user_id):
         if user_info["following_count"] > self.max_following_to_follow:
             return False
         if user_info["follower_count"] / user_info["following_count"] \
-                    > self.max_followers_to_following_ratio:
+                > self.max_followers_to_following_ratio:
             return False
         if user_info["following_count"] / user_info["follower_count"] \
-                    > self.max_following_to_followers_ratio:
+                > self.max_following_to_followers_ratio:
             return False
     if 'media_count' in user_info:
         if user_info["media_count"] < self.min_media_count_to_follow:
