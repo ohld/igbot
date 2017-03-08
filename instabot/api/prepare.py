@@ -5,6 +5,7 @@ import getpass
 
 SECRET_FILE = "secret.txt"
 
+
 def get_credentials():
     "Returns login and password stored in SECRET_FILE"
     while not check_secret():
@@ -43,6 +44,7 @@ def check_secret():
                 f.write(str(sys.stdin.readline()))
                 print("Enter your password: ")
                 f.write(getpass.getpass())
+
 
 def delete_credentials():
     if os.path.exists(SECRET_FILE):

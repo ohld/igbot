@@ -39,7 +39,6 @@ from .bot_stats import save_user_stats
 
 
 class Bot(API):
-
     def __init__(self,
                  whitelist=False,
                  blacklist=False,

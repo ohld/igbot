@@ -8,8 +8,8 @@ def fbUserSearch(self, query):
 
 
 def searchUsers(self, query):
-    query = self.SendRequest('users/search/?ig_sig_key_version=' + str(config.SIG_KEY_VERSION)
-                             + '&is_typeahead=true&query=' + str(query) + '&rank_token=' + str(self.rank_token))
+    query = self.SendRequest('users/search/?ig_sig_key_version=' + str(config.SIG_KEY_VERSION) +
+                             '&is_typeahead=true&query=' + str(query) + '&rank_token=' + str(self.rank_token))
     return query
 
 

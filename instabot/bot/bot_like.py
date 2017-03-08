@@ -43,7 +43,7 @@ def like_user(self, user_id, amount=None):
         self.logger.info(
             "None medias recieved: account is closed or medias have been filtered.")
         return False
-    size = min(len(medias), amount)    
+    size = min(len(medias), amount)
     return self.like_medias(random.sample(medias, size))
 
 

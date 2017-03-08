@@ -8,10 +8,6 @@ import sys
 import logging
 from tqdm import tqdm
 
-# The urllib library was split into other modules from Python 2 to Python 3
-if sys.version_info.major == 3:
-    import urllib.parse
-
 from . import config
 from .api_photo import configurePhoto
 from .api_photo import uploadPhoto
@@ -33,8 +29,12 @@ from .prepare import get_credentials
 from .prepare import delete_credentials
 
 
-class API(object):
+# The urllib library was split into other modules from Python 2 to Python 3
+if sys.version_info.major == 3:
+    import urllib.parse
 
+
+class API(object):
     def __init__(self):
         self.isLoggedIn = False
         self.LastResponse = None
@@ -57,7 +57,9 @@ class API(object):
             self.session = requests.Session()
             # if you need proxy make something like this:
             # self.session.proxies = {"https" : "http://proxyip:proxyport"}
-            if (self.SendRequest('si/fetch_headers/?challenge_type=signup&guid=' + self.generateUUID(False), None, True)):
+            if (
+                    self.SendRequest('si/fetch_headers/?challenge_type=signup&guid=' + self.generateUUID(False), None,
+                                     True)):
 
                 data = {'phone_id': self.generateUUID(True),
                         '_csrftoken': self.LastResponse.cookies['csrftoken'],
@@ -102,7 +104,7 @@ class API(object):
                                      'Accept-Language': 'en-US',
                                      'User-Agent': config.USER_AGENT})
 
-        if (post != None):  # POST
+        if post is not None:  # POST
             response = self.session.post(
                 config.API_URL + endpoint, data=post)  # , verify=False
         else:  # GET
@@ -225,7 +227,8 @@ class API(object):
             '_uid': self.user_id,
             '_csrftoken': self.token
         })
-        return self.SendRequest('media/' + str(mediaId) + '/comment/' + str(commentId) + '/delete/', self.generateSignature(data))
+        return self.SendRequest('media/' + str(mediaId) + '/comment/' + str(commentId) + '/delete/',
+                                self.generateSignature(data))
 
     def removeProfilePicture(self):
         return removeProfilePicture(self)
@@ -300,7 +303,8 @@ class API(object):
         return searchLocation(self, query)
 
     def syncFromAdressBook(self, contacts):
-        return self.SendRequest('address_book/link/?include=extra_display_name,thumbnails', "contacts=" + json.dumps(contacts))
+        return self.SendRequest('address_book/link/?include=extra_display_name,thumbnails',
+                                "contacts=" + json.dumps(contacts))
 
     def getTimeline(self):
         query = self.SendRequest(
@@ -308,18 +312,21 @@ class API(object):
         return query
 
     def getUserFeed(self, usernameId, maxid='', minTimestamp=None):
-        query = self.SendRequest('feed/user/' + str(usernameId) + '/?max_id=' + str(maxid) + '&min_timestamp=' + str(minTimestamp)
-                                 + '&rank_token=' + str(self.rank_token) + '&ranked_content=true')
+        query = self.SendRequest(
+            'feed/user/' + str(usernameId) + '/?max_id=' + str(maxid) + '&min_timestamp=' + str(minTimestamp) +
+            '&rank_token=' + str(self.rank_token) + '&ranked_content=true')
         return query
 
     def getSelfUserFeed(self, maxid='', minTimestamp=None):
         return self.getUserFeed(self.user_id, maxid, minTimestamp)
 
     def getHashtagFeed(self, hashtagString, maxid=''):
-        return self.SendRequest('feed/tag/' + hashtagString + '/?max_id=' + str(maxid) + '&rank_token=' + self.rank_token + '&ranked_content=true&')
+        return self.SendRequest('feed/tag/' + hashtagString + '/?max_id=' + str(
+            maxid) + '&rank_token=' + self.rank_token + '&ranked_content=true&')
 
     def getLocationFeed(self, locationId, maxid=''):
-        return self.SendRequest('feed/location/' + str(locationId) + '/?max_id=' + str(maxid) + '&rank_token=' + self.rank_token + '&ranked_content=true&')
+        return self.SendRequest('feed/location/' + str(locationId) + '/?max_id=' + str(
+            maxid) + '&rank_token=' + self.rank_token + '&ranked_content=true&')
 
     def getPopularFeed(self):
         popularFeed = self.SendRequest(
@@ -327,8 +334,8 @@ class API(object):
         return popularFeed
 
     def getUserFollowings(self, usernameId, maxid=''):
-        return self.SendRequest('friendships/' + str(usernameId) + '/following/?max_id=' + str(maxid)
-                                + '&ig_sig_key_version=' + config.SIG_KEY_VERSION + '&rank_token=' + self.rank_token)
+        return self.SendRequest('friendships/' + str(usernameId) + '/following/?max_id=' + str(maxid) +
+                                '&ig_sig_key_version=' + config.SIG_KEY_VERSION + '&rank_token=' + self.rank_token)
 
     def getSelfUsersFollowing(self):
         return self.getUserFollowings(self.user_id)
@@ -337,7 +344,9 @@ class API(object):
         if maxid == '':
             return self.SendRequest('friendships/' + str(usernameId) + '/followers/?rank_token=' + self.rank_token)
         else:
-            return self.SendRequest('friendships/' + str(usernameId) + '/followers/?rank_token=' + self.rank_token + '&max_id=' + str(maxid))
+            return self.SendRequest(
+                'friendships/' + str(usernameId) + '/followers/?rank_token=' + self.rank_token + '&max_id=' + str(
+                    maxid))
 
     def getSelfUserFollowers(self):
         return self.getUserFollowers(self.user_id)
@@ -420,7 +429,8 @@ class API(object):
         except AttributeError:
             parsedData = urllib.quote(data)
 
-        return 'ig_sig_key_version=' + config.SIG_KEY_VERSION + '&signed_body=' + hmac.new(config.IG_SIG_KEY.encode('utf-8'), data.encode('utf-8'), hashlib.sha256).hexdigest() + '.' + parsedData
+        return 'ig_sig_key_version=' + config.SIG_KEY_VERSION + '&signed_body=' + hmac.new(
+            config.IG_SIG_KEY.encode('utf-8'), data.encode('utf-8'), hashlib.sha256).hexdigest() + '.' + parsedData
 
     def generateDeviceId(self, seed):
         volatile_seed = "12345"
@@ -458,7 +468,7 @@ class API(object):
                         return followers[:total_followers]
                 except:
                     return followers[:total_followers]
-                if temp["big_list"] == False:
+                if temp["big_list"] is False:
                     return followers[:total_followers]
                 next_max_id = temp["next_max_id"]
 
@@ -482,7 +492,7 @@ class API(object):
                         return following[:total_following]
                 except:
                     return following[:total_following]
-                if temp["big_list"] == False:
+                if temp["big_list"] is False:
                     return following[:total_following]
                 next_max_id = temp["next_max_id"]
 
@@ -494,7 +504,7 @@ class API(object):
             temp = self.LastJson
             for item in temp["items"]:
                 user_feed.append(item)
-            if temp["more_available"] == False:
+            if temp["more_available"] is False:
                 return user_feed
             next_max_id = temp["next_max_id"]
 

@@ -8,7 +8,7 @@ install:
 
 script:
  - pyflakes instabot
- - pep8
+ - pep8 --ignore=E223,E501 instabot
 
 branches:
   only:
