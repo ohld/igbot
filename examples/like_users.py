@@ -2,7 +2,7 @@
     instabot example
 
     Workflow:
-        Like last medias by user.
+        Like last medias by users.
 """
 
 import sys
