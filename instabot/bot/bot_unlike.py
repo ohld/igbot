@@ -25,6 +25,7 @@ def unlike_medias(self, medias):
     self.logger.info("DONE: Total unliked %d medias." % self.total_unliked)
     return broken_items
 
+
 def unlike_user(self, user_id):
     self.logger.info("Going to unlike user %s's feed:" % user_id)
     user_id = self.convert_to_user_id(user_id)
