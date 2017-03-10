@@ -106,3 +106,28 @@ def check_user(self, user_id):
                 return False
 
     return True
+
+def check_not_bot(self, user_id):
+    """ Filter bot from real users. """
+    user_id = self.convert_to_user_id(user_id)
+    if not user_id:
+        return False
+    if self.whitelist and user_id in self.whitelist:
+        return True
+    if self.blacklist and user_id in self.blacklist:
+        return False
+
+    user_info = self.get_user_info(user_id)
+    if not user_info:
+        return True  # closed acc
+
+    if "following_count" in user_info:
+        if user_info["following_count"] > 2000:  # sample value
+            return False  # massfollower
+
+    if 'biography' in user_info:
+        test = user_info['biography'].lower()
+        for stop_word in self.stop_words:
+            if stop_word in test:
+                return False
+    return True

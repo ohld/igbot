@@ -26,11 +26,14 @@ from .bot_unfollow import unfollow_everyone
 from .bot_comment import comment, comment_medias, comment_geotag, comment_users
 from .bot_comment import comment_hashtag, is_commented
 
+from .bot_block import block, unblock, block_users, unblock_users
+
 from .bot_checkpoint import save_checkpoint, load_checkpoint
 from .bot_checkpoint import checkpoint_following_diff, checkpoint_followers_diff
 from .bot_checkpoint import load_last_checkpoint, revert_to_checkpoint
 
 from .bot_filter import filter_medias, check_media, filter_users, check_user
+from .bot_filter import check_not_bot
 
 from .bot_support import check_if_file_exists, read_list_from_file
 from .bot_support import add_whitelist, add_blacklist
@@ -48,6 +51,8 @@ class Bot(API):
                  max_follows_per_day=350,
                  max_unfollows_per_day=350,
                  max_comments_per_day=100,
+                 max_blocks_per_day=100,
+                 max_unblocks_per_day=100,
                  max_likes_to_like=100,
                  max_followers_to_follow=2000,
                  min_followers_to_follow=10,
@@ -61,6 +66,8 @@ class Bot(API):
                  follow_delay=30,
                  unfollow_delay=30,
                  comment_delay=60,
+                 block_delay=30,
+                 unblock_delay=30,
                  stop_words=['shop', 'store', 'free']):
         super(self.__class__, self).__init__()
 
@@ -69,6 +76,8 @@ class Bot(API):
         self.total_followed = 0
         self.total_unfollowed = 0
         self.total_commented = 0
+        self.total_blocked = 0
+        self.total_unblocked = 0
         self.start_time = datetime.datetime.now()
 
         # limits
@@ -77,6 +86,8 @@ class Bot(API):
         self.max_follows_per_day = max_follows_per_day
         self.max_unfollows_per_day = max_unfollows_per_day
         self.max_comments_per_day = max_comments_per_day
+        self.max_blocks_per_day = max_blocks_per_day
+        self.max_unblocks_per_day = max_unblocks_per_day
         self.max_likes_to_like = max_likes_to_like
         self.max_followers_to_follow = max_followers_to_follow
         self.min_followers_to_follow = min_followers_to_follow
@@ -93,6 +104,8 @@ class Bot(API):
         self.follow_delay = follow_delay
         self.unfollow_delay = unfollow_delay
         self.comment_delay = comment_delay
+        self.block_delay = block_delay
+        self.unblock_delay = unblock_delay
 
         # handle logging
         self.logger = logging.getLogger('[instabot]')
@@ -142,6 +155,11 @@ class Bot(API):
             self.logger.info("Total unfollowed: %d" % self.total_unfollowed)
         if self.total_commented:
             self.logger.info("Total commented: %d" % self.total_commented)
+        if self.total_blocked:
+            self.logger.info("Total blocked: %d" % self.total_blocked)
+        if self.total_unblocked:
+            self.logger.info("Total unblocked: %d" % self.total_unblocked)
+
 
     def login(self, *args):
         super(self.__class__, self).login(args)
@@ -300,6 +318,20 @@ class Bot(API):
     def is_commented(self, media_id):
         return is_commented(self, media_id)
 
+    # block
+
+    def block(self, user_id):
+        return block(self, user_id)
+
+    def unblock(self, user_id):
+        return unblock(self, user_id)
+
+    def block_users(self, user_ids):
+        return block_users(self, user_ids)
+
+    def unblock_users(self, user_ids):
+        return unblock_users(self, user_ids)
+
     # checkpoint
 
     def save_checkpoint(self, path=None):
@@ -330,6 +362,9 @@ class Bot(API):
 
     def check_user(self, user):
         return check_user(self, user)
+
+    def check_not_bot(self, user):
+        return check_not_bot(self, user)
 
     def filter_users(self, user_id_list):
         return filter_users(self, user_id_list)
