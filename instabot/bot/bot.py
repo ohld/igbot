@@ -16,7 +16,7 @@ from .bot_get import get_comment, get_media_info
 from .bot_like import like, like_medias, like_timeline, like_user, like_users
 from .bot_like import like_hashtag, like_geotag, like_followers, like_following
 
-from .bot_unlike import unlike, unlike_medias
+from .bot_unlike import unlike, unlike_medias, unlike_user
 
 from .bot_follow import follow, follow_users, follow_followers, follow_following
 
@@ -248,6 +248,9 @@ class Bot(API):
 
     def unlike_medias(self, media_ids):
         return unlike_medias(self, media_ids)
+
+    def unlike_user(self, user):
+        return unlike_user(self, user)
 
     # follow
 
