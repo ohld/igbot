@@ -2,7 +2,7 @@
     instabot example
 
     Workflow:
-        Unlike last medias by users.
+        Block bots. That makes them unfollow you -> You have clear account.
 """
 
 import sys
