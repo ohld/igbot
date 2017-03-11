@@ -33,8 +33,10 @@ def comment_delay(bot):
 def block_delay(bot):
     time.sleep(add_dispersion(bot.block_delay))
 
+
 def unblock_delay(bot):
     time.sleep(add_dispersion(bot.unblock_delay))
+
 
 def error_delay(bot):
     time.sleep(300)

@@ -42,6 +42,7 @@ from .bot_stats import save_user_stats
 
 
 class Bot(API):
+
     def __init__(self,
                  proxy=None,
                  whitelist=False,
@@ -160,7 +161,6 @@ class Bot(API):
             self.logger.info("Total blocked: %d" % self.total_blocked)
         if self.total_unblocked:
             self.logger.info("Total unblocked: %d" % self.total_unblocked)
-
 
     def login(self, *args):
         super(self.__class__, self).login(args)

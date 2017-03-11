@@ -35,6 +35,7 @@ if sys.version_info.major == 3:
 
 
 class API(object):
+
     def __init__(self, proxy=None):
         self.isLoggedIn = False
         self.LastResponse = None
@@ -58,12 +59,13 @@ class API(object):
             self.session = requests.Session()
             if self.proxy is not None:
                 proxies = {
-                  'http': 'http://' + self.proxy,
-                  'https': 'http://' + self.proxy,
+                    'http': 'http://' + self.proxy,
+                    'https': 'http://' + self.proxy,
                 }
                 self.session.proxies.update(proxies)
-            if (self.SendRequest('si/fetch_headers/?challenge_type=signup&guid=' + self.generateUUID(False),
-                            None, True)):
+            if (
+                self.SendRequest('si/fetch_headers/?challenge_type=signup&guid=' + self.generateUUID(False),
+                                 None, True)):
 
                 data = {'phone_id': self.generateUUID(True),
                         '_csrftoken': self.LastResponse.cookies['csrftoken'],

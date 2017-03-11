@@ -51,6 +51,7 @@ def check_media(self, media_id):
 
 # filter users
 
+
 def search_stop_words_in_user(self, user_info):
     text = ''
     if 'biography' in user_info:
@@ -120,6 +121,7 @@ def check_user(self, user_id):
         return False
 
     return True
+
 
 def check_not_bot(self, user_id):
     """ Filter bot from real users. """
