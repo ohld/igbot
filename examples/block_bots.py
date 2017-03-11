@@ -42,7 +42,7 @@ your_followers = list(set(your_followers) - your_likers)
 random.shuffle(your_followers)
 
 for user in tqdm(your_followers):
-    time.sleep(1)
+    time.sleep(10)
     if not bot.check_not_bot(user):
         bot.logger.info("Found bot: "
             "https://instagram.com/%s/" % bot.get_user_info(user)["username"])
