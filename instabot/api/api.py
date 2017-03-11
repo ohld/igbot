@@ -35,9 +35,10 @@ if sys.version_info.major == 3:
 
 
 class API(object):
-    def __init__(self):
+    def __init__(self, proxy=None):
         self.isLoggedIn = False
         self.LastResponse = None
+        self.proxy = proxy
 
     def setUser(self, username, password):
         self.username = username
@@ -55,11 +56,14 @@ class API(object):
 
         if (not self.isLoggedIn or force):
             self.session = requests.Session()
-            # if you need proxy make something like this:
-            # self.session.proxies = {"https" : "http://proxyip:proxyport"}
-            if (
-                    self.SendRequest('si/fetch_headers/?challenge_type=signup&guid=' + self.generateUUID(False), None,
-                                     True)):
+            if self.proxy is not None:
+                proxies = {
+                  'http': 'http://' + self.proxy,
+                  'https': 'http://' + self.proxy,
+                }
+                self.session.proxies.update(proxies)
+            if (self.SendRequest('si/fetch_headers/?challenge_type=signup&guid=' + self.generateUUID(False),
+                            None, True)):
 
                 data = {'phone_id': self.generateUUID(True),
                         '_csrftoken': self.LastResponse.cookies['csrftoken'],

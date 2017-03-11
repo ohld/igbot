@@ -43,6 +43,7 @@ from .bot_stats import save_user_stats
 
 class Bot(API):
     def __init__(self,
+                 proxy=None,
                  whitelist=False,
                  blacklist=False,
                  comments_file=False,
