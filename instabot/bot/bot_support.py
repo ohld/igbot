@@ -1,9 +1,10 @@
 """
-
+    Support instabot's methods.
 """
 
+import sys
 import os
-import io
+import codecs
 
 
 def check_if_file_exists(file_path):
@@ -21,12 +22,14 @@ def read_list_from_file(file_path):
     try:
         if not check_if_file_exists(file_path):
             return []
-        with io.open(file_path, "r", encoding="utf8") as f:
+        with codecs.open(file_path, "r", encoding="utf-8") as f:
             content = f.readlines()
-            content = [str(item.strip())
-                       for item in content if len(item.strip()) > 0]
+            if sys.version_info[0] < 3:
+                content = [str(item.encode('utf8')) for item in content]
+            content = [item.strip() for item in content if len(item) > 0]
             return content
-    except:
+    except Exception as e:
+        print(str(e))
         return []
 
 

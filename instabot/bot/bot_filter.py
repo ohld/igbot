@@ -49,8 +49,26 @@ def check_media(self, media_id):
     else:
         return False
 
-
 # filter users
+
+
+def search_stop_words_in_user(self, user_info):
+    text = ''
+    if 'biography' in user_info:
+        text += user_info['biography'].lower()
+
+    if 'username' in user_info:
+        text += user_info['username'].lower()
+
+    if 'full_name' in user_info:
+        text += user_info['full_name'].lower()
+
+    for stop_word in self.stop_words:
+        if stop_word in text:
+            return True
+
+    return False
+
 
 def filter_users(self, user_id_list):
     return [user["pk"] for user in user_id_list]
@@ -99,10 +117,31 @@ def check_user(self, user_id):
         if user_info["media_count"] < self.min_media_count_to_follow:
             return False  # bot or inactive user
 
-    if 'biography' in user_info:
-        test = user_info['biography'].lower()
-        for stop_word in self.stop_words:
-            if stop_word in test:
-                return False
+    if search_stop_words_in_user(self, user_info):
+        return False
+
+    return True
+
+
+def check_not_bot(self, user_id):
+    """ Filter bot from real users. """
+    user_id = self.convert_to_user_id(user_id)
+    if not user_id:
+        return False
+    if self.whitelist and user_id in self.whitelist:
+        return True
+    if self.blacklist and user_id in self.blacklist:
+        return False
+
+    user_info = self.get_user_info(user_id)
+    if not user_info:
+        return True  # closed acc
+
+    if "following_count" in user_info:
+        if user_info["following_count"] > 2000:  # sample value
+            return False  # massfollower
+
+    if search_stop_words_in_user(self, user_info):
+        return False
 
     return True
