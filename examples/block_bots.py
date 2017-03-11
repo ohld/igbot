@@ -32,9 +32,8 @@ while not your_followers:
 your_likers = set()
 media_items = bot.get_user_medias(bot.user_id):
 for media_id in tqdm(media_items):  
-    if bot.getMediaLikers(media_id):
-        media_likers = [str(item['pk']) for item in bot.LastJson["users"]]
-        your_likers |= set(media_likers)
+    media_likers = bot.get_media_likers(media_id):
+    your_likers |= set(media_likers)
 
 your_followers = list(set(your_followers) - your_likers)
 random.shuffle(your_followers)
