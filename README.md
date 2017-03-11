@@ -2,7 +2,7 @@
 # instabot
 Cool instagram scripts for promotion and API wrapper. Written in Python.
 ___
-As you may know, Instagram closed it's API in summer 2016. This Python module can do the same thing without any effort. Also it has lots of example scripts to start with.
+As you may know, Instagram closed it's API in summer 2016. This Python module can do the same things without any effort. Also it has lots of [example scripts](https://github.com/ohld/instabot/tree/master/examples) to start with.
 
 If you have any ideas, please, leave them in [issues section](https://github.com/ohld/instabot/issues) or in our [telegram chat](https://t.me/joinchat/AAAAAEHxHAtKhKo4X4r7xg).
 
@@ -16,9 +16,7 @@ Install latest stable version or update current from pip
 pip install -U instabot
 ```
 
-Full installation steps for UNIX (Linux, macOS) users [here](https://github.com/ohld/instabot/blob/master/docs/installation/Unix_installation.md).
-
-If you are Windows user, go to [Windows installation](https://github.com/ohld/instabot/blob/master/docs/installation/Windows_installation.md).
+Full installation steps for UNIX (Linux, macOS) users [here](https://github.com/ohld/instabot/blob/master/docs/installation/Unix_installation.md). If you are Windows user, go to [Windows installation](https://github.com/ohld/instabot/blob/master/docs/installation/Windows_installation.md).
 
 ## How to run
 Choose any script from [examples](https://github.com/ohld/instabot/tree/master/examples) and run
@@ -30,16 +28,12 @@ If you have any problems with script, please ask questions in [telegram chat](ht
 
 ## Implemented [bot](https://github.com/ohld/instabot/blob/master/instabot/bot/bot.py) methods
 
-``` python
-from instabot import Bot
-bot = Bot()
-```
-
 ### Bot Class
 
 ``` python
 from instabot import Bot
 bot = Bot(
+            proxy=None,
             max_likes_per_day=1000,
             max_unlikes_per_day=1000,
             max_follows_per_day=350,
@@ -67,6 +61,7 @@ bot = Bot(
 
 | parameter| description | example |
 | ------------- |:-------------:| ------:|
+| proxy | Proxy for Instabot | None|
 | max_likes_per_day| How many likes will bot put per day| 1000|
 | max_unlikes_per_day | How many unliked medias in a day| 1000|
 | max_follows_per_day| Max number of follow per day| 350|
@@ -193,7 +188,5 @@ Then run your image with an example or your custom script:
 ```
 docker run --name instabot -p 80:80 -i -t instabot python examples/like_example.py
 ```
-
-The best way to start is to go to [examples](https://github.com/ohld/instabot/tree/master/examples) and play with them.
 ___
 _by @ohld_
