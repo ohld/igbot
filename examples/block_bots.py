@@ -32,8 +32,8 @@ while not your_followers:
 your_likers = set()
 if bot.getSelfUserFeed():
     media_items = [item['pk'] for item in bot.LastJson["items"]]
-    for media in tqdm(media_items):  
-        if bot.getMediaLikers(media):
+    for media_id in tqdm(media_items):  
+        if bot.getMediaLikers(media_id):
             media_likers = [str(item['pk']) for item in bot.LastJson["users"]]
             your_likers |= set(media_likers)
 
