@@ -29,6 +29,16 @@ your_followers = False
 while not your_followers:
     your_followers = bot.get_user_followers(bot.user_id)
 
+your_likers = set()
+if bot.getSelfUserFeed():
+    media_items = [item['pk'] for item in bot.LastJson["items"]]
+    for media in media_items:  
+        if bot.getMediaLikers(media):
+            media_likers = bot.LastJson["users"]
+            for item in tqdm(media_likers):
+                your_likers.add(item["username"])
+
+your_followers = list(set(your_followers) - your_likers)
 random.shuffle(your_followers)
 
 for user in tqdm(your_followers):
