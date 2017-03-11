@@ -1,16 +1,19 @@
+# Instabot
+
 ![Instabot is better that other open-source bots!](https://github.com/instagrambot/instabot/blob/master/docs/img/tag%20instabot.png "Instabot is better that other open-source bots!")
-# instabot
-Cool instagram scripts for promotion and API wrapper. Written in Python.
+Cool Instagram scripts for promotion and API wrapper. Written in Python.
 ___
-As you may know, Instagram closed it's API in summer 2016. This Python module can do the same things without any effort. Also it has lots of [example scripts](https://github.com/ohld/instabot/tree/master/examples) to start with.
+As you may know, Instagram closed its API in summer 2016. This Python module can do the same things without any effort. Also it has lots of [example scripts](https://github.com/ohld/instabot/tree/master/examples) to start with.
 
-If you have any ideas, please, leave them in [issues section](https://github.com/ohld/instabot/issues) or in our [telegram chat](https://t.me/joinchat/AAAAAEHxHAtKhKo4X4r7xg).
+If you have any ideas, please, leave them in [Issues section](https://github.com/ohld/instabot/issues) or in our [Telegram chat](https://t.me/joinchat/AAAAAEHxHAtKhKo4X4r7xg).
 
-*Your __Contribution__ and Support through __Stars__ will be highly appreciated.*
+[![Telegram Chat](https://patrolavia.github.io/telegram-badge/chat.png)](https://t.me/joinchat/AAAAAEHxHAtKhKo4X4r7xg)
+
+*Your __contribution__ and support through __Stars__ will be highly appreciated.*
 
 ## How to install and update
 
-Install latest stable version or update current from pip
+Install latest stable version or update current from pip.
 
 ``` python
 pip install -U instabot
@@ -19,12 +22,12 @@ pip install -U instabot
 Full installation steps for UNIX (Linux, macOS) users [here](https://github.com/ohld/instabot/blob/master/docs/installation/Unix_installation.md). If you are Windows user, go to [Windows installation](https://github.com/ohld/instabot/blob/master/docs/installation/Windows_installation.md).
 
 ## How to run
-Choose any script from [examples](https://github.com/ohld/instabot/tree/master/examples) and run
+Choose any script from [examples](https://github.com/ohld/instabot/tree/master/examples) and run:
 ```
 python example.py
 ```
 
-If you have any problems with script, please ask questions in [telegram chat](https://t.me/joinchat/AAAAAEHxHAtKhKo4X4r7xg).
+If you have any problems with script, please ask questions in the [Telegram chat](https://t.me/joinchat/AAAAAEHxHAtKhKo4X4r7xg).
 
 ## Implemented [bot](https://github.com/ohld/instabot/blob/master/instabot/bot/bot.py) methods
 
