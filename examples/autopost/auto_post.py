@@ -12,10 +12,9 @@ try:
     with open('pics.txt', 'r') as f:
         posted_pic_list = f.read().splitlines()
 except:
-    print("Please create pics.txt")
-    sys.exit()
+    posted_pic_list = []
 
-timeout = 24 * 60 * 60  # 24 hours
+timeout = 24 * 60 * 60  # pics will be posted every 24 hours
 
 bot = Bot()
 bot.login()
