@@ -29,10 +29,17 @@ your_followers = False
 while not your_followers:
     your_followers = bot.get_user_followers(bot.user_id)
 
+your_likers = set()
+media_items = bot.get_user_medias(bot.user_id):
+for media_id in tqdm(media_items):  
+    media_likers = bot.get_media_likers(media_id):
+    your_likers |= set(media_likers)
+
+your_followers = list(set(your_followers) - your_likers)
 random.shuffle(your_followers)
 
 for user in tqdm(your_followers):
-    time.sleep(1)
+    time.sleep(10)
     if not bot.check_not_bot(user):
         bot.logger.info("Found bot: "
             "https://instagram.com/%s/" % bot.get_user_info(user)["username"])
