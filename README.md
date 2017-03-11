@@ -3,13 +3,13 @@
 ![Instabot is better that other open-source bots!](https://github.com/instagrambot/instabot/blob/master/docs/img/tag%20instabot.png "Instabot is better that other open-source bots!")
 Cool Instagram scripts for promotion and API wrapper. Written in Python.
 ___
+[![Telegram Chat](https://patrolavia.github.io/telegram-badge/chat.png)](https://t.me/joinchat/AAAAAEHxHAtKhKo4X4r7xg)
+
 As you may know, Instagram closed its API in summer 2016. This Python module can do the same things without any effort. Also it has lots of [example scripts](https://github.com/ohld/instabot/tree/master/examples) to start with.
 
 If you have any ideas, please, leave them in [Issues section](https://github.com/ohld/instabot/issues) or in our [Telegram chat](https://t.me/joinchat/AAAAAEHxHAtKhKo4X4r7xg).
 
-[![Telegram Chat](https://patrolavia.github.io/telegram-badge/chat.png)](https://t.me/joinchat/AAAAAEHxHAtKhKo4X4r7xg)
-
-*Your __contribution__ and support through __Stars__ will be highly appreciated.*
+*Your __contribution__ and support through __stars__ will be highly appreciated.*
 
 ## How to install and update
 
