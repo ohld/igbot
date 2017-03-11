@@ -98,6 +98,12 @@ def check_user(self, user_id):
     if "is_verified" in user_info:
         if user_info["is_verified"]:
             return False
+    if "is_private" in user_info:
+        if user_info["is_private"]:
+            return False
+    if "has_anonymous_profile_picture" in user_info:
+        if user_info["has_anonymous_profile_picture"]:
+            return False    
     if "follower_count" in user_info and "following_count" in user_info:
         if user_info["follower_count"] < self.min_followers_to_follow:
             return False
