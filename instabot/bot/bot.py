@@ -58,7 +58,7 @@ class Bot(API):
                  max_likes_to_like=100,
                  max_followers_to_follow=2000,
                  min_followers_to_follow=10,
-                 max_following_to_follow=10000,
+                 max_following_to_follow=2000,
                  min_following_to_follow=10,
                  max_followers_to_following_ratio=10,
                  max_following_to_followers_ratio=2,
