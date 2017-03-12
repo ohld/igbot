@@ -15,7 +15,7 @@ sys.path.append(os.path.join(sys.path[0], '../'))
 from instabot import Bot
 
 if len(sys.argv) < 2:
-    print ("USAGE: Pass username / usernames to like.")
+    print ("USAGE: Pass username(s) to like.")
     print ("Example: python %s ohld lenakolenka" % sys.argv[0])
     exit()
 

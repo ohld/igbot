@@ -15,8 +15,8 @@ sys.path.append(os.path.join(sys.path[0], '../'))
 from instabot import Bot
 
 if len(sys.argv) < 2:
-    print ("USAGE: Pass hashtags to like")
-    print ("Example: python %s dog cat" % sys.argv[0])
+    print ("USAGE: Pass hashtag(s) to like")
+    print ("Example: python %s hashtag1 hashtag2" % sys.argv[0])
     exit()
 
 bot = Bot()

@@ -19,9 +19,9 @@ stop_words = ['shop', 'store', 'free']
 bot = Bot(stop_words=stop_words)
 bot.login()
 bot.logger.info("This script will block bots. "
-                "So they will be unsubscribed from you. "
-                "Bots are these users who:\n"
-                " * follow more than 2000 users\n"
+                "So they will no longer be your follower. "
+                "Bots are those users who:\n"
+                " * follow more than (sample value - change in file) 2000 users\n"
                 " * have stopwords in user's info: "
                 " %s " % str(stop_words))
 

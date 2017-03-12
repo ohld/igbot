@@ -13,8 +13,8 @@ sys.path.append(os.path.join(sys.path[0], '../'))
 from instabot import Bot
 
 if len(sys.argv) != 2:
-    print("USAGE: Pass username to track stats.")
-    print("Example: python %s ohld" % sys.argv[0])
+    print("USAGE: Pass username to collect stats of - saved in username.tsv (same dir).")
+    print("Example: python %s account1" % sys.argv[0])
     exit()
 
 delay = 60 * 60  # in seconds

@@ -15,8 +15,8 @@ sys.path.append(os.path.join(sys.path[0], '../'))
 from instabot import Bot
 
 if len(sys.argv) < 2:
-    print ("USAGE: username of account to follow the followers of / username of (your) specific account.")
-    print ("Example: python %s competitor youraccount" % sys.argv[0])
+    print ("USAGE: pass username(s) to follow the followers of")
+    print ("Example: python %s account1 account2" % sys.argv[0])
     exit()
 
 bot = Bot()
