@@ -58,11 +58,12 @@ class Bot(API):
                  max_likes_to_like=100,
                  max_followers_to_follow=2000,
                  min_followers_to_follow=10,
-                 max_following_to_follow=10000,
+                 max_following_to_follow=2000,
                  min_following_to_follow=10,
                  max_followers_to_following_ratio=10,
                  max_following_to_followers_ratio=2,
                  min_media_count_to_follow=3,
+                 max_following_to_block=2000,
                  like_delay=10,
                  unlike_delay=10,
                  follow_delay=30,
@@ -82,7 +83,7 @@ class Bot(API):
         self.total_unblocked = 0
         self.start_time = datetime.datetime.now()
 
-        # limits
+        # limits - follow
         self.max_likes_per_day = max_likes_per_day
         self.max_unlikes_per_day = max_unlikes_per_day
         self.max_follows_per_day = max_follows_per_day
@@ -99,6 +100,9 @@ class Bot(API):
         self.max_following_to_followers_ratio = max_following_to_followers_ratio
         self.min_media_count_to_follow = min_media_count_to_follow
         self.stop_words = stop_words
+
+        # limits - block
+        self.max_following_to_block = max_following_to_block
 
         # delays
         self.like_delay = like_delay

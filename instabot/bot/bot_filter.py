@@ -138,7 +138,7 @@ def check_not_bot(self, user_id):
         return True  # closed acc
 
     if "following_count" in user_info:
-        if user_info["following_count"] > 2000:  # sample value
+        if user_info["following_count"] > self.max_following_to_block:
             return False  # massfollower
 
     if search_stop_words_in_user(self, user_info):
