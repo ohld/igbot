@@ -113,19 +113,6 @@ class Bot(API):
         self.block_delay = block_delay
         self.unblock_delay = unblock_delay
 
-        # handle logging
-        self.logger = logging.getLogger('[instabot]')
-        self.logger.setLevel(logging.DEBUG)
-        logging.basicConfig(format='%(asctime)s %(message)s',
-                            filename='instabot.log',
-                            level=logging.INFO
-                            )
-        ch = logging.StreamHandler()
-        ch.setLevel(logging.DEBUG)
-        formatter = logging.Formatter(
-            '%(asctime)s - %(levelname)s - %(message)s')
-        ch.setFormatter(formatter)
-        self.logger.addHandler(ch)
         self.logger.info('Instabot Started')
 
         # current following

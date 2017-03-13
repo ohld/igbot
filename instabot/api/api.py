@@ -41,6 +41,20 @@ class API(object):
         self.LastResponse = None
         self.proxy = proxy
 
+        # handle logging
+        self.logger = logging.getLogger('[instabot]')
+        self.logger.setLevel(logging.DEBUG)
+        logging.basicConfig(format='%(asctime)s %(message)s',
+                            filename='instabot.log',
+                            level=logging.INFO
+                            )
+        ch = logging.StreamHandler()
+        ch.setLevel(logging.DEBUG)
+        formatter = logging.Formatter(
+            '%(asctime)s - %(levelname)s - %(message)s')
+        ch.setFormatter(formatter)
+        self.logger.addHandler(ch)
+
     def setUser(self, username, password):
         self.username = username
         self.password = password
@@ -81,15 +95,10 @@ class API(object):
                     self.rank_token = "%s_%s" % (self.user_id, self.uuid)
                     self.token = self.LastResponse.cookies["csrftoken"]
 
-                    # self.syncFeatures()
-                    # self.autoCompleteUserList()
-                    # self.getTimelineFeed()
-                    # self.getv2Inbox()
-                    # self.getRecentActivity()
-                    logging.info("Login success!")
+                    self.logger.info("Login success!")
                     return True
                 else:
-                    logging.warning("Login or password is incorrect.")
+                    self.logger.info("Login or password is incorrect.")
                     delete_credentials()
                     exit()
 
@@ -101,7 +110,7 @@ class API(object):
     def SendRequest(self, endpoint, post=None, login=False):
         if (not self.isLoggedIn and not login):
             raise Exception("Not logged in!")
-            logging.critical("Not logged in.")
+            self.logger.critical("Not logged in.")
 
         self.session.headers.update({'Connection': 'close',
                                      'Accept': '*/*',
@@ -122,7 +131,7 @@ class API(object):
             self.LastJson = json.loads(response.text)
             return True
         else:
-            logging.warning("Request return " +
+            self.logger.warning("Request return " +
                             str(response.status_code) + " error!")
 
             # for debugging
