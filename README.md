@@ -49,6 +49,7 @@ bot = Bot(
             min_following_to_follow=10,
             max_followers_to_following_ratio=10,
             max_following_to_followers_ratio=2,
+            max_following_to_block=2000,
             min_media_count_to_follow=3,
             like_delay=10,
             unlike_delay=10,
@@ -78,6 +79,7 @@ bot = Bot(
 | max_followers_to_following_ratio| if user's followers/following is greater than this value - he will not be followed or liked.| 10|
 | max_following_to_followers_ratio| if user's following/followers is greater than this value - he will not be followed or liked.| 2|
 | min_media_count_to_follow| If the user have less medias than this value - he will not be followed. | 3|
+| max_following_to_block| If the user have following more that this value - he will be blocked in blocking scripts because he is a massfollower| 2000|
 | max_likes_to_like | Max number of likes that can media have to be liked | 100 |
 | like_delay | Delay between likes in seconds| 10|
 | unlike_delay | Delay between unlikes in seconds | 10|
