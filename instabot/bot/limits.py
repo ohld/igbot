@@ -13,6 +13,7 @@ def reset_counters(bot):
     bot.total_commented = 0
     bot.total_blocked = 0
     bot.total_unblocked = 0
+    bot.start_time = datatime.datetime.now()
 
 
 def reset_if_day_passed(bot):
