@@ -2,98 +2,63 @@
     Instabot Checkpoint methods.
 """
 
+import os
 import pickle
 from datetime import datetime
 
+CHECKPOINT_PATH = "instabot.checkpoint"
 
 class Checkpoint(object):
     """
-        Checkpoint for instabot.Bot which stores:
+        Checkpoint for instabot.Bot which can store:
+            .total_<name> - all Bot's counters
             .following (list of user_ids)
             .followers (list of user_ids)
             .date (of checkpoint creation)
     """
 
-    def __init__(self):
-        self.following = []
-        self.followers = []
-        self.date = None
-
-    def fill(self, bot):
-        self.following = [item["pk"] for item in bot.getTotalSelfFollowings()]
-        self.followers = [item["pk"] for item in bot.getTotalSelfFollowers()]
+    def __init__(self, bot):
+        self.total_liked = bot.total_liked
+        self.total_unliked = bot.total_unliked
+        self.total_followed = bot.total_followed
+        self.total_unfollowed = bot.total_unfollowed
+        self.total_commented = bot.total_commented
+        self.total_blocked = bot.total_blocked
+        self.total_unblocked = bot.total_unblocked
+        self.start_time = bot.start_time
         self.date = datetime.now()
 
 
-def save_checkpoint(self, path=None):
-    """
-        Saves self's checkpoint:
-            followers
-            following
-            date
-        Returns the name of saved file
-    """
-    self.logger.info("Saving checkpoint:")
-    if path is None:
-        path = datetime.now().strftime("bot_cp_%Y-%m-%d_%H-%M")
+    def fill_following(self, bot):
+        self.following = [item["pk"] for item in bot.getTotalSelfFollowings()]
 
-    cp = Checkpoint()
-    cp.fill(self)
 
-    with open(path, 'wb') as f:
+    def fill_followers(self, bot):
+        self.followers = [item["pk"] for item in bot.getTotalSelfFollowers()]
+
+
+    def dump(self):
+        return (self.total_liked, self.total_unliked, self.total_followed,
+                self.total_unfollowed, self.total_commented,
+                self.total_blocked, self.total_unblocked, self.start_time)
+
+
+def save_checkpoint(self):
+    cp = Checkpoint(self)
+
+    with open(CHECKPOINT_PATH, 'wb') as f:
         pickle.dump(cp, f, -1)
-    self.last_checkpoint_path = path
-    self.logger.info("Done. Your checkpoint is at %s." % path)
-    return path
+    return True
 
 
-def load_checkpoint(self, path):
-    """
-        Loads self's checkpoint
-        Returns Checkpoint object
-    """
-    self.logger.info("Loading checkpoint:")
+def load_checkpoint(self):
     try:
-        with open(path, 'rb') as f:
+        with open(CHECKPOINT_PATH, 'rb') as f:
             cp = pickle.load(f)
         if isinstance(cp, Checkpoint):
-            return cp
+            return cp.dump()
         else:
-            self.logger.info("This is not checkpoint file.")
+            os.remove(CHECKPOINT_PATH)
     except:
-        self.logger.info("File not found.")
+        pass
     return None
-
-
-def checkpoint_following_diff(self, cp):
-    """
-        Returns user_ids of users that you follow now
-        but didn't follow at checkpoint time.
-    """
-    self.logger.info("Getting checkpoint following difference.")
-    current_following = [item["pk"] for item in self.getTotalSelfFollowings()]
-    old_following = cp.following
-    return list(set(current_following) - set(old_following))
-
-
-def checkpoint_followers_diff(self, cp):
-    """
-        Returns user_ids of users that follows you now
-        but didn't follow you at checkpoint time.
-    """
-    self.logger.info("Getting checkpoint followers difference.")
-    current_followers = [item["pk"] for item in self.getTotalSelfFollowers()]
-    old_followers = cp.followers
-    return list(set(current_followers) - set(old_followers))
-
-
-def load_last_checkpoint(self):
-    return self.load_checkpoint(self.last_checkpoint_path)
-
-
-def revert_to_checkpoint(self, file_path):
-    cp = self.load_checkpoint(file_path)
-    if not cp:
-        return False
-    self.logger.info("Revering to the checkpoint from %s." % cp.date)
-    return self.unfollow_users(self.checkpoint_following_diff(cp))

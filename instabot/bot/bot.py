@@ -29,8 +29,6 @@ from .bot_comment import comment_hashtag, is_commented
 from .bot_block import block, unblock, block_users, unblock_users
 
 from .bot_checkpoint import save_checkpoint, load_checkpoint
-from .bot_checkpoint import checkpoint_following_diff, checkpoint_followers_diff
-from .bot_checkpoint import load_last_checkpoint, revert_to_checkpoint
 
 from .bot_filter import filter_medias, check_media, filter_users, check_user
 from .bot_filter import check_not_bot
@@ -82,6 +80,11 @@ class Bot(API):
         self.total_blocked = 0
         self.total_unblocked = 0
         self.start_time = datetime.datetime.now()
+        storage = load_checkpoint(self)
+        if storage is not None:
+            self.total_liked, self.total_unliked, self.total_followed, \
+            self.total_unfollowed, self.total_commented, self.total_blocked, \
+            self.total_unblocked, self.start_time = storage
 
         # limits - follow
         self.max_likes_per_day = max_likes_per_day
@@ -113,8 +116,6 @@ class Bot(API):
         self.block_delay = block_delay
         self.unblock_delay = unblock_delay
 
-        self.logger.info('Instabot Started')
-
         # current following
         self.following = []
 
@@ -131,10 +132,12 @@ class Bot(API):
         if comments_file:
             self.comments = read_list_from_file(comments_file)
 
+        self.logger.info('Instabot Started')
         signal.signal(signal.SIGTERM, self.logout)
         atexit.register(self.logout)
 
     def logout(self):
+        save_checkpoint(self)
         super(self.__class__, self).logout()
         self.logger.info("Bot stopped. "
                          "Worked: %s" % (datetime.datetime.now() - self.start_time))
@@ -323,26 +326,6 @@ class Bot(API):
 
     def unblock_users(self, user_ids):
         return unblock_users(self, user_ids)
-
-    # checkpoint
-
-    def save_checkpoint(self, path=None):
-        return save_checkpoint(self, path)
-
-    def load_checkpoint(self, path):
-        return load_checkpoint(self, path)
-
-    def checkpoint_followers_diff(self, cp):
-        return checkpoint_followers_diff(self, cp)
-
-    def checkpoint_following_diff(self, cp):
-        return checkpoint_following_diff(self, cp)
-
-    def load_last_checkpoint(self):
-        return load_last_checkpoint(self)
-
-    def revert_to_checkpoint(self, file_path):
-        return revert_to_checkpoint(self, file_path)
 
     # filter
 
