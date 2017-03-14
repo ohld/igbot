@@ -6,7 +6,7 @@ import os
 import pickle
 from datetime import datetime
 
-CHECKPOINT_PATH = "instabot.checkpoint"
+CHECKPOINT_PATH = "%s.checkpoint"
 
 
 class Checkpoint(object):
@@ -44,19 +44,19 @@ class Checkpoint(object):
 def save_checkpoint(self):
     cp = Checkpoint(self)
 
-    with open(CHECKPOINT_PATH, 'wb') as f:
+    with open(CHECKPOINT_PATH % self.username, 'wb') as f:
         pickle.dump(cp, f, -1)
     return True
 
 
 def load_checkpoint(self):
     try:
-        with open(CHECKPOINT_PATH, 'rb') as f:
+        with open(CHECKPOINT_PATH % self.username, 'rb') as f:
             cp = pickle.load(f)
         if isinstance(cp, Checkpoint):
             return cp.dump()
         else:
-            os.remove(CHECKPOINT_PATH)
+            os.remove(CHECKPOINT_PATH % self.username)
     except:
         pass
     return None
