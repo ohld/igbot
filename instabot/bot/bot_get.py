@@ -88,13 +88,13 @@ def get_user_info(self, user_id):
 def get_user_followers(self, user_id):
     user_id = self.convert_to_user_id(user_id)
     followers = self.getTotalFollowers(user_id)
-    return [str(item['pk']) for item in followers] if followers else []
+    return [str(item['pk']) for item in followers][::-1] if followers else []
 
 
 def get_user_following(self, user_id):
     user_id = self.convert_to_user_id(user_id)
     following = self.getTotalFollowings(user_id)
-    return [str(item['pk']) for item in following] if following else []
+    return [str(item['pk']) for item in following][::-1] if following else []
 
 
 def get_media_likers(self, media_id):
