@@ -8,6 +8,7 @@ from datetime import datetime
 
 CHECKPOINT_PATH = "instabot.checkpoint"
 
+
 class Checkpoint(object):
     """
         Checkpoint for instabot.Bot class which can store:
@@ -28,14 +29,11 @@ class Checkpoint(object):
         self.start_time = bot.start_time
         self.date = datetime.now()
 
-
     def fill_following(self, bot):
         self.following = [item["pk"] for item in bot.getTotalSelfFollowings()]
 
-
     def fill_followers(self, bot):
         self.followers = [item["pk"] for item in bot.getTotalSelfFollowers()]
-
 
     def dump(self):
         return (self.total_liked, self.total_unliked, self.total_followed,

@@ -83,8 +83,8 @@ class Bot(API):
         storage = load_checkpoint(self)
         if storage is not None:
             self.total_liked, self.total_unliked, self.total_followed, \
-            self.total_unfollowed, self.total_commented, self.total_blocked, \
-            self.total_unblocked, self.start_time = storage
+                self.total_unfollowed, self.total_commented, self.total_blocked, \
+                self.total_unblocked, self.start_time = storage
 
         # limits - follow
         self.max_likes_per_day = max_likes_per_day
