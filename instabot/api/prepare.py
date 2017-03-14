@@ -11,7 +11,7 @@ def get_credentials():
     while not check_secret():
         pass
     with open(SECRET_FILE, "r") as f:
-        lines = [line.strip().split(":") for line in f.readlines()] # '\n'
+        lines = [line.strip().split(":") for line in f.readlines()]  # '\n'
         if len(lines) == 1:
             return lines[0]
         else:
@@ -41,7 +41,7 @@ def check_secret():
                         os.remove(SECRET_FILE)
                     else:
                         return True
-                except IOError:
+                except:
                     print("Your file is broken. We will delete it "
                           "and try again.")
                     os.remove(SECRET_FILE)
