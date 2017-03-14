@@ -95,7 +95,7 @@ class API(object):
                     self.rank_token = "%s_%s" % (self.user_id, self.uuid)
                     self.token = self.LastResponse.cookies["csrftoken"]
 
-                    self.logger.info("Login success!")
+                    self.logger.info("Login success as %s!" % self.username)
                     return True
                 else:
                     self.logger.info("Login or password is incorrect.")
@@ -118,13 +118,16 @@ class API(object):
                                      'Cookie2': '$Version=1',
                                      'Accept-Language': 'en-US',
                                      'User-Agent': config.USER_AGENT})
-
-        if post is not None:  # POST
-            response = self.session.post(
-                config.API_URL + endpoint, data=post)  # , verify=False
-        else:  # GET
-            response = self.session.get(
-                config.API_URL + endpoint)  # , verify=False
+        try:
+            if post is not None:  # POST
+                response = self.session.post(
+                    config.API_URL + endpoint, data=post)
+            else:  # GET
+                response = self.session.get(
+                    config.API_URL + endpoint)
+        except Exception as e:
+            self.logger.warning(str(e))
+            return False
 
         if response.status_code == 200:
             self.LastResponse = response
@@ -132,7 +135,7 @@ class API(object):
             return True
         else:
             self.logger.warning("Request return " +
-                            str(response.status_code) + " error!")
+                                str(response.status_code) + " error!")
 
             # for debugging
             try:
