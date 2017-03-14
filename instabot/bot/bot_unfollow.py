@@ -21,12 +21,11 @@ def unfollow(self, user_id):
 def unfollow_users(self, user_ids):
     broken_items = []
     self.logger.info("Going to unfollow %d users." % len(user_ids))
-    total_unfollowed = 0
     for user_id in tqdm(user_ids):
         if not self.unfollow(user_id):
             delay.error_delay(self)
             broken_items.append(user_id)
-    self.logger.info("DONE: Total unfollowed %d users. " % total_unfollowed)
+    self.logger.info("DONE: Total unfollowed %d users. " % self.total_unfollowed)
     return broken_items
 
 
