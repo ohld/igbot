@@ -13,7 +13,7 @@ Instabot - это модуль для языка Python, в котором не 
 pip install instabot
 ```
 
-Если же Вы совсем в этом не разбираетесь, то прошу на страницу [Вопросы и ответы](https://github.com/instagrambot/instabot/blob/master/docs/FAQ_rus.md).
+Если же Вы совсем в этом не разбираетесь, то прошу на страницу [вопросов и ответов](https://github.com/instagrambot/instabot/blob/master/docs/FAQ_rus.md) - там есть более подробная инструкция по установки.
 
 ## Запуск
 
@@ -35,6 +35,10 @@ python multi_script_CLI.py
 ``` python
 pip install -U instabot
 ```
+
+## Ничего не понятно
+
+Задайте вопрос в [Telegram группе](https://t.me/joinchat/AAAAAEHxHAtKhKo4X4r7xg). Не забудьте приложить скриншоты.
 
 ## Разработчикам
 

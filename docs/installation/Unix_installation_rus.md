@@ -13,9 +13,9 @@ git clone https://github.com/ohld/instabot
 cd instabot/examples
 ```
 
-* И после этого выбирайте любой скрипт из папки _examples/_, например, _unfollow_non_followers.py_ и запускайте так:
+* И после этого выбирайте любой скрипт из папки _examples/_, например, _multi_script_CLI.py_ и запускайте так:
 ```
-python unfollow_non_followers.py
+python multi_script_CLI.py
 ```
 
 ## Что делать, если ошибки
