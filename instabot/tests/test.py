@@ -1,6 +1,3 @@
-import sys
-import os
-
 from instabot import Bot
 
 bot = Bot()
