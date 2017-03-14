@@ -10,7 +10,7 @@ CHECKPOINT_PATH = "instabot.checkpoint"
 
 class Checkpoint(object):
     """
-        Checkpoint for instabot.Bot which can store:
+        Checkpoint for instabot.Bot class which can store:
             .total_<name> - all Bot's counters
             .following (list of user_ids)
             .followers (list of user_ids)
