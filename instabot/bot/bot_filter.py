@@ -116,7 +116,7 @@ def check_user(self, user_id):
                 return False
         except ZeroDivisionError:
             return False
-            
+
     if 'media_count' in user_info:
         if user_info["media_count"] < self.min_media_count_to_follow:
             return False  # bot or inactive user

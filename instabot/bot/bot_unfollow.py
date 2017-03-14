@@ -25,7 +25,8 @@ def unfollow_users(self, user_ids):
         if not self.unfollow(user_id):
             delay.error_delay(self)
             broken_items.append(user_id)
-    self.logger.info("DONE: Total unfollowed %d users. " % self.total_unfollowed)
+    self.logger.info("DONE: Total unfollowed %d users. " %
+                     self.total_unfollowed)
     return broken_items
 
 
