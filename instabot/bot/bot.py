@@ -1,7 +1,6 @@
 import datetime
 import atexit
 import signal
-import logging
 
 from ..api import API
 
