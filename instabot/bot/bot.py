@@ -79,11 +79,6 @@ class Bot(API):
         self.total_blocked = 0
         self.total_unblocked = 0
         self.start_time = datetime.datetime.now()
-        storage = load_checkpoint(self)
-        if storage is not None:
-            self.total_liked, self.total_unliked, self.total_followed, \
-                self.total_unfollowed, self.total_commented, self.total_blocked, \
-                self.total_unblocked, self.start_time = storage
 
         # limits - follow
         self.max_likes_per_day = max_likes_per_day
@@ -160,6 +155,11 @@ class Bot(API):
         self.prepare()
 
     def prepare(self):
+        storage = load_checkpoint(self)
+        if storage is not None:
+            self.total_liked, self.total_unliked, self.total_followed, \
+                self.total_unfollowed, self.total_commented, self.total_blocked, \
+                self.total_unblocked, self.start_time = storage
         self.whitelist = [
             self.convert_to_user_id(smth) for smth in self.whitelist]
         self.blacklist = [
