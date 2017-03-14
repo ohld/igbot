@@ -97,3 +97,5 @@ ENV/
 
 # Bot checkpoints
 bot_cp_*
+
+*.checkpoint

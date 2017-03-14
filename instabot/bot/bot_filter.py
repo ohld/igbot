@@ -107,12 +107,16 @@ def check_user(self, user_id):
             return False
         if user_info["following_count"] > self.max_following_to_follow:
             return False
-        if user_info["follower_count"] / user_info["following_count"] \
-                > self.max_followers_to_following_ratio:
+        try:
+            if user_info["follower_count"] / user_info["following_count"] \
+                    > self.max_followers_to_following_ratio:
+                return False
+            if user_info["following_count"] / user_info["follower_count"] \
+                    > self.max_following_to_followers_ratio:
+                return False
+        except ZeroDivisionError:
             return False
-        if user_info["following_count"] / user_info["follower_count"] \
-                > self.max_following_to_followers_ratio:
-            return False
+
     if 'media_count' in user_info:
         if user_info["media_count"] < self.min_media_count_to_follow:
             return False  # bot or inactive user

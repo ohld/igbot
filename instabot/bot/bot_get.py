@@ -22,7 +22,7 @@ def get_your_medias(self):
 def get_timeline_medias(self, filtration=True):
     if not self.getTimelineFeed():
         self.logger.info("Error while getting timeline feed.")
-        return False
+        return []
     return self.filter_medias(self.LastJson["items"], filtration)
 
 
@@ -31,14 +31,14 @@ def get_user_medias(self, user_id, filtration=True):
     self.getUserFeed(user_id)
     if self.LastJson["status"] == 'fail':
         self.logger.info("This is a closed account.")
-        return False
+        return []
     return self.filter_medias(self.LastJson["items"], filtration)
 
 
 def get_hashtag_medias(self, hashtag, filtration=True):
     if not self.getHashtagFeed(hashtag):
         self.logger.info("Error while getting hashtag feed.")
-        return False
+        return []
     return self.filter_medias(self.LastJson["items"], filtration)
 
 
@@ -101,7 +101,7 @@ def get_media_likers(self, media_id):
     self.getMediaLikers(media_id)
     if "users" not in self.LastJson:
         self.logger.info("Media with %s not found." % media_id)
-        return False
+        return []
     return self.filter_users(self.LastJson["users"])
 
 

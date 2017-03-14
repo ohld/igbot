@@ -10,7 +10,7 @@ As you may know, Instagram closed its API in summer 2016. This Python module can
 ## Highly recommended
 *Make sure* you check out the example scripts [here](https://github.com/ohld/instabot/tree/master/examples). Chances are, your desired functions are *already there and ready to use*. Examples include *unfollowing non-followers*, *following competitor's followings and followers*, *liking posts of a specific hashtag*, and *more*...
 
-If you have any ideas, please report them in the [Issues section](https://github.com/ohld/instabot/issues) or in our [Telegram chat](https://t.me/joinchat/AAAAAEHxHAtKhKo4X4r7xg). 
+If you have any ideas, please report them in the [Issues section](https://github.com/ohld/instabot/issues) or in our [Telegram chat](https://t.me/joinchat/AAAAAEHxHAtKhKo4X4r7xg).
 
 **Your __contribution__ and support through __stars and reporting issues__ will be highly appreciated. After all, this project is dependent on your testing and support. :)**
 ## How to install and update
@@ -165,17 +165,6 @@ This is in regards to comments or users in a file.
 | comment_geotag | Put comments under medias by geotag | TODO |
 | comment_users | Put comments under users' last medias | TODO |
 | is_commented | Check if media is already commented | bot.is_commented("123321") |
-
-### Checkpoints
-
-| method        | description | example  |
-| ------------- |:-------------:| ------:|
-| save_checkpoint() | Save [checkpoint](https://github.com/ohld/instabot/blob/master/instabot/bot/bot_checkpoint.py) of your account. Return path to it.|    bot.save_checkpoint("my_cp") |
-| revert_to_checkpoint(file_path)| Unfollow the new following made after checkpoint creation.| bot.revert_to_checkpoint("my_cp")|
-| load_checkpoint(path)| Load checkpoint from path. Return Checkpoint class.|  cp = bot.load_checkpoint( bot.last_checkpoint_path)|
-| load_last_checkpoint()| Load last checkpoint if it was in current session.| bot.load_last_checkpoint()|
-| checkpoint_followers_diff(cp)| returns a list of users who followed you after checkpoint.| bot.checkpoint_followers_diff(cp)|
-| checkpoint_following_diff(cp)| returns a list of users who you followed after checkpoint.| bot.checkpoint_following_diff(cp)|
 
 ## Sample usage
 

@@ -42,5 +42,5 @@ for user in tqdm(your_followers):
     time.sleep(5)
     if not bot.check_not_bot(user):
         bot.logger.info("Found bot: "
-            "https://instagram.com/%s/" % bot.get_user_info(user)["username"])
+                        "https://instagram.com/%s/" % bot.get_user_info(user)["username"])
         bot.block(user)
