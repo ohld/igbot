@@ -23,6 +23,7 @@ def menu():
         7.Follow following of
         8.Unfollow non followers
         9.Unfollow everyone
+        10.Block bots
         0.Exit
         """)
         ans = input("What would you like to do? ").strip()
@@ -53,6 +54,8 @@ def menu():
             bot.unfollow_non_followers()
         elif ans == "9":
             bot.unfollow_everyone()
+        elif ans == "10":
+            bot.block_bots()
         elif ans == "0":
             exit()
         else:
