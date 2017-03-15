@@ -6,6 +6,7 @@ import urllib
 import uuid
 import sys
 import logging
+import time
 from tqdm import tqdm
 
 from . import config
@@ -136,6 +137,11 @@ class API(object):
         else:
             self.logger.warning("Request return " +
                                 str(response.status_code) + " error!")
+            if response.status_code == 429:
+                sleep_minutes = 5
+                self.logger.warning("That means 'too many requests'. "
+                                    "I'll go to sleep for %d minutes." % sleep_minutes)
+                time.sleep(sleep_minutes * 60)
 
             # for debugging
             try:
