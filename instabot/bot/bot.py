@@ -334,8 +334,8 @@ class Bot(API):
     def check_media(self, media):
         return check_media(self, media)
 
-    def check_user(self, user):
-        return check_user(self, user)
+    def check_user(self, user, filter_closed_acc=False):
+        return check_user(self, user, filter_closed_acc)
 
     def check_not_bot(self, user):
         return check_not_bot(self, user)

@@ -2,6 +2,7 @@
     Filter functions for media and user lists.
 """
 
+from . import delay
 
 # filtering medias
 
@@ -74,7 +75,8 @@ def filter_users(self, user_id_list):
     return [user["pk"] for user in user_id_list]
 
 
-def check_user(self, user_id):
+def check_user(self, user_id, filter_closed_acc=False):
+    delay.small_delay(self)
     user_id = self.convert_to_user_id(user_id)
 
     if not user_id:
@@ -91,7 +93,10 @@ def check_user(self, user_id):
 
     user_info = self.get_user_info(user_id)
     if not user_info:
-        return False  # closed acc
+        return False
+    if filter_closed_acc and "is_private" in user_info:
+        if user_info["is_private"]:
+            return False
     if "is_business" in user_info:
         if user_info["is_business"]:
             return False
