@@ -53,6 +53,7 @@ def like_user(self, user_id, amount=None):
 def like_users(self, user_ids, nlikes=None):
     for user_id in user_ids:
         self.like_user(user_id, amount=nlikes)
+        delay.small_delay(self)
 
 
 def like_hashtag(self, hashtag, amount=None):
@@ -72,7 +73,7 @@ def like_followers(self, user_id, nlikes=None):
     if not user_id:
         self.logger.info("User not found.")
         return
-    follower_ids = self.get_user_followers(user_id[0])
+    follower_ids = self.get_user_followers(user_id)
     if not follower_ids:
         self.logger.info("%s not found / closed / has no followers." % user_id)
     else:
@@ -84,7 +85,7 @@ def like_following(self, user_id, nlikes=None):
     if not user_id:
         self.logger.info("User not found.")
         return
-    following_ids = self.get_user_following(user_id[0])
+    following_ids = self.get_user_following(user_id)
     if not following_ids:
         self.logger.info("%s not found / closed / has no following." % user_id)
     else:
