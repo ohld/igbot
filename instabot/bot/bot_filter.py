@@ -6,6 +6,7 @@ from . import delay
 
 # filtering medias
 
+
 def filter_medias(self, media_items, filtration=True):
     if filtration:
         self.logger.info("Recieved %d medias." % len(media_items))
@@ -133,6 +134,7 @@ def check_user(self, user_id, filter_closed_acc=False):
 
 
 def check_not_bot(self, user_id):
+    delay.small_delay(self)
     """ Filter bot from real users. """
     user_id = self.convert_to_user_id(user_id)
     if not user_id:
