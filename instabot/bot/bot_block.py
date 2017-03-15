@@ -1,3 +1,4 @@
+import random
 from tqdm import tqdm
 
 from . import limits
@@ -50,3 +51,16 @@ def unblock_users(self, user_ids):
             broken_items.append(user_id)
     self.logger.info("DONE: Total unblocked %d users." % self.total_unblocked)
     return broken_items
+
+
+def block_bots(self):
+    self.logger.info("Going to block bots.")
+    your_followers = self.get_user_followers(self.user_id)
+    your_likers = self.get_user_likers(self.user_id)
+    not_likers = list(set(your_followers) - set(your_likers))
+    random.shuffle(not_likers)
+    for user in tqdm(not_likers):
+        if not self.check_not_bot(user):
+            self.logger.info("Found bot: "
+                             "https://instagram.com/%s/" % self.get_user_info(user)["username"])
+            self.block(user)

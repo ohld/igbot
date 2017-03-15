@@ -4,6 +4,7 @@
 """
 
 import random
+from tqdm import tqdm
 
 
 def get_media_owner(self, media_id):
@@ -22,7 +23,7 @@ def get_your_medias(self):
 def get_timeline_medias(self, filtration=True):
     if not self.getTimelineFeed():
         self.logger.info("Error while getting timeline feed.")
-        return False
+        return []
     return self.filter_medias(self.LastJson["items"], filtration)
 
 
@@ -31,14 +32,23 @@ def get_user_medias(self, user_id, filtration=True):
     self.getUserFeed(user_id)
     if self.LastJson["status"] == 'fail':
         self.logger.info("This is a closed account.")
-        return False
+        return []
     return self.filter_medias(self.LastJson["items"], filtration)
+
+
+def get_user_likers(self, user_id):
+    your_likers = set()
+    media_items = self.get_user_medias(user_id, filtration=False)[:10]
+    for media_id in tqdm(media_items, desc="Getting your media likers"):
+        media_likers = self.get_media_likers(media_id)
+        your_likers |= set(media_likers)
+    return list(your_likers)
 
 
 def get_hashtag_medias(self, hashtag, filtration=True):
     if not self.getHashtagFeed(hashtag):
         self.logger.info("Error while getting hashtag feed.")
-        return False
+        return []
     return self.filter_medias(self.LastJson["items"], filtration)
 
 
@@ -88,20 +98,20 @@ def get_user_info(self, user_id):
 def get_user_followers(self, user_id):
     user_id = self.convert_to_user_id(user_id)
     followers = self.getTotalFollowers(user_id)
-    return [str(item['pk']) for item in followers] if followers else []
+    return [str(item['pk']) for item in followers][::-1] if followers else []
 
 
 def get_user_following(self, user_id):
     user_id = self.convert_to_user_id(user_id)
     following = self.getTotalFollowings(user_id)
-    return [str(item['pk']) for item in following] if following else []
+    return [str(item['pk']) for item in following][::-1] if following else []
 
 
 def get_media_likers(self, media_id):
     self.getMediaLikers(media_id)
     if "users" not in self.LastJson:
         self.logger.info("Media with %s not found." % media_id)
-        return False
+        return []
     return self.filter_users(self.LastJson["users"])
 
 

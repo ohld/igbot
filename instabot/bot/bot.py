@@ -1,7 +1,6 @@
 import datetime
 import atexit
 import signal
-import logging
 
 from ..api import API
 
@@ -11,7 +10,7 @@ from .bot_get import get_geotag_medias, get_timeline_users, get_hashtag_users
 from .bot_get import get_media_commenters, get_userid_from_username
 from .bot_get import get_user_followers, get_user_following, get_media_likers
 from .bot_get import get_media_comments, get_geotag_users, convert_to_user_id
-from .bot_get import get_comment, get_media_info
+from .bot_get import get_comment, get_media_info, get_user_likers
 
 from .bot_like import like, like_medias, like_timeline, like_user, like_users
 from .bot_like import like_hashtag, like_geotag, like_followers, like_following
@@ -26,11 +25,9 @@ from .bot_unfollow import unfollow_everyone
 from .bot_comment import comment, comment_medias, comment_geotag, comment_users
 from .bot_comment import comment_hashtag, is_commented
 
-from .bot_block import block, unblock, block_users, unblock_users
+from .bot_block import block, unblock, block_users, unblock_users, block_bots
 
 from .bot_checkpoint import save_checkpoint, load_checkpoint
-from .bot_checkpoint import checkpoint_following_diff, checkpoint_followers_diff
-from .bot_checkpoint import load_last_checkpoint, revert_to_checkpoint
 
 from .bot_filter import filter_medias, check_media, filter_users, check_user
 from .bot_filter import check_not_bot
@@ -113,21 +110,6 @@ class Bot(API):
         self.block_delay = block_delay
         self.unblock_delay = unblock_delay
 
-        # handle logging
-        self.logger = logging.getLogger('[instabot]')
-        self.logger.setLevel(logging.DEBUG)
-        logging.basicConfig(format='%(asctime)s %(message)s',
-                            filename='instabot.log',
-                            level=logging.INFO
-                            )
-        ch = logging.StreamHandler()
-        ch.setLevel(logging.DEBUG)
-        formatter = logging.Formatter(
-            '%(asctime)s - %(levelname)s - %(message)s')
-        ch.setFormatter(formatter)
-        self.logger.addHandler(ch)
-        self.logger.info('Instabot Started')
-
         # current following
         self.following = []
 
@@ -144,10 +126,12 @@ class Bot(API):
         if comments_file:
             self.comments = read_list_from_file(comments_file)
 
+        self.logger.info('Instabot Started')
         signal.signal(signal.SIGTERM, self.logout)
         atexit.register(self.logout)
 
     def logout(self):
+        save_checkpoint(self)
         super(self.__class__, self).logout()
         self.logger.info("Bot stopped. "
                          "Worked: %s" % (datetime.datetime.now() - self.start_time))
@@ -171,6 +155,11 @@ class Bot(API):
         self.prepare()
 
     def prepare(self):
+        storage = load_checkpoint(self)
+        if storage is not None:
+            self.total_liked, self.total_unliked, self.total_followed, \
+                self.total_unfollowed, self.total_commented, self.total_blocked, \
+                self.total_unblocked, self.start_time = storage
         self.whitelist = [
             self.convert_to_user_id(smth) for smth in self.whitelist]
         self.blacklist = [
@@ -231,6 +220,9 @@ class Bot(API):
 
     def get_media_owner(self, media):
         return get_media_owner(self, media)
+
+    def get_user_likers(self, user_id):
+        return get_user_likers(self, user_id)
 
     def convert_to_user_id(self, usernames):
         return convert_to_user_id(self, usernames)
@@ -337,25 +329,8 @@ class Bot(API):
     def unblock_users(self, user_ids):
         return unblock_users(self, user_ids)
 
-    # checkpoint
-
-    def save_checkpoint(self, path=None):
-        return save_checkpoint(self, path)
-
-    def load_checkpoint(self, path):
-        return load_checkpoint(self, path)
-
-    def checkpoint_followers_diff(self, cp):
-        return checkpoint_followers_diff(self, cp)
-
-    def checkpoint_following_diff(self, cp):
-        return checkpoint_following_diff(self, cp)
-
-    def load_last_checkpoint(self):
-        return load_last_checkpoint(self)
-
-    def revert_to_checkpoint(self, file_path):
-        return revert_to_checkpoint(self, file_path)
+    def block_bots(self):
+        return block_bots(self)
 
     # filter
 
@@ -365,8 +340,8 @@ class Bot(API):
     def check_media(self, media):
         return check_media(self, media)
 
-    def check_user(self, user):
-        return check_user(self, user)
+    def check_user(self, user, filter_closed_acc=False):
+        return check_user(self, user, filter_closed_acc)
 
     def check_not_bot(self, user):
         return check_not_bot(self, user)

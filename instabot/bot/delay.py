@@ -40,3 +40,7 @@ def unblock_delay(bot):
 
 def error_delay(bot):
     time.sleep(300)
+
+
+def small_delay(bot):
+    time.sleep(2)

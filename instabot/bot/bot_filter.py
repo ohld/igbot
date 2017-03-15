@@ -2,8 +2,10 @@
     Filter functions for media and user lists.
 """
 
+from . import delay
 
 # filtering medias
+
 
 def filter_medias(self, media_items, filtration=True):
     if filtration:
@@ -74,7 +76,8 @@ def filter_users(self, user_id_list):
     return [user["pk"] for user in user_id_list]
 
 
-def check_user(self, user_id):
+def check_user(self, user_id, filter_closed_acc=False):
+    delay.small_delay(self)
     user_id = self.convert_to_user_id(user_id)
 
     if not user_id:
@@ -91,7 +94,10 @@ def check_user(self, user_id):
 
     user_info = self.get_user_info(user_id)
     if not user_info:
-        return False  # closed acc
+        return False
+    if filter_closed_acc and "is_private" in user_info:
+        if user_info["is_private"]:
+            return False
     if "is_business" in user_info:
         if user_info["is_business"]:
             return False
@@ -107,12 +113,16 @@ def check_user(self, user_id):
             return False
         if user_info["following_count"] > self.max_following_to_follow:
             return False
-        if user_info["follower_count"] / user_info["following_count"] \
-                > self.max_followers_to_following_ratio:
+        try:
+            if user_info["follower_count"] / user_info["following_count"] \
+                    > self.max_followers_to_following_ratio:
+                return False
+            if user_info["following_count"] / user_info["follower_count"] \
+                    > self.max_following_to_followers_ratio:
+                return False
+        except ZeroDivisionError:
             return False
-        if user_info["following_count"] / user_info["follower_count"] \
-                > self.max_following_to_followers_ratio:
-            return False
+
     if 'media_count' in user_info:
         if user_info["media_count"] < self.min_media_count_to_follow:
             return False  # bot or inactive user
@@ -124,6 +134,7 @@ def check_user(self, user_id):
 
 
 def check_not_bot(self, user_id):
+    delay.small_delay(self)
     """ Filter bot from real users. """
     user_id = self.convert_to_user_id(user_id)
     if not user_id:

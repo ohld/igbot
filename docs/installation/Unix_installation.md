@@ -8,7 +8,7 @@ cd instabot/examples
 
 * And then you can run any example like this
 ```
-python follow_user_following.py ohld
+python multi_script_CLI.py
 ```
 
 ## Errors
