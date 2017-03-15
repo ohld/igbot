@@ -4,6 +4,7 @@
 """
 
 import random
+from tqdm import tqdm
 
 
 def get_media_owner(self, media_id):
@@ -33,6 +34,15 @@ def get_user_medias(self, user_id, filtration=True):
         self.logger.info("This is a closed account.")
         return []
     return self.filter_medias(self.LastJson["items"], filtration)
+
+
+def get_user_likers(self, user_id):
+    your_likers = set()
+    media_items = self.get_user_medias(user_id, filtration=False)[:10]
+    for media_id in tqdm(media_items, desc="Getting your media likers"):
+        media_likers = self.get_media_likers(media_id)
+        your_likers |= set(media_likers)
+    return list(your_likers)
 
 
 def get_hashtag_medias(self, hashtag, filtration=True):

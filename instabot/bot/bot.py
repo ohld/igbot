@@ -10,7 +10,7 @@ from .bot_get import get_geotag_medias, get_timeline_users, get_hashtag_users
 from .bot_get import get_media_commenters, get_userid_from_username
 from .bot_get import get_user_followers, get_user_following, get_media_likers
 from .bot_get import get_media_comments, get_geotag_users, convert_to_user_id
-from .bot_get import get_comment, get_media_info
+from .bot_get import get_comment, get_media_info, get_user_likers
 
 from .bot_like import like, like_medias, like_timeline, like_user, like_users
 from .bot_like import like_hashtag, like_geotag, like_followers, like_following
@@ -25,7 +25,7 @@ from .bot_unfollow import unfollow_everyone
 from .bot_comment import comment, comment_medias, comment_geotag, comment_users
 from .bot_comment import comment_hashtag, is_commented
 
-from .bot_block import block, unblock, block_users, unblock_users
+from .bot_block import block, unblock, block_users, unblock_users, block_bots
 
 from .bot_checkpoint import save_checkpoint, load_checkpoint
 
@@ -221,6 +221,9 @@ class Bot(API):
     def get_media_owner(self, media):
         return get_media_owner(self, media)
 
+    def get_user_likers(self, user_id):
+        return get_user_likers(self, user_id)
+
     def convert_to_user_id(self, usernames):
         return convert_to_user_id(self, usernames)
 
@@ -325,6 +328,9 @@ class Bot(API):
 
     def unblock_users(self, user_ids):
         return unblock_users(self, user_ids)
+
+    def block_bots(self):
+        return block_bots(self)
 
     # filter
 
