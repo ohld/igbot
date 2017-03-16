@@ -21,7 +21,7 @@ random_hashtag=random.choice(random_hashtag_file)
 def job1(): bot.like_hashtag(random_hashtag, amount=int(700/24))
 def job2(): bot.like_timeline(amount=int(300/24))
 def job3(): bot.like_followers(random_user, nlikes=3)
-def job4(): bot.follow_followers(random_list)
+def job4(): bot.follow_followers(random_user)
 def job5(): bot.comment_medias(bot.get_timeline_medias())
 def job6(): bot.unfollow_non_followers()
 
