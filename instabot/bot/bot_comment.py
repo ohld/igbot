@@ -35,8 +35,9 @@ def comment_medias(self, medias):
             text = self.get_comment()
             self.logger.info("Commented with text: %s" % text)
             if not self.comment(media, text):
-                delay.follow_delay(self)
-                broken_items.append(media)
+                delay.comment_delay(self)
+                broken_items = medias[medias.index(media):]
+                break
     self.logger.info("DONE: Total commented on %d medias. " %
                      self.total_commented)
     return broken_items

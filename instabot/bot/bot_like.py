@@ -23,7 +23,8 @@ def like_medias(self, medias):
     for media in tqdm(medias):
         if not self.like(media):
             delay.error_delay(self)
-            broken_items.append(media)
+            broken_items = medias[medias.index(media):]
+            break
     self.logger.info("DONE: Total liked %d medias." % self.total_liked)
     return broken_items
 

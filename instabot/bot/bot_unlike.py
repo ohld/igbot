@@ -21,7 +21,8 @@ def unlike_medias(self, medias):
     for media in tqdm(medias):
         if not self.unlike(media):
             delay.error_delay(self)
-            broken_items.append(media)
+            broken_items = medias[medias.index(media):]
+            break
     self.logger.info("DONE: Total unliked %d medias." % self.total_unliked)
     return broken_items
 
