@@ -28,9 +28,10 @@ def menu():
         """)
         ans = input("What would you like to do? ").strip()
         if ans == "1":
-            hashtag = input("What hashtag? ").strip()
+            hashtags = input("What hashtags? ").split()
             amount = input("How much likes? ")
-            bot.like_hashtag(hashtag, amount=int(amount))
+            for hashtag in hashtags:
+                bot.like_hashtag(hashtag, amount=int(amount))
         elif ans == "2":
             user_id = input("Who? ").strip()
             nlikes = input("How much like per account? ")
@@ -42,8 +43,9 @@ def menu():
         elif ans == "4":
             bot.like_timeline()
         elif ans == "5":
-            hashtag = input("What hashtag? ").strip()
-            bot.follow_users(bot.get_hashtag_users(hashtag))
+            hashtags = input("What hashtags? ").split()
+            for hashtag in hashtags:
+                bot.follow_users(bot.get_hashtag_users(hashtag))
         elif ans == "6":
             user_id = input("Who? ").strip()
             bot.follow_followers(user_id)
@@ -59,7 +61,7 @@ def menu():
         elif ans == "0":
             exit()
         else:
-            print("\n Not Valid Choice Try again")
+            print("\n Not valid choice. Try again")
 
 
 bot = Bot(
