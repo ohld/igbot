@@ -60,9 +60,9 @@ def menu():
         elif ans == "10":
             bot.block_bots()
         elif ans == "11":
-            text = bot.read_list_from_file('stop_words.txt')
-            for line in text:
-                bot.stop_words.append(line)
+            new_words = bot.read_list_from_file('stop_words.txt')
+            for line in new_words:
+                bot.stop_words.extend(line)
         elif ans == "0":
             exit()
         else:
