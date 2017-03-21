@@ -25,10 +25,15 @@ def get_credentials():
         for ind, (login, password) in enumerate(lines):
             print("%d: %s" % (ind + 1, login))
         print("%d: %s" % (0, "add another account."))
+        print("%d: %s" % (-1, "delete all accounts."))
         try:
             ind = int(sys.stdin.readline())
             if ind == 0:
                 add_credentials()
+                continue
+            if ind == -1:
+                delete_credentials()
+                check_secret()
                 continue
             if ind - 1 in list(range(len(lines))):
                 return lines[ind - 1]
