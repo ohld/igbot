@@ -41,7 +41,6 @@ from .bot_stats import save_user_stats
 class Bot(API):
 
     def __init__(self,
-                 proxy=None,
                  whitelist=False,
                  blacklist=False,
                  comments_file=False,
@@ -127,8 +126,6 @@ class Bot(API):
             self.comments = read_list_from_file(comments_file)
 
         self.logger.info('Instabot Started')
-        signal.signal(signal.SIGTERM, self.logout)
-        atexit.register(self.logout)
 
     def logout(self):
         save_checkpoint(self)
@@ -137,9 +134,11 @@ class Bot(API):
                          "Worked: %s" % (datetime.datetime.now() - self.start_time))
         self.print_counters()
 
-    def login(self, *args):
-        super(self.__class__, self).login(args)
+    def login(self, **args):
+        super(self.__class__, self).login(**args)
         self.prepare()
+        signal.signal(signal.SIGTERM, self.logout)
+        atexit.register(self.logout)
 
     def prepare(self):
         storage = load_checkpoint(self)

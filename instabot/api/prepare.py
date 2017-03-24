@@ -14,13 +14,17 @@ def add_credentials():
         f.write(getpass.getpass() + "\n")
 
 
-def get_credentials():
+def get_credentials(username=None):
     "Returns login and password stored in SECRET_FILE"
     while not check_secret():
         pass
     while True:
         with open(SECRET_FILE, "r") as f:
             lines = [line.strip().split(":") for line in f.readlines()]
+        if username is not None:
+            for login, password in lines:
+                if login == username.strip():
+                    return login, password
         print("Which account do you want to use? (Type number)")
         for ind, (login, password) in enumerate(lines):
             print("%d: %s" % (ind + 1, login))
