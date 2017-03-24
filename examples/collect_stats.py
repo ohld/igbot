@@ -8,19 +8,24 @@
 import os
 import sys
 import time
+import argparse
 
 sys.path.append(os.path.join(sys.path[0], '../'))
 from instabot import Bot
 
-if len(sys.argv) != 2:
-    print("USAGE: Pass username to collect stats of - saved in username.tsv (same dir).")
-    print("Example: python %s account1" % sys.argv[0])
-    exit()
-
-delay = 60 * 60  # in seconds
+parser = argparse.ArgumentParser(add_help=True)
+parser.add_argument('-u', type=str, help="username")
+parser.add_argument('-p', type=str, help="password")
+parser.add_argument('-proxy', type=str, help="proxy")
+parser.add_argument('user', type=str, help='user')
+args = parser.parse_args()
 
 bot = Bot()
-bot.login()
+bot.login(username=args.u, password=args.p,
+          proxy=args.proxy)
+
+delay = 60 * 60
+
 while True:
-    bot.save_user_stats(sys.argv[1])
+    bot.save_user_stats(args.user)
     time.sleep(delay)

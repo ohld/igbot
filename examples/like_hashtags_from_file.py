@@ -10,18 +10,23 @@ import os
 import time
 import random
 from tqdm import tqdm
+import argparse
 
 sys.path.append(os.path.join(sys.path[0], '../'))
 from instabot import Bot
 
-if len(sys.argv) != 2:
-    print("USAGE: Pass a path to the file with hashtags."
-           " (one line - one hashtag)")
-    print("Example: python %s hashtags.txt" % sys.argv[0])
-    exit()
+parser = argparse.ArgumentParser(add_help=True)
+parser.add_argument('-u', type=str, help="username")
+parser.add_argument('-p', type=str, help="password")
+parser.add_argument('-proxy', type=str, help="proxy")
+parser.add_argument('filename', type=str, nargs='+', help='filename')
+args = parser.parse_args()
 
 bot = Bot()
-hashtags = bot.read_list_from_file(sys.argv[1])
+bot.login(username=args.u, password=args.p,
+          proxy=args.proxy)
+
+hashtags = bot.read_list_from_file(args.filename)
 bot.logger.info("Hashtags: " + str(hashtags))
 if not hashtags:
     exit()
