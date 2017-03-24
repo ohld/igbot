@@ -135,20 +135,7 @@ class Bot(API):
         super(self.__class__, self).logout()
         self.logger.info("Bot stopped. "
                          "Worked: %s" % (datetime.datetime.now() - self.start_time))
-        if self.total_liked:
-            self.logger.info("Total liked: %d" % self.total_liked)
-        if self.total_unliked:
-            self.logger.info("Total unliked: %d" % self.total_unliked)
-        if self.total_followed:
-            self.logger.info("Total followed: %d" % self.total_followed)
-        if self.total_unfollowed:
-            self.logger.info("Total unfollowed: %d" % self.total_unfollowed)
-        if self.total_commented:
-            self.logger.info("Total commented: %d" % self.total_commented)
-        if self.total_blocked:
-            self.logger.info("Total blocked: %d" % self.total_blocked)
-        if self.total_unblocked:
-            self.logger.info("Total unblocked: %d" % self.total_unblocked)
+        self.print_counters()
 
     def login(self, *args):
         super(self.__class__, self).login(args)
@@ -164,6 +151,22 @@ class Bot(API):
             self.convert_to_user_id(smth) for smth in self.whitelist]
         self.blacklist = [
             self.convert_to_user_id(smth) for smth in self.blacklist]
+
+    def print_counters(self):
+        if self.total_liked:
+            self.logger.info("Total liked: %d" % self.total_liked)
+        if self.total_unliked:
+            self.logger.info("Total unliked: %d" % self.total_unliked)
+        if self.total_followed:
+            self.logger.info("Total followed: %d" % self.total_followed)
+        if self.total_unfollowed:
+            self.logger.info("Total unfollowed: %d" % self.total_unfollowed)
+        if self.total_commented:
+            self.logger.info("Total commented: %d" % self.total_commented)
+        if self.total_blocked:
+            self.logger.info("Total blocked: %d" % self.total_blocked)
+        if self.total_unblocked:
+            self.logger.info("Total unblocked: %d" % self.total_unblocked)
 
     # getters
 
