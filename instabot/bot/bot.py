@@ -116,6 +116,7 @@ class Bot(API):
         self.whitelist = []
         if whitelist:
             self.whitelist = read_list_from_file(whitelist)
+        print (self.whitelist)
         self.blacklist = []
         if blacklist:
             self.blacklist = read_list_from_file(blacklist)
@@ -146,10 +147,10 @@ class Bot(API):
             self.total_liked, self.total_unliked, self.total_followed, \
                 self.total_unfollowed, self.total_commented, self.total_blocked, \
                 self.total_unblocked, self.start_time = storage
-        self.whitelist = [
-            self.convert_to_user_id(smth) for smth in self.whitelist]
-        self.blacklist = [
-            self.convert_to_user_id(smth) for smth in self.blacklist]
+        self.whitelist = list(
+            filter(None, map(self.convert_to_user_id, self.whitelist)))
+        self.blacklist = list(
+            filter(None, map(self.convert_to_user_id, self.blacklist)))
 
     def print_counters(self):
         if self.total_liked:
