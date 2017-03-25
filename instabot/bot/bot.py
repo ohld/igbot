@@ -116,7 +116,6 @@ class Bot(API):
         self.whitelist = []
         if whitelist:
             self.whitelist = read_list_from_file(whitelist)
-        print (self.whitelist)
         self.blacklist = []
         if blacklist:
             self.blacklist = read_list_from_file(blacklist)
