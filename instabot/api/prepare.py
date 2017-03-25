@@ -20,7 +20,7 @@ def get_credentials(username=None):
         pass
     while True:
         with open(SECRET_FILE, "r") as f:
-            lines = [line.strip().split(":") for line in f.readlines()]
+            lines = [line.strip().split(":", 2) for line in f.readlines()]
         if username is not None:
             for login, password in lines:
                 if login == username.strip():
