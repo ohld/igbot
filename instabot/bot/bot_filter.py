@@ -77,6 +77,9 @@ def filter_users(self, user_id_list):
 
 
 def check_user(self, user_id, filter_closed_acc=False):
+    if not self.filter_users:
+        return True
+
     delay.small_delay(self)
     user_id = self.convert_to_user_id(user_id)
 

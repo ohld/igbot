@@ -45,6 +45,7 @@ bot = Bot(
             max_unfollows_per_day=350,
             max_comments_per_day=100,
             max_likes_to_like=100,
+            filter_users=True,
             max_followers_to_follow=2000,
             min_followers_to_follow=10,
             max_following_to_follow=7500,
@@ -74,6 +75,7 @@ bot = Bot(
 | max_unfollows_per_day| Max number of follow per day| 350|
 | max_comments_per_day| Max number of comments per day| 100|
 | max_likes_to_like| If the media has more likes then this value - it will be ignored and not be liked | 200|
+| filter_users | Filter users if True | True|
 | max_followers_to_follow| If the user has more followers than this value - the user will not be followed or liked. | 2000|
 | min_followers_to_follow| If the user has less followers than this value - the user will not be followed or liked.| 10|
 | max_following_to_follow| If the user has more followings than this value - the user will not be followed or liked.| 10000|
