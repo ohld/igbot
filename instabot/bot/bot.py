@@ -52,6 +52,7 @@ class Bot(API):
                  max_blocks_per_day=100,
                  max_unblocks_per_day=100,
                  max_likes_to_like=100,
+                 filter_users=True,
                  max_followers_to_follow=2000,
                  min_followers_to_follow=10,
                  max_following_to_follow=2000,
@@ -80,6 +81,7 @@ class Bot(API):
         self.start_time = datetime.datetime.now()
 
         # limits - follow
+        self.filter_users = filter_users
         self.max_likes_per_day = max_likes_per_day
         self.max_unlikes_per_day = max_unlikes_per_day
         self.max_follows_per_day = max_follows_per_day
