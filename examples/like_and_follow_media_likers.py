@@ -9,7 +9,7 @@ import sys
 import os
 import time
 import random
-from tqdm import tqdm
+import argparse
 
 sys.path.append(os.path.join(sys.path[0], '../'))
 from instabot import Bot
@@ -27,11 +27,16 @@ def like_and_follow_media_likers(bot, media, nlikes=3):
         time.sleep(10 + 20 * random.random())
     return True
 
-if len(sys.argv) != 2:
-    print ("USAGE: Pass media_id")
-    print ("Example: python %s 123123123123" % sys.argv[0])
-    exit()
+
+parser = argparse.ArgumentParser(add_help=True)
+parser.add_argument('-u', type=str, help="username")
+parser.add_argument('-p', type=str, help="password")
+parser.add_argument('-proxy', type=str, help="proxy")
+parser.add_argument('media_id', type=str, help='media_id')
+args = parser.parse_args()
 
 bot = Bot()
-bot.login()
-like_and_follow_media_likers(bot, sys.argv[1])
+bot.login(username=args.u, password=args.p,
+          proxy=args.proxy)
+
+like_and_follow_media_likers(bot, args.media_ia)

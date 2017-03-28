@@ -6,6 +6,8 @@
 import random
 from tqdm import tqdm
 
+from . import delay
+
 
 def get_media_owner(self, media_id):
     self.mediaInfo(media_id)
@@ -139,5 +141,6 @@ def convert_to_user_id(self, smth):
         if smth[0] == "@":  # cut first @
             smth = smth[1:]
         smth = self.get_userid_from_username(smth)
+        delay.very_small_delay(self)
     # if type is not str than it is int so user_id passed
     return smth

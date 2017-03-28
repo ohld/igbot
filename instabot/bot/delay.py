@@ -43,4 +43,8 @@ def error_delay(bot):
 
 
 def small_delay(bot):
-    time.sleep(2)
+    time.sleep(add_dispersion(3))
+
+
+def very_small_delay(bot):
+    time.sleep(add_dispersion(0.7))

@@ -37,10 +37,9 @@ if sys.version_info.major == 3:
 
 class API(object):
 
-    def __init__(self, proxy=None):
+    def __init__(self):
         self.isLoggedIn = False
         self.LastResponse = None
-        self.proxy = proxy
 
         # handle logging
         self.logger = logging.getLogger('[instabot]')
@@ -61,12 +60,13 @@ class API(object):
         self.password = password
         self.uuid = self.generateUUID(True)
 
-    def login(self, username=None, password=None, force=False):
-        if username is None or password is None:
-            username, password = get_credentials()
+    def login(self, username=None, password=None, force=False, proxy=None):
+        if password is None:
+            username, password = get_credentials(username=username)
 
         m = hashlib.md5()
         m.update(username.encode('utf-8') + password.encode('utf-8'))
+        self.proxy = proxy
         self.device_id = self.generateDeviceId(m.hexdigest())
         self.setUser(username, password)
 

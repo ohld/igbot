@@ -41,7 +41,6 @@ from .bot_stats import save_user_stats
 class Bot(API):
 
     def __init__(self,
-                 proxy=None,
                  whitelist=False,
                  blacklist=False,
                  comments_file=False,
@@ -53,6 +52,7 @@ class Bot(API):
                  max_blocks_per_day=100,
                  max_unblocks_per_day=100,
                  max_likes_to_like=100,
+                 filter_users=True,
                  max_followers_to_follow=2000,
                  min_followers_to_follow=10,
                  max_following_to_follow=2000,
@@ -81,6 +81,7 @@ class Bot(API):
         self.start_time = datetime.datetime.now()
 
         # limits - follow
+        self.filter_users = filter_users
         self.max_likes_per_day = max_likes_per_day
         self.max_unlikes_per_day = max_unlikes_per_day
         self.max_follows_per_day = max_follows_per_day
@@ -127,14 +128,32 @@ class Bot(API):
             self.comments = read_list_from_file(comments_file)
 
         self.logger.info('Instabot Started')
-        signal.signal(signal.SIGTERM, self.logout)
-        atexit.register(self.logout)
 
     def logout(self):
         save_checkpoint(self)
         super(self.__class__, self).logout()
         self.logger.info("Bot stopped. "
                          "Worked: %s" % (datetime.datetime.now() - self.start_time))
+        self.print_counters()
+
+    def login(self, **args):
+        super(self.__class__, self).login(**args)
+        self.prepare()
+        signal.signal(signal.SIGTERM, self.logout)
+        atexit.register(self.logout)
+
+    def prepare(self):
+        storage = load_checkpoint(self)
+        if storage is not None:
+            self.total_liked, self.total_unliked, self.total_followed, \
+                self.total_unfollowed, self.total_commented, self.total_blocked, \
+                self.total_unblocked, self.start_time = storage
+        self.whitelist = list(
+            filter(None, map(self.convert_to_user_id, self.whitelist)))
+        self.blacklist = list(
+            filter(None, map(self.convert_to_user_id, self.blacklist)))
+
+    def print_counters(self):
         if self.total_liked:
             self.logger.info("Total liked: %d" % self.total_liked)
         if self.total_unliked:
@@ -149,21 +168,6 @@ class Bot(API):
             self.logger.info("Total blocked: %d" % self.total_blocked)
         if self.total_unblocked:
             self.logger.info("Total unblocked: %d" % self.total_unblocked)
-
-    def login(self, *args):
-        super(self.__class__, self).login(args)
-        self.prepare()
-
-    def prepare(self):
-        storage = load_checkpoint(self)
-        if storage is not None:
-            self.total_liked, self.total_unliked, self.total_followed, \
-                self.total_unfollowed, self.total_commented, self.total_blocked, \
-                self.total_unblocked, self.start_time = storage
-        self.whitelist = [
-            self.convert_to_user_id(smth) for smth in self.whitelist]
-        self.blacklist = [
-            self.convert_to_user_id(smth) for smth in self.blacklist]
 
     # getters
 
