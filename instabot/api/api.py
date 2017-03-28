@@ -106,7 +106,8 @@ class API(object):
     def logout(self):
         if not self.isLoggedIn:
             return True
-        return self.SendRequest('accounts/logout/')
+        self.isLoggedIn = not self.SendRequest('accounts/logout/')
+        return self.isLoggedIn
 
     def SendRequest(self, endpoint, post=None, login=False):
         if (not self.isLoggedIn and not login):
