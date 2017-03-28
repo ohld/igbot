@@ -129,6 +129,12 @@ class Bot(API):
 
         self.logger.info('Instabot Started')
 
+    def version(self):
+        from pip._vendor import pkg_resources
+        return next((p.version for p in pkg_resources.working_set if p.project_name.lower() == 'instabot'), "No match")
+
+
+
     def logout(self):
         save_checkpoint(self)
         super(self.__class__, self).logout()

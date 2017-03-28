@@ -1,12 +1,11 @@
+# coding:utf-8
 import time
 import sys
 import os
 from tqdm import tqdm
 
 sys.path.append(os.path.join(sys.path[0], '../'))
-from examples import config_bot
-bot = config_bot.bot
-
+from instabot import Bot
 
 if hasattr(__builtins__, 'raw_input'):
     input = raw_input
@@ -26,8 +25,8 @@ def menu():
         8.Unfollow non followers
         9.Unfollow everyone
         10.Block bots
-        11.Load stop words from file 'stop_words.txt'
-        12.Save followers of [username] to CSV
+        11.Load stop_words from file
+        12.Save followers of [username] to TSV
         13.Choose another account of "secret.txt"
         0.Exit
         """)
@@ -66,6 +65,7 @@ def menu():
         elif ans == "11":
             new_words = bot.read_list_from_file('stop_words.txt')
             bot.stop_words.extend(new_words)
+            # print(bot.stop_words)
         elif ans == "12":
             user = input("Who? ").strip()
             getFollowersToFile(user)
@@ -76,36 +76,32 @@ def menu():
         else:
             print("\n Not valid choice. Try again")
 
+
 def getFollowersToFile(user):
+    import random, re
+    from string import ascii_letters, whitespace
     followers = bot.getTotalFollowers(bot.convert_to_user_id(user))
-
-    import xlsxwriter, random, csv
-
-
-    # workbook = xlsxwriter.Workbook('followers_of_%s.xlsx' % user)
-    # worksheet = workbook.add_worksheet()
-    # worksheet.set_column('A:A', 20)
-    # bold = workbook.add_format({'bold': True})
-    # worksheet.write('A1', 'full_name'.upper(), bold)
-    # worksheet.write('B1', 'username'.upper(), bold)
-    # worksheet.write('C1', 'pk'.upper(), bold)
-    # worksheet.write('D1', 'biography'.upper(), bold)
-    # worksheet.write('E1', 'follower_count'.upper(), bold)
-    # worksheet.write('F1', 'following_count'.upper(), bold)
-    # worksheet.write('G1', 'is_business'.upper(), bold)
-    # worksheet.write('H1', 'profile_pic_url'.upper(), bold)
-    # i = 1
-    open('followers_of_%s.tsv' % user, 'w').close()
+    out_file_name = 'followers_of_%s.tsv' % user
+    out_file = open(out_file_name, 'w')
+    out_file.write(
+        'full_name\tusername\tpk\tbiography\tfollower_count\tfollowing_count\tis_business\tprofile_pic_url\n')
+    i = 0
     for u_name in followers:
-        user_info = bot.get_user_info(u_name['pk'])
-        with open('followers_of_%s.tsv' % user, 'a') as output_file:
-            dw = csv.DictWriter(output_file, sorted(u_name[0].keys()), delimiter='\t')
-            dw.writeheader()
-            dw.writerows(u_name)
+        try:
+            user_info = bot.get_user_info(u_name['pk'])
+            info = str(str(user_info['full_name']).replace('\n', '').replace(' ', '') + '\t' + user_info['username'] + '\t' + str(user_info['pk']) + '\t' + str(user_info['biography']).replace('\n','') + '\t' + str(user_info['follower_count']) + '\t' + str(user_info['following_count']) + '\t' + str(user_info['is_business']) + '\t' + user_info['profile_pic_url'] + '\n')
+            info = re.sub(r'[^\w+|\s|\w|\.|\/]',' ',info)
+            out_file.write(info)
+            i = i + 1
+            bot.logger.info('[%s|%s] %s is added ---> %s' % (str(i), len(followers), u_name['username'], out_file_name))
+            time.sleep(random.randrange(1, 10))  # Picked up empirically
+        except Exception as e:
+            bot.logger.warning('User %s not write because: %s' % (user_info['username'], e))
 
-        time.sleep(random.randrange(1,10))
-    # workbook.close()
-    bot.logger.info('Done!')
+    out_file.close()
+    bot.logger.info('%s users DONE! You can open the file "%s" using Microsoft Excel' % (str(i), out_file_name))
+    time.sleep(5)
+
 
 def get_version(package):
     from pip._vendor import pkg_resources
@@ -113,9 +109,33 @@ def get_version(package):
     return next((p.version for p in pkg_resources.working_set if p.project_name.lower() == package), "No match")
 
 
+bot = Bot(
+    max_likes_per_day=1000,
+    max_unlikes_per_day=1000,
+    max_follows_per_day=1000,
+    max_unfollows_per_day=350,
+    max_comments_per_day=100,
+    max_likes_to_like=50,
+    max_followers_to_follow=500,
+    min_followers_to_follow=10,
+    max_following_to_follow=500,
+    min_following_to_follow=10,
+    max_followers_to_following_ratio=10,
+    max_following_to_followers_ratio=2,
+    min_media_count_to_follow=7,
+    like_delay=10,
+    unlike_delay=10,
+    follow_delay=30,
+    unfollow_delay=30,
+    comment_delay=60,
+    stop_words=['order', 'shop', 'store', 'free', 'doodleartindonesia',
+                'doodle art indonesia', 'fullofdoodleart', 'commission',
+                'vector', 'karikatur', 'jasa', 'open']
+)
 bot.logger.info("Multi script run")
-print('INSTABOT VERSION: %s ' % get_version('instabot'))
-print('Hi, welcome to instabot. I will guide you.')
+print('INSTABOT VERSION: %s ' % bot.version())
+# print('Hi, welcome to instabot. I will guide you.')
+
 bot.login()
 
 while True:
