@@ -39,7 +39,6 @@ from .bot_stats import save_user_stats
 
 
 class Bot(API):
-
     def __init__(self,
                  whitelist=False,
                  blacklist=False,
@@ -133,8 +132,6 @@ class Bot(API):
         from pip._vendor import pkg_resources
         return next((p.version for p in pkg_resources.working_set if p.project_name.lower() == 'instabot'), "No match")
 
-
-
     def logout(self):
         save_checkpoint(self)
         super(self.__class__, self).logout()
@@ -152,8 +149,8 @@ class Bot(API):
         storage = load_checkpoint(self)
         if storage is not None:
             self.total_liked, self.total_unliked, self.total_followed, \
-                self.total_unfollowed, self.total_commented, self.total_blocked, \
-                self.total_unblocked, self.start_time = storage
+            self.total_unfollowed, self.total_commented, self.total_blocked, \
+            self.total_unblocked, self.start_time = storage
         self.whitelist = list(
             filter(None, map(self.convert_to_user_id, self.whitelist)))
         self.blacklist = list(
