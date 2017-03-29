@@ -129,9 +129,6 @@ bot = Bot(
                 'vector', 'karikatur', 'jasa', 'open']
 )
 
-def getSettings():
-    print()
-
 bot.logger.info("Multi script run")
 print('INSTABOT VERSION: %s ' % bot.version())
 # print('Hi, welcome to instabot. I will guide you.')
