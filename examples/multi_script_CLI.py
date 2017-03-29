@@ -103,12 +103,6 @@ def getFollowersToFile(user):
     time.sleep(5)
 
 
-def get_version(package):
-    from pip._vendor import pkg_resources
-    package = package.lower()
-    return next((p.version for p in pkg_resources.working_set if p.project_name.lower() == package), "No match")
-
-
 bot = Bot(
     max_likes_per_day=1000,
     max_unlikes_per_day=1000,
@@ -128,10 +122,15 @@ bot = Bot(
     follow_delay=30,
     unfollow_delay=30,
     comment_delay=60,
+    whitelist='whitelist.txt',
     stop_words=['order', 'shop', 'store', 'free', 'doodleartindonesia',
                 'doodle art indonesia', 'fullofdoodleart', 'commission',
                 'vector', 'karikatur', 'jasa', 'open']
 )
+
+def getSettings():
+    print()
+
 bot.logger.info("Multi script run")
 print('INSTABOT VERSION: %s ' % bot.version())
 # print('Hi, welcome to instabot. I will guide you.')

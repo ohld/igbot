@@ -300,8 +300,8 @@ class API(object):
             'feed/tag/' + str(tag) + '/?rank_token=' + str(self.rank_token) + '&ranked_content=true&')
         return userFeed
 
-    def getMediaLikers(self, mediaId):
-        likers = self.SendRequest('media/' + str(mediaId) + '/likers/?')
+    def getMediaLikers(self, media_id):
+        likers = self.SendRequest('media/' + str(media_id) + '/likers/?')
         return likers
 
     def getGeoMedia(self, usernameId):
