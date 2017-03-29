@@ -2,7 +2,8 @@
 import time
 import sys
 import os
-from tqdm import tqdm
+
+from past.builtins import raw_input
 
 sys.path.append(os.path.join(sys.path[0], '../'))
 from instabot import Bot
@@ -122,7 +123,7 @@ bot = Bot(
     follow_delay=30,
     unfollow_delay=30,
     comment_delay=60,
-    whitelist='whitelist.txt',
+    # whitelist='whitelist.txt',
     stop_words=['order', 'shop', 'store', 'free', 'doodleartindonesia',
                 'doodle art indonesia', 'fullofdoodleart', 'commission',
                 'vector', 'karikatur', 'jasa', 'open']
