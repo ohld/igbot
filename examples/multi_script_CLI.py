@@ -69,7 +69,7 @@ def menu():
             # print(bot.stop_words)
         elif ans == "12":
             user = input("Who? ").strip()
-            getFollowersToFile(user)
+            getFollowersToFile(bot, user)
         elif ans == "13":
             bot.login()
         elif ans == "0":
@@ -78,29 +78,29 @@ def menu():
             print("\n Not valid choice. Try again")
 
 
-def getFollowersToFile(user):
+def getFollowersToFile(self, user):
     import random, re
-    from string import ascii_letters, whitespace
-    followers = bot.getTotalFollowers(bot.convert_to_user_id(user))
+    from tqdm import tqdm
+    followers = self.getTotalFollowers(self.convert_to_user_id(user))
     out_file_name = 'followers_of_%s.tsv' % user
     out_file = open(out_file_name, 'w')
     out_file.write(
         'full_name\tusername\tpk\tbiography\tfollower_count\tfollowing_count\tis_business\tprofile_pic_url\n')
     i = 0
-    for u_name in followers:
+    for u_name in tqdm(followers, desc='Getting [ %s ] followers' % user):
         try:
-            user_info = bot.get_user_info(u_name['pk'])
+            user_info = self.get_user_info(u_name['pk'])
             info = str(str(user_info['full_name']).replace('\n', '').replace(' ', '') + '\t' + user_info['username'] + '\t' + str(user_info['pk']) + '\t' + str(user_info['biography']).replace('\n','') + '\t' + str(user_info['follower_count']) + '\t' + str(user_info['following_count']) + '\t' + str(user_info['is_business']) + '\t' + user_info['profile_pic_url'] + '\n')
             info = re.sub(r'[^\w+|\s|\w|\.|\/]',' ',info)
             out_file.write(info)
             i = i + 1
-            bot.logger.info('[%s|%s] %s is added ---> %s' % (str(i), len(followers), u_name['username'], out_file_name))
+            # self.logger.info('[%s|%s] %s is added ---> %s' % (str(i), len(followers), u_name['username'], out_file_name))
             time.sleep(random.randrange(1, 10))  # Picked up empirically
         except Exception as e:
-            bot.logger.warning('User %s not write because: %s' % (user_info['username'], e))
+            self.logger.warning('User %s not write because: %s' % (user_info['username'], e))
 
     out_file.close()
-    bot.logger.info('%s users DONE! You can open the file "%s" using Microsoft Excel' % (str(i), out_file_name))
+    self.logger.info('%s users DONE! You can open the file "%s" using Microsoft Excel' % (str(i), out_file_name))
     time.sleep(5)
 
 
