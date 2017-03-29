@@ -15,16 +15,18 @@ def menu():
     while ans:
         print("""
         1.Like hashtags
-        2.Like followers of
-        3.Like following of
+        2.Like followers of [username]
+        3.Like following of [username]
         4.Like your timeline feed
         5.Follow users by hashtags
-        6.Follow followers of
-        7.Follow following of
+        6.Follow followers of [username]
+        7.Follow following of [username]
         8.Unfollow non followers
         9.Unfollow everyone
         10.Block bots
         11.Load stop words from file 'stop_words.txt'
+        12.Save followers of [username] to XLSX
+        13.Choose another account of "secret.txt"
         0.Exit
         """)
         ans = input("What would you like to do? ").strip()
@@ -62,11 +64,50 @@ def menu():
         elif ans == "11":
             new_words = bot.read_list_from_file('stop_words.txt')
             bot.stop_words.extend(new_words)
+        elif ans == "12":
+            user = input("Who? ").strip()
+            getFollowersToFile(user)
+        elif ans == "13":
+            bot.login()
         elif ans == "0":
             exit()
         else:
             print("\n Not valid choice. Try again")
+            
+def getFollowersToFile(user):
+    import xlsxwriter, random
+    
+    followers = bot.getTotalFollowers(bot.convert_to_user_id(user))
+    workbook = xlsxwriter.Workbook('followers_of_%s.xlsx' % user)
+    worksheet = workbook.add_worksheet()
+    worksheet.set_column('A:A', 20)
+    bold = workbook.add_format({'bold': True})
+    worksheet.write('A1', 'full_name'.upper(), bold)
+    worksheet.write('B1', 'username'.upper(), bold)
+    worksheet.write('C1', 'pk'.upper(), bold)
+    worksheet.write('D1', 'biography'.upper(), bold)
+    worksheet.write('E1', 'follower_count'.upper(), bold)
+    worksheet.write('F1', 'following_count'.upper(), bold)
+    worksheet.write('G1', 'is_business'.upper(), bold)
+    worksheet.write('H1', 'profile_pic_url'.upper(), bold)
+    i = 1
 
+    for u_name in followers:
+        user_info = bot.get_user_info(u_name['pk'])
+        bot.logger.info('[%s|%s] %s is added ---> %s.xlsx' % (str(i), len(followers), u_name['username'], user))
+        i = i + 1
+        worksheet.write('A'+str(i),user_info['full_name'])
+        worksheet.write('B'+str(i),user_info['username'])
+        worksheet.write('C'+str(i),user_info['pk'])
+        worksheet.write('D'+str(i),user_info['biography'])
+        worksheet.write('E'+str(i),user_info['follower_count'])
+        worksheet.write('F'+str(i),user_info['following_count'])
+        worksheet.write('G'+str(i),user_info['is_business'])
+        worksheet.write_url('H' + str(i), user_info['profile_pic_url'])
+
+        time.sleep(random.randrange(1,10))
+    workbook.close()
+    bot.logger.info('Done!')
 
 bot = Bot(
     max_likes_per_day=1000,
