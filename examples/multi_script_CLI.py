@@ -26,7 +26,7 @@ def menu():
         8.Unfollow non followers
         9.Unfollow everyone
         10.Block bots
-        11.Load stop_words from file
+        11.Load stop words from file 'stop_words.txt'
         12.Save followers of [username] to TSV
         13.Choose another account of "secret.txt"
         0.Exit
