@@ -148,8 +148,8 @@ class Bot(API):
     def prepare(self):
         storage = load_checkpoint(self)
         if storage is not None:
-            self.total_liked, self.total_unliked, self.total_followed,
-            self.total_unfollowed, self.total_commented, self.total_blocked,
+            self.total_liked, self.total_unliked, self.total_followed, \
+            self.total_unfollowed, self.total_commented, self.total_blocked, \
             self.total_unblocked, self.start_time = storage
         self.whitelist = list(
             filter(None, map(self.convert_to_user_id, self.whitelist)))
