@@ -1,6 +1,6 @@
 import datetime
-import atexit
-import signal
+# import atexit
+# import signal
 
 from ..api import API
 
