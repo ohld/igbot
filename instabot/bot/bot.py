@@ -1,6 +1,6 @@
 import datetime
-import atexit
-import signal
+# import atexit
+# import signal
 
 from ..api import API
 
@@ -142,8 +142,8 @@ class Bot(API):
     def login(self, **args):
         super(self.__class__, self).login(**args)
         self.prepare()
-        signal.signal(signal.SIGTERM, self.logout)
-        atexit.register(self.logout)
+        # signal.signal(signal.SIGTERM, self.logout)
+        # atexit.register(self.logout)
 
     def prepare(self):
         storage = load_checkpoint(self)

@@ -3,10 +3,9 @@ import time
 import sys
 import os
 
-from past.builtins import raw_input
-
 sys.path.append(os.path.join(sys.path[0], '../'))
 from instabot import Bot
+
 
 if hasattr(__builtins__, 'raw_input'):
     input = raw_input
@@ -69,7 +68,7 @@ def menu():
             # print(bot.stop_words)
         elif ans == "12":
             user = input("Who? ").strip()
-            getFollowersToFile(bot, user)
+            get_followers_to_file(bot, user)
         elif ans == "13":
             bot.login()
         elif ans == "0":
@@ -78,8 +77,9 @@ def menu():
             print("\n Not valid choice. Try again")
 
 
-def getFollowersToFile(self, user):
-    import random, re
+def get_followers_to_file(self, user):
+    import random
+    import re
     from tqdm import tqdm
     followers = self.getTotalFollowers(self.convert_to_user_id(user))
     out_file_name = 'followers_of_%s.tsv' % user
@@ -90,14 +90,18 @@ def getFollowersToFile(self, user):
     for u_name in tqdm(followers, desc='Getting [ %s ] followers' % user):
         try:
             user_info = self.get_user_info(u_name['pk'])
-            info = str(str(user_info['full_name']).replace('\n', '').replace(' ', '') + '\t' + user_info['username'] + '\t' + str(user_info['pk']) + '\t' + str(user_info['biography']).replace('\n','') + '\t' + str(user_info['follower_count']) + '\t' + str(user_info['following_count']) + '\t' + str(user_info['is_business']) + '\t' + user_info['profile_pic_url'] + '\n')
-            info = re.sub(r'[^\w+|\s|\w|\.|\/]',' ',info)
+            info = str(str(user_info['full_name']).replace('\n', '').replace(' ', '') + '\t' +
+                       user_info['username'] + '\t' +
+                       str(user_info['pk']) + '\t' +
+                       str(user_info['biography']).replace('\n', '') + '\t' +
+                       str(user_info['follower_count']) + '\t' + str(user_info['following_count']) + '\t' +
+                       str(user_info['is_business']) + '\t' + user_info['profile_pic_url'] + '\n')
+            info = re.sub(r"[^\w+|\s|\w|\.|\/]", ' ', info)
             out_file.write(info)
             i = i + 1
-            # self.logger.info('[%s|%s] %s is added ---> %s' % (str(i), len(followers), u_name['username'], out_file_name))
             time.sleep(random.randrange(1, 10))  # Picked up empirically
         except Exception as e:
-            self.logger.warning('User %s not write because: %s' % (user_info['username'], e))
+            self.logger.warning('User not write because: %s' % e)
 
     out_file.close()
     self.logger.info('%s users DONE! You can open the file "%s" using Microsoft Excel' % (str(i), out_file_name))
