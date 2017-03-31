@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from examples.telegram import config
 import telebot
+import requests.packages.urllib3
+requests.packages.urllib3.disable_warnings()
 
 bot = telebot.TeleBot(config.token)
 
