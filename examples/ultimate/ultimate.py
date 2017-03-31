@@ -13,6 +13,8 @@ import os
 import sys
 import time
 from random import shuffle
+import requests.packages.urllib3
+requests.packages.urllib3.disable_warnings()
 
 sys.path.append(os.path.join(sys.path[0], '../../'))
 from instabot import Bot

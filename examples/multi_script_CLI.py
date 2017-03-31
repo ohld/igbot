@@ -2,6 +2,8 @@
 import time
 import sys
 import os
+import requests.packages.urllib3
+requests.packages.urllib3.disable_warnings()
 
 from past.builtins import raw_input
 

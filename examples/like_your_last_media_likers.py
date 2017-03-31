@@ -12,6 +12,8 @@ from tqdm import tqdm
 import argparse
 sys.path.append(os.path.join(sys.path[0], '../'))
 from instabot import Bot
+import requests.packages.urllib3
+requests.packages.urllib3.disable_warnings()
 
 def like(bot, user_id, nlikes=3):
     bot.like_user(user_id, amount=nlikes)
