@@ -40,6 +40,7 @@ class API(object):
     def __init__(self):
         self.isLoggedIn = False
         self.LastResponse = None
+        self.total_requests = 0
 
         # handle logging
         self.logger = logging.getLogger('[instabot]')
@@ -111,8 +112,8 @@ class API(object):
 
     def SendRequest(self, endpoint, post=None, login=False):
         if (not self.isLoggedIn and not login):
-            raise Exception("Not logged in!")
             self.logger.critical("Not logged in.")
+            raise Exception("Not logged in!")
 
         self.session.headers.update({'Connection': 'close',
                                      'Accept': '*/*',
@@ -121,6 +122,7 @@ class API(object):
                                      'Accept-Language': 'en-US',
                                      'User-Agent': config.USER_AGENT})
         try:
+            self.total_requests += 1
             if post is not None:  # POST
                 response = self.session.post(
                     config.API_URL + endpoint, data=post)
