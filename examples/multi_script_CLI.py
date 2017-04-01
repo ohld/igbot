@@ -3,8 +3,6 @@ import time
 import sys
 import os
 
-from past.builtins import raw_input
-
 sys.path.append(os.path.join(sys.path[0], '../'))
 from instabot import Bot
 
