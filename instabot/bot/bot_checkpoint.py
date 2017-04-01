@@ -26,6 +26,7 @@ class Checkpoint(object):
         self.total_commented = bot.total_commented
         self.total_blocked = bot.total_blocked
         self.total_unblocked = bot.total_unblocked
+        self.total_requests = bot.total_requests
         self.start_time = bot.start_time
         self.date = datetime.now()
 
@@ -37,8 +38,8 @@ class Checkpoint(object):
 
     def dump(self):
         return (self.total_liked, self.total_unliked, self.total_followed,
-                self.total_unfollowed, self.total_commented,
-                self.total_blocked, self.total_unblocked, self.start_time)
+                self.total_unfollowed, self.total_commented, self.total_blocked,
+                self.total_unblocked, self.total_requests, self.start_time)
 
 
 def save_checkpoint(self):
