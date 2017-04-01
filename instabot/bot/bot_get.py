@@ -24,7 +24,7 @@ def get_your_medias(self):
 
 def get_timeline_medias(self, filtration=True):
     if not self.getTimelineFeed():
-        self.logger.info("Error while getting timeline feed.")
+        self.logger.warning("Error while getting timeline feed.")
         return []
     return self.filter_medias(self.LastJson["items"], filtration)
 
@@ -33,15 +33,19 @@ def get_user_medias(self, user_id, filtration=True):
     user_id = self.convert_to_user_id(user_id)
     self.getUserFeed(user_id)
     if self.LastJson["status"] == 'fail':
-        self.logger.info("This is a closed account.")
+        self.logger.warning("This is a closed account.")
         return []
     return self.filter_medias(self.LastJson["items"], filtration)
 
 
-def get_user_likers(self, user_id):
+def get_user_likers(self, user_id, media_count=10):
     your_likers = set()
-    media_items = self.get_user_medias(user_id, filtration=False)[:10]
-    for media_id in tqdm(media_items, desc="Getting your media likers"):
+    media_items = self.get_user_medias(user_id, filtration=False)
+    if not media_items:
+        self.logger.warning("Can't get %s medias." % user_id)
+        return []
+    for media_id in tqdm(media_items[:media_count],
+                         desc="Getting %s media likers" % user_id):
         media_likers = self.get_media_likers(media_id)
         your_likers |= set(media_likers)
     return list(your_likers)
@@ -49,7 +53,7 @@ def get_user_likers(self, user_id):
 
 def get_hashtag_medias(self, hashtag, filtration=True):
     if not self.getHashtagFeed(hashtag):
-        self.logger.info("Error while getting hashtag feed.")
+        self.logger.warning("Error while getting hashtag feed.")
         return []
     return self.filter_medias(self.LastJson["items"], filtration)
 

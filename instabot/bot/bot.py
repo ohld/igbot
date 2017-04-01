@@ -228,8 +228,8 @@ class Bot(API):
     def get_media_owner(self, media):
         return get_media_owner(self, media)
 
-    def get_user_likers(self, user_id):
-        return get_user_likers(self, user_id)
+    def get_user_likers(self, user_id, media_count=10):
+        return get_user_likers(self, user_id, media_count)
 
     def convert_to_user_id(self, usernames):
         return convert_to_user_id(self, usernames)
