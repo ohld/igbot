@@ -106,7 +106,8 @@ class API(object):
     def logout(self):
         if not self.isLoggedIn:
             return True
-        return self.SendRequest('accounts/logout/')
+        self.isLoggedIn = not self.SendRequest('accounts/logout/')
+        return not self.isLoggedIn
 
     def SendRequest(self, endpoint, post=None, login=False):
         if (not self.isLoggedIn and not login):
@@ -300,8 +301,8 @@ class API(object):
             'feed/tag/' + str(tag) + '/?rank_token=' + str(self.rank_token) + '&ranked_content=true&')
         return userFeed
 
-    def getMediaLikers(self, mediaId):
-        likers = self.SendRequest('media/' + str(mediaId) + '/likers/?')
+    def getMediaLikers(self, media_id):
+        likers = self.SendRequest('media/' + str(media_id) + '/likers/?')
         return likers
 
     def getGeoMedia(self, usernameId):
