@@ -113,6 +113,7 @@ class Bot(API):
 
         # current following
         self.following = []
+        self.followers = []
 
         # white and blacklists
         self.whitelist = []

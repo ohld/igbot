@@ -92,7 +92,9 @@ def check_user(self, user_id, filter_closed_acc=False):
 
     if self.following == []:
         self.following = self.get_user_following(self.user_id)
-    if user_id in self.following:
+    if self.followers == []:
+        self.followers = self.get_user_followers(self.user_id)
+    if user_id in self.following or user_id in self.followers:
         return False
 
     user_info = self.get_user_info(user_id)
