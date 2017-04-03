@@ -41,47 +41,43 @@ from .bot_stats import save_user_stats
 class Bot(API):
 
     def __init__(self,
+                 username=None,
                  whitelist=False,
                  blacklist=False,
-                 comments_file=False,
-                 max_likes_per_day=1000,
-                 max_unlikes_per_day=1000,
-                 max_follows_per_day=350,
-                 max_unfollows_per_day=350,
-                 max_comments_per_day=100,
-                 max_blocks_per_day=100,
-                 max_unblocks_per_day=100,
-                 max_likes_to_like=100,
-                 filter_users=True,
-                 max_followers_to_follow=2000,
-                 min_followers_to_follow=10,
-                 max_following_to_follow=2000,
-                 min_following_to_follow=10,
-                 max_followers_to_following_ratio=10,
-                 max_following_to_followers_ratio=2,
-                 min_media_count_to_follow=3,
-                 max_following_to_block=2000,
-                 like_delay=10,
-                 unlike_delay=10,
-                 follow_delay=30,
-                 unfollow_delay=30,
-                 comment_delay=60,
-                 block_delay=30,
-                 unblock_delay=30,
-                 stop_words=['shop', 'store', 'free']):
-        super(self.__class__, self).__init__()
+                 comments_file=False):
 
-        self.User.counters.like = 0
-        self.User.counters.unlike = 0
-        self.User.counters.follow = 0
-        self.User.counters.unfollow = 0
-        self.User.counters.commented = 0
-        self.User.counters.blocked = 0
-        self.User.counters.unblocked = 0
+        super(self.__class__, self).__init__(username)
+
         self.start_time = datetime.datetime.now()
 
-        # limits - follow
-        self.User.limits.filter_users = filter_users
+        if not self.User.bot_is_set:
+            self.User.following = []
+            self.User.followers = []
+            self.User.blacklist = []
+            self.User.whitelist = []
+            self.User.comments = []
+            self.change_limits()
+            self.change_filters()
+            self.change_delays()
+            self.User.bot_is_set = True
+
+        if whitelist:
+            self.User.whitelist = read_list_from_file(whitelist)
+        if blacklist:
+            self.User.blacklist = read_list_from_file(blacklist)
+
+        if comments_file:
+            self.User.comments = read_list_from_file(comments_file)
+        self.prepare()
+
+    def change_limits(self,
+                      max_likes_per_day=1000,
+                      max_unlikes_per_day=1000,
+                      max_follows_per_day=350,
+                      max_unfollows_per_day=350,
+                      max_comments_per_day=100,
+                      max_blocks_per_day=100,
+                      max_unblocks_per_day=100):
         self.User.limits.max_likes_per_day = max_likes_per_day
         self.User.limits.max_unlikes_per_day = max_unlikes_per_day
         self.User.limits.max_follows_per_day = max_follows_per_day
@@ -89,20 +85,39 @@ class Bot(API):
         self.User.limits.max_comments_per_day = max_comments_per_day
         self.User.limits.max_blocks_per_day = max_blocks_per_day
         self.User.limits.max_unblocks_per_day = max_unblocks_per_day
-        self.User.limits.User.limits.max_likes_to_like = max_likes_to_like
-        self.User.limits.max_followers_to_follow = max_followers_to_follow
-        self.User.limits.min_followers_to_follow = min_followers_to_follow
-        self.User.limits.max_following_to_follow = max_following_to_follow
-        self.User.limits.min_following_to_follow = min_following_to_follow
-        self.User.limits.max_followers_to_following_ratio = max_followers_to_following_ratio
-        self.User.limits.max_following_to_followers_ratio = max_following_to_followers_ratio
-        self.User.limits.min_media_count_to_follow = min_media_count_to_follow
-        self.User.limits.stop_words = stop_words
 
-        # limits - block
-        self.User.limits.max_following_to_block = max_following_to_block
+    def change_filters(self,
+                       filter_users=True,
+                       max_likes_to_like=100,
+                       max_followers_to_follow=2000,
+                       min_followers_to_follow=10,
+                       max_following_to_follow=2000,
+                       min_following_to_follow=10,
+                       max_followers_to_following_ratio=10,
+                       max_following_to_followers_ratio=2,
+                       min_media_count_to_follow=3,
+                       max_following_to_block=2000,
+                       stop_words=['shop', 'store', 'free']):
+        self.User.filters.filter_users = filter_users
+        self.User.filters.max_likes_to_like = max_likes_to_like
+        self.User.filters.max_followers_to_follow = max_followers_to_follow
+        self.User.filters.min_followers_to_follow = min_followers_to_follow
+        self.User.filters.max_following_to_follow = max_following_to_follow
+        self.User.filters.min_following_to_follow = min_following_to_follow
+        self.User.filters.max_followers_to_following_ratio = max_followers_to_following_ratio
+        self.User.filters.max_following_to_followers_ratio = max_following_to_followers_ratio
+        self.User.filters.min_media_count_to_follow = min_media_count_to_follow
+        self.User.filters.stop_words = stop_words
+        self.User.filters.max_following_to_block = max_following_to_block
 
-        # delays
+    def change_delays(self,
+                      like_delay=10,
+                      unlike_delay=10,
+                      follow_delay=30,
+                      unfollow_delay=30,
+                      comment_delay=60,
+                      block_delay=30,
+                      unblock_delay=30):
         self.User.delays.like = like_delay
         self.User.delays.unlike = unlike_delay
         self.User.delays.follow = follow_delay
@@ -111,67 +126,26 @@ class Bot(API):
         self.User.delays.block = block_delay
         self.User.delays.unblock = unblock_delay
 
-        # current following
-        self.User.following = []
-        self.User.followers = []
-
-        # white and blacklists
-        self.User.whitelist = []
-        if whitelist:
-            self.User.whitelist = read_list_from_file(whitelist)
-        self.User.blacklist = []
-        if blacklist:
-            self.User.blacklist = read_list_from_file(blacklist)
-
-        # comment file
-        self.User.comments = []
-        if comments_file:
-            self.User.comments = read_list_from_file(comments_file)
-
-        self.logger.info('Instabot Started')
-
     def version(self):
         from pip._vendor import pkg_resources
         return next((p.version for p in pkg_resources.working_set if p.project_name.lower() == 'instabot'), "No match")
 
     def logout(self):
-        save_checkpoint(self)
-        super(self.__class__, self).logout()
+        self.User.save()
         self.logger.info("Bot stopped. "
                          "Worked: %s" % (datetime.datetime.now() - self.start_time))
         self.print_counters()
 
-    def login(self, **args):
-        super(self.__class__, self).login(**args)
-        self.prepare()
+    def prepare(self):
         signal.signal(signal.SIGTERM, self.logout)
         atexit.register(self.logout)
-
-    def prepare(self):
-        storage = load_checkpoint(self)
-        if storage is not None:
-            self.total_liked, self.total_unliked, self.total_followed, self.total_unfollowed, self.total_commented, self.total_blocked, self.total_unblocked, self.total_requests, self.start_time = storage
         self.User.whitelist = list(
-            filter(None, map(self.convert_to_user_id, self.whitelist)))
+            filter(None, map(self.convert_to_user_id, self.User.whitelist)))
         self.User.blacklist = list(
-            filter(None, map(self.convert_to_user_id, self.blacklist)))
+            filter(None, map(self.convert_to_user_id, self.User.blacklist)))
 
     def print_counters(self):
-        if self.total_liked:
-            self.logger.info("Total liked: %d" % self.total_liked)
-        if self.total_unliked:
-            self.logger.info("Total unliked: %d" % self.total_unliked)
-        if self.total_followed:
-            self.logger.info("Total followed: %d" % self.total_followed)
-        if self.total_unfollowed:
-            self.logger.info("Total unfollowed: %d" % self.total_unfollowed)
-        if self.total_commented:
-            self.logger.info("Total commented: %d" % self.total_commented)
-        if self.total_blocked:
-            self.logger.info("Total blocked: %d" % self.total_blocked)
-        if self.total_unblocked:
-            self.logger.info("Total unblocked: %d" % self.total_unblocked)
-        self.logger.info("Total requests: %d" % self.total_requests)
+        print(self.User.counters)
 
     # getters
 

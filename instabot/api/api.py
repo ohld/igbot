@@ -46,34 +46,41 @@ class API(object):
             self.User = User(username, password)
 
         self.User.proxy = proxy
-        self.User.counters.requests = 0
+        if not self.User.api_is_set:
+            self.User.counters.requests = 0
+            self.User.api_is_set = True
 
-        # handle logging
-        self.logger = logging.getLogger('[instabot]')
-        self.logger.setLevel(logging.DEBUG)
-        logging.basicConfig(format='%(asctime)s %(message)s',
-                            filename='instabot.log',
-                            level=logging.INFO
-                            )
-        ch = logging.StreamHandler()
-        ch.setLevel(logging.DEBUG)
-        formatter = logging.Formatter(
-            '%(asctime)s - %(levelname)s - %(message)s')
-        ch.setFormatter(formatter)
-        self.logger.addHandler(ch)
-
-        self.login()
-
-    def login(self, force=False):
-        if not force and self.User.isLoggedIn:
-            return True
-        self.session = requests.Session()
+        self.User.session = requests.Session()
         if self.User.proxy is not None:
             proxies = {
                 'http': 'http://' + self.User.proxy,
                 'https': 'http://' + self.User.proxy,
             }
-            self.session.proxies.update(proxies)
+            self.User.session.proxies.update(proxies)
+
+        # handle logging
+        self.logger = self.set_logger()
+        self.login()
+
+    @staticmethod
+    def set_logger():
+        logger = logging.getLogger('instabot')
+        logger.setLevel(logging.DEBUG)
+        logging.basicConfig(format='%(asctime)s %(message)s',
+                            filename='instabot.log',
+                            level=logging.WARNING
+                            )
+        ch = logging.StreamHandler()
+        ch.setLevel(logging.WARNING)
+        formatter = logging.Formatter(
+            '%(asctime)s - %(levelname)s - %(message)s')
+        ch.setFormatter(formatter)
+        logger.addHandler(ch)
+        return logger
+
+    def login(self, force=False):
+        if not force and self.User.isLoggedIn:
+            return True
         if (
             self.SendRequest('si/fetch_headers/?challenge_type=signup&guid=' + self.User.uuid.replace('-', ''),
                              None, True)):
@@ -87,7 +94,6 @@ class API(object):
                     'login_attempt_count': '0'}
 
             if self.SendRequest('accounts/login/', self.generateSignature(json.dumps(data)), True):
-                self.User.isLoggedIn = True
                 self.User.user_id = self.LastJson["logged_in_user"]["pk"]
                 self.User.rank_token = "%s_%s" % (
                     self.User.user_id, self.User.uuid)
@@ -95,11 +101,18 @@ class API(object):
 
                 self.logger.info("Login success as %s!" %
                                  self.User.username)
+                self.User.isLoggedIn = True
                 return True
             else:
-                self.logger.info("Login or password is incorrect.")
-                delete_credentials()
+                self.logger.warning(
+                    "Login or password is incorrect or session is outdated")
+                delete_credentials(self.User.username)
                 exit()
+        else:
+            self.logger.warning(
+                "Can't login. May be you have been banned. Go to mobile app and try again.")
+            delete_credentials(self.User.username)
+            exit()
 
     def logout(self):
         if not self.User.isLoggedIn:
@@ -113,19 +126,19 @@ class API(object):
             self.logger.critical("Not logged in.")
             raise Exception("Not logged in!")
 
-        self.session.headers.update({'Connection': 'close',
-                                     'Accept': '*/*',
-                                     'Content-type': 'application/x-www-form-urlencoded; charset=UTF-8',
-                                     'Cookie2': '$Version=1',
-                                     'Accept-Language': 'en-US',
-                                     'User-Agent': config.USER_AGENT})
+        self.User.session.headers.update({'Connection': 'close',
+                                          'Accept': '*/*',
+                                          'Content-type': 'application/x-www-form-urlencoded; charset=UTF-8',
+                                          'Cookie2': '$Version=1',
+                                          'Accept-Language': 'en-US',
+                                          'User-Agent': config.USER_AGENT})
         try:
             self.User.counters.requests += 1
             if post is not None:  # POST
-                response = self.session.post(
+                response = self.User.session.post(
                     config.API_URL + endpoint, data=post)
             else:  # GET
-                response = self.session.get(
+                response = self.User.session.get(
                     config.API_URL + endpoint)
         except Exception as e:
             self.logger.warning(str(e))
@@ -379,6 +392,12 @@ class API(object):
         data = self.data_to_send_with({
             'user_id': userId,
         })
+        # data = json.dumps({
+        #     '_uuid': self.User.uuid,
+        #     '_uid': self.User.user_id,
+        #     'user_id': userId,
+        #     '_csrftoken': self.User.token
+        # })
         return self.SendRequest('friendships/create/' + str(userId) + '/', self.generateSignature(data))
 
     def unfollow(self, userId):
@@ -413,19 +432,6 @@ class API(object):
 
         return 'ig_sig_key_version=' + config.SIG_KEY_VERSION + '&signed_body=' + hmac.new(
             config.IG_SIG_KEY.encode('utf-8'), data.encode('utf-8'), hashlib.sha256).hexdigest() + '.' + parsedData
-
-    def generateDeviceId(self, seed):
-        volatile_seed = "12345"
-        m = hashlib.md5()
-        m.update(seed.encode('utf-8') + volatile_seed.encode('utf-8'))
-        return 'android-' + m.hexdigest()[:16]
-
-    def generateUUID(self, uuid_type):
-        generated_uuid = str(uuid.uuid4())
-        if (uuid_type):
-            return generated_uuid
-        else:
-            return generated_uuid.replace('-', '')
 
     def getLikedMedia(self, maxid=''):
         return self.SendRequest('feed/liked/?max_id=' + str(maxid))

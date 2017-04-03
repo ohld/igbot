@@ -35,11 +35,13 @@ class User(object):
     def __init__(self, username, password):
         self.username = username
         self.password = password
+        self.api_is_set = False
+        self.bot_is_set = False
         self.isLoggedIn = False
-
         self.counters = Dotdict({})
         self.limits = Dotdict({})
         self.delays = Dotdict({})
+        self.filters = Dotdict({})
 
         m = hashlib.md5()
         m.update(username.encode('utf-8') + password.encode('utf-8'))
@@ -74,12 +76,14 @@ class User(object):
         # del items["counters"]
         return json.dumps(items, indent=2)
 
-    def generateDeviceId(self, seed):
+    @staticmethod
+    def generateDeviceId(seed):
         volatile_seed = "12345"
         m = hashlib.md5()
         m.update(seed.encode('utf-8') + volatile_seed.encode('utf-8'))
         return 'android-' + m.hexdigest()[:16]
 
-    def generateUUID(self):
+    @staticmethod
+    def generateUUID():
         generated_uuid = str(uuid.uuid4())
         return generated_uuid

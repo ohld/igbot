@@ -1,6 +1,8 @@
 import unittest
+import logging
 from instabot import User
 from instabot import API
+from instabot import Bot
 
 
 class TestUser(unittest.TestCase):
@@ -18,8 +20,15 @@ class TestUser(unittest.TestCase):
     def test_api(self):
         api = API("instabotproject")
         self.assertTrue(api.User.isLoggedIn)
-        print(api.User.dump())
-        print(api.User.counters)
+        api.User.save()
+        reqs = api.User.counters.requests
+        self.assertTrue(api.follow("352300017"))
+        self.assertTrue(api.unfollow("352300017"))
+        self.assertEqual(reqs + 2, api.User.counters.requests)
+
+    def test_bot(self):
+        bot = Bot("instabotproject")
+        self.assertTrue(isinstance(bot, Bot))
 
 
     # def test_upper(self):
@@ -36,5 +45,13 @@ class TestUser(unittest.TestCase):
     #     with self.assertRaises(TypeError):
     #         s.split(2)
 
+def update_user():
+    User.delete("instabotproject")
+    api = API("instabotproject", "")
+    api.User.save()
+
 if __name__ == '__main__':
+    # update_user()
+    logger = logging.getLogger('[instabot]')
+    logger.propagate = False
     unittest.main()
