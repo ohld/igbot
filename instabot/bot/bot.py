@@ -42,11 +42,13 @@ class Bot(API):
 
     def __init__(self,
                  username=None,
+                 password=None,
                  whitelist=False,
                  blacklist=False,
                  comments_file=False):
 
-        super(self.__class__, self).__init__(username)
+        super(self.__class__, self).__init__(username=username,
+                                             password=password)
 
         self.start_time = datetime.datetime.now()
 
