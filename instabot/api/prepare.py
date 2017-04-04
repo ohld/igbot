@@ -40,12 +40,17 @@ def choose_user_dialogue():
             print("Wrong input. I need the number of account to use.")
 
 
-def get_credentials(username=None):
+def get_credentials(username=None, password=None):
     if username is not None:
         if username in get_all_users():
-            return User.load(username)
+            usr = User.load(username)
+            if password is not None:
+                usr.password = password
+            return usr
+        elif password is not None:
+            return User(username, password)
         else:
-            warnings.warn("No user found")
+            warnings.warn("User not found in base. Please provide the password.")
     return choose_user_dialogue()
 
 
