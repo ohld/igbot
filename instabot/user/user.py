@@ -1,7 +1,5 @@
 import os
-import hashlib
 import hmac
-import uuid
 import pickle
 import warnings
 import json
@@ -43,11 +41,6 @@ class User(object):
         self.delays = Dotdict({})
         self.filters = Dotdict({})
 
-        m = hashlib.md5()
-        m.update(username.encode('utf-8') + password.encode('utf-8'))
-        self.uuid = self.generateUUID()
-        self.device_id = self.generateDeviceId(m.hexdigest())
-
     def save(self):
         if not os.path.exists(config.USERS_FOLDER_NAME):
             os.makedirs(config.USERS_FOLDER_NAME)
@@ -75,15 +68,3 @@ class User(object):
         items = self.__dict__.copy()
         # del items["counters"]
         return json.dumps(items, indent=2)
-
-    @staticmethod
-    def generateDeviceId(seed):
-        volatile_seed = "12345"
-        m = hashlib.md5()
-        m.update(seed.encode('utf-8') + volatile_seed.encode('utf-8'))
-        return 'android-' + m.hexdigest()[:16]
-
-    @staticmethod
-    def generateUUID():
-        generated_uuid = str(uuid.uuid4())
-        return generated_uuid

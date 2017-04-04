@@ -40,16 +40,16 @@ if sys.version_info.major == 3:
 class API(object):
 
     def __init__(self, username=None, password=None, proxy=None):
-        if password is None or username is None:
-            self.User = get_credentials(username=username)
-        else:
-            self.User = User(username, password)
-
-        self.User.proxy = proxy
+        self.User = get_credentials(username, password)
         if not self.User.api_is_set:
             self.User.counters.requests = 0
             self.User.api_is_set = True
 
+        self.User.device_id = self.generateDeviceId(self.User.username,
+                                                    self.User.password)
+        self.User.uuid = self.generateUUID()
+        self.User.isLoggedIn = False
+        self.User.proxy = proxy
         self.User.session = requests.Session()
         if self.User.proxy is not None:
             proxies = {
@@ -60,7 +60,8 @@ class API(object):
 
         # handle logging
         self.logger = self.set_logger()
-        self.login()
+        if not self.login():
+            warning.warn("Can't login %s." % username)
 
     @staticmethod
     def set_logger():
@@ -77,6 +78,21 @@ class API(object):
         ch.setFormatter(formatter)
         logger.addHandler(ch)
         return logger
+
+    @staticmethod
+    def generateDeviceId(username, password):
+        m = hashlib.md5()
+        m.update(username.encode('utf-8') + password.encode('utf-8'))
+        seed = m.hexdigest()
+        volatile_seed = "12345"
+        m = hashlib.md5()
+        m.update(seed.encode('utf-8') + volatile_seed.encode('utf-8'))
+        return 'android-' + m.hexdigest()[:16]
+
+    @staticmethod
+    def generateUUID():
+        generated_uuid = str(uuid.uuid4())
+        return generated_uuid
 
     def login(self, force=False):
         if not force and self.User.isLoggedIn:
@@ -106,8 +122,9 @@ class API(object):
             else:
                 self.logger.warning(
                     "Login or password is incorrect or session is outdated")
-                delete_credentials(self.User.username)
-                exit()
+                self.User.isLoggedIn = False
+                time.sleep(10)
+                self.login()
         else:
             self.logger.warning(
                 "Can't login. May be you have been banned. Go to mobile app and try again.")
@@ -392,12 +409,6 @@ class API(object):
         data = self.data_to_send_with({
             'user_id': userId,
         })
-        # data = json.dumps({
-        #     '_uuid': self.User.uuid,
-        #     '_uid': self.User.user_id,
-        #     'user_id': userId,
-        #     '_csrftoken': self.User.token
-        # })
         return self.SendRequest('friendships/create/' + str(userId) + '/', self.generateSignature(data))
 
     def unfollow(self, userId):
