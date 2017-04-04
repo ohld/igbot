@@ -25,31 +25,21 @@ class TestUser(unittest.TestCase):
         self.assertTrue(api.follow(352300017))
         self.assertTrue(api.unfollow(352300017))
         self.assertEqual(reqs + 2, api.User.counters.requests)
+        api.User.save()
 
     def test_bot(self):
         bot = Bot("instabotproject")
         self.assertTrue(isinstance(bot, Bot))
+        reqs = bot.User.counters.requests
         self.assertEqual(bot.convert_to_user_id("ohld"), "352300017")
-
-    # def test_upper(self):
-    #     self.assertEqual('foo'.upper(), 'FOO')
-    #
-    # def test_isupper(self):
-    #     self.assertTrue('FOO'.isupper())
-    #     self.assertFalse('Foo'.isupper())
-    #
-    # def test_split(self):
-    #     s = 'hello world'
-    #     self.assertEqual(s.split(), ['hello', 'world'])
-    #     # check that s.split fails when the separator is not a string
-    #     with self.assertRaises(TypeError):
-    #         s.split(2)
+        self.assertEqual(reqs + 1, bot.User.counters.requests)
+        bot.User.save()
 
 def reset_user():
     User.delete("instabotproject")
-    api = API("instabotproject", "")
+    api = API("instabotproject")
     api.User.save()
 
 if __name__ == '__main__':
-    reset_user()
-    # unittest.main()
+    # reset_user()
+    unittest.main()
