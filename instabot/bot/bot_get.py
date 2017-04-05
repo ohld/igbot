@@ -104,13 +104,21 @@ def get_user_info(self, user_id):
 def get_user_followers(self, user_id):
     user_id = self.convert_to_user_id(user_id)
     followers = self.getTotalFollowers(user_id)
-    return [str(item['pk']) for item in followers][::-1] if followers else []
+    followers = [str(item['pk'])
+                 for item in followers][::-1] if followers else []
+    if user_id == self.User.user_id:
+        self.User.followers = followers
+    return followers
 
 
 def get_user_following(self, user_id):
     user_id = self.convert_to_user_id(user_id)
     following = self.getTotalFollowings(user_id)
-    return [str(item['pk']) for item in following][::-1] if following else []
+    following = [str(item['pk'])
+                 for item in following][::-1] if following else []
+    if user_id == self.User.user_id:
+        self.User.following = following
+    return following
 
 
 def get_media_likers(self, media_id):
@@ -137,7 +145,7 @@ def get_media_commenters(self, media_id):
 
 def get_comment(self):
     if len(self.comments):
-        return random.choice(self.comments).strip()
+        return random.choice(self.User.comments).strip()
     return "wow"
 
 

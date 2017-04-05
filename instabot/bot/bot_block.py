@@ -12,7 +12,7 @@ def block(self, user_id):
     if limits.check_if_bot_can_block(self):
         delay.block_delay(self)
         if super(self.__class__, self).block(user_id):
-            self.total_blocked += 1
+            self.User.counters.blocks += 1
             return True
     else:
         self.logger.info("Out of blocks for today.")
@@ -24,7 +24,7 @@ def unblock(self, user_id):
     if limits.check_if_bot_can_unblock(self):
         delay.unblock_delay(self)
         if super(self.__class__, self).unblock(user_id):
-            self.total_unblocked += 1
+            self.User.counters.unblocks += 1
             return True
     else:
         self.logger.info("Out of blocks for today.")
@@ -56,8 +56,8 @@ def unblock_users(self, user_ids):
 
 def block_bots(self):
     self.logger.info("Going to block bots.")
-    your_followers = self.get_user_followers(self.user_id)
-    your_likers = self.get_user_likers(self.user_id)
+    your_followers = self.get_user_followers(self.User.user_id)
+    your_likers = self.get_user_likers(self.User.user_id)
     not_likers = list(set(your_followers) - set(your_likers))
     random.shuffle(not_likers)
     for user in tqdm(not_likers):

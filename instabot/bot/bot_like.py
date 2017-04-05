@@ -7,7 +7,7 @@ def like(self, media_id):
     if limits.check_if_bot_can_like(self):
         delay.like_delay(self)
         if super(self.__class__, self).like(media_id):
-            self.total_liked += 1
+            self.User.counters.likes += 1
             return True
     else:
         self.logger.info("Out of likes for today.")
@@ -25,7 +25,7 @@ def like_medias(self, medias):
             delay.error_delay(self)
             broken_items = medias[medias.index(media):]
             break
-    self.logger.info("DONE: Total liked %d medias." % self.total_liked)
+    self.logger.info("DONE: Total liked %d medias." % self.User.counters.likes)
     return broken_items
 
 

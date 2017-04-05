@@ -11,7 +11,7 @@ def follow(self, user_id):
     if limits.check_if_bot_can_follow(self):
         delay.follow_delay(self)
         if super(self.__class__, self).follow(user_id):
-            self.total_followed += 1
+            self.User.counters.follows += 1
             return True
     else:
         self.logger.info("Out of follows for today.")
@@ -26,7 +26,8 @@ def follow_users(self, user_ids):
             delay.error_delay(self)
             broken_items = user_ids[user_ids.index(user_id):]
             break
-    self.logger.info("DONE: Total followed %d users." % self.total_followed)
+    self.logger.info("DONE: Total followed %d users." %
+                     self.User.counters.follows)
     return broken_items
 
 

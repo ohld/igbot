@@ -11,7 +11,7 @@ def unfollow(self, user_id):
     if limits.check_if_bot_can_unfollow(self):
         delay.unfollow_delay(self)
         if super(self.__class__, self).unfollow(user_id):
-            self.total_unfollowed += 1
+            self.User.counters.unfollows += 1
             return True
     else:
         self.logger.info("Out of unfollows for today.")
@@ -27,7 +27,7 @@ def unfollow_users(self, user_ids):
             broken_items = user_ids[user_ids.index(user_id):]
             break
     self.logger.info("DONE: Total unfollowed %d users. " %
-                     self.total_unfollowed)
+                     self.User.counters.unfollows)
     return broken_items
 
 
@@ -43,5 +43,5 @@ def unfollow_non_followers(self):
 
 
 def unfollow_everyone(self):
-    your_following = self.get_user_following(self.user_id)
+    your_following = self.get_user_following(self.User.user_id)
     self.unfollow_users(your_following)

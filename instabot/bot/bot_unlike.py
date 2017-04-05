@@ -8,7 +8,7 @@ def unlike(self, media_id):
     if limits.check_if_bot_can_unlike(self):
         delay.unlike_delay(self)
         if super(self.__class__, self).unlike(media_id):
-            self.total_unliked += 1
+            self.User.counters.unlikes += 1
             return True
     else:
         self.logger.info("Out of unlikes for today.")
@@ -23,7 +23,8 @@ def unlike_medias(self, medias):
             delay.error_delay(self)
             broken_items = medias[medias.index(media):]
             break
-    self.logger.info("DONE: Total unliked %d medias." % self.total_unliked)
+    self.logger.info("DONE: Total unliked %d medias." %
+                     self.User.counters.unlikes)
     return broken_items
 
 

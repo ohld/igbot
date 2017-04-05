@@ -11,9 +11,9 @@ def filter_medias(self, media_items, filtration=True):
     if filtration:
         self.logger.info("Recieved %d medias." % len(media_items))
         media_items = _filter_medias_not_liked(media_items)
-        if self.max_likes_to_like:
+        if self.User.limits.max_likes_to_like:
             media_items = _filter_medias_nlikes(
-                media_items, self.max_likes_to_like)
+                media_items, self.User.limits.max_likes_to_like)
         self.logger.info("After filtration %d medias left." % len(media_items))
     return _get_media_ids(media_items)
 
@@ -65,7 +65,7 @@ def search_stop_words_in_user(self, user_info):
     if 'full_name' in user_info:
         text += user_info['full_name'].lower()
 
-    for stop_word in self.stop_words:
+    for stop_word in self.User.filters.stop_words:
         if stop_word in text:
             return True
 
@@ -77,7 +77,7 @@ def filter_users(self, user_id_list):
 
 
 def check_user(self, user_id, filter_closed_acc=False):
-    if not self.filter_users:
+    if not self.User.filters.filter_users:
         return True
 
     delay.small_delay(self)
@@ -85,16 +85,16 @@ def check_user(self, user_id, filter_closed_acc=False):
 
     if not user_id:
         return False
-    if self.whitelist and user_id in self.whitelist:
+    if self.User.whitelist and user_id in self.User.whitelist:
         return True
-    if self.blacklist and user_id in self.blacklist:
+    if self.User.blacklist and user_id in self.User.blacklist:
         return False
 
-    if self.following == []:
-        self.following = self.get_user_following(self.user_id)
-    if self.followers == []:
-        self.followers = self.get_user_followers(self.user_id)
-    if user_id in self.following or user_id in self.followers:
+    if self.User.following == []:
+        self.User.following = self.get_user_following(self.User.user_id)
+    if self.User.followers == []:
+        self.User.followers = self.get_user_followers(self.User.user_id)
+    if user_id in self.User.following or user_id in self.User.followers:
         return False
 
     user_info = self.get_user_info(user_id)
@@ -110,26 +110,26 @@ def check_user(self, user_id, filter_closed_acc=False):
         if user_info["is_verified"]:
             return False
     if "follower_count" in user_info and "following_count" in user_info:
-        if user_info["follower_count"] < self.min_followers_to_follow:
+        if user_info["follower_count"] < self.User.limits.min_followers_to_follow:
             return False
-        if user_info["follower_count"] > self.max_followers_to_follow:
+        if user_info["follower_count"] > self.User.limits.max_followers_to_follow:
             return False
-        if user_info["following_count"] < self.min_following_to_follow:
+        if user_info["following_count"] < self.User.limits.min_following_to_follow:
             return False
-        if user_info["following_count"] > self.max_following_to_follow:
+        if user_info["following_count"] > self.User.limits.max_following_to_follow:
             return False
         try:
             if user_info["follower_count"] / user_info["following_count"] \
-                    > self.max_followers_to_following_ratio:
+                    > self.User.limits.max_followers_to_following_ratio:
                 return False
             if user_info["following_count"] / user_info["follower_count"] \
-                    > self.max_following_to_followers_ratio:
+                    > self.User.limits.max_following_to_followers_ratio:
                 return False
         except ZeroDivisionError:
             return False
 
     if 'media_count' in user_info:
-        if user_info["media_count"] < self.min_media_count_to_follow:
+        if user_info["media_count"] < self.User.limits.min_media_count_to_follow:
             return False  # bot or inactive user
 
     if search_stop_words_in_user(self, user_info):
@@ -144,9 +144,9 @@ def check_not_bot(self, user_id):
     user_id = self.convert_to_user_id(user_id)
     if not user_id:
         return False
-    if self.whitelist and user_id in self.whitelist:
+    if self.User.whitelist and user_id in self.User.whitelist:
         return True
-    if self.blacklist and user_id in self.blacklist:
+    if self.User.blacklist and user_id in self.User.blacklist:
         return False
 
     user_info = self.get_user_info(user_id)
@@ -154,7 +154,7 @@ def check_not_bot(self, user_id):
         return True  # closed acc
 
     if "following_count" in user_info:
-        if user_info["following_count"] > self.max_following_to_block:
+        if user_info["following_count"] > self.User.limits.max_following_to_block:
             return False  # massfollower
 
     if search_stop_words_in_user(self, user_info):

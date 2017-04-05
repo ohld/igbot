@@ -35,11 +35,13 @@ def read_list_from_file(file_path):
 
 def add_whitelist(self, file_path):
     file_contents = read_list_from_file(file_path)
-    self.whitelist = [self.convert_to_user_id(item) for item in file_contents]
-    return not not self.whitelist
+    self.User.whitelist = [self.convert_to_user_id(
+        item) for item in file_contents]
+    return not not self.User.whitelist
 
 
 def add_blacklist(self, file_path):
     file_contents = read_list_from_file(file_path)
-    self.blacklist = [self.convert_to_user_id(item) for item in file_contents]
-    return not not self.blacklist
+    self.User.blacklist = [self.convert_to_user_id(
+        item) for item in file_contents]
+    return not not self.User.blacklist
