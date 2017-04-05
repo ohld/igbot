@@ -10,41 +10,45 @@ def add_dispersion(delay_value):
     return delay_value * 3 / 4 + delay_value * random.random() / 2
 
 
+def sleep(t):
+    time.sleep(add_dispersion(t))
+
+
 def like_delay(bot):
-    time.sleep(add_dispersion(bot.like_delay))
+    sleep(bot.User.delays.like)
 
 
 def unlike_delay(bot):
-    time.sleep(add_dispersion(bot.unlike_delay))
+    sleep(bot.User.delays.unlike)
 
 
 def follow_delay(bot):
-    time.sleep(add_dispersion(bot.follow_delay))
+    sleep(bot.User.delays.follow)
 
 
 def unfollow_delay(bot):
-    time.sleep(add_dispersion(bot.unfollow_delay))
+    sleep(bot.User.delays.unfollow)
 
 
 def comment_delay(bot):
-    time.sleep(add_dispersion(bot.comment_delay))
+    sleep(bot.User.delays.comment)
 
 
 def block_delay(bot):
-    time.sleep(add_dispersion(bot.block_delay))
+    sleep(bot.User.delays.block)
 
 
 def unblock_delay(bot):
-    time.sleep(add_dispersion(bot.unblock_delay))
+    sleep(bot.User.delays.unblock)
 
 
 def error_delay(bot):
-    time.sleep(10)
+    sleep(10)
 
 
 def small_delay(bot):
-    time.sleep(add_dispersion(3))
+    sleep(3)
 
 
 def very_small_delay(bot):
-    time.sleep(add_dispersion(0.7))
+    sleep(0.7)
