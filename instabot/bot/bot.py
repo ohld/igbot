@@ -27,8 +27,6 @@ from .bot_comment import comment_hashtag, is_commented
 
 from .bot_block import block, unblock, block_users, unblock_users, block_bots
 
-from .bot_checkpoint import save_checkpoint, load_checkpoint
-
 from .bot_filter import filter_medias, check_media, filter_users, check_user
 from .bot_filter import check_not_bot
 
@@ -45,10 +43,12 @@ class Bot(API):
                  password=None,
                  whitelist=False,
                  blacklist=False,
-                 comments_file=False):
+                 comments_file=False,
+                 proxy=None):
 
         super(self.__class__, self).__init__(username=username,
-                                             password=password)
+                                             password=password,
+                                             proxy=proxy)
 
         self.start_time = datetime.datetime.now()
 

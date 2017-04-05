@@ -26,7 +26,8 @@ def add_credentials(username=None, password=None):
 def choose_user_dialogue():
     while True:
         print("Which account do you want to use? (Type number)")
-        for ind, login in enumerate(get_all_users()):
+        all_users = get_all_users()
+        for ind, login in enumerate(all_users):
             print("%d: %s" % (ind + 1, login))
         print("%d: %s" % (0, "add another account."))
         try:
@@ -34,8 +35,8 @@ def choose_user_dialogue():
             if ind == 0:
                 add_credentials()
                 continue
-            if ind - 1 in list(range(len(lines))):
-                return lines[ind - 1]
+            if ind - 1 in list(range(len(all_users))):
+                return User.load(all_users[ind - 1])
         except:
             print("Wrong input. I need the number of account to use.")
 
@@ -48,7 +49,9 @@ def get_credentials(username=None, password=None):
                 usr.password = password
             return usr
         elif password is not None:
-            return User(username, password)
+            usr = User(username, password)
+            usr.save()
+            return usr
         else:
             warnings.warn("User not found in base. Please provide the password.")
     return choose_user_dialogue()
