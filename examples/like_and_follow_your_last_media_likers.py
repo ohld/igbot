@@ -40,8 +40,7 @@ parser.add_argument('-p', type=str, help="password")
 parser.add_argument('-proxy', type=str, help="proxy")
 args = parser.parse_args()
 
-bot = Bot()
-bot.login(username=args.u, password=args.p,
+bot = Bot(username=args.u, password=args.p,
           proxy=args.proxy)
 
 like_and_follow_your_feed_likers(bot)

@@ -22,8 +22,7 @@ parser.add_argument('-proxy', type=str, help="proxy")
 parser.add_argument('hashtags', type=str, nargs='+', help='hashtags')
 args = parser.parse_args()
 
-bot = Bot()
-bot.login(username=args.u, password=args.p,
+bot = Bot(username=args.u, password=args.p,
           proxy=args.proxy)
 
 for hashtag in args.hashtags:

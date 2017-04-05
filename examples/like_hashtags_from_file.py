@@ -22,8 +22,7 @@ parser.add_argument('-proxy', type=str, help="proxy")
 parser.add_argument('filename', type=str, nargs='+', help='filename')
 args = parser.parse_args()
 
-bot = Bot()
-bot.login(username=args.u, password=args.p,
+bot = Bot(username=args.u, password=args.p,
           proxy=args.proxy)
 
 hashtags = bot.read_list_from_file(args.filename)

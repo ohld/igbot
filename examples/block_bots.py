@@ -20,9 +20,10 @@ args = parser.parse_args()
 
 
 stop_words = ['shop', 'store', 'free']
-bot = Bot(stop_words=stop_words)
-bot.login(username=args.u, password=args.p,
+bot = Bot(username=args.u, password=args.p,
           proxy=args.proxy)
+
+bot.set_filters(stop_words=stop_words)
 
 bot.logger.info("This script will block bots. "
                 "So they will no longer be your follower. "

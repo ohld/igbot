@@ -17,7 +17,6 @@ sys.path.append(os.path.join(sys.path[0], '../'))
 from instabot import Bot
 
 bot = Bot()
-bot.login()
 
 # like media by a single user_id
 bot.like_user("352300017")
