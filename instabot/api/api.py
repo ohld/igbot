@@ -121,9 +121,10 @@ class API(object):
                 return True
             else:
                 self.logger.warning(
-                    "Login or password is incorrect or session is outdated")
+                    "Login or password is incorrect or you need to approve "
+                    "Pyour actions in Instagram App. Go there and check that all is ok.")
                 self.User.isLoggedIn = False
-                time.sleep(10)
+                time.sleep(30)
                 self.login()
         else:
             self.logger.warning(
