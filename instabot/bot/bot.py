@@ -58,9 +58,10 @@ class Bot(API):
             self.User.blacklist = []
             self.User.whitelist = []
             self.User.comments = []
-            self.change_limits()
-            self.change_filters()
-            self.change_delays()
+            self.set_counters()
+            self.set_limits()
+            self.set_filters()
+            self.set_delays()
             self.User.bot_is_set = True
 
         if whitelist:
@@ -72,7 +73,18 @@ class Bot(API):
             self.User.comments = read_list_from_file(comments_file)
         self.prepare()
 
-    def change_limits(self,
+
+    def set_counters(self):
+        self.User.counters.likes = 0
+        self.User.counters.unlikes = 0
+        self.User.counters.follows = 0
+        self.User.counters.unfollows = 0
+        self.User.counters.blocks = 0
+        self.User.counters.unblocks = 0
+        self.User.counters.comments = 0
+
+
+    def set_limits(self,
                       max_likes_per_day=1000,
                       max_unlikes_per_day=1000,
                       max_follows_per_day=350,
@@ -88,7 +100,7 @@ class Bot(API):
         self.User.limits.max_blocks_per_day = max_blocks_per_day
         self.User.limits.max_unblocks_per_day = max_unblocks_per_day
 
-    def change_filters(self,
+    def set_filters(self,
                        filter_users=True,
                        max_likes_to_like=100,
                        max_followers_to_follow=2000,
@@ -112,7 +124,7 @@ class Bot(API):
         self.User.filters.stop_words = stop_words
         self.User.filters.max_following_to_block = max_following_to_block
 
-    def change_delays(self,
+    def set_delays(self,
                       like_delay=10,
                       unlike_delay=10,
                       follow_delay=30,
