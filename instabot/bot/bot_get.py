@@ -118,8 +118,7 @@ def get_media_likers(self, media_id):
     if "users" not in self.LastJson:
         self.logger.info("Media with %s not found." % media_id)
         return []
-    for user in self.LastJson["users"]:
-        return str(user['pk'])
+    return list(map(lambda user: str(user['pk']), self.LastJson["users"]))
         # return self.filter_users(self.LastJson["users"])
 
 
