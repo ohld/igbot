@@ -37,7 +37,9 @@ def unfollow_non_followers(self):
     self.logger.info("You follow %d users." % len(followings))
     followers = set([item["pk"] for item in self.getTotalSelfFollowers()])
     self.logger.info("You are followed by %d users." % len(followers))
-    diff = followings - followers
+    whitelist = set(map(lambda x: int(x), self.User.whitelist))
+    self.logger.info("You have %d users in the whitelist." % len(whitelist))
+    diff = followings - followers - whitelist
     self.logger.info("%d users don't follow you back." % len(diff))
     self.unfollow_users(list(diff))
 

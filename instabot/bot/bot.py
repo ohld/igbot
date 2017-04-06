@@ -37,7 +37,6 @@ from .bot_stats import save_user_stats
 
 
 class Bot(API):
-
     def __init__(self,
                  username=None,
                  password=None,
@@ -73,7 +72,6 @@ class Bot(API):
             self.User.comments = read_list_from_file(comments_file)
         self.prepare()
 
-
     def set_counters(self):
         self.User.counters.likes = 0
         self.User.counters.unlikes = 0
@@ -83,15 +81,14 @@ class Bot(API):
         self.User.counters.unblocks = 0
         self.User.counters.comments = 0
 
-
     def set_limits(self,
-                      max_likes_per_day=1000,
-                      max_unlikes_per_day=1000,
-                      max_follows_per_day=350,
-                      max_unfollows_per_day=350,
-                      max_comments_per_day=100,
-                      max_blocks_per_day=100,
-                      max_unblocks_per_day=100):
+                   max_likes_per_day=1000,
+                   max_unlikes_per_day=1000,
+                   max_follows_per_day=350,
+                   max_unfollows_per_day=350,
+                   max_comments_per_day=100,
+                   max_blocks_per_day=100,
+                   max_unblocks_per_day=100):
         self.User.limits.max_likes_per_day = max_likes_per_day
         self.User.limits.max_unlikes_per_day = max_unlikes_per_day
         self.User.limits.max_follows_per_day = max_follows_per_day
@@ -101,17 +98,19 @@ class Bot(API):
         self.User.limits.max_unblocks_per_day = max_unblocks_per_day
 
     def set_filters(self,
-                       filter_users=True,
-                       max_likes_to_like=100,
-                       max_followers_to_follow=2000,
-                       min_followers_to_follow=10,
-                       max_following_to_follow=2000,
-                       min_following_to_follow=10,
-                       max_followers_to_following_ratio=10,
-                       max_following_to_followers_ratio=2,
-                       min_media_count_to_follow=3,
-                       max_following_to_block=2000,
-                       stop_words=['shop', 'store', 'free']):
+                    filter_users=True,
+                    max_likes_to_like=100,
+                    max_followers_to_follow=2000,
+                    min_followers_to_follow=10,
+                    max_following_to_follow=2000,
+                    min_following_to_follow=10,
+                    max_followers_to_following_ratio=10,
+                    max_following_to_followers_ratio=2,
+                    min_media_count_to_follow=3,
+                    max_following_to_block=2000,
+                    stop_words=None):
+        if stop_words is None:
+            stop_words = ['shop', 'store', 'free']
         self.User.filters.filter_users = filter_users
         self.User.filters.max_likes_to_like = max_likes_to_like
         self.User.filters.max_followers_to_follow = max_followers_to_follow
@@ -125,13 +124,13 @@ class Bot(API):
         self.User.filters.max_following_to_block = max_following_to_block
 
     def set_delays(self,
-                      like_delay=10,
-                      unlike_delay=10,
-                      follow_delay=30,
-                      unfollow_delay=30,
-                      comment_delay=60,
-                      block_delay=30,
-                      unblock_delay=30):
+                   like_delay=10,
+                   unlike_delay=10,
+                   follow_delay=30,
+                   unfollow_delay=30,
+                   comment_delay=60,
+                   block_delay=30,
+                   unblock_delay=30):
         self.User.delays.like = like_delay
         self.User.delays.unlike = unlike_delay
         self.User.delays.follow = follow_delay
