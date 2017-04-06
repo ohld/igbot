@@ -110,26 +110,26 @@ def check_user(self, user_id, filter_closed_acc=False):
         if user_info["is_verified"]:
             return False
     if "follower_count" in user_info and "following_count" in user_info:
-        if user_info["follower_count"] < self.User.limits.min_followers_to_follow:
+        if user_info["follower_count"] < self.User.filters.min_followers_to_follow:
             return False
-        if user_info["follower_count"] > self.User.limits.max_followers_to_follow:
+        if user_info["follower_count"] > self.User.filters.max_followers_to_follow:
             return False
-        if user_info["following_count"] < self.User.limits.min_following_to_follow:
+        if user_info["following_count"] < self.User.filters.min_following_to_follow:
             return False
-        if user_info["following_count"] > self.User.limits.max_following_to_follow:
+        if user_info["following_count"] > self.User.filters.max_following_to_follow:
             return False
         try:
             if user_info["follower_count"] / user_info["following_count"] \
-                    > self.User.limits.max_followers_to_following_ratio:
+                    > self.User.filters.max_followers_to_following_ratio:
                 return False
             if user_info["following_count"] / user_info["follower_count"] \
-                    > self.User.limits.max_following_to_followers_ratio:
+                    > self.User.filters.max_following_to_followers_ratio:
                 return False
         except ZeroDivisionError:
             return False
 
     if 'media_count' in user_info:
-        if user_info["media_count"] < self.User.limits.min_media_count_to_follow:
+        if user_info["media_count"] < self.User.filters.min_media_count_to_follow:
             return False  # bot or inactive user
 
     if search_stop_words_in_user(self, user_info):
@@ -154,7 +154,7 @@ def check_not_bot(self, user_id):
         return True  # closed acc
 
     if "following_count" in user_info:
-        if user_info["following_count"] > self.User.limits.max_following_to_block:
+        if user_info["following_count"] > self.User.filters.max_following_to_block:
             return False  # massfollower
 
     if search_stop_words_in_user(self, user_info):
