@@ -53,7 +53,7 @@ if args.locations:
             print(u"Found {}".format(finded_location['title']))
 
             if not args.amount:
-                nlikes = input("How much likes?")
+                nlikes = input(u"How much likes per location?")
             else:
                 nlikes = args.amount
             like_location_feed(bot, finded_location, amount=int(nlikes))
@@ -64,7 +64,7 @@ else:
         print(u'Location was not found')
         exit(1)
     if not args.amount:
-        nlikes = input(u"How much likes?")
+        nlikes = input(u"How much likes per location?")
     else:
         nlikes = args.amount
     ans = True
