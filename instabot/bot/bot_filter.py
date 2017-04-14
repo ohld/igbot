@@ -9,7 +9,7 @@ from . import delay
 
 def filter_medias(self, media_items, filtration=True):
     if filtration:
-        self.logger.info("Recieved %d medias." % len(media_items))
+        self.logger.info("Received %d medias." % len(media_items))
         media_items = _filter_medias_not_liked(media_items)
         if self.max_likes_to_like:
             media_items = _filter_medias_nlikes(
