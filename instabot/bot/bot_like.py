@@ -44,7 +44,7 @@ def like_user(self, user_id, amount=None):
     medias = self.get_user_medias(user_id)
     if not medias:
         self.logger.info(
-            "None medias recieved: account is closed or medias have been filtered.")
+            "None medias received: account is closed or medias have been filtered.")
         return False
     return self.like_medias(medias[:amount])
 
