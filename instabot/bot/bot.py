@@ -372,5 +372,5 @@ class Bot(API):
 
     # stats
 
-    def save_user_stats(self, username):
-        return save_user_stats(self, username)
+    def save_user_stats(self, username, path=""):
+        return save_user_stats(self, username, path=path)
