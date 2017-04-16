@@ -189,7 +189,7 @@ class Bot(API):
     def get_geotag_medias(self, geotag, filtration=True):
         return get_geotag_medias(self, geotag, filtration)
 
-    def get_media_info(self, media_id):
+    def get_media_info(segit lf, media_id):
         return get_media_info(self, media_id)
 
     def get_timeline_users(self):
@@ -372,5 +372,5 @@ class Bot(API):
 
     # stats
 
-    def save_user_stats(self, username):
-        return save_user_stats(self, username)
+    def save_user_stats(self, username, path=""):
+        return save_user_stats(self, username, path="")

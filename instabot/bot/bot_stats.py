@@ -14,7 +14,14 @@ def get_header_line(dictionary):
     return line + "\n"
 
 
+def ensure_dir(file_path):
+    directory = os.path.dirname(file_path)
+    if not os.path.exists(directory) and len(directory) > 0:
+        os.makedirs(directory)
+
+
 def dump_data(data, path):
+    ensure_dir(path)
     if not os.path.exists(path):
         with open(path, "w") as f:
             f.write(get_header_line(data))
@@ -24,7 +31,7 @@ def dump_data(data, path):
             f.write(get_tsv_line(data))
 
 
-def save_user_stats(self, username):
+def save_user_stats(self, username, path=""):
     user_id = self.convert_to_user_id(username)
     infodict = self.get_user_info(user_id)
     if infodict:
@@ -33,6 +40,6 @@ def save_user_stats(self, username):
         data_to_save["followers"] = int(infodict["follower_count"])
         data_to_save["following"] = int(infodict["following_count"])
         data_to_save["medias"] = int(infodict["media_count"])
-        dump_data(data_to_save, "%s.tsv" % username)
+        dump_data(data_to_save, os.path.join(path, "%s.tsv" % username))
     self.logger.info("Stats saved at %s." % data_to_save["date"])
     return False

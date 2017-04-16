@@ -17,7 +17,8 @@ parser = argparse.ArgumentParser(add_help=True)
 parser.add_argument('-u', type=str, help="username")
 parser.add_argument('-p', type=str, help="password")
 parser.add_argument('-proxy', type=str, help="proxy")
-parser.add_argument('user', type=str, help='user')
+parser.add_argument('user', type=str, help="user")
+parser.add_argument('-path', type=str, default='', help="path")
 args = parser.parse_args()
 
 bot = Bot()
@@ -27,5 +28,5 @@ bot.login(username=args.u, password=args.p,
 delay = 60 * 60
 
 while True:
-    bot.save_user_stats(args.user)
+    bot.save_user_stats(args.user, path=args.path)
     time.sleep(delay)
