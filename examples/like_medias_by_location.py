@@ -15,6 +15,8 @@ from tqdm import tqdm
 sys.path.append(os.path.join(sys.path[0], '../'))
 from instabot import Bot
 
+try: input = raw_input
+except NameError: pass
 
 def like_location_feed(new_bot, new_location, amount=0):
     counter = 0
@@ -22,7 +24,7 @@ def like_location_feed(new_bot, new_location, amount=0):
     while counter < amount:
         if new_bot.getLocationFeed(new_location['location']['pk'], maxid=max_id):
             location_feed = new_bot.LastJson
-            for media in tqdm(location_feed["items"]):
+            for media in tqdm(location_feed["items"][:amount]):
                 if bot.like(media['id']):
                     counter += 1
             if location_feed.get('next_max_id'):
@@ -53,18 +55,18 @@ if args.locations:
             print(u"Found {}".format(finded_location['title']))
 
             if not args.amount:
-                nlikes = input(u"How much likes per location?")
+                nlikes = input(u"How much likes per location?\n")
             else:
                 nlikes = args.amount
             like_location_feed(bot, finded_location, amount=int(nlikes))
 else:
-    location_name = raw_input(u"Write location name:\n").strip()
+    location_name = input(u"Write location name:\n").strip()
     bot.searchLocation(location_name)
     if not bot.LastJson['items']:
         print(u'Location was not found')
         exit(1)
     if not args.amount:
-        nlikes = input(u"How much likes per location?")
+        nlikes = input(u"How much likes per location?\n")
     else:
         nlikes = args.amount
     ans = True
@@ -72,7 +74,7 @@ else:
         for n, location in enumerate(bot.LastJson["items"], start=1):
             print(u'{0}. {1}'.format(n, location['title']))
         print('\n0. Exit\n')
-        ans = raw_input(u"What place would you want to choose?\n").strip()
+        ans = input(u"What place would you want to choose?\n").strip()
         if ans == '0':
             exit(0)
         try:
