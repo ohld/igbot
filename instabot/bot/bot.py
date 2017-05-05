@@ -130,7 +130,10 @@ class Bot(API):
         self.logger.info('Instabot Started')
 
     def version(self):
-        from pip._vendor import pkg_resources
+        try:
+            from pip._vendor import pkg_resources
+        except ImportError:
+            import pkg_resources
         return next((p.version for p in pkg_resources.working_set if p.project_name.lower() == 'instabot'), "No match")
 
     def logout(self):
