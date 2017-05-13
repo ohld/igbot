@@ -9,14 +9,21 @@
 import argparse
 import os
 import sys
+import codecs
 
 from tqdm import tqdm
 
+stdout = sys.stdout
+sys.stdout = codecs.getwriter('utf8')(sys.stdout)
 sys.path.append(os.path.join(sys.path[0], '../'))
 from instabot import Bot
 
-try: input = raw_input
-except NameError: pass
+
+try:
+    input = raw_input
+except NameError:
+    pass
+
 
 def like_location_feed(new_bot, new_location, amount=0):
     counter = 0
@@ -33,6 +40,7 @@ def like_location_feed(new_bot, new_location, amount=0):
                 return False
     return True
 
+
 parser = argparse.ArgumentParser(add_help=True)
 parser.add_argument('-u', type=str, help="username")
 parser.add_argument('-p', type=str, help="password")
@@ -41,10 +49,14 @@ parser.add_argument('-proxy', type=str, help="proxy")
 parser.add_argument('locations', type=str, nargs='*', help='locations')
 args = parser.parse_args()
 
+try:
+    print(u'Like medias by location')
+except TypeError:
+    sys.stdout = stdout
+
 bot = Bot()
 bot.login(username=args.u, password=args.p,
           proxy=args.proxy)
-
 
 if args.locations:
     for location in args.locations:
@@ -73,7 +85,7 @@ else:
     while ans:
         for n, location in enumerate(bot.LastJson["items"], start=1):
             print(u'{0}. {1}'.format(n, location['title']))
-        print('\n0. Exit\n')
+        print(u'\n0. Exit\n')
         ans = input(u"What place would you want to choose?\n").strip()
         if ans == '0':
             exit(0)
