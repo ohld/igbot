@@ -38,6 +38,7 @@ def get_random(from_list):
     print("Random from ultimate.py script is chosen: \n" + _random + "\n")
     return _random
 
+def stats(): bot.save_user_stats(bot.user_id)
 def job1(): bot.like_hashtag(get_random(random_hashtag_file), amount=int(700/24))
 def job2(): bot.like_timeline(amount=int(300/24))
 def job3(): bot.like_followers(get_random(random_user_file), nlikes=3)
@@ -76,7 +77,7 @@ def job8(): #-->fn to upload photos /auto_uploader
 def run_threaded(job_fn):
     job_thread=threading.Thread(target=job_fn)
     job_thread.start()
-
+schedule.every(1).hour.do(run_threaded, stats)              #get stats
 schedule.every(8).hours.do(run_threaded, job1)              #like hashtag
 schedule.every(2).hours.do(run_threaded, job2)              #like timeline
 schedule.every(1).days.at("16:00").do(run_threaded, job3)   #like followers of users from file
@@ -85,7 +86,6 @@ schedule.every(16).hours.do(run_threaded, job5)             #comment medias
 schedule.every(1).days.at("08:00").do(run_threaded, job6)   #unfollow non-followers
 schedule.every(12).hours.do(run_threaded, job7)             #follow users from hashtag from file
 schedule.every(1).days.at("21:28").do(run_threaded, job8)   #upload pics
-
 while True:
     schedule.run_pending()
     time.sleep(1)
