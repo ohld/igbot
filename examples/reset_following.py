@@ -12,7 +12,7 @@ class task():
         1) Create Friends List
             Make a list of the users you follow before you follow bot.
         2) Restore Friends List
-            Unfollow all user accept for the users in your friends list.ß
+            Unfollow all user accept for the users in your friends list.
         3) Exit
         \n
         """)
@@ -51,7 +51,7 @@ bot.login()
 print ("""
         Welcome to this bot.
         It will now get a list of all of the users you are following.
-        You will need this if you follow bot your account and you want toreset your
+        You will need this if you follow bot your account and you want to reset your
         following to just your friends.
 """)
 task.start()
