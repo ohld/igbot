@@ -19,7 +19,7 @@ from instabot import Bot
 
 if len(sys.argv) < 3:
     print ("USAGE: Pass a path to the file with comments and an hastag to comment")
-    print ("Example: %s comments_emojie.txt dog cat" % sys.argv[0])
+    print ("Example: %s comments_emoji.txt dog cat" % sys.argv[0])
     exit()
 
 comments_file_name = sys.argv[1]

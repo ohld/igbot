@@ -3,7 +3,8 @@
 ![Instabot is better than other open-source bots!](https://github.com/instagrambot/instabot/blob/master/docs/img/tag%20instabot.png "Instabot is better than other open-source bots!")
 Cool Instagram scripts for promotion and API wrapper. Written in Python.
 ___
-[![Telegram Chat](https://patrolavia.github.io/telegram-badge/chat.png)](https://t.me/joinchat/AAAAAEHxHAtKhKo4X4r7xg)[![Build Status](https://travis-ci.org/instagrambot/instabot.svg?branch=master)](https://travis-ci.org/instagrambot/instabot)
+[![Telegram Chat](https://img.shields.io/badge/chat%20on-Telegram-blue.svg)](https://t.me/joinchat/AAAAAEHxHAtKhKo4X4r7xg)
+[![Build Status](https://travis-ci.org/instagrambot/instabot.svg?branch=master)](https://travis-ci.org/instagrambot/instabot)
 
 As you may know, Instagram closed its API in summer 2016. This Python module can do the same things without any effort.
 
@@ -11,8 +12,11 @@ As you may know, Instagram closed its API in summer 2016. This Python module can
 *Make sure* you check out the example scripts [here](https://github.com/ohld/instabot/tree/master/examples). Chances are, your desired functions are *already there and ready to use*. Examples include *unfollowing non-followers*, *following competitor's followings and followers*, *liking posts of a specific hashtag*, and *more*...
 
 If you have any ideas, please report them in the [Issues section](https://github.com/ohld/instabot/issues) or in our [Telegram chat](https://t.me/joinchat/AAAAAEHxHAtKhKo4X4r7xg).
-
 **Your __contribution__ and support through __stars and reporting issues__ will be highly appreciated. After all, this project is dependent on your testing and support. :)**
+
+## Before you bot!
+Before you follow bot, make sure you run *reset_following.py*, it will allow you to reset your following to what you had before botting. Very helpful.
+
 ## How to install and update
 
 Install latest stable version or update current from pip.
@@ -77,12 +81,12 @@ bot = Bot(
 | max_likes_to_like| If the media has more likes then this value - it will be ignored and not be liked | 200|
 | filter_users | Filter users if True | True|
 | max_followers_to_follow| If the user has more followers than this value - the user will not be followed or liked. | 2000|
-| min_followers_to_follow| If the user has less followers than this value - the user will not be followed or liked.| 10|
+| min_followers_to_follow| If the user has fewer followers than this value - the user will not be followed or liked.| 10|
 | max_following_to_follow| If the user has more followings than this value - the user will not be followed or liked.| 10000|
-| min_following_to_follow| If the user has less followings than this value - the user will not be followed or liked.| 10|
+| min_following_to_follow| If the user has fewer followings than this value - the user will not be followed or liked.| 10|
 | max_followers_to_following_ratio| if the user's followers/following is greater than this value - the user will not be followed or liked.| 10|
 | max_following_to_followers_ratio| if user's following/followers is greater than this value - he will not be followed or liked.| 2|
-| min_media_count_to_follow| If the user has less media count than this value - the user will not be followed. | 3|
+| min_media_count_to_follow| If the user has fewer media count than this value - the user will not be followed. | 3|
 |max_following_to_block|If the user have a following more than this value - the user will be blocked in blocking scripts because he is a massfollower| 2000|
 | max_likes_to_like | Max number of likes that can media have to be liked | 100 |
 | like_delay | Delay between likes in seconds| 10|
