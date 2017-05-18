@@ -106,7 +106,7 @@ def setting_input():
             f.write(str(int(sys.stdin.readline().strip()or "60")) + "\n")
             print(
                 "Want to use proxy? insert your proxy or leave it blank if no. (just enter)")
-            f.write(str(int(sys.stdin.readline().strip()or "None")) + "\n")
+            f.write(str(sys.stdin.readline().strip()) or "None" + "\n")
             print("done with all settings")
             break
 
@@ -339,7 +339,7 @@ def menu_like():
     ans = True
     while ans:
         print("""
-        1. Like from hashtag
+        1. Like from hashtag(s)
         2. Like followers
         3. Like following
         4. Like last media likers
@@ -350,15 +350,16 @@ def menu_like():
 
         if ans == "1":
             print("""
-            1.insert hashtag
+            1.insert hashtag(s)
             2.use hashtag database
             """)
+            hashtags = []
             if "1" in sys.stdin.readline():
-                hashtag = input("what?").strip()
+                hashtags = input("Insert hashtags separated by spaces\nExample: cat dog\nwhat hashtags?\n").strip().split(' ')
             else:
-                hashtag = random.choice(bot.read_list_from_file(users_file))
-            for hashtags in hashtag:
-                bot.like_hashtag(hashtags)
+                hashtags.append(random.choice(bot.read_list_from_file(users_file)))
+            for hashtag in hashtags:
+                bot.like_hashtag(hashtag)
 
         elif ans == "2":
             print("""
@@ -587,24 +588,24 @@ if os.stat(setting).st_size == 0:
 
 f = open(setting)
 lines = f.readlines()
-setting_1 = lines[1]
-setting_2 = lines[2]
-setting_3 = lines[3]
-setting_4 = lines[4]
-setting_5 = lines[5]
-setting_6 = lines[6]
-setting_7 = lines[7]
-setting_8 = lines[8]
-setting_9 = lines[9]
-setting_10 = lines[10]
-setting_11 = lines[11]
-setting_12 = lines[12]
-setting_13 = lines[13]
-setting_14 = lines[14]
-setting_15 = lines[15]
-setting_16 = lines[16]
-setting_17 = lines[17]
-setting_18 = lines[18]
+setting_1 = int(lines[1].strip())
+setting_2 = int(lines[2].strip())
+setting_3 = int(lines[3].strip())
+setting_4 = int(lines[4].strip())
+setting_5 = int(lines[5].strip())
+setting_6 = int(lines[6].strip())
+setting_7 = int(lines[7].strip())
+setting_8 = int(lines[8].strip())
+setting_9 = int(lines[9].strip())
+setting_10 = int(lines[10].strip())
+setting_11 = int(lines[11].strip())
+setting_12 = int(lines[12].strip())
+setting_13 = int(lines[13].strip())
+setting_14 = int(lines[14].strip())
+setting_15 = int(lines[15].strip())
+setting_16 = int(lines[16].strip())
+setting_17 = int(lines[17].strip())
+setting_18 = lines[18].strip()
 
 bot = Bot(
     max_likes_per_day=setting_1,
