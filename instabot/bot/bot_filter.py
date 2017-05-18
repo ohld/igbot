@@ -7,14 +7,16 @@ from . import delay
 # filtering medias
 
 
-def filter_medias(self, media_items, filtration=True):
+def filter_medias(self, media_items, filtration=True, quiet=False):
     if filtration:
-        self.logger.info("Received %d medias." % len(media_items))
+        if not quiet:
+            self.logger.info("Received %d medias." % len(media_items))
         media_items = _filter_medias_not_liked(media_items)
         if self.max_likes_to_like:
             media_items = _filter_medias_nlikes(
                 media_items, self.max_likes_to_like)
-        self.logger.info("After filtration %d medias left." % len(media_items))
+        if not quiet:
+            self.logger.info("After filtration %d medias left." % len(media_items))
     return _get_media_ids(media_items)
 
 

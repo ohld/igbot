@@ -344,8 +344,8 @@ class Bot(API):
 
     # filter
 
-    def filter_medias(self, media_items, filtration=True):
-        return filter_medias(self, media_items, filtration)
+    def filter_medias(self, media_items, filtration=True, quiet=False):
+        return filter_medias(self, media_items, filtration, quiet)
 
     def check_media(self, media):
         return check_media(self, media)

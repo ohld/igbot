@@ -98,4 +98,9 @@ ENV/
 # Bot checkpoints
 bot_cp_*
 
+# JetBrains IDE
+.idea
+
+# Settings files
+examples/*.txt
 *.checkpoint
