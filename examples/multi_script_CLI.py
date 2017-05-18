@@ -285,10 +285,10 @@ def menu_follow():
             """)
             if "1" in sys.stdin.readline():
                 user_id = input("who?").strip()
-            elif "2" in sys.stdin.readline():
+            else:
                 user_id = random.choice(bot.read_list_from_file(users_file))
             nlikes = input('how much like per account?')
-            bot.like_followers(user_id, nlikes=None)
+            bot.like_followers(user_id, nlikes=nlikes)
 
         elif ans == "2":
             print("""
@@ -357,7 +357,7 @@ def menu_like():
             if "1" in sys.stdin.readline():
                 hashtags = input("Insert hashtags separated by spaces\nExample: cat dog\nwhat hashtags?\n").strip().split(' ')
             else:
-                hashtags.append(random.choice(bot.read_list_from_file(users_file)))
+                hashtags.append(random.choice(bot.read_list_from_file(hashtag_file)))
             for hashtag in hashtags:
                 bot.like_hashtag(hashtag)
 
@@ -429,7 +429,7 @@ def menu_comment():
             if "1" in sys.stdin.readline():
                 hashtag = input("what?").strip()
             else:
-                hashtag = random.choice(bot.read_list_from_file(users_file))
+                hashtag = random.choice(bot.read_list_from_file(hashtag_file))
             for hashtags in hashtag:
                 bot.comment_hashtag(hashtags)
 
