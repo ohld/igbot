@@ -29,15 +29,17 @@ def like_location_feed(new_bot, new_location, amount=0):
     counter = 0
     max_id = ''
     while counter < amount:
-        if new_bot.getLocationFeed(new_location['location']['pk'], maxid=max_id):
-            location_feed = new_bot.LastJson
-            for media in tqdm(location_feed["items"][:amount]):
-                if bot.like(media['id']):
-                    counter += 1
-            if location_feed.get('next_max_id'):
-                max_id = location_feed['next_max_id']
-            else:
-                return False
+        with tqdm(total=amount) as pbar:
+            if new_bot.getLocationFeed(new_location['location']['pk'], maxid=max_id):
+                location_feed = new_bot.LastJson
+                for media in location_feed["items"][:amount]:
+                    if bot.like(media['id']):
+                        counter += 1
+                        pbar.update(1)
+                if location_feed.get('next_max_id'):
+                    max_id = location_feed['next_max_id']
+                else:
+                    return False
     return True
 
 
