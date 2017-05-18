@@ -28,12 +28,12 @@ except NameError:
 def like_location_feed(new_bot, new_location, amount=0):
     counter = 0
     max_id = ''
-    while counter < amount:
-        with tqdm(total=amount) as pbar:
+    with tqdm(total=amount) as pbar:
+        while counter < amount:
             if new_bot.getLocationFeed(new_location['location']['pk'], maxid=max_id):
                 location_feed = new_bot.LastJson
-                for media in location_feed["items"][:amount]:
-                    if bot.like(media['id']):
+                for media in new_bot.filter_medias(location_feed["items"][:amount], quiet=True):
+                    if bot.like(media):
                         counter += 1
                         pbar.update(1)
                 if location_feed.get('next_max_id'):
