@@ -1,17 +1,22 @@
-'''
+"""
 
 This is a account reset tool.
 Use this before you start boting.
 You can then reset the users you follow to what you had before botting.
 
-'''
+"""
+import sys
+import os
+
+sys.path.append(os.path.join(sys.path[0], '../'))
 from instabot import Bot
 
-    #class of all the tasks
-class task():
 
-        #geting the user to pick what to do
-    def start():
+# class of all the tasks
+class Task(object):
+    # getting the user to pick what to do
+    @staticmethod
+    def start(my_bot):
         answer = input("""
         Please select
         1) Create Friends List
@@ -22,50 +27,55 @@ class task():
         \n
         """)
 
-            #make a sript
-        if answer=="1":
-            task.one()
+        # make a script
+        if answer == "1":
+            Task.one(my_bot)
 
-            #unfollow your nonfriends
-        if answer=="2":
-            task.two()
+            # unfollow your nonfriends
+        if answer == "2":
+            Task.two(my_bot)
 
-            #exit sript
-        if answer=="3":
+            # exit sript
+        if answer == "3":
             exit()
 
-            #invald input
+            # invalid input
         else:
             print("Type 1,2 or 3.")
-            task.start()
+            Task.start(my_bot)
 
-            #list of followers sript
-    def one():
+            # list of followers script
+
+    @staticmethod
+    def one(my_bot):
         print("Creating List")
-        friends = bot.get_user_following(bot.user_id) #getting following
-        friendslist = list(set(friends))    #listing your fiends
-        with open("friends.txt", "a") as file:  #writeing to the file
+        friends = my_bot.get_user_following(my_bot.user_id)  # getting following
+        friendslist = list(set(friends))  # listing your fiends
+        with open("friends_{0}.txt".format(my_bot.username), "w") as file:  # writing to the file
             for user_id in friendslist:
-                file.write(str(friendslist) + "\n")
+                file.write(str(user_id) + "\n")
         print("Task Done")
-        task.start()    #go back to the start menu
+        Task.start(my_bot)  # go back to the start menu
 
-        #reset following sript
-    def two():
-        friends = bot.read_list_from_file("friends.txt")        #getting the list of friends
-        your_following = bot.get_user_following(bot.user_id)    #getting your following
-        unfollow = list(set(your_following) - set(friends))     #removing your friends from the list to unfollow
-        bot.unfollow_users(unfollow)                            #unfollowing people who are not your friends
-        task.start()                                            #go back to the start menu
+        # reset following script
+
+    @staticmethod
+    def two(my_bot):
+        friends = my_bot.read_list_from_file("friends_{0}.txt".format(my_bot.username))  # getting the list of friends
+        your_following = bot.get_user_following(my_bot.user_id)  # getting your following
+        unfollow = list(set(your_following) - set(friends))  # removing your friends from the list to unfollow
+        bot.unfollow_users(unfollow)  # unfollowing people who are not your friends
+        Task.start(my_bot)  # go back to the start menu
+
 
 bot = Bot()
 bot.login()
 
-#welcome measage
-print ("""
+# welcome message
+print("""
         Welcome to this bot.
         It will now get a list of all of the users you are following.
         You will need this if you follow bot your account and you want to reset your
         following to just your friends.
 """)
-task.start()    #running the start script
+Task.start(bot)  # running the start script
