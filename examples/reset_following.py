@@ -28,15 +28,15 @@ class Task(object):
         """)
 
         # make a script
-        if answer == "1":
+        if answer == 1:
             Task.one(my_bot)
 
             # unfollow your nonfriends
-        if answer == "2":
+        if answer == 2:
             Task.two(my_bot)
 
             # exit sript
-        if answer == "3":
+        if answer == 3:
             exit()
 
             # invalid input
