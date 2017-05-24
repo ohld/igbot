@@ -530,8 +530,8 @@ def menu_setting():
 
         if ans == "1":
             parameter_setting()
-            print("want to change it? y/n").strip()
-            if "y" in sys.stdin.readline():
+            change = input("want to change it? y/n").strip()
+            if change == 'y' or change == 'Y':
                 setting_input()
             else:
                 menu_setting()
