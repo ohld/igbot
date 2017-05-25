@@ -5,7 +5,7 @@ import os
 import getpass
 from tqdm import tqdm
 
-sys.path.append(os.path.join(sys.path[0], '../../'))
+sys.path.append(os.path.join(sys.path[0], '../'))
 from instabot import Bot
 
 # initial
@@ -280,11 +280,11 @@ def menu_follow():
 
         if ans == "1":
             print("""
-            1.insert username
-            2.use username database
+            1.insert hashtag
+            2.use hashtag database
             """)
             if "1" in sys.stdin.readline():
-                user_id = input("who?").strip()
+                user_id = input("what?").strip()
             else:
                 user_id = random.choice(bot.read_list_from_file(users_file))
             nlikes = input('how much like per account?')
