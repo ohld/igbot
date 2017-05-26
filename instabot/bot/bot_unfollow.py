@@ -21,10 +21,14 @@ def unfollow(self, user_id):
 def unfollow_users(self, user_ids):
     broken_items = []
     self.logger.info("Going to unfollow %d users." % len(user_ids))
-    for user_id in tqdm(user_ids):
+    user_ids = set(map(str, user_ids))
+    filtered_user_ids = list(set(user_ids) - set(self.whitelist))
+    if len(filtered_user_ids) != len(user_ids):
+        self.logger.info("After filtration by whitelist %d users left." % len(filtered_user_ids))
+    for user_id in tqdm(filtered_user_ids):
         if not self.unfollow(user_id):
             delay.error_delay(self)
-            broken_items = user_ids[user_ids.index(user_id):]
+            broken_items = filtered_user_ids[filtered_user_ids.index(user_id):]
             break
     self.logger.info("DONE: Total unfollowed %d users. " %
                      self.total_unfollowed)
@@ -43,5 +47,5 @@ def unfollow_non_followers(self):
 
 
 def unfollow_everyone(self):
-    your_following = self.get_user_following(self.user_id)
-    self.unfollow_users(your_following)
+    self.following = self.get_user_following(self.user_id)
+    self.unfollow_users(self.following)

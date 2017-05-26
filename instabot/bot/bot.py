@@ -32,7 +32,7 @@ from .bot_checkpoint import save_checkpoint, load_checkpoint
 from .bot_filter import filter_medias, check_media, filter_users, check_user
 from .bot_filter import check_not_bot
 
-from .bot_support import check_if_file_exists, read_list_from_file
+from .bot_support import check_if_file_exists, read_list_from_file, check_whitelists
 from .bot_support import add_whitelist, add_blacklist
 
 from .bot_stats import save_user_stats
@@ -153,6 +153,8 @@ class Bot(API):
         storage = load_checkpoint(self)
         if storage is not None:
             self.total_liked, self.total_unliked, self.total_followed, self.total_unfollowed, self.total_commented, self.total_blocked, self.total_unblocked, self.total_requests, self.start_time = storage
+        if not self.whitelist:
+            self.whitelist = check_whitelists(self)
         self.whitelist = list(
             filter(None, map(self.convert_to_user_id, self.whitelist)))
         self.blacklist = list(
