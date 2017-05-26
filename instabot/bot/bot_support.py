@@ -45,7 +45,7 @@ def check_whitelists(self):
     for file_path in default_names:
         whitelist = read_list_from_file(file_path)
         if whitelist:
-            self.logger.info('Found whitelist: {0}'.format(file_path))
+            self.logger.info('Found whitelist: {0} ({1} users)'.format(file_path, len(whitelist)))
             return whitelist
     return []
 
