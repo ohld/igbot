@@ -158,7 +158,7 @@ def hashtag_adder():
         while True:
             print("Enter hashtag: ")
             f.write(str(sys.stdin.readline().strip()) + "\n")
-            print("Do you want to add another hashtag? (y/n)")
+            print("Do you want to add another hashtag? (y/n)\n")
             if "y" not in sys.stdin.readline():
                 print('done adding hashtag to database')
                 break
@@ -172,7 +172,7 @@ def competitor_adder():
         while True:
             print("Enter username: ")
             f.write(str(sys.stdin.readline().strip()) + "\n")
-            print("Do you want to add another username? (y/n)")
+            print("Do you want to add another username? (y/n)\n")
             if "y" not in sys.stdin.readline():
                 print('done adding username to database')
                 break
@@ -186,7 +186,7 @@ def blacklist_adder():
         while True:
             print("Enter username: ")
             f.write(str(sys.stdin.readline().strip()) + "\n")
-            print("Do you want to add another username? (y/n)")
+            print("Do you want to add another username? (y/n)\n")
             if "y" not in sys.stdin.readline():
                 print('done adding username to blacklist')
                 break
@@ -200,7 +200,7 @@ def whitelist_adder():
         while True:
             print("Enter username: ")
             f.write(str(sys.stdin.readline().strip()) + "\n")
-            print("Do you want to add another username? (y/n)")
+            print("Do you want to add another username? (y/n)\n")
             if "y" not in sys.stdin.readline():
                 print('done adding username to whitelist')
                 break
@@ -214,7 +214,7 @@ def comment_adder():
         while True:
             print("Enter comment: ")
             f.write(str(sys.stdin.readline().strip()) + "\n")
-            print("Do you want to add another comment? (y/n)")
+            print("Do you want to add another comment? (y/n)\n")
             if "y" not in sys.stdin.readline():
                 print('done adding comment')
                 break
@@ -226,7 +226,7 @@ def userlist_maker():
         while True:
             print("Enter username: ")
             f.write(str(sys.stdin.readline().strip()) + "\n")
-            print("Do you want to add another user? (y/n)")
+            print("Do you want to add another user? (y/n)\n")
             if "y" not in sys.stdin.readline():
                 print('done make list')
                 break
@@ -246,7 +246,7 @@ def menu():
         6.setting
         7.Exit
         """)
-        ans = input("What would you like to do?").strip()
+        ans = input("What would you like to do?\n").strip()
         if ans == "1":
             menu_follow()
         elif ans == "2":
@@ -260,7 +260,7 @@ def menu():
         elif ans == "6":
             menu_setting()
         elif ans == "7":
-            bot.logout
+            bot.logout()
             sys.exit()
         else:
             print("\n Not Valid Choice Try again")
@@ -276,7 +276,7 @@ def menu_follow():
         4. Follow someone media likers
         5. Main menu
         """)
-        ans = input("how do you want to follow?").strip()
+        ans = input("how do you want to follow?\n").strip()
 
         if ans == "1":
             print("""
@@ -284,11 +284,12 @@ def menu_follow():
             2.use hashtag database
             """)
             if "1" in sys.stdin.readline():
-                user_id = input("what?").strip()
+                hashtag = input("what?\n").strip()
             else:
-                user_id = random.choice(bot.read_list_from_file(users_file))
-            nlikes = input('how much like per account?')
-            bot.like_followers(user_id, nlikes=nlikes)
+                hashtag = random.choice(bot.read_list_from_file(hashtag_file))
+            users = bot.get_hashtag_users(hashtag)
+            bot.follow_users(users)
+            menu_follow()
 
         elif ans == "2":
             print("""
@@ -296,10 +297,11 @@ def menu_follow():
             2.use username database
             """)
             if "1" in sys.stdin.readline():
-                user_id = input("who?").strip()
+                user_id = input("who?\n").strip()
             else:
                 user_id = random.choice(bot.read_list_from_file(users_file))
             bot.follow_followers(user_id)
+            menu_follow()
 
         elif ans == "3":
             print("""
@@ -307,10 +309,11 @@ def menu_follow():
             2.use username database
             """)
             if "1" in sys.stdin.readline():
-                user_id = input("who?").strip()
+                user_id = input("who?\n").strip()
             else:
                 user_id = random.choice(bot.read_list_from_file(users_file))
             bot.follow_following(user_id)
+            menu_follow()
 
         elif ans == "4":
             print("""
@@ -318,7 +321,7 @@ def menu_follow():
             2.use username database
             """)
             if "1" in sys.stdin.readline():
-                user_id = input("who?").strip()
+                user_id = input("who?\n").strip()
             else:
                 user_id = random.choice(bot.read_list_from_file(users_file))
             medias = bot.get_user_medias(user_id, filtration=False)
@@ -346,7 +349,7 @@ def menu_like():
         5. Like our timeline
         6. Main menu
         """)
-        ans = input("how do you want to like?").strip()
+        ans = input("how do you want to like?\n").strip()
 
         if ans == "1":
             print("""
@@ -367,7 +370,7 @@ def menu_like():
             2.use username database
             """)
             if "1" in sys.stdin.readline():
-                user_id = input("who?").strip()
+                user_id = input("who?\n").strip()
             else:
                 user_id = random.choice(bot.read_list_from_file(users_file))
             bot.like_followers(user_id)
@@ -378,7 +381,7 @@ def menu_like():
             2.use username database
             """)
             if "1" in sys.stdin.readline():
-                user_id = input("who?").strip()
+                user_id = input("who?\n").strip()
             else:
                 user_id = random.choice(bot.read_list_from_file(users_file))
             bot.like_following(user_id)
@@ -389,7 +392,7 @@ def menu_like():
             2.use username database
             """)
             if "1" in sys.stdin.readline():
-                user_id = input("who?").strip()
+                user_id = input("who?\n").strip()
             else:
                 user_id = random.choice(bot.read_list_from_file(users_file))
             medias = bot.get_user_medias(user_id, filtration=False)
@@ -419,7 +422,7 @@ def menu_comment():
         4. Comment our timeline
         5. Main menu
         """)
-        ans = input("how do you want to comment?").strip()
+        ans = input("how do you want to comment?\n").strip()
 
         if ans == "1":
             print("""
@@ -439,7 +442,7 @@ def menu_comment():
             2.use username database
             """)
             if "1" in sys.stdin.readline():
-                user_id = input("who?").strip()
+                user_id = input("who?\n").strip()
             else:
                 user_id = random.choice(bot.read_list_from_file(users_file))
             bot.comment_medias(bot.get_user_medias(user_id, filtration=False))
@@ -477,13 +480,15 @@ def menu_unfollow():
         1. unfollow non followers
         2. unfollow everyone
         """)
-        ans = input("how do you want to unfollow?").strip()
+        ans = input("how do you want to unfollow?\n").strip()
 
         if ans == "1":
             bot.unfollow_non_followers()
+            menu_unfollow()
 
         elif ans == "2":
             bot.unfollow_everyone()
+            menu_unfollow()
 
         elif ans == "3":
             menu()
@@ -500,9 +505,10 @@ def menu_block():
         1. Block bot
         2. Main menu
         """)
-        ans = input("how do you want to block?").strip()
+        ans = input("how do you want to block?\n").strip()
         if ans == "1":
             bot.block_bots()
+            menu_block()
 
         elif ans == "2":
             menu()
@@ -526,11 +532,11 @@ def menu_setting():
         8. Clear all database
         9. Main menu
         """)
-        ans = input("What setting do you need?").strip()
+        ans = input("What setting do you need?\n").strip()
 
         if ans == "1":
             parameter_setting()
-            change = input("want to change it? y/n").strip()
+            change = input("want to change it? y/n\n").strip()
             if change == 'y' or change == 'Y':
                 setting_input()
             else:
