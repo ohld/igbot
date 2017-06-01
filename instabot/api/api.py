@@ -498,7 +498,7 @@ class API(object):
                         sleep_track += 1
                         if sleep_track >= 20000:
                             sleep_time = randint(120, 180)
-                            print("\nWaiting %.2f min. due to too many requests." % float(sleep_time/60))
+                            print("\nWaiting %.2f min. due to too many requests." % float(sleep_time / 60))
                             time.sleep(sleep_time)
                             sleep_track = 0
                     if len(temp["users"]) == 0 or len(followers) >= total_followers:
@@ -531,7 +531,7 @@ class API(object):
                         sleep_track += 1
                         if sleep_track >= 20000:
                             sleep_time = randint(120, 180)
-                            print("\nWaiting %.2f min. due to too many requests." % float(sleep_time/60))
+                            print("\nWaiting %.2f min. due to too many requests." % float(sleep_time / 60))
                             time.sleep(sleep_time)
                             sleep_track = 0
                     if len(temp["users"]) == 0 or len(following) >= total_following:
