@@ -7,6 +7,7 @@ import uuid
 import sys
 import logging
 import time
+from random import randint
 from tqdm import tqdm
 
 from . import config
@@ -476,11 +477,14 @@ class API(object):
         return self.SendRequest('feed/liked/?max_id=' + str(maxid))
 
     def getTotalFollowers(self, usernameId):
+        sleep_track = 0
         followers = []
         next_max_id = ''
         self.getUsernameInfo(usernameId)
         if "user" in self.LastJson:
             total_followers = self.LastJson["user"]['follower_count']
+            if total_followers > 200000:
+                print("Consider temporarily saving the result of this big operation. This will take a while.\n")
         else:
             return False
         with tqdm(total=total_followers, desc="Getting followers", leave=False) as pbar:
@@ -491,6 +495,12 @@ class API(object):
                     pbar.update(len(temp["users"]))
                     for item in temp["users"]:
                         followers.append(item)
+                        sleep_track += 1
+                        if sleep_track >= 20000:
+                            sleep_time = randint(120, 180)
+                            print("\nWaiting %.2f min. due to too many requests." % float(sleep_time/60))
+                            time.sleep(sleep_time)
+                            sleep_track = 0
                     if len(temp["users"]) == 0 or len(followers) >= total_followers:
                         return followers[:total_followers]
                 except:
@@ -500,11 +510,14 @@ class API(object):
                 next_max_id = temp["next_max_id"]
 
     def getTotalFollowings(self, usernameId):
+        sleep_track = 0
         following = []
         next_max_id = ''
         self.getUsernameInfo(usernameId)
         if "user" in self.LastJson:
             total_following = self.LastJson["user"]['following_count']
+            if total_following > 200000:
+                print("Consider temporarily saving the result of this big operation. This will take a while.\n")
         else:
             return False
         with tqdm(total=total_following, desc="Getting following", leave=False) as pbar:
@@ -515,6 +528,12 @@ class API(object):
                     pbar.update(len(temp["users"]))
                     for item in temp["users"]:
                         following.append(item)
+                        sleep_track += 1
+                        if sleep_track >= 20000:
+                            sleep_time = randint(120, 180)
+                            print("\nWaiting %.2f min. due to too many requests." % float(sleep_time/60))
+                            time.sleep(sleep_time)
+                            sleep_track = 0
                     if len(temp["users"]) == 0 or len(following) >= total_following:
                         return following[:total_following]
                 except:
