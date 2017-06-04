@@ -17,9 +17,8 @@ def reset_counters(bot):
 
 
 def reset_if_day_passed(bot):
-    current_date = datetime.datetime.now()
-    passed_days = (current_date.date() - bot.start_time.date()).days
-    if passed_days != 0:
+    passed_seconds = (datetime.datetime.now() - bot.start_time).total_seconds()
+    if passed_seconds > 60*60*24:
         reset_counters(bot)
 
 
