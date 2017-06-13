@@ -327,8 +327,8 @@ class API(object):
     def searchTags(self, query):
         return searchTags(self, query)
 
-    def searchLocation(self, query):
-        return searchLocation(self, query)
+    def searchLocation(self, query='', lat=None, lng=None):
+        return searchLocation(self, query, lat, lng)
 
     def syncFromAdressBook(self, contacts):
         return self.SendRequest('address_book/link/?include=extra_display_name,thumbnails',

@@ -24,7 +24,7 @@ def searchTags(self, query):
     return query
 
 
-def searchLocation(self, query):
+def searchLocation(self, query, lat=None, lng=None):
     locationFeed = self.SendRequest(
-        'fbsearch/places/?rank_token=' + str(self.rank_token) + '&query=' + str(query))
+        'fbsearch/places/?rank_token=' + str(self.rank_token) + '&query=' + str(query) + '&lat=' + str(lat) + '&lng=' + str(lng))
     return locationFeed
