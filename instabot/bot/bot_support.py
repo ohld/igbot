@@ -7,20 +7,21 @@ import os
 import codecs
 
 
-def check_if_file_exists(file_path):
+def check_if_file_exists(file_path, quiet=False):
     if not os.path.exists(file_path):
-        print("Can't find '%s' file." % file_path)
+        if not quiet:
+            print("Can't find '%s' file." % file_path)
         return False
     return True
 
 
-def read_list_from_file(file_path):
+def read_list_from_file(file_path, quiet=False):
     """
         Reads list from file. One line - one item.
         Returns the list if file items.
     """
     try:
-        if not check_if_file_exists(file_path):
+        if not check_if_file_exists(file_path, quiet=quiet):
             return []
         with codecs.open(file_path, "r", encoding="utf-8") as f:
             content = f.readlines()
@@ -43,7 +44,7 @@ def check_whitelists(self):
                      'friends.txt')
 
     for file_path in default_names:
-        whitelist = read_list_from_file(file_path)
+        whitelist = read_list_from_file(file_path, quiet=True)
         if whitelist:
             self.logger.info('Found whitelist: {0} ({1} users)'.format(file_path, len(whitelist)))
             return whitelist
