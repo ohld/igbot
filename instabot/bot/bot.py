@@ -9,7 +9,7 @@ from .bot_get import get_timeline_medias, get_hashtag_medias, get_user_info
 from .bot_get import get_geotag_medias, get_timeline_users, get_hashtag_users
 from .bot_get import get_media_commenters, get_userid_from_username
 from .bot_get import get_user_followers, get_user_following, get_media_likers
-from .bot_get import get_media_comments, get_geotag_users, convert_to_user_id
+from .bot_get import get_media_comments, get_geotag_users, get_locations_from_coordinates, convert_to_user_id
 from .bot_get import get_comment, get_media_info, get_user_likers
 
 from .bot_like import like, like_medias, like_timeline, like_user, like_users
@@ -193,6 +193,9 @@ class Bot(API):
 
     def get_geotag_medias(self, geotag, filtration=True):
         return get_geotag_medias(self, geotag, filtration)
+
+    def get_locations_from_coordinates(self, latitude, longitude):
+        return get_locations_from_coordinates(self, latitude, longitude)
 
     def get_media_info(self, media_id):
         return get_media_info(self, media_id)
