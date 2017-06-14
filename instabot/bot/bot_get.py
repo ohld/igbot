@@ -67,8 +67,8 @@ def get_locations_from_coordinates(self, latitude, longitude):
     self.searchLocation(lat=latitude, lng=longitude)
     locations = self.LastJson["items"]
     print(len(locations))
-    return [location for location in locations if int(location["location"]["lat"]) == int(latitude)
-            and int(location["location"]["lng"]) == int(longitude)]
+    return [location for location in locations if int(location["location"]["lat"]) == int(latitude) and
+            int(location["location"]["lng"]) == int(longitude)]
 
 
 def get_media_info(self, media_id):
