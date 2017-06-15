@@ -110,9 +110,9 @@ def get_user_info(self, user_id):
     return self.LastJson['user']
 
 
-def get_user_followers(self, user_id):
+def get_user_followers(self, user_id, nfollows):
     user_id = self.convert_to_user_id(user_id)
-    followers = self.getTotalFollowers(user_id)
+    followers = self.getTotalFollowers(user_id, nfollows)
     return [str(item['pk']) for item in followers][::-1] if followers else []
 
 

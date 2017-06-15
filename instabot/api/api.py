@@ -476,13 +476,16 @@ class API(object):
     def getLikedMedia(self, maxid=''):
         return self.SendRequest('feed/liked/?max_id=' + str(maxid))
 
-    def getTotalFollowers(self, usernameId):
+    def getTotalFollowers(self, usernameId, amount=None):
         sleep_track = 0
         followers = []
         next_max_id = ''
         self.getUsernameInfo(usernameId)
         if "user" in self.LastJson:
-            total_followers = self.LastJson["user"]['follower_count']
+            if amount:
+                total_followers = amount
+            else:
+                total_followers = self.LastJson["user"]['follower_count']
             if total_followers > 200000:
                 print("Consider temporarily saving the result of this big operation. This will take a while.\n")
         else:

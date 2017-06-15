@@ -35,7 +35,7 @@ def follow_followers(self, user_id, nfollows=None):
     if not user_id:
         self.logger.info("User not found.")
         return
-    follower_ids = self.get_user_followers(user_id)
+    follower_ids = self.get_user_followers(user_id, nfollows)
     if not follower_ids:
         self.logger.info("%s not found / closed / has no followers." % user_id)
     else:
