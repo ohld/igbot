@@ -21,13 +21,14 @@ def follow(self, user_id):
 def follow_users(self, user_ids):
     broken_items = []
     self.logger.info("Going to follow %d users." % len(user_ids))
+    user_ids = set(map(str, user_ids))
     filtered_my_ids = list(set(user_ids) - set(self.dont_follow))
     if len(filtered_my_ids) != len(user_ids):
         self.logger.info("After filtration by don't follow %d users left." % len(filtered_my_ids))
-    for user_id in tqdm(user_ids):
+    for user_id in tqdm(filtered_my_ids):
         if not self.follow(user_id):
             delay.error_delay(self)
-            broken_items = user_ids[user_ids.index(user_id):]
+            broken_items = filtered_my_ids[filtered_my_ids.index(user_id):]
             break
     self.logger.info("DONE: Total followed %d users." % self.total_followed)
     return broken_items
@@ -43,6 +44,7 @@ def follow_followers(self, user_id, nfollows=None):
         self.logger.info("%s not found / closed / has no followers." % user_id)
     else:
         self.follow_users(follower_ids[:nfollows])
+
 
 
 def follow_following(self, user_id, nfollows=None):
