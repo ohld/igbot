@@ -76,7 +76,10 @@ def get_media_info(self, media_id):
 
 def get_timeline_users(self):
     # TODO: returns list userids who just posted on your timeline feed
-    pass
+    if not self.getTimelineFeed():
+        self.logger.warning("Error while getting timeline feed.")
+        return []
+    return [str(i['user']['pk']) for i in self.LastJson['items'] if i.get('user')]
 
 
 def get_hashtag_users(self, hashtag):
@@ -127,9 +130,13 @@ def get_media_likers(self, media_id):
     return list(map(lambda user: str(user['pk']), self.LastJson["users"]))
 
 
-def get_media_comments(self, media_id):
-    # TODO:
-    pass
+def get_media_comments(self, media_id, only_text=False):
+    self.getMediaComments(media_id)
+    if 'comments' not in self.LastJson:
+        return []
+    if only_text:
+        return [str(item["text"]) for item in self.LastJson['comments']]
+    return self.LastJson['comments']
 
 
 def get_media_commenters(self, media_id):

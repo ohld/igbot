@@ -224,8 +224,8 @@ class Bot(API):
     def get_media_likers(self, media_id):
         return get_media_likers(self, media_id)
 
-    def get_media_comments(self, media_id):
-        return get_media_comments(self, media_id)
+    def get_media_comments(self, media_id, only_text=False):
+        return get_media_comments(self, media_id, only_text)
 
     def get_comment(self):
         return get_comment(self)
