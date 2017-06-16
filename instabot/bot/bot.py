@@ -218,8 +218,8 @@ class Bot(API):
     def get_user_followers(self, user_id, nfollows=None):
         return get_user_followers(self, user_id, nfollows)
 
-    def get_user_following(self, user_id):
-        return get_user_following(self, user_id)
+    def get_user_following(self, user_id, nfollows=None):
+        return get_user_following(self, user_id, nfollows)
 
     def get_media_likers(self, media_id):
         return get_media_likers(self, media_id)

@@ -116,9 +116,9 @@ def get_user_followers(self, user_id, nfollows):
     return [str(item['pk']) for item in followers][::-1] if followers else []
 
 
-def get_user_following(self, user_id):
+def get_user_following(self, user_id, nfollows=None):
     user_id = self.convert_to_user_id(user_id)
-    following = self.getTotalFollowings(user_id)
+    following = self.getTotalFollowings(user_id, nfollows)
     return [str(item['pk']) for item in following][::-1] if following else []
 
 

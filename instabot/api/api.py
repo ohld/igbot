@@ -512,13 +512,16 @@ class API(object):
                     return followers[:total_followers]
                 next_max_id = temp["next_max_id"]
 
-    def getTotalFollowings(self, usernameId):
+    def getTotalFollowings(self, usernameId, amount=None):
         sleep_track = 0
         following = []
         next_max_id = ''
         self.getUsernameInfo(usernameId)
         if "user" in self.LastJson:
-            total_following = self.LastJson["user"]['following_count']
+            if amount:
+                total_following = amount
+            else:
+                total_following = self.LastJson["user"]['following_count']
             if total_following > 200000:
                 print("Consider temporarily saving the result of this big operation. This will take a while.\n")
         else:
