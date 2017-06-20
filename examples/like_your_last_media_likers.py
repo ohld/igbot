@@ -10,21 +10,21 @@ import time
 import random
 from tqdm import tqdm
 import argparse
+
 sys.path.append(os.path.join(sys.path[0], '../'))
 from instabot import Bot
 
-def like(bot, user_id, nlikes=3):
-    bot.like_user(user_id, amount=nlikes)
-    return True
 
 def like_media_likers(bot, media, nlikes=3):
     for user in tqdm(bot.get_media_likers(media), desc="Media likers"):
-        time.sleep(10 + 20 * random.random())
+        bot.like_user(user, nlikes)
     return True
+
 
 def like_your_feed_likers(bot, nlikes=3):
     last_media = bot.get_your_medias()[0]
-    return like_media_likers(bot, last_media, nlikes=3)
+    return like_media_likers(bot, last_media, nlikes=nlikes)
+
 
 parser = argparse.ArgumentParser(add_help=True)
 parser.add_argument('-u', type=str, help="username")
