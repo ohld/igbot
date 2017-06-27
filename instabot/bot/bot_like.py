@@ -68,6 +68,9 @@ def like_geotag(self, geotag, amount=None):
 
 def like_followers(self, user_id, nlikes=None):
     self.logger.info("Like followers of: %s." % user_id)
+    if not limits.check_if_bot_can_like(self):
+        self.logger.info("Out of likes for today.")
+        return
     if not user_id:
         self.logger.info("User not found.")
         return
@@ -80,6 +83,9 @@ def like_followers(self, user_id, nlikes=None):
 
 def like_following(self, user_id, nlikes=None):
     self.logger.info("Like following of: %s." % user_id)
+    if not limits.check_if_bot_can_like(self):
+        self.logger.info("Out of likes for today.")
+        return
     if not user_id:
         self.logger.info("User not found.")
         return
