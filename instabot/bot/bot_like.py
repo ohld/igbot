@@ -51,6 +51,9 @@ def like_user(self, user_id, amount=None):
 
 def like_users(self, user_ids, nlikes=None):
     for user_id in user_ids:
+        if not limits.check_if_bot_can_like(self):
+            self.logger.info("Out of likes for today.")
+            return
         self.like_user(user_id, amount=nlikes)
 
 
