@@ -23,7 +23,7 @@ from .bot_unfollow import unfollow, unfollow_users, unfollow_non_followers
 from .bot_unfollow import unfollow_everyone
 
 from .bot_comment import comment, comment_medias, comment_geotag, comment_users
-from .bot_comment import comment_hashtag, is_commented
+from .bot_comment import comment_hashtag, is_commented, comment_user
 
 from .bot_block import block, unblock, block_users, unblock_users, block_bots
 
@@ -185,8 +185,8 @@ class Bot(API):
     def get_timeline_medias(self):
         return get_timeline_medias(self)
 
-    def get_user_medias(self, user_id, filtration=True):
-        return get_user_medias(self, user_id, filtration)
+    def get_user_medias(self, user_id, filtration=True, is_comment=False):
+        return get_user_medias(self, user_id, filtration, is_comment)
 
     def get_hashtag_medias(self, hashtag, filtration=True):
         return get_hashtag_medias(self, hashtag, filtration)
@@ -321,8 +321,11 @@ class Bot(API):
     def comment_medias(self, medias):
         return comment_medias(self, medias)
 
-    def comment_users(self, user_ids):
-        return comment_users(self, user_ids)
+    def comment_user(self, user_id, amount=None):
+        return comment_user(self, user_id, amount)
+
+    def comment_users(self, user_ids, ncomments=None):
+        return comment_users(self, user_ids, ncomments)
 
     def comment_geotag(self, geotag):
         return comment_geotag(self, geotag)
@@ -349,8 +352,8 @@ class Bot(API):
 
     # filter
 
-    def filter_medias(self, media_items, filtration=True, quiet=False):
-        return filter_medias(self, media_items, filtration, quiet)
+    def filter_medias(self, media_items, filtration=True, quiet=False, is_comment=False):
+        return filter_medias(self, media_items, filtration, quiet, is_comment)
 
     def check_media(self, media):
         return check_media(self, media)

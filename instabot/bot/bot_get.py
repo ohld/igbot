@@ -29,13 +29,13 @@ def get_timeline_medias(self, filtration=True):
     return self.filter_medias(self.LastJson["items"], filtration)
 
 
-def get_user_medias(self, user_id, filtration=True):
+def get_user_medias(self, user_id, filtration=True, is_comment=False):
     user_id = self.convert_to_user_id(user_id)
     self.getUserFeed(user_id)
     if self.LastJson["status"] == 'fail':
         self.logger.warning("This is a closed account.")
         return []
-    return self.filter_medias(self.LastJson["items"], filtration)
+    return self.filter_medias(self.LastJson["items"], filtration, is_comment=is_comment)
 
 
 def get_user_likers(self, user_id, media_count=10):

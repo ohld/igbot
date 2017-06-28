@@ -7,14 +7,17 @@ from . import delay
 # filtering medias
 
 
-def filter_medias(self, media_items, filtration=True, quiet=False):
+def filter_medias(self, media_items, filtration=True, quiet=False, is_comment=False):
     if filtration:
         if not quiet:
             self.logger.info("Received %d medias." % len(media_items))
-        media_items = _filter_medias_not_liked(media_items)
-        if self.max_likes_to_like:
-            media_items = _filter_medias_nlikes(
-                media_items, self.max_likes_to_like)
+        if not is_comment:
+            media_items = _filter_medias_not_liked(media_items)
+            if self.max_likes_to_like:
+                media_items = _filter_medias_nlikes(
+                    media_items, self.max_likes_to_like)
+        else:
+            media_items = _filter_medias_not_commented(self, media_items)
         if not quiet:
             self.logger.info("After filtration %d medias left." % len(media_items))
     return _get_media_ids(media_items)
@@ -27,6 +30,17 @@ def _filter_medias_not_liked(media_items):
             if not media['has_liked']:
                 not_liked_medias.append(media)
     return not_liked_medias
+
+
+def _filter_medias_not_commented(self, media_items):
+    not_commented_medias = []
+    for media in media_items:
+        if media['comment_count'] > 0:
+            my_comments = [comment for comment in media['comments'] if comment['user_id'] == self.user_id]
+            if my_comments:
+                continue
+        not_commented_medias.append(media)
+    return not_commented_medias
 
 
 def _filter_medias_nlikes(media_items, max_likes_to_like):

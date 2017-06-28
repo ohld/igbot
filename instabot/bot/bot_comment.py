@@ -49,10 +49,26 @@ def comment_hashtag(self, hashtag, amount=None):
     return self.comment_medias(medias[:amount])
 
 
-def comment_users(self, user_ids):
-    # user_id = self.convert_to_user_id(user_id)
-    # TODO: Put a comment to last media of every user from list
-    pass
+def comment_user(self, user_id, amount=None):
+    """ Comments last user_id's medias """
+    if not self.check_user(user_id, filter_closed_acc=True):
+        return False
+    self.logger.info("Going to comment user_%s's feed:" % user_id)
+    user_id = self.convert_to_user_id(user_id)
+    medias = self.get_user_medias(user_id, is_comment=True)
+    if not medias:
+        self.logger.info(
+            "None medias received: account is closed or medias have been filtered.")
+        return False
+    return self.comment_medias(medias[:amount])
+
+
+def comment_users(self, user_ids, ncomments=None):
+    for user_id in user_ids:
+        if not limits.check_if_bot_can_comment(self):
+            self.logger.info("Out of comments for today.")
+            return
+        self.comment_user(user_id, amount=ncomments)
 
 
 def comment_geotag(self, geotag):
