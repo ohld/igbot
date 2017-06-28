@@ -117,13 +117,13 @@ This is in regards to comments or users in a file.
 | get_hashtag_medias| Get list of medias by hashtag| bot.get_hashtag_medias("Dog")|
 | get_geotag_medias| Get list of medias by geotag| TODO |
 | get_timeline_users| Get list of users from your timeline feed| bot.get_timeline_users()|
-| get_hashtag_users| Get list of users who posted with hashtag| TODO |
+| get_hashtag_users| Get list of users who posted with hashtag| bot.get_hashtag_users("Dog") |
 | get_geotag_users| Get list of users who posted with geotag| TODO |
-| get_userid_from_username| Convert username to user_id| TODO |
+| get_userid_from_username| Convert username to user_id| bot.get_userid_from_username("ohld") |
 | get_user_followers| Get list of user's followers| bot.get_user_followers("competitor") |
 | get_user_following| Get list of user's following| bot.get_user_following("competitor") |
 | get_media_likers | Get list of media likers| bot.get_media_likers("12312412") |
-| get_media_comments | Get list of media's comments| TODO |
+| get_media_comments | Get list of media's comments| bot.get_media_comments("12312412") |
 | get_comment | Get comment from comment file| bot.get_comment()|
 | get_media_commenters| Get list of users who commented on the media| bot.get_media_commenters("12321")|
 
