@@ -169,7 +169,7 @@ This is in regards to comments or users in a file.
 | comment_medias | Put comments under medias from list | bot.comment_medias(["123", "321"])|
 | comment_hashtag | Put comments under medias by hashtag| bot.comment_hashtag("Dog")|
 | comment_geotag | Put comments under medias by geotag | TODO |
-| comment_users | Put comments under users' last medias | TODO |
+| comment_users | Put comments under users' last medias | bot.comment_users(["activefollower1", "activefollower2"]) |
 | is_commented | Check if media is already commented | bot.is_commented("123321") |
 
 ## Sample usage
