@@ -9,7 +9,8 @@ import codecs
 
 def check_if_file_exists(file_path):
     if not os.path.exists(file_path):
-        print("Can't find '%s' file." % file_path)
+        if not quiet:
+            print("Can't find '%s' file." % file_path)
         return False
     return True
 
