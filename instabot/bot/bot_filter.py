@@ -103,8 +103,11 @@ def check_user(self, user_id, filter_closed_acc=False):
         return False
     if self.whitelist and user_id in self.whitelist:
         return True
+    if self.dont_follow and user_id in self.dont_follow:
+        return False
     if self.blacklist and user_id in self.blacklist:
         return False
+
 
     if self.following == []:
         self.following = self.get_user_following(self.user_id)
@@ -160,8 +163,11 @@ def check_not_bot(self, user_id):
         return False
     if self.whitelist and user_id in self.whitelist:
         return True
+    if self.dont_follow and user_id in self.dont_follow:
+        return False
     if self.blacklist and user_id in self.blacklist:
         return False
+    
 
     user_info = self.get_user_info(user_id)
     if not user_info:

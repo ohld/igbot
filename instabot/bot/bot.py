@@ -32,8 +32,8 @@ from .bot_checkpoint import save_checkpoint, load_checkpoint
 from .bot_filter import filter_medias, check_media, filter_users, check_user
 from .bot_filter import check_not_bot
 
-from .bot_support import check_if_file_exists, read_list_from_file, check_whitelists
-from .bot_support import add_whitelist, add_blacklist
+from .bot_support import check_if_file_exists, read_list_from_file, check_whitelists, check_dont_follows
+from .bot_support import add_whitelist, add_blacklist, add_dont_follow
 
 from .bot_stats import save_user_stats
 
@@ -43,6 +43,7 @@ class Bot(API):
     def __init__(self,
                  whitelist=False,
                  blacklist=False,
+                 dont_follow=False,
                  comments_file=False,
                  max_likes_per_day=1000,
                  max_unlikes_per_day=1000,
@@ -121,6 +122,9 @@ class Bot(API):
         self.blacklist = []
         if blacklist:
             self.blacklist = read_list_from_file(blacklist)
+        self.dont_follow = []
+        if dont_follow:
+            self.dont_follow = read_list_from_file(dont_follow)
 
         # comment file
         self.comments = []
@@ -155,10 +159,14 @@ class Bot(API):
             self.total_liked, self.total_unliked, self.total_followed, self.total_unfollowed, self.total_commented, self.total_blocked, self.total_unblocked, self.total_requests, self.start_time = storage
         if not self.whitelist:
             self.whitelist = check_whitelists(self)
+        if not self.dont_follow:
+            self.dont_follow = check_dont_follows(self)
         self.whitelist = list(
             filter(None, map(self.convert_to_user_id, self.whitelist)))
         self.blacklist = list(
             filter(None, map(self.convert_to_user_id, self.blacklist)))
+        self.dont_follow = list(
+            filter(None, map(self.convert_to_user_id, self.dont_follow)))
 
     def print_counters(self):
         if self.total_liked:
@@ -371,7 +379,10 @@ class Bot(API):
 
     def check_if_file_exists(self, file_path):
         return check_if_file_exists(file_path)
-
+    
+    def check_dont_follows(self,file_path):
+        return check_dont_follows(file_path)
+    
     def read_list_from_file(self, file_path):
         return read_list_from_file(file_path)
 
@@ -380,7 +391,9 @@ class Bot(API):
 
     def add_blacklist(self, file_path):
         return add_blacklist(self, file_path)
-
+   
+    def add_dont_follow(self, file_path):
+        return add_dont_follow(self, file_path)
     # stats
 
     def save_user_stats(self, username, path=""):
