@@ -49,6 +49,7 @@ class Task(object):
 
     @staticmethod
     def one(my_bot):
+
         print("Creating List for Following")
         friends = my_bot.get_user_followers(my_bot.user_id)  # getting following
         friendslist = list(set(friends))  # listing your fiends
@@ -58,16 +59,18 @@ class Task(object):
         print("removing duplicates")
         lines = open('dontFollow.txt', 'r').readlines()
         lines_set = set(lines)
-        out  = open('dontFollow.txt', 'w')
+        out = open('dontFollow.txt', 'w')
         for line in lines_set:
             out.write(line)
         print("Task Done")
-        Task.start(my_bot)  # go back to the start menu
+        Task.start(my_bot)
+# go back to the start menu
 
-        # reset following script
 
+# reset following script
 `   @staticmethod
     def two(my_bot):
+
         print("Creating List for Followers")
         friends = my_bot.get_user_followers(my_bot.user_id)  # getting following
         friendslist = list(set(friends))  # listing your fiends
@@ -77,7 +80,7 @@ class Task(object):
         print("removing duplicates")
         lines = open('dontFollow.txt', 'r').readlines()
         lines_set = set(lines)
-        out  = open('dontFollow.txt', 'w')
+        out = open('dontFollow.txt', 'w')
         for line in lines_set:
             out.write(line)
         print("Task Done")
@@ -92,6 +95,6 @@ bot.login()
 print("""
         Welcome to this bot.
         It will now get a list of all of the users you are following and all your followers.
-        You will need this if you don't want your bot to follow someone you don't want to follow. 
-""")
+        You will need this if you don't want your bot to follow someone you don't want to follow.
+    """)
 Task.start(bot)  # running the start script

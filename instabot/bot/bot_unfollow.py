@@ -46,7 +46,6 @@ def unfollow_non_followers(self):
     self.unfollow_users(list(diff))
 
 
-
 def unfollow_everyone(self):
     self.following = self.get_user_following(self.user_id)
     self.unfollow_users(self.following)

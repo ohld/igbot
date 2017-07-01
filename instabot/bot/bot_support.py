@@ -15,10 +15,12 @@ def check_if_file_exists(file_path):
 
 
 def read_list_from_file(file_path):
+
     """
         Reads list from file. One line - one item.
         Returns the list if file items.
     """
+
     try:
         if not check_if_file_exists(file_path):
             return []
@@ -34,15 +36,16 @@ def read_list_from_file(file_path):
 
 
 def check_whitelists(self):
+
     """
         Check whitelists in folder with script
-        
     """
+
     default_names = ('whitelist.txt',
                      'friends_{0}.txt'.format(self.username),
                      'friends_{0}.txt'.format(self.user_id),
                      'friends.txt')
-        
+
     for file_path in default_names:
         whitelist = read_list_from_file(file_path)
         if whitelist:
@@ -50,11 +53,13 @@ def check_whitelists(self):
             return whitelist
     return []
 
+
 def check_dont_follows(self):
+
     """
         Check don't_follow in folder with script
-        
     """
+
     default_names = ('dontFollow.txt',
                      '')
 
@@ -76,6 +81,7 @@ def add_blacklist(self, file_path):
     file_contents = read_list_from_file(file_path)
     self.blacklist = [self.convert_to_user_id(item) for item in file_contents]
     return not not self.blacklist
+
 
 def add_dont_follow(self, file_path):
     file_contents = read_list_from_file(file_path)
