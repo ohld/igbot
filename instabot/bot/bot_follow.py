@@ -45,8 +45,6 @@ def follow_followers(self, user_id, nfollows=None):
     else:
         self.follow_users(follower_ids[:nfollows])
 
-
-
 def follow_following(self, user_id, nfollows=None):
     self.logger.info("Follow following of: %s" % user_id)
     if not user_id:
