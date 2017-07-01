@@ -37,6 +37,7 @@ def read_list_from_file(file_path, quiet=False):
 def check_whitelists(self):
     """
         Check whitelists in folder with script
+        
     """
     default_names = ('whitelist.txt',
                      'friends_{0}.txt'.format(self.username),
@@ -51,6 +52,23 @@ def check_whitelists(self):
     return []
 
 
+def check_dont_follows(self):
+    
+    """
+        Check don't_follow in folder with script
+    """
+    
+    default_names = ('dontFollow.txt',
+                     '')
+
+    for file_path in default_names:
+        dont_follow = read_list_from_file(file_path)
+        if dont_follow:
+            self.logger.info('Found dontFollow: {0} ({1} users)'.format(file_path, len(dont_follow)))
+            return dont_follow
+    return []
+
+
 def add_whitelist(self, file_path):
     file_contents = read_list_from_file(file_path)
     self.whitelist = [self.convert_to_user_id(item) for item in file_contents]
@@ -61,3 +79,9 @@ def add_blacklist(self, file_path):
     file_contents = read_list_from_file(file_path)
     self.blacklist = [self.convert_to_user_id(item) for item in file_contents]
     return not not self.blacklist
+
+
+def add_dont_follow(self, file_path):
+    file_contents = read_list_from_file(file_path)
+    self.dont_follow = [self.convert_to_user_id(item) for item in file_contents]
+    return not not self.dont_follow

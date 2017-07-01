@@ -59,7 +59,6 @@ def _get_media_ids(media_items):
             result.append(m['pk'])
     return result
 
-
 def check_media(self, media_id):
     self.mediaInfo(media_id)
     if len(self.filter_medias(self.LastJson["items"])):
@@ -68,7 +67,6 @@ def check_media(self, media_id):
         return False
 
 # filter users
-
 
 def search_stop_words_in_user(self, user_info):
     text = ''
@@ -87,10 +85,8 @@ def search_stop_words_in_user(self, user_info):
 
     return False
 
-
 def filter_users(self, user_id_list):
     return [str(user["pk"]) for user in user_id_list]
-
 
 def check_user(self, user_id, filter_closed_acc=False):
     if not self.filter_users:
@@ -103,6 +99,8 @@ def check_user(self, user_id, filter_closed_acc=False):
         return False
     if self.whitelist and user_id in self.whitelist:
         return True
+    if self.dont_follow and user_id in self.dont_follow:
+        return False
     if self.blacklist and user_id in self.blacklist:
         return False
 
@@ -123,6 +121,7 @@ def check_user(self, user_id, filter_closed_acc=False):
     if "is_verified" in user_info:
         if user_info["is_verified"]:
             return False
+
     if "follower_count" in user_info and "following_count" in user_info:
         if user_info["follower_count"] < self.min_followers_to_follow:
             return False
@@ -151,7 +150,6 @@ def check_user(self, user_id, filter_closed_acc=False):
 
     return True
 
-
 def check_not_bot(self, user_id):
     delay.small_delay(self)
     """ Filter bot from real users. """
@@ -160,9 +158,11 @@ def check_not_bot(self, user_id):
         return False
     if self.whitelist and user_id in self.whitelist:
         return True
+    if self.dont_follow and user_id in self.dont_follow:
+        return False
     if self.blacklist and user_id in self.blacklist:
         return False
-
+    
     user_info = self.get_user_info(user_id)
     if not user_info:
         return True  # closed acc
