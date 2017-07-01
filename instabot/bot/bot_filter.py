@@ -52,6 +52,7 @@ def check_media(self, media_id):
     else:
         return False
 
+
 # filter users
 
 def search_stop_words_in_user(self, user_info):
@@ -69,7 +70,9 @@ def search_stop_words_in_user(self, user_info):
         if stop_word in text:
             return True
 
+
     return False
+
 
 def filter_users(self, user_id_list):
     return [str(user["pk"]) for user in user_id_list]
@@ -77,6 +80,7 @@ def filter_users(self, user_id_list):
 def check_user(self, user_id, filter_closed_acc=False):
     if not self.filter_users:
         return True
+
 
     delay.small_delay(self)
     user_id = self.convert_to_user_id(user_id)
@@ -95,9 +99,12 @@ def check_user(self, user_id, filter_closed_acc=False):
     if user_id in self.following:
         return False
 
+
     user_info = self.get_user_info(user_id)
     if not user_info:
         return False
+
+
     if filter_closed_acc and "is_private" in user_info:
         if user_info["is_private"]:
             return False
@@ -136,10 +143,12 @@ def check_user(self, user_id, filter_closed_acc=False):
 
     return True
 
+
 def check_not_bot(self, user_id):
     delay.small_delay(self)
     """ Filter bot from real users. """
     user_id = self.convert_to_user_id(user_id)
+    
     if not user_id:
         return False
     if self.whitelist and user_id in self.whitelist:
@@ -148,7 +157,7 @@ def check_not_bot(self, user_id):
         return False
     if self.blacklist and user_id in self.blacklist:
         return False
-    
+
     user_info = self.get_user_info(user_id)
     if not user_info:
         return True  # closed acc

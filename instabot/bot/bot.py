@@ -374,7 +374,7 @@ class Bot(API):
     def check_if_file_exists(self, file_path):
         return check_if_file_exists(file_path)
 
-    def check_dont_follows(self,file_path):
+    def check_dont_follows(self, file_path):
         return check_dont_follows(file_path)
 
     def read_list_from_file(self, file_path):
