@@ -102,6 +102,13 @@ def get_userid_from_username(self, username):
     return None  # Not found
 
 
+def get_username_from_userid(self, userid):
+    self.getUsernameInfo(userid)
+    if "user" in self.LastJson:
+        return str(self.LastJson["user"]["username"])
+    return None  # Not found
+
+
 def get_user_info(self, user_id):
     user_id = self.convert_to_user_id(user_id)
     self.getUsernameInfo(user_id)
