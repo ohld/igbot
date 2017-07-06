@@ -18,6 +18,7 @@ def sleep_if_need(last_action, target_delay):
         remains_to_wait = target_delay - elapsed_time
         time.sleep(add_dispersion(remains_to_wait))
 
+
 def like_delay(bot):
     sleep_if_need(bot.last_like, bot.like_delay)
     bot.last_like = time.time()
