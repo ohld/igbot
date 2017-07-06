@@ -6,7 +6,7 @@ from . import delay
 
 def follow(self, user_id):
     user_id = self.convert_to_user_id(user_id)
-    if not self.check_user(user_id):
+    if self.check_user(user_id):
         return True
     if limits.check_if_bot_can_follow(self):
         delay.follow_delay(self)
@@ -20,14 +20,15 @@ def follow(self, user_id):
 
 def follow_users(self, user_ids):
     broken_items = []
-    if not limits.check_if_bot_can_follow(self):
-        self.logger.info("Out of follows for today.")
-        return
     self.logger.info("Going to follow %d users." % len(user_ids))
-    for user_id in tqdm(user_ids):
+    user_ids = set(map(str, user_ids))
+    filtered_my_ids = list(set(user_ids) - set(self.dont_follow))
+    if len(filtered_my_ids) != len(user_ids):
+        self.logger.info("After filtration by don't follow %d users left." % len(filtered_my_ids))
+    for user_id in tqdm(filtered_my_ids):
         if not self.follow(user_id):
             delay.error_delay(self)
-            broken_items = user_ids[user_ids.index(user_id):]
+            broken_items = filtered_my_ids[filtered_my_ids.index(user_id):]
             break
     self.logger.info("DONE: Total followed %d users." % self.total_followed)
     return broken_items
@@ -35,13 +36,10 @@ def follow_users(self, user_ids):
 
 def follow_followers(self, user_id, nfollows=None):
     self.logger.info("Follow followers of: %s" % user_id)
-    if not limits.check_if_bot_can_follow(self):
-        self.logger.info("Out of follows for today.")
-        return
     if not user_id:
         self.logger.info("User not found.")
         return
-    follower_ids = self.get_user_followers(user_id, nfollows)
+    follower_ids = self.get_user_followers(user_id)
     if not follower_ids:
         self.logger.info("%s not found / closed / has no followers." % user_id)
     else:
@@ -50,9 +48,6 @@ def follow_followers(self, user_id, nfollows=None):
 
 def follow_following(self, user_id, nfollows=None):
     self.logger.info("Follow following of: %s" % user_id)
-    if not limits.check_if_bot_can_follow(self):
-        self.logger.info("Out of follows for today.")
-        return
     if not user_id:
         self.logger.info("User not found.")
         return
