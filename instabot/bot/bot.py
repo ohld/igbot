@@ -80,6 +80,15 @@ class Bot(API):
         self.total_unblocked = 0
         self.start_time = datetime.datetime.now()
 
+        # the time.time() of the last action
+        self.last_like = 0
+        self.last_unlike = 0
+        self.last_follow = 0
+        self.last_unfollow = 0
+        self.last_comment = 0
+        self.last_block = 0
+        self.last_unblock = 0
+
         # limits - follow
         self.filter_users = filter_users
         self.max_likes_per_day = max_likes_per_day
