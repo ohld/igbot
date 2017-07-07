@@ -10,7 +10,7 @@ def get_tsv_line(dictionary):
 
 
 def get_header_line(dictionary):
-    line = "\t".join(dictionary)
+    line = "\t".join(sorted(dictionary))
     return line + "\n"
 
 
