@@ -73,7 +73,7 @@ def job9(): # everyone your following and puts them on a list
 def job10(): # gets everyone your following and puts them on a list
     try:
         print("Creating List")
-        friends = bot.get_user_followers(bot.user_id)  # getting following
+        friends = bot.get_user_followers(bot.user_id, nfollows = None)  # getting following
         friendslist = list(set(friends))  # listing your friends
         with open('dontFollow.txt', 'a') as file:  # writing to the file
             for user_id in friendslist:
@@ -125,8 +125,8 @@ schedule.every(1).days.at("16:00").do(run_threaded, job3)   # like followers of 
 schedule.every(1).days.at("02:18").do(run_threaded, job4)   # follow followers
 schedule.every(2).days.at("11:00").do(run_threaded, job7)   # follow users from hashtag from file
 schedule.every(1).days.at("21:00").do(run_threaded, job8)   # unfollow everyone except friends
-schedule.every(1).days.at("11:00").do(run_threaded, job9)   # gets followings and puts them in file
-schedule.every(1).days.at("10:40").do(run_threaded, job10)  # gets followers and puts them in file
+schedule.every(1).days.at("16:13").do(run_threaded, job9)   # gets followings and puts them in file
+schedule.every(1).days.at("16:16").do(run_threaded, job10)  # gets followers and puts them in file
 schedule.every(1).days.at("18:00").do(run_threaded, job11)  # upload pics
 
 while True:
