@@ -19,9 +19,9 @@ class Task(object):
     def start(my_bot):
         answer = input("""
         Please select
-        1) Create Don't Follow List for Following
+        1) Create Don't Follow List for Followers
             Makes a list of the users you follow before the bot follows.
-        2) Create Don't Follow List for Followers
+        2) Create Don't Follow List for Following
             Makes a list of your following before the bot follows.
         3) Exit
         \n
@@ -32,11 +32,11 @@ class Task(object):
         if answer == '1':
             Task.one(my_bot)
 
-            # unfollow your nonfriends
+
         if answer == '2':
             Task.two(my_bot)
 
-            # exit sript
+        # exit sript
         if answer == '3':
             exit()
 
@@ -49,9 +49,8 @@ class Task(object):
 
     @staticmethod
     def one(my_bot):
-
-        print("Creating List for Following")
-        friends = my_bot.get_user_followers(my_bot.user_id)  # getting following
+        print("Creating List for Followers")
+        friends = my_bot.get_user_followers(my_bot.user_id, nfollows = None)  # getting following
         friendslist = list(set(friends))  # listing your fiends
         with open("dontFollow.txt", "a") as file:  # writing to the file
             for user_id in friendslist:
@@ -63,16 +62,14 @@ class Task(object):
         for line in lines_set:
             out.write(line)
         print("Task Done")
-        Task.start(my_bot)
-# go back to the start menu
+        Task.start(my_bot) # go back to the start menu
 
+        # reset following script
 
-# reset following script
-`   @staticmethod
+    @staticmethod
     def two(my_bot):
-
-        print("Creating List for Followers")
-        friends = my_bot.get_user_followers(my_bot.user_id)  # getting following
+        print("Creating List for Following")
+        friends = my_bot.get_user_following(my_bot.user_id)  # getting following
         friendslist = list(set(friends))  # listing your fiends
         with open("dontFollow.txt", "a") as file:  # writing to the file
             for user_id in friendslist:
@@ -96,5 +93,5 @@ print("""
         Welcome to this bot.
         It will now get a list of all of the users you are following and all your followers.
         You will need this if you don't want your bot to follow someone you don't want to follow.
-    """)
+""")
 Task.start(bot)  # running the start script

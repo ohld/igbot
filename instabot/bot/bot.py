@@ -220,8 +220,8 @@ class Bot(API):
     def get_user_info(self, user_id):
         return get_user_info(self, user_id)
 
-    def get_user_followers(self, user_id):
-        return get_user_followers(self, user_id)
+    def get_user_followers(self, user_id, nfollows):
+        return get_user_followers(self, user_id, nfollows)
 
     def get_user_following(self, user_id):
         return get_user_following(self, user_id)

@@ -1,19 +1,17 @@
 # -*- coding: utf-8 -*-
-#!/usr/bin/python3
+# !/usr/bin/python3
 import schedule
 import time
 import sys
 import os
 import random
-import yaml#->added to make pics upload -> see job8
-import glob #->added to make pics upload -> see job8
-import codecs
+import yaml  # ->added to make pics upload -> see job8
+import glob  # ->added to make pics upload -> see job8
 from tqdm import tqdm
-from os.path import getmtime
-import threading    #->added to make multithreadening possible -> see fn run_threaded
+import threading  # ->added to make multithreadening possible -> see fn run_threaded
 
 
-sys.path.append(os.path.join(sys.path[0],'../../'))
+sys.path.append(os.path.join(sys.path[0], '../../'))
 from instabot import Bot
 
 bot = Bot(comments_file="comments.txt")
@@ -26,26 +24,28 @@ random_user_file = bot.read_list_from_file("username_database.txt")
 random_hashtag_file = bot.read_list_from_file("hashtag_database.txt")
 
 
-#to get pics and autopost it
+# to get pics and autopost it
 posted_pic_list = []
 try:
     with open('pics.txt', 'r') as f:
         posted_pic_list = f.read().splitlines()
 except:
     posted_pic_list = []
-#!!-> to work this feature properly write full/absolute path to .jgp files as follows ->v
-pics = glob.glob("/home/user/instagram/instabot/examples/ultimate_schedule/pics/*.jpg")  #!!change this
+# !!-> to work this feature properly write full/absolute path to .jgp files as follows ->v
+pics = glob.glob("/home/user/instagram/instabot/examples/ultimate_schedule/pics/*.jpg")  # !!change this
 pics = sorted(pics)
-#end of pics processing
+# end of pics processing
 
-#fn to return random value for separate jobs
+
+# fn to return random value for separate jobs
 def get_random(from_list):
-    _random=random.choice(from_list)
+    _random = random.choice(from_list)
     print("Random from ultimate.py script is chosen: \n" + _random + "\n")
     return _random
 
+
 def stats(): bot.save_user_stats(bot.user_id)
-def job1(): bot.like_hashtag(get_random(random_hashtag_file), amount=int(700/24))
+def job1(): bot.like_hashtag(get_random(random_hashtag_file), amount = int(700/24))
 def job2(): bot.like_timeline(amount=int(300/24))
 def job3(): bot.like_followers(get_random(random_user_file), nlikes=3)
 def job4(): bot.follow_followers(get_random(random_user_file))
@@ -53,19 +53,7 @@ def job5(): bot.comment_medias(bot.get_timeline_medias())
 def job6(): bot.unfollow_non_followers()
 def job7(): bot.follow_users(bot.get_hashtag_users(get_random(random_hashtag_file)))
 def job8(): bot.unfollow_everyone()
-def job9():
-    WATCHED_FILES = ['dontFollow.txt', __file__]
-    WATCHED_FILES_MTIMES = [(f, getmtime(f)) for f in WATCHED_FILES]
-    # Wait for inputs and act on them.
-    # ...
-    
-    # Check whether a watched file has changed.
-        for f, mtime in WATCHED_FILES_MTIMES:
-            if getmtime(f) != mtime:
-            # One of the files has changed, so restart the script.
-                print('--> restarting')
-                os.execv(__file__, sys.argv)
-def job10(): #gets everyone your following and puts them on a list
+def job9(): # everyone your following and puts them on a list
     try:
             print("Creating List")
             friends = bot.get_user_following(bot.user_id)  # getting following
@@ -82,7 +70,7 @@ def job10(): #gets everyone your following and puts them on a list
             print("Task Done")
     except Exception as e:
         print(str(e))
-def job11(): #gets everyone your following and puts them on a list
+def job10(): # gets everyone your following and puts them on a list
     try:
         print("Creating List")
         friends = bot.get_user_followers(bot.user_id)  # getting following
@@ -99,15 +87,15 @@ def job11(): #gets everyone your following and puts them on a list
         print("Task Done")
     except Exception as e:
             print(str(e))
-def job12(): #-->fn to upload photos /auto_uploader
+def job11(): # -->fn to upload photos /auto_uploader
     try:
         for pic in pics:
             if pic in posted_pic_list:
                 continue
-            hashtags = "/>\n​​#instabot #vaskokorobko #kyiv"       #add custom hashtags
-            caption = pic[:-4].split(" ")                        #caption is made from the name of file
+            hashtags = "/>\n​​#instabot #vaskokorobko #kyiv"       # add custom hashtags
+            caption = pic[:-4].split(" ")                        # caption is made from the name of file
             caption = " ".join(caption[1:])
-            caption = "\n<" + caption + hashtags                 #create full caption with hashtags
+            caption = "\n<" + caption + hashtags                 # create full caption with hashtags
             print("upload: " + caption)
             bot.uploadPhoto(pic, caption=caption)
             if bot.LastResponse.status_code != 200:
@@ -124,22 +112,23 @@ def job12(): #-->fn to upload photos /auto_uploader
                 break
     except Exception as e:
         print(str(e))
-#end of job8
+# end of job8
 
-#function to make threads -> details here http://bit.ly/faq_schedule
+# function to make threads -> details here http://bit.ly/faq_schedule
 def run_threaded(job_fn):
     job_thread=threading.Thread(target=job_fn)
     job_thread.start()
 
-schedule.every(1).hours.do(run_threaded, stats)             #get stat
-schedule.every(8).hours.do(run_threaded, job1)              #like hashtag
-schedule.every(1).days.at("16:00").do(run_threaded, job3)   #like followers of users from file
-schedule.every(1).days.at("02:18").do(run_threaded, job4)   #follow followers
-schedule.every(2).days.at("11:00").do(run_threaded, job7)   #follow users from hashtag from file
-schedule.every(1).days.at("21:00").do(run_threaded, job8)   #unfollow everyone except friends
-schedule.every(1).days.at("03:00").do(run_threaded, job9)
-schedule.every(1).days.at("02:16").do(run_threaded, job10)  #gets followings and puts them in file
-schedule.every(1).days.at("02:40").do(run_threaded, job11)  #gets followers and puts them in file
+schedule.every(1).hours.do(run_threaded, stats)             # get stat
+schedule.every(8).hours.do(run_threaded, job1)              # like hashtag
+schedule.every(1).days.at("16:00").do(run_threaded, job3)   # like followers of users from file
+schedule.every(1).days.at("02:18").do(run_threaded, job4)   # follow followers
+schedule.every(2).days.at("11:00").do(run_threaded, job7)   # follow users from hashtag from file
+schedule.every(1).days.at("21:00").do(run_threaded, job8)   # unfollow everyone except friends
+schedule.every(1).days.at("11:00").do(run_threaded, job9)   # gets followings and puts them in file
+schedule.every(1).days.at("10:40").do(run_threaded, job10)  # gets followers and puts them in file
+schedule.every(1).days.at("18:00").do(run_threaded, job11)  # upload pics
+
 while True:
     schedule.run_pending()
     time.sleep(1)
