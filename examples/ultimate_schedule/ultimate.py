@@ -124,10 +124,11 @@ schedule.every(8).hours.do(run_threaded, job1)              # like hashtag
 schedule.every(1).days.at("16:00").do(run_threaded, job3)   # like followers of users from file
 schedule.every(1).days.at("02:18").do(run_threaded, job4)   # follow followers
 schedule.every(2).days.at("11:00").do(run_threaded, job7)   # follow users from hashtag from file
-schedule.every(1).days.at("21:00").do(run_threaded, job8)   # unfollow everyone except friends
+schedule.every(1).days.at("21:00").do(run_threaded, job6)   # unfollow everyone except friends
 schedule.every(1).days.at("16:13").do(run_threaded, job9)   # gets followings and puts them in file
 schedule.every(1).days.at("16:16").do(run_threaded, job10)  # gets followers and puts them in file
 schedule.every(1).days.at("18:00").do(run_threaded, job11)  # upload pics
+
 
 while True:
     schedule.run_pending()
