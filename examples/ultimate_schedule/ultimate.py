@@ -5,8 +5,8 @@ import time
 import sys
 import os
 import random
-import yaml  # ->added to make pics upload -> see job8
-import glob  # ->added to make pics upload -> see job8
+import yaml  # ->added to make pics upload -> see job12
+import glob  # ->added to make pics upload -> see job12
 from tqdm import tqdm
 import threading  # ->added to make multithreadening possible -> see fn run_threaded
 
@@ -14,7 +14,7 @@ import threading  # ->added to make multithreadening possible -> see fn run_thre
 sys.path.append(os.path.join(sys.path[0], '../../'))
 from instabot import Bot
 
-bot = Bot(comments_file="comments.txt")
+bot = Bot(comments_file="comments.txt",blacklist="blacklist.txt")
 bot.login()
 bot.logger.info("ULTIMATE script. 24hours save")
 
@@ -53,7 +53,27 @@ def job5(): bot.comment_medias(bot.get_timeline_medias())
 def job6(): bot.unfollow_non_followers()
 def job7(): bot.follow_users(bot.get_hashtag_users(get_random(random_hashtag_file)))
 def job8(): bot.unfollow_everyone()
-def job9(): # everyone your following and puts them on a list
+def job9(): # put non followers on blacklist
+    try:
+            print("Creating List")
+            followings = bot.get_user_following(bot.user_id)  # getting following
+            followers = bot.get_user_followers(bot.user_id) # getting followers
+            friends_file = bot.read_list_from_file("friends.txt") #same whitelist (just user ids) 
+            nonfollowerslist = list((set(followings) - set(followers)) - set(friends_file))
+            with open('blacklist.txt', 'a') as file:  # writing to the blacklist
+                for user_id in nonfollowerslist:
+                    file.write(str(user_id) + "\n")
+            print("removing duplicates")
+            lines = open('blacklist.txt', 'r').readlines()
+            lines_set = set(lines)
+            out  = open('blacklist.txt', 'w')
+            for line in lines_set:
+                out.write(line)
+            print("Task Done")
+    except Exception as e:
+            print(str(e))
+    
+def job10(): # everyone your following and puts them on a list
     try:
             print("Creating List")
             friends = bot.get_user_following(bot.user_id)  # getting following
@@ -70,7 +90,7 @@ def job9(): # everyone your following and puts them on a list
             print("Task Done")
     except Exception as e:
         print(str(e))
-def job10(): # gets everyone your following and puts them on a list
+def job11(): # gets everyone your following and puts them on a list
     try:
         print("Creating List")
         friends = bot.get_user_followers(bot.user_id, nfollows = None)  # getting following
@@ -87,7 +107,7 @@ def job10(): # gets everyone your following and puts them on a list
         print("Task Done")
     except Exception as e:
             print(str(e))
-def job11(): # -->fn to upload photos /auto_uploader
+def job12(): # -->fn to upload photos /auto_uploader
     try:
         for pic in pics:
             if pic in posted_pic_list:
@@ -112,23 +132,26 @@ def job11(): # -->fn to upload photos /auto_uploader
                 break
     except Exception as e:
         print(str(e))
-# end of job8
+# end of job12
 
 # function to make threads -> details here http://bit.ly/faq_schedule
 def run_threaded(job_fn):
     job_thread=threading.Thread(target=job_fn)
     job_thread.start()
 
-schedule.every(1).hours.do(run_threaded, stats)             # get stat
-schedule.every(8).hours.do(run_threaded, job1)              # like hashtag
-schedule.every(1).days.at("16:00").do(run_threaded, job3)   # like followers of users from file
-schedule.every(1).days.at("02:18").do(run_threaded, job4)   # follow followers
-schedule.every(2).days.at("11:00").do(run_threaded, job7)   # follow users from hashtag from file
-schedule.every(1).days.at("21:00").do(run_threaded, job6)   # unfollow everyone except friends
-schedule.every(1).days.at("16:13").do(run_threaded, job9)   # gets followings and puts them in file
-schedule.every(1).days.at("16:16").do(run_threaded, job10)  # gets followers and puts them in file
-schedule.every(1).days.at("18:00").do(run_threaded, job11)  # upload pics
-
+schedule.every(1).hour.do(run_threaded, stats)               #get stats
+schedule.every(12).hours.do(run_threaded, job1)              #like hashtag
+schedule.every(2).hours.do(run_threaded, job2)               #like timeline
+schedule.every(1).days.at("16:00").do(run_threaded, job3)    #like followers of users from file
+schedule.every(2).days.at("11:00").do(run_threaded, job4)    #follow followers
+schedule.every(16).hours.do(run_threaded, job5)              #comment medias
+schedule.every(2).days.at("08:00").do(run_threaded, job6)    #unfollow non-followers
+schedule.every(12).hours.do(run_threaded, job7)              #follow users from hashtag from file
+#schedule.every(2).days.at("07:28").do(run_threaded, job8)   #unfollow everyone
+schedule.every(4).days.at("07:50").do(run_threaded, job9)    #non-followers blacklist
+schedule.every(1).days.at("16:13").do(run_threaded, job10)   #everyone your following and puts them on a list
+schedule.every(1).days.at("16:16").do(run_threaded, job11)   #gets everyone your following and puts them on a list
+#schedule.every(1).days.at("18:00").do(run_threaded, job12)  #upload photos /auto_uploader
 
 while True:
     schedule.run_pending()
