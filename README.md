@@ -1,5 +1,4 @@
 # Instabot
-## This project is no longer supported. Need Maintainer. 
 ![Instabot is better than other open-source bots!](https://github.com/instagrambot/instabot/blob/master/docs/img/tag%20instabot.png "Instabot is better than other open-source bots!")
 Cool Instagram scripts for promotion and API wrapper. Written in Python.
 ___
