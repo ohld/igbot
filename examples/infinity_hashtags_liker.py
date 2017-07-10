@@ -27,6 +27,6 @@ bot.login(username=args.u, password=args.p,
 wait = 5 * 60  # in seconds
 
 while True:
-	for hashtag in args.hashtags:
-            bot.like_hashtag(hashtag)
-	time.sleep(wait)
+    for hashtag in args.hashtags:
+        bot.like_hashtag(hashtag)
+    time.sleep(wait)

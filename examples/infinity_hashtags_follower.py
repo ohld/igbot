@@ -30,4 +30,4 @@ while True:
     for hashtag in args.hashtags:
         users = bot.get_hashtag_users(hashtag)
         bot.follow_users(users)
-	time.sleep(wait)
+    time.sleep(wait)

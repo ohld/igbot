@@ -10,6 +10,7 @@ import os
 import time
 import random
 import argparse
+from tqdm import tqdm
 
 sys.path.append(os.path.join(sys.path[0], '../'))
 from instabot import Bot

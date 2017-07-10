@@ -24,14 +24,14 @@ def like_and_follow(bot, user_id, nlikes=3):
 
 def like_and_follow_media_likers(bot, media, nlikes=3):
     for user in tqdm(bot.get_media_likers(media), desc="Media likers"):
-        like_and_follow(bot, user)
+        like_and_follow(bot, user, nlikes)
         time.sleep(10 + 20 * random.random())
     return True
 
 
 def like_and_follow_your_feed_likers(bot, nlikes=3):
     last_media = bot.get_your_medias()[0]
-    return like_and_follow_media_likers(bot, last_media, nlikes=3)
+    return like_and_follow_media_likers(bot, last_media, nlikes=nlikes)
 
 
 parser = argparse.ArgumentParser(add_help=True)

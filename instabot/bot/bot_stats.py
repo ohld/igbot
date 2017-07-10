@@ -32,15 +32,18 @@ def dump_data(data, path):
 
 
 def save_user_stats(self, username, path=""):
+    if not username:
+        username = self.username
     user_id = self.convert_to_user_id(username)
     infodict = self.get_user_info(user_id)
     if infodict:
-        data_to_save = {}
-        data_to_save["date"] = str(datetime.datetime.now())
-        data_to_save["followers"] = int(infodict["follower_count"])
-        data_to_save["following"] = int(infodict["following_count"])
-        data_to_save["medias"] = int(infodict["media_count"])
+        data_to_save = {
+            "date": str(datetime.datetime.now()),
+            "followers": int(infodict["follower_count"]),
+            "following": int(infodict["following_count"]),
+            "medias": int(infodict["media_count"])
+        }
         file_path = os.path.join(path, "%s.tsv" % username)
         dump_data(data_to_save, file_path)
-    self.logger.info("Stats saved at %s." % data_to_save["date"])
+        self.logger.info("Stats saved at %s." % data_to_save["date"])
     return False
