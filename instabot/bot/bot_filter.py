@@ -94,7 +94,7 @@ def check_user(self, user_id, filter_closed_acc=False):
     if self.blacklist and user_id in self.blacklist:
         return False
 
-    if self.following == []:
+    if not self.following:
         self.following = self.get_user_following(self.user_id)
     if user_id in self.following:
         return False

@@ -26,5 +26,5 @@ bot.login(username=args.u, password=args.p,
 wait = 5 * 60  # in seconds
 
 while True:
-	bot.like_timeline()
-	time.sleep(wait)
+    bot.like_timeline()
+    time.sleep(wait)
