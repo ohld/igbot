@@ -27,4 +27,4 @@ bot.login(username=args.u, password=args.p,
           proxy=args.proxy)
 
 for username in args.users:
-    bot.like_user(username)
+    bot.like_user(username, filtration=False)

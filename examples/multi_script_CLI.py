@@ -399,7 +399,7 @@ def menu_like():
             if len(medias):
                 likers = bot.get_media_likers(medias[0])
                 for liker in tqdm(likers):
-                    bot.like_user(liker, amount=2)
+                    bot.like_user(liker, amount=2, filtration=False)
 
         elif ans == "5":
             bot.like_timeline()

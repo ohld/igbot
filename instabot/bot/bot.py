@@ -271,8 +271,8 @@ class Bot(API):
     def like_timeline(self, amount=None):
         return like_timeline(self, amount)
 
-    def like_user(self, user_id, amount=None):
-        return like_user(self, user_id, amount)
+    def like_user(self, user_id, amount=None, filtration=True):
+        return like_user(self, user_id, amount, filtration)
 
     def like_hashtag(self, hashtag, amount=None):
         return like_hashtag(self, hashtag, amount)
@@ -280,8 +280,8 @@ class Bot(API):
     def like_geotag(self, geotag, amount=None):
         return like_geotag(self, geotag, amount)
 
-    def like_users(self, user_ids, nlikes=None):
-        return like_users(self, user_ids, nlikes)
+    def like_users(self, user_ids, nlikes=None, filtration=True):
+        return like_users(self, user_ids, nlikes, filtration)
 
     def like_followers(self, user_id, nlikes=None):
         return like_followers(self, user_id, nlikes)

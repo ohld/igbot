@@ -35,13 +35,14 @@ def like_timeline(self, amount=None):
     return self.like_medias(medias)
 
 
-def like_user(self, user_id, amount=None):
+def like_user(self, user_id, amount=None, filtration=True):
     """ Likes last user_id's medias """
-    if not self.check_user(user_id, filter_closed_acc=True):
-        return False
+    if filtration:
+        if not self.check_user(user_id, filter_closed_acc=True):
+            return False
     self.logger.info("Liking user_%s's feed:" % user_id)
     user_id = self.convert_to_user_id(user_id)
-    medias = self.get_user_medias(user_id)
+    medias = self.get_user_medias(user_id, filtration=filtration)
     if not medias:
         self.logger.info(
             "None medias received: account is closed or medias have been filtered.")
@@ -49,12 +50,12 @@ def like_user(self, user_id, amount=None):
     return self.like_medias(medias[:amount])
 
 
-def like_users(self, user_ids, nlikes=None):
+def like_users(self, user_ids, nlikes=None, filtration=True):
     for user_id in user_ids:
         if not limits.check_if_bot_can_like(self):
             self.logger.info("Out of likes for today.")
             return
-        self.like_user(user_id, amount=nlikes)
+        self.like_user(user_id, amount=nlikes, filtration=filtration)
 
 
 def like_hashtag(self, hashtag, amount=None):
