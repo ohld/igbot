@@ -51,10 +51,10 @@ def setting_input():
     with open(setting, "w") as f:
         while True:
             print(
-                "How many like you want to do in a day? (enter to use default number: 999)")
-            f.write(str(int(sys.stdin.readline().strip()or "999")) + "\n")
-            print("How about unlike? (enter to use default number: 999)")
-            f.write(str(int(sys.stdin.readline().strip()or "999")) + "\n")
+                "How many like you want to do in a day? (enter to use default number: 1000)")
+            f.write(str(int(sys.stdin.readline().strip()or "1000")) + "\n")
+            print("How about unlike? (enter to use default number: 1000)")
+            f.write(str(int(sys.stdin.readline().strip()or "1000")) + "\n")
             print(
                 "How many follow you want to do in a day? (enter to use default number: 350)")
             f.write(str(int(sys.stdin.readline().strip()or "350")) + "\n")
@@ -65,18 +65,18 @@ def setting_input():
             f.write(str(int(sys.stdin.readline().strip()or "100")) + "\n")
             print("Maximal likes in media you will like?")
             print(
-                "We will skip media that have greater like from this value (enter to use default number: 150)")
-            f.write(str(int(sys.stdin.readline().strip()or "150")) + "\n")
+                "We will skip media that have greater like from this value (enter to use default number: 100)")
+            f.write(str(int(sys.stdin.readline().strip()or "100")) + "\n")
             print("Maximal followers of account you want to follow?")
             print("We will skip media that have greater followers from this value (enter to use default number: 2000)")
             f.write(str(int(sys.stdin.readline().strip()or "2000")) + "\n")
             print("Minimal followers of account you want to follow?")
             print(
-                "we will skip media that have lesser follower from this value(enter to use default number: 250)")
-            f.write(str(int(sys.stdin.readline().strip()or "250")) + "\n")
+                "we will skip media that have lesser follower from this value(enter to use default number: 10)")
+            f.write(str(int(sys.stdin.readline().strip()or "10")) + "\n")
             print("Maximal following of account you want to follow?")
-            print("We will skip media that have greater following from this value (enter to use default number: 5000)")
-            f.write(str(int(sys.stdin.readline().strip()or "5000")) + "\n")
+            print("We will skip media that have greater following from this value (enter to use default number: 7500)")
+            f.write(str(int(sys.stdin.readline().strip()or "7500")) + "\n")
             print("Minimal following of account you want to follow?")
             print("we will skip media that have lesser following from this value (enter to use default number: 10)")
             f.write(str(int(sys.stdin.readline().strip()or "10")) + "\n")
@@ -87,11 +87,11 @@ def setting_input():
             f.write(str(int(sys.stdin.readline().strip()or "2")) + "\n")
             print("Minimal media the account you will follow have.")
             print(
-                "we will skip media that have lesser media from this value (enter to use default number: 7)")
-            f.write(str(int(sys.stdin.readline().strip()or "7")) + "\n")
+                "we will skip media that have lesser media from this value (enter to use default number: 3)")
+            f.write(str(int(sys.stdin.readline().strip()or "3")) + "\n")
             print(
-                "Delay from one like to another like you will perform (enter to use default number: 30)")
-            f.write(str(int(sys.stdin.readline().strip()or "30")) + "\n")
+                "Delay from one like to another like you will perform (enter to use default number: 10)")
+            f.write(str(int(sys.stdin.readline().strip()or "10")) + "\n")
             print(
                 "Delay from one unlike to another unlike you will perform (enter to use default number: 10)")
             f.write(str(int(sys.stdin.readline().strip()or "10")) + "\n")
@@ -594,6 +594,7 @@ if os.stat(setting).st_size == 0:
 
 f = open(setting)
 lines = f.readlines()
+setting_0 = int(lines[0].strip())
 setting_1 = int(lines[1].strip())
 setting_2 = int(lines[2].strip())
 setting_3 = int(lines[3].strip())
@@ -614,24 +615,24 @@ setting_17 = int(lines[17].strip())
 setting_18 = lines[18].strip()
 
 bot = Bot(
-    max_likes_per_day=setting_1,
-    max_unlikes_per_day=setting_2,
-    max_follows_per_day=setting_3,
-    max_unfollows_per_day=setting_4,
-    max_comments_per_day=setting_5,
-    max_likes_to_like=setting_6,
-    max_followers_to_follow=setting_7,
-    min_followers_to_follow=setting_8,
-    max_following_to_follow=setting_9,
-    min_following_to_follow=setting_10,
-    max_followers_to_following_ratio=setting_11,
-    max_following_to_followers_ratio=setting_12,
-    min_media_count_to_follow=setting_13,
-    like_delay=setting_14,
-    unlike_delay=setting_15,
-    follow_delay=setting_16,
-    unfollow_delay=setting_17,
-    comment_delay=setting_18,
+    max_likes_per_day=setting_0,
+    max_unlikes_per_day=setting_1,
+    max_follows_per_day=setting_2,
+    max_unfollows_per_day=setting_3,
+    max_comments_per_day=setting_4,
+    max_likes_to_like=setting_5,
+    max_followers_to_follow=setting_6,
+    min_followers_to_follow=setting_7,
+    max_following_to_follow=setting_8,
+    min_following_to_follow=setting_9,
+    max_followers_to_following_ratio=setting_10,
+    max_following_to_followers_ratio=setting_11,
+    min_media_count_to_follow=setting_12,
+    like_delay=setting_13,
+    unlike_delay=setting_14,
+    follow_delay=setting_15,
+    unfollow_delay=setting_16,
+    comment_delay=setting_17,
     whitelist=whitelist,
     blacklist=blacklist,
     comments_file=comment,
