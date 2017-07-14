@@ -22,6 +22,8 @@ from .bot_follow import follow, follow_users, follow_followers, follow_following
 from .bot_unfollow import unfollow, unfollow_users, unfollow_non_followers
 from .bot_unfollow import unfollow_everyone
 
+from .bot_archive import archive, unarchive, archive_medias, unarchive_medias
+
 from .bot_comment import comment, comment_medias, comment_geotag, comment_users
 from .bot_comment import comment_hashtag, is_commented, comment_user
 
@@ -79,6 +81,8 @@ class Bot(API):
         self.total_commented = 0
         self.total_blocked = 0
         self.total_unblocked = 0
+        self.total_archived = 0
+        self.total_unarchived = 0
         self.start_time = datetime.datetime.now()
 
         # the time.time() of the last action
@@ -167,7 +171,7 @@ class Bot(API):
     def prepare(self):
         storage = load_checkpoint(self)
         if storage is not None:
-            self.total_liked, self.total_unliked, self.total_followed, self.total_unfollowed, self.total_commented, self.total_blocked, self.total_unblocked, self.total_requests, self.start_time = storage
+            self.total_liked, self.total_unliked, self.total_followed, self.total_unfollowed, self.total_commented, self.total_blocked, self.total_unblocked, self.total_requests, self.start_time, self.total_archived, self.total_unarchived = storage
         if not self.whitelist:
             self.whitelist = check_whitelists(self)
         self.whitelist = list(
@@ -190,12 +194,20 @@ class Bot(API):
             self.logger.info("Total blocked: %d" % self.total_blocked)
         if self.total_unblocked:
             self.logger.info("Total unblocked: %d" % self.total_unblocked)
+        if self.total_archived:
+            self.logger.info("Total archived: %d" % self.total_archived)
+        if self.total_unarchived:
+            self.logger.info("Total unarchived: %d" % self.total_unarchived)
         self.logger.info("Total requests: %d" % self.total_requests)
 
     # getters
 
-    def get_your_medias(self):
-        return get_your_medias(self)
+    def get_your_medias(self, as_dict=False):
+        """
+        Returns your media ids. With parameter as_dict=True returns media as dict.
+        :type as_dict: bool
+        """
+        return get_your_medias(self, as_dict)
 
     def get_timeline_medias(self):
         return get_timeline_medias(self)
@@ -327,6 +339,20 @@ class Bot(API):
 
     def unfollow_everyone(self):
         return unfollow_everyone(self)
+
+    # archive
+
+    def archive(self, media_id):
+        return archive(self, media_id)
+
+    def unarchive(self, media_id):
+        return unarchive(self, media_id)
+
+    def archive_medias(self, medias):
+        return archive_medias(self, medias)
+
+    def unarchive_medias(self, medias):
+        return unarchive_medias(self, medias)
 
     # comment
 

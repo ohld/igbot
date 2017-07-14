@@ -17,8 +17,10 @@ def get_media_owner(self, media_id):
         return False
 
 
-def get_your_medias(self):
+def get_your_medias(self, as_dict=False):
     self.getSelfUserFeed()
+    if as_dict:
+        return self.LastJson["items"]
     return self.filter_medias(self.LastJson["items"], False)
 
 
@@ -70,6 +72,8 @@ def get_locations_from_coordinates(self, latitude, longitude):
 
 
 def get_media_info(self, media_id):
+    if isinstance(media_id, dict):
+        return media_id
     self.mediaInfo(media_id)
     return self.LastJson["items"]
 

@@ -217,6 +217,17 @@ class API(object):
         })
         return self.SendRequest('media/' + str(mediaId) + '/info/', self.generateSignature(data))
 
+    def archiveMedia(self, media, undo=False):
+        action = 'only_me' if not undo else 'undo_only_me'
+        data = json.dumps({
+            '_uuid': self.uuid,
+            '_uid': self.user_id,
+            '_csrftoken': self.token,
+            'media_id': media['id']
+        })
+        return self.SendRequest('media/' + str(media['id']) + '/' + str(action) + '/?media_type=' +
+                                str(media['media_type']), self.generateSignature(data))
+
     def deleteMedia(self, mediaId):
         data = json.dumps({
             '_uuid': self.uuid,
