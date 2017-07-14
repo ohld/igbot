@@ -82,6 +82,9 @@ def get_media_info(self, media_id):
     if isinstance(media_id, dict):
         return media_id
     self.mediaInfo(media_id)
+    if "items" not in self.LastJson:
+        self.logger.info("Media with %s not found." % media_id)
+        return []
     return self.LastJson["items"]
 
 
