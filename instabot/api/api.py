@@ -350,6 +350,11 @@ class API(object):
             'feed/timeline/?rank_token=' + str(self.rank_token) + '&ranked_content=true&')
         return query
 
+    def getArchiveFeed(self):
+        query = self.SendRequest(
+            'feed/only_me_feed/?rank_token=' + str(self.rank_token) + '&ranked_content=true&')
+        return query
+
     def getUserFeed(self, usernameId, maxid='', minTimestamp=None):
         query = self.SendRequest(
             'feed/user/' + str(usernameId) + '/?max_id=' + str(maxid) + '&min_timestamp=' + str(minTimestamp) +

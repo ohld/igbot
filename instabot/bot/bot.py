@@ -10,7 +10,7 @@ from .bot_get import get_geotag_medias, get_timeline_users, get_hashtag_users
 from .bot_get import get_media_commenters, get_userid_from_username, get_username_from_userid
 from .bot_get import get_user_followers, get_user_following, get_media_likers
 from .bot_get import get_media_comments, get_geotag_users, get_locations_from_coordinates, convert_to_user_id
-from .bot_get import get_comment, get_media_info, get_user_likers
+from .bot_get import get_comment, get_media_info, get_user_likers, get_archived_medias
 
 from .bot_like import like, like_medias, like_timeline, like_user, like_users
 from .bot_like import like_hashtag, like_geotag, like_followers, like_following
@@ -22,7 +22,7 @@ from .bot_follow import follow, follow_users, follow_followers, follow_following
 from .bot_unfollow import unfollow, unfollow_users, unfollow_non_followers
 from .bot_unfollow import unfollow_everyone
 
-from .bot_archive import archive, unarchive, archive_medias, unarchive_medias
+from .bot_archive import archive, archive_medias, unarchive_medias
 
 from .bot_comment import comment, comment_medias, comment_geotag, comment_users
 from .bot_comment import comment_hashtag, is_commented, comment_user
@@ -209,6 +209,13 @@ class Bot(API):
         """
         return get_your_medias(self, as_dict)
 
+    def get_archived_medias(self, as_dict=False):
+        """
+        Returns your archived media ids. With parameter as_dict=True returns media as dict.
+        :type as_dict: bool
+        """
+        return get_archived_medias(self, as_dict)
+
     def get_timeline_medias(self):
         return get_timeline_medias(self)
 
@@ -342,11 +349,11 @@ class Bot(API):
 
     # archive
 
-    def archive(self, media_id):
-        return archive(self, media_id)
+    def archive(self, media_id, undo=False):
+        return archive(self, media_id, undo)
 
     def unarchive(self, media_id):
-        return unarchive(self, media_id)
+        return archive(self, media_id, True)
 
     def archive_medias(self, medias):
         return archive_medias(self, medias)

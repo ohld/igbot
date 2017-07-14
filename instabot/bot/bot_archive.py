@@ -14,10 +14,6 @@ def archive(self, media_id, undo=False):
     return False
 
 
-def unarchive(self, media_id):
-    self.archive(media_id, True)
-
-
 def archive_medias(self, medias):
     broken_items = []
     if len(medias) == 0:

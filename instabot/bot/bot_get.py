@@ -24,6 +24,13 @@ def get_your_medias(self, as_dict=False):
     return self.filter_medias(self.LastJson["items"], False)
 
 
+def get_archived_medias(self, as_dict=False):
+    self.getArchiveFeed()
+    if as_dict:
+        return self.LastJson["items"]
+    return self.filter_medias(self.LastJson["items"], False)
+
+
 def get_timeline_medias(self, filtration=True):
     if not self.getTimelineFeed():
         self.logger.warning("Error while getting timeline feed.")
