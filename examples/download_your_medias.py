@@ -2,7 +2,7 @@
     instabot example
 
     Workflow:
-    1) Unarchives your last medias
+    1) Downloads your last medias
 
 """
 
@@ -14,5 +14,5 @@ from instabot import Bot
 
 bot = Bot()
 bot.login()
-medias = bot.get_archived_medias()
-bot.unarchive_medias(medias)
+medias = bot.get_your_medias()
+bot.download_medias(medias)
