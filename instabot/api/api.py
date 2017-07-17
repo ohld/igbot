@@ -13,6 +13,7 @@ from tqdm import tqdm
 from . import config
 from .api_photo import configurePhoto
 from .api_photo import uploadPhoto
+from .api_photo import downloadPhoto
 
 from .api_search import fbUserSearch
 from .api_search import searchUsers
@@ -187,6 +188,9 @@ class API(object):
 
     def uploadPhoto(self, photo, caption=None, upload_id=None):
         return uploadPhoto(self, photo, caption, upload_id)
+
+    def downloadPhoto(self, media_id, filename, media=False, path='photos/'):
+        return downloadPhoto(self, media_id, filename, media, path)
 
     def configurePhoto(self, upload_id, photo, caption=''):
         return configurePhoto(self, upload_id, photo, caption)

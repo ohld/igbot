@@ -2,10 +2,30 @@ import struct
 import imghdr
 import time
 import json
+import shutil
+import os
 
 from requests_toolbelt import MultipartEncoder
 
 from . import config
+
+
+def downloadPhoto(self, media_id, filename, media=False, path='photos/'):
+    if not media:
+        self.mediaInfo(media_id)
+        media = self.LastJson['items'][0]
+    filename = '{0}_{1}.jpg'.format(media['user']['username'], media_id) if not filename else '{0}.jpg'.format(filename)
+    images = media['image_versions2']['candidates']
+    if os.path.exists(path + filename):
+        return os.path.abspath(path + filename)
+    response = self.session.get(images[0]['url'], stream=True)
+    if response.status_code == 200:
+        if not os.path.exists(path):
+            os.makedirs(path)
+        with open(path + filename, 'wb') as f:
+            response.raw.decode_content = True
+            shutil.copyfileobj(response.raw, f)
+        return os.path.abspath(path + filename)
 
 
 def configurePhoto(self, upload_id, photo, caption=''):
