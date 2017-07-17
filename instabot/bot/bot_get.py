@@ -17,6 +17,11 @@ def get_media_owner(self, media_id):
         return False
 
 
+def get_popular_medias(self):
+    self.getPopularFeed()
+    return [str(media['pk']) for media in self.LastJson['items']]
+
+
 def get_your_medias(self, as_dict=False):
     self.getSelfUserFeed()
     if as_dict:
