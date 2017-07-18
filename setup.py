@@ -10,5 +10,5 @@ setup(
     download_url='https://github.com/ohld/instabot/tarball/0.3.3.18',
     keywords=['instagram', 'bot', 'api', 'wrapper'],
     classifiers=[],
-    install_requires=['tqdm', 'requests-toolbelt', 'requests', 'schedule'],
+    install_requires=['tqdm', 'requests-toolbelt', 'requests', 'schedule', 'moviepy'],
 )
