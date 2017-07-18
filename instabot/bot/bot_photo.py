@@ -3,7 +3,7 @@ from tqdm import tqdm
 from . import delay
 
 
-def download(self, media_id, path='photos/', filename=None):
+def download_photo(self, media_id, path='photos/', filename=None):
     delay.small_delay(self)
     photo = super(self.__class__, self).downloadPhoto(media_id, filename, False, path)
     if photo:
@@ -12,7 +12,7 @@ def download(self, media_id, path='photos/', filename=None):
     return False
 
 
-def download_medias(self, medias, path):
+def download_photos(self, medias, path):
     broken_items = []
     if len(medias) == 0:
         self.logger.info("Nothing to downloads.")

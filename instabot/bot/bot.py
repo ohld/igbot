@@ -17,7 +17,9 @@ from .bot_like import like_hashtag, like_geotag, like_followers, like_following
 
 from .bot_unlike import unlike, unlike_medias, unlike_user
 
-from .bot_photo import download, download_medias
+from .bot_photo import download_photo, download_photos
+
+from .bot_video import upload_video
 
 from .bot_follow import follow, follow_users, follow_followers, follow_following
 
@@ -326,11 +328,16 @@ class Bot(API):
 
     # photo
 
-    def download(self, media_id, path='photos/', filename=None):
-        return download(self, media_id, path, filename)
+    def download_photo(self, media_id, path='photos/', filename=None):
+        return download_photo(self, media_id, path, filename)
 
-    def download_medias(self, medias, path='photos/'):
-        return download_medias(self, medias, path)
+    def download_photos(self, medias, path='photos/'):
+        return download_photos(self, medias, path)
+
+    # video
+
+    def upload_video(self, video, thumbnail, caption=''):
+        return upload_video(self, video, thumbnail, caption)
 
     # follow
 
