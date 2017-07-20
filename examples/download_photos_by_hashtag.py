@@ -26,4 +26,4 @@ bot.login(username=args.u, password=args.p,
 
 for hashtag in args.hashtags:
     medias = bot.get_hashtag_medias(hashtag)
-    bot.download_medias(medias)
+    bot.download_photos(medias)

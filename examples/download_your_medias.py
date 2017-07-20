@@ -15,4 +15,4 @@ from instabot import Bot
 bot = Bot()
 bot.login()
 medias = bot.get_your_medias()
-bot.download_medias(medias)
+bot.download_photos(medias)
