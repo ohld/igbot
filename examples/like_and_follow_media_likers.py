@@ -18,7 +18,7 @@ from instabot import Bot
 
 def like_and_follow(bot, user_id, nlikes=3):
     bot.like_user(user_id, amount=nlikes)
-    bot.follow(user_id, nlikes)
+    bot.follow(user_id)
     return True
 
 
