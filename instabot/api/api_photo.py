@@ -75,6 +75,7 @@ def uploadPhoto(self, photo, caption=None, upload_id=None):
     if response.status_code == 200:
         if self.configurePhoto(upload_id, photo, caption):
             self.expose()
+            return True
     return False
 
 

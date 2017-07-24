@@ -3,6 +3,15 @@ from tqdm import tqdm
 from . import delay
 
 
+def upload_photo(self, photo, caption=None, upload_id=None):
+    delay.small_delay(self)
+    if super(self.__class__, self).uploadPhoto(photo, caption, upload_id):
+        self.logger.info("Photo '%s' is %s ." % (photo, 'uploaded'))
+        return True
+    self.logger.info("Photo '%s' is not %s ." % (photo, 'uploaded'))
+    return False
+
+
 def download_photo(self, media_id, path='photos/', filename=None, description=False):
     delay.small_delay(self)
     if description:
@@ -13,7 +22,7 @@ def download_photo(self, media_id, path='photos/', filename=None, description=Fa
     photo = super(self.__class__, self).downloadPhoto(media_id, filename, False, path)
     if photo:
         return photo
-    self.logger.info("Media with %s is not %s ." % media_id, 'downloaded')
+    self.logger.info("Media with %s is not %s ." % (media_id, 'downloaded'))
     return False
 
 
