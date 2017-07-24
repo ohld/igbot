@@ -1,12 +1,8 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
-import time
 import json
 import time
 import copy
 import math
-import sys
 import subprocess
 import re
 
@@ -14,40 +10,31 @@ from requests_toolbelt import MultipartEncoder
 
 from . import config
 
-#The urllib library was split into other modules from Python 2 to Python 3
-if sys.version_info.major == 3:
-    import urllib.parse
-
-
-
-
-
 
 def getVideoInfo(filename):
-    res={}
+    res = {}
     try:
         terminalResult = subprocess.Popen(["ffprobe", filename],
-        stdout = subprocess.PIPE, stderr = subprocess.STDOUT)
+                                          stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         for x in terminalResult.stdout.readlines():
             # Duration: 00:00:59.51, start: 0.000000, bitrate: 435 kb/s
-            m = re.search('duration: (\d\d:\d\d:\d\d\.\d\d),',x, flags=re.IGNORECASE)
-            if m!=None:
-                res['duration']=m.group(1)
+            m = re.search('duration: (\d\d:\d\d:\d\d\.\d\d),', str(x), flags=re.IGNORECASE)
+            if m is not None:
+                res['duration'] = m.group(1)
             # Video: h264 (Constrained Baseline) (avc1 / 0x31637661), yuv420p, 480x268
-            m = re.search('video:\s.*\s(\d+)x(\d+)\s',x, flags=re.IGNORECASE)
-            if m!=None:
-                res['width']=m.group(1)
-                res['height']=m.group(2)
+            m = re.search('video:\s.*\s(\d+)x(\d+)\s', str(x), flags=re.IGNORECASE)
+            if m is not None:
+                res['width'] = m.group(1)
+                res['height'] = m.group(2)
     finally:
         if 'width' not in res:
-            print "ERROR: 'ffprobe' not found, pls install 'ffprobe' with one of following methods"
-            print "   sudo apt-get install ffmpeg"
-            print "or sudo apt-get install -y libav-tools"
-    return res;
+            print("ERROR: 'ffprobe' not found, pls install 'ffprobe' with one of following methods")
+            print("   sudo apt-get install ffmpeg")
+            print("or sudo apt-get install -y libav-tools")
+    return res
 
 
-
-def uploadVideo(self, video, thumbnail, caption = None, upload_id = None):
+def uploadVideo(self, video, thumbnail, caption=None, upload_id=None):
     if upload_id is None:
         upload_id = str(int(time.time() * 1000))
     data = {
@@ -58,14 +45,14 @@ def uploadVideo(self, video, thumbnail, caption = None, upload_id = None):
     }
     m = MultipartEncoder(data, boundary=self.uuid)
     self.session.headers.update({'X-IG-Capabilities': '3Q4=',
-                            'X-IG-Connection-Type': 'WIFI',
-                            'Host': 'i.instagram.com',
-                            'Cookie2': '$Version=1',
-                            'Accept-Language': 'en-US',
-                            'Accept-Encoding': 'gzip, deflate',
-                            'Content-type': m.content_type,
-                            'Connection': 'keep-alive',
-                            'User-Agent': config.USER_AGENT})
+                                 'X-IG-Connection-Type': 'WIFI',
+                                 'Host': 'i.instagram.com',
+                                 'Cookie2': '$Version=1',
+                                 'Accept-Language': 'en-US',
+                                 'Accept-Encoding': 'gzip, deflate',
+                                 'Content-type': m.content_type,
+                                 'Connection': 'keep-alive',
+                                 'User-Agent': config.USER_AGENT})
     response = self.session.post(config.API_URL + "upload/video/", data=m.to_string())
     if response.status_code == 200:
         body = json.loads(response.text)
@@ -73,23 +60,23 @@ def uploadVideo(self, video, thumbnail, caption = None, upload_id = None):
         upload_job = body['video_upload_urls'][3]['job']
 
         videoData = open(video, 'rb').read()
-        #solve issue #85 TypeError: slice indices must be integers or None or have an __index__ method
+        # solve issue #85 TypeError: slice indices must be integers or None or have an __index__ method
         request_size = int(math.floor(len(videoData) / 4))
         lastRequestExtra = (len(videoData) - (request_size * 3))
 
         headers = copy.deepcopy(self.session.headers)
         self.session.headers.update({'X-IG-Capabilities': '3Q4=',
-                                'X-IG-Connection-Type': 'WIFI',
-                                'Cookie2': '$Version=1',
-                                'Accept-Language': 'en-US',
-                                'Accept-Encoding': 'gzip, deflate',
-                                'Content-type': 'application/octet-stream',
-                                'Session-ID': upload_id,
-                                'Connection': 'keep-alive',
-                                'Content-Disposition': 'attachment; filename="video.mov"',
-                                'job': upload_job,
-                                'Host': 'upload.instagram.com',
-                                'User-Agent': config.USER_AGENT})
+                                     'X-IG-Connection-Type': 'WIFI',
+                                     'Cookie2': '$Version=1',
+                                     'Accept-Language': 'en-US',
+                                     'Accept-Encoding': 'gzip, deflate',
+                                     'Content-type': 'application/octet-stream',
+                                     'Session-ID': upload_id,
+                                     'Connection': 'keep-alive',
+                                     'Content-Disposition': 'attachment; filename="video.mov"',
+                                     'job': upload_job,
+                                     'Host': 'upload.instagram.com',
+                                     'User-Agent': config.USER_AGENT})
         for i in range(0, 4):
             start = i * request_size
             if i == 3:
@@ -107,9 +94,11 @@ def uploadVideo(self, video, thumbnail, caption = None, upload_id = None):
         if response.status_code == 200:
             if self.configureVideo(upload_id, video, thumbnail, caption):
                 self.expose()
+                return True
     return False
 
-def configureVideo(self, upload_id, video, thumbnail, caption = ''):
+
+def configureVideo(self, upload_id, video, thumbnail, caption=''):
     clipInfo = getVideoInfo(video)
     self.uploadPhoto(photo=thumbnail, caption=caption, upload_id=upload_id)
     data = json.dumps({
