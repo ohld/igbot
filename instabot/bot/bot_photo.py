@@ -3,8 +3,13 @@ from tqdm import tqdm
 from . import delay
 
 
-def download_photo(self, media_id, path='photos/', filename=None):
+def download_photo(self, media_id, path='photos/', filename=None, description=False):
     delay.small_delay(self)
+    if description:
+        media = self.get_media_info(media_id)[0]
+        caption = media['caption']['text']
+        with open('{path}{0}_{1}.txt'.format(media['user']['username'], media_id, path=path), 'w') as f:
+            f.write(caption)
     photo = super(self.__class__, self).downloadPhoto(media_id, filename, False, path)
     if photo:
         return photo
@@ -12,14 +17,14 @@ def download_photo(self, media_id, path='photos/', filename=None):
     return False
 
 
-def download_photos(self, medias, path):
+def download_photos(self, medias, path, description=False):
     broken_items = []
     if len(medias) == 0:
         self.logger.info("Nothing to downloads.")
         return broken_items
     self.logger.info("Going to download %d medias." % (len(medias)))
     for media in tqdm(medias):
-        if not self.download(media, path):
+        if not self.download_photo(media, path, description=description):
             delay.error_delay(self)
             broken_items = medias[medias.index(media):]
             break

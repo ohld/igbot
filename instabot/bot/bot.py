@@ -331,11 +331,11 @@ class Bot(API):
 
     # photo
 
-    def download_photo(self, media_id, path='photos/', filename=None):
-        return download_photo(self, media_id, path, filename)
+    def download_photo(self, media_id, path='photos/', filename=None, description=False):
+        return download_photo(self, media_id, path, filename, description)
 
-    def download_photos(self, medias, path='photos/'):
-        return download_photos(self, medias, path)
+    def download_photos(self, medias, path='photos/', description=False):
+        return download_photos(self, medias, path, description)
 
     # video
 
