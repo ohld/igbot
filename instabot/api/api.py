@@ -34,7 +34,6 @@ from .api_profile import setNameAndPhone
 from .prepare import get_credentials
 from .prepare import delete_credentials
 
-
 # The urllib library was split into other modules from Python 2 to Python 3
 if sys.version_info.major == 3:
     import urllib.parse
@@ -200,7 +199,7 @@ class API(object):
     def uploadVideo(self, photo, caption=None, upload_id=None):
         return uploadVideo(self, photo, caption, upload_id)
 
-    def configureVideo(self, upload_id, video, thumbnail, caption = ''):
+    def configureVideo(self, upload_id, video, thumbnail, caption=''):
         return configureVideo(self, upload_id, video, thumbnail, caption)
 
     def editMedia(self, mediaId, captionText=''):
@@ -582,7 +581,7 @@ class API(object):
         while 1:
             self.getUserFeed(usernameId, next_max_id, minTimestamp)
             temp = self.LastJson
-            if "items" not in temp: # maybe user is private, (we have not access to posts)
+            if "items" not in temp:  # maybe user is private, (we have not access to posts)
                 return []
             for item in temp["items"]:
                 user_feed.append(item)
