@@ -2,7 +2,7 @@
     instabot example
 
     Workflow:
-    1) Downloads your last medias
+    1) Downloads your medias
 
 """
 
@@ -14,5 +14,5 @@ from instabot import Bot
 
 bot = Bot()
 bot.login()
-medias = bot.get_your_medias()
+medias = bot.get_total_user_medias(bot.user_id)
 bot.download_photos(medias)
