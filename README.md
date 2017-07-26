@@ -13,9 +13,6 @@ As you may know, Instagram closed its API in summer 2016. This Python module can
 If you have any ideas, please report them in the [Issues section](https://github.com/ohld/instabot/issues) or in our [Telegram chat](https://t.me/joinchat/AAAAAEHxHAtKhKo4X4r7xg).
 **Your __contribution__ and support through __stars and reporting issues__ will be highly appreciated. After all, this project is dependent on your testing and support. :)**
 
-## Before you bot!
-Before you follow bot, make sure you run *reset_following.py*, it will allow you to reset your following to what you had before botting. Very helpful.
-
 ## How to install and update
 
 Install latest stable version or update current from pip.
