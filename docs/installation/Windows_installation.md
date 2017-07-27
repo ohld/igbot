@@ -13,7 +13,7 @@
 
 	```
 	conda install git
-	git clone https://github.com/ohld/instabot
+	git clone https://github.com/instagrambot/instabot
 	```
 
 	Examples are located in `./examples` folder.
