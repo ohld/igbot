@@ -20,8 +20,6 @@ def downloadPhoto(self, media_id, filename, media=False, path='photos/'):
         return os.path.abspath(path + filename)
     response = self.session.get(images[0]['url'], stream=True)
     if response.status_code == 200:
-        if not os.path.exists(path):
-            os.makedirs(path)
         with open(path + filename, 'wb') as f:
             response.raw.decode_content = True
             shutil.copyfileobj(response.raw, f)

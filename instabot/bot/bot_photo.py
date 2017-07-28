@@ -1,3 +1,4 @@
+import os
 from tqdm import tqdm
 
 from . import delay
@@ -14,6 +15,8 @@ def upload_photo(self, photo, caption=None, upload_id=None):
 
 def download_photo(self, media_id, path='photos/', filename=None, description=False):
     delay.small_delay(self)
+    if not os.path.exists(path):
+        os.makedirs(path)
     if description:
         media = self.get_media_info(media_id)[0]
         caption = media['caption']['text']
