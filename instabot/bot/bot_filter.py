@@ -9,7 +9,7 @@ from . import delay
 # InstaBot will not try to follow them again or InstaBot will not like
 # their medias anymore
 def skippedlist_adder(self, user_id):
-    #user_id = self.convert_to_user_id(user_id)
+    # user_id = self.convert_to_user_id(user_id)
     with open('skipped.txt', "a") as file:
         print(
             '\n\033[93m Add user_id %s to skippedlist : skipped.txt ... \033[0m' % user_id)
