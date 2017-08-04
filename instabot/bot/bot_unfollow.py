@@ -47,7 +47,7 @@ def unfollow_non_followers(self, nToUnfollows=None):
     print("\n\033[91m ===> Star Unfollowing Non_Followers List <===\033[0m")
     unfollow_file = "unfollow.txt"
     new_unfollow_list = list(line.strip() for line in open(unfollow_file))
-    for user in new_unfollow_list[:nToUnfollows]: # select only first nToUnfollows users to unfollow
+    for user in new_unfollow_list[:nToUnfollows]:  # select only first nToUnfollows users to unfollow
         self.unfollow(user)
     print(
         "\n\033[91m ===> Unfollow Non_followers , Task Done <===\033[0m")
