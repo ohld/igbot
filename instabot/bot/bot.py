@@ -369,7 +369,7 @@ class Bot(API):
 
     def update_unfollow_file(self):
         return update_unfollow_file(self)
-        
+
     # archive
 
     def archive(self, media_id, undo=False):
