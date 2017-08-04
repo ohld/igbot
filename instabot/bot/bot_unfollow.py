@@ -6,11 +6,16 @@ from . import delay
 
 def unfollow(self, user_id):
     user_id = self.convert_to_user_id(user_id)
+    user_info = self.get_user_info(user_id)
+    print('\n===> Going to UN-Follow user_id: %s , user_name: %s' %
+          (user_id, user_info["username"]))
     if self.check_user(user_id):
         return True  # whitelisted user
     if limits.check_if_bot_can_unfollow(self):
         delay.unfollow_delay(self)
         if super(self.__class__, self).unfollow(user_id):
+            print('\033[93m===> UN-FOLLOWED , user_id: %s , user_name: %s \033[0m\n' %
+                  (user_id, user_info["username"]))
             self.total_unfollowed += 1
             return True
     else:
@@ -24,7 +29,8 @@ def unfollow_users(self, user_ids):
     user_ids = set(map(str, user_ids))
     filtered_user_ids = list(set(user_ids) - set(self.whitelist))
     if len(filtered_user_ids) != len(user_ids):
-        self.logger.info("After filtration by whitelist %d users left." % len(filtered_user_ids))
+        self.logger.info(
+            "After filtration by whitelist %d users left." % len(filtered_user_ids))
     for user_id in tqdm(filtered_user_ids):
         if not self.unfollow(user_id):
             delay.error_delay(self)
@@ -35,17 +41,43 @@ def unfollow_users(self, user_ids):
     return broken_items
 
 
-def unfollow_non_followers(self):
+def unfollow_non_followers(self, nToUnfollows=None):
     self.logger.info("Unfollowing non-followers")
-    followings = set([item["pk"] for item in self.getTotalSelfFollowings()])
-    self.logger.info("You follow %d users." % len(followings))
-    followers = set([item["pk"] for item in self.getTotalSelfFollowers()])
-    self.logger.info("You are followed by %d users." % len(followers))
-    diff = followings - followers
-    self.logger.info("%d users don't follow you back." % len(diff))
-    self.unfollow_users(list(diff))
+    self.update_unfollow_file()
+    print("\n\033[91m ===> Star Unfollowing Non_Followers List <===\033[0m")
+    unfollow_file = "unfollow.txt"
+    new_unfollow_list = list(line.strip() for line in open(unfollow_file))
+    for user in new_unfollow_list[:nToUnfollows]: # select only first nToUnfollows users to unfollow
+        self.unfollow(user)
+    print(
+        "\n\033[91m ===> Unfollow Non_followers , Task Done <===\033[0m")
 
 
 def unfollow_everyone(self):
     self.following = self.get_user_following(self.user_id)
     self.unfollow_users(self.following)
+
+
+def update_unfollow_file(self):  # Update unfollow.txt
+    self.logger.info("Updating unfollow.txt ...")
+    print("\n\033[92m Calculating Non Followers List  \033[0m")
+    followings = self.get_user_following(self.user_id)  # getting following
+    followers = self.get_user_followers(self.user_id)  # getting followers
+    friends_file = self.read_list_from_file(
+        "friends.txt")  # same whitelist (just user ids)
+    nonfollowerslist = list(
+        (set(followings) - set(followers)) - set(friends_file))
+    followed_file = "followed.txt"
+    followed_list = list(line.strip() for line in open(followed_file))
+    unfollow_list = []
+    unfollow_list += [x for x in followed_list if x in nonfollowerslist]
+    unfollow_list += [x for x in nonfollowerslist if x not in followed_list]
+    unfollow_file = self.read_list_from_file("unfollow.txt")
+    new_unfollow_list = []
+    new_unfollow_list += [x for x in unfollow_file if x in unfollow_list]
+    new_unfollow_list += [x for x in unfollow_list if x not in unfollow_file]
+    print("\n Writing to unfollow.txt")
+    out = open('unfollow.txt', 'w')
+    for line in new_unfollow_list:
+        out.write(str(line) + "\n")
+    print("\n Updating unfollow.txt , Task Done")
