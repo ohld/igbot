@@ -10,29 +10,32 @@ from . import delay
 # their medias anymore
 def skippedlist_adder(self, user_id):
     # user_id = self.convert_to_user_id(user_id)
-    with open('skipped.txt', "a") as file:
-        print(
-            '\n\033[93m Add user_id %s to skippedlist : skipped.txt ... \033[0m' % user_id)
-        # Append user_is to the end of skipped.txt
-        file.write(str(user_id) + "\n")
-        print('Done adding user_id to skippedlist.txt')
+    skipped = self.read_list_from_file("skipped.txt")
+    if user_id not in skipped:
+        with open('skipped.txt', "a") as file:
+            print('\n\033[93m Add user_id %s to skippedlist : skipped.txt ... \033[0m' % user_id)
+            # Append user_is to the end of skipped.txt
+            file.write(str(user_id) + "\n")
+            print('Done adding user_id to skipped.txt')
     return
 
 
 # filtering medias
 
 
-def filter_medias(self, media_items, filtration=True, quiet=False):
+def filter_medias(self, media_items, filtration=True, quiet=False, is_comment=False):
     if filtration:
         if not quiet:
             self.logger.info("Received %d medias." % len(media_items))
-        media_items = _filter_medias_not_liked(media_items)
-        if self.max_likes_to_like:
-            media_items = _filter_medias_nlikes(
-                media_items, self.max_likes_to_like)
+        if not is_comment:
+            media_items = _filter_medias_not_liked(media_items)
+            if self.max_likes_to_like:
+                media_items = _filter_medias_nlikes(
+                    media_items, self.max_likes_to_like)
+        else:
+            media_items = _filter_medias_not_commented(self, media_items)
         if not quiet:
-            self.logger.info("After filtration %d medias left." %
-                             len(media_items))
+            self.logger.info("After filtration %d medias left." % len(media_items))
     return _get_media_ids(media_items)
 
 
@@ -43,6 +46,17 @@ def _filter_medias_not_liked(media_items):
             if not media['has_liked']:
                 not_liked_medias.append(media)
     return not_liked_medias
+
+
+def _filter_medias_not_commented(self, media_items):
+    not_commented_medias = []
+    for media in media_items:
+        if media['comment_count'] > 0:
+            my_comments = [comment for comment in media['comments'] if comment['user_id'] == self.user_id]
+            if my_comments:
+                continue
+        not_commented_medias.append(media)
+    return not_commented_medias
 
 
 def _filter_medias_nlikes(media_items, max_likes_to_like):
@@ -111,7 +125,7 @@ def check_user(self, user_id, filter_closed_acc=False):
         print('\n\033[91m user_id in self.blacklist \033[0m')  # Log to Console
         return False
 
-    if self.following == []:
+    if not self.following:
         # Log to Console
         print(
             '\n\033[92m My own following list is empty , downloading ...\033[0m')
@@ -126,7 +140,7 @@ def check_user(self, user_id, filter_closed_acc=False):
         print('\n\033[91m not user_info , Skipping \033[0m')  # Log to Console
         return False
 
-    print('\n USER_NAME: %s   ,FOLLOWER: %s   ,FOLLOWING: %s ' % (user_info[
+    print('\n USER_NAME: %s , FOLLOWER: %s , FOLLOWING: %s ' % (user_info[
           "username"], user_info["follower_count"], user_info["following_count"]))  # Log to Console
     if filter_closed_acc and "is_private" in user_info:
         if user_info["is_private"]:
@@ -136,7 +150,7 @@ def check_user(self, user_id, filter_closed_acc=False):
     if "is_business" in user_info:
         if user_info["is_business"]:
             # Log to Console
-            print('\n info : \033[91m is BUISINESS , Skipping \033[0m')
+            print('\n info : \033[91m is BUSINESS , Skipping \033[0m')
             skippedlist_adder(self, user_id)  # Add user_id to skipped.txt
             return False
     if "is_verified" in user_info:
