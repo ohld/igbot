@@ -44,7 +44,7 @@ def unfollow_users(self, user_ids):
 def unfollow_non_followers(self, n_to_unfollows=None):
     self.logger.info("Unfollowing non-followers")
     self.update_unfollow_file()
-    print("\n\033[91m ===> Star Unfollowing Non_Followers List <===\033[0m")
+    print("\n\033[91m ===> Start Unfollowing Non_Followers List <===\033[0m")
     unfollow_file = "unfollow.txt"
     new_unfollow_list = list(line.strip() for line in open(unfollow_file))
     for user in new_unfollow_list[:n_to_unfollows]:  # select only first n_to_unfollows users to unfollow
