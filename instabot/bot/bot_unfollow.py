@@ -68,7 +68,7 @@ def update_unfollow_file(self):  # Update unfollow.txt
     nonfollowerslist = list(
         (set(followings) - set(followers)) - set(friends_file))
     followed_file = "followed.txt"
-    followed_list = list(line.strip() for line in open(followed_file))
+    followed_list = self.read_list_from_file(followed_file)
     unfollow_list = []
     unfollow_list += [x for x in followed_list if x in nonfollowerslist]
     unfollow_list += [x for x in nonfollowerslist if x not in followed_list]

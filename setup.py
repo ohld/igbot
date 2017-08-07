@@ -1,4 +1,4 @@
-from distutils.core import setup
+from setuptools import setup
 setup(
     name='instabot',
     packages=['instabot', 'instabot.bot', 'instabot.api'],
