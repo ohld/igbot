@@ -29,6 +29,9 @@ def follow(self, user_id):
 
 def follow_users(self, user_ids):
     broken_items = []
+    if not limits.check_if_bot_can_follow(self):
+        self.logger.info("Out of follows for today.")
+        return
     self.logger.info("Going to follow %d users." % len(user_ids))
     followed_list = self.read_list_from_file(
         "followed.txt")   # Read followed.txt file
@@ -51,6 +54,9 @@ def follow_users(self, user_ids):
 
 def follow_followers(self, user_id, nfollows=None):
     self.logger.info("Follow followers of: %s" % user_id)
+    if not limits.check_if_bot_can_follow(self):
+        self.logger.info("Out of follows for today.")
+        return
     if not user_id:
         self.logger.info("User not found.")
         return
@@ -63,6 +69,9 @@ def follow_followers(self, user_id, nfollows=None):
 
 def follow_following(self, user_id, nfollows=None):
     self.logger.info("Follow following of: %s" % user_id)
+    if not limits.check_if_bot_can_follow(self):
+        self.logger.info("Out of follows for today.")
+        return
     if not user_id:
         self.logger.info("User not found.")
         return
