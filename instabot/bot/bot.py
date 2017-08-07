@@ -10,14 +10,14 @@ from .bot_get import get_geotag_medias, get_timeline_users, get_hashtag_users
 from .bot_get import get_media_commenters, get_userid_from_username, get_username_from_userid
 from .bot_get import get_user_followers, get_user_following, get_media_likers, get_popular_medias
 from .bot_get import get_media_comments, get_geotag_users, get_locations_from_coordinates, convert_to_user_id
-from .bot_get import get_comment, get_media_info, get_user_likers, get_archived_medias
+from .bot_get import get_comment, get_media_info, get_user_likers, get_archived_medias, get_total_user_medias
 
 from .bot_like import like, like_medias, like_timeline, like_user, like_users
 from .bot_like import like_hashtag, like_geotag, like_followers, like_following
 
 from .bot_unlike import unlike, unlike_medias, unlike_user
 
-from .bot_photo import download_photo, download_photos
+from .bot_photo import download_photo, download_photos, upload_photo
 
 from .bot_video import upload_video
 
@@ -229,6 +229,9 @@ class Bot(API):
     def get_user_medias(self, user_id, filtration=True, is_comment=False):
         return get_user_medias(self, user_id, filtration, is_comment)
 
+    def get_total_user_medias(self, user_id):
+        return get_total_user_medias(self, user_id)
+
     def get_hashtag_medias(self, hashtag, filtration=True):
         return get_hashtag_medias(self, hashtag, filtration)
 
@@ -328,11 +331,14 @@ class Bot(API):
 
     # photo
 
-    def download_photo(self, media_id, path='photos/', filename=None):
-        return download_photo(self, media_id, path, filename)
+    def download_photo(self, media_id, path='photos/', filename=None, description=False):
+        return download_photo(self, media_id, path, filename, description)
 
-    def download_photos(self, medias, path='photos/'):
-        return download_photos(self, medias, path)
+    def download_photos(self, medias, path='photos/', description=False):
+        return download_photos(self, medias, path, description)
+
+    def upload_photo(self, photo, caption=None, upload_id=None):
+        return upload_photo(self, photo, caption, upload_id)
 
     # video
 
@@ -361,8 +367,8 @@ class Bot(API):
     def unfollow_users(self, user_ids):
         return unfollow_users(self, user_ids)
 
-    def unfollow_non_followers(self, nToUnfollows):
-        return unfollow_non_followers(self, nToUnfollows)
+    def unfollow_non_followers(self, n_to_unfollows):
+        return unfollow_non_followers(self, n_to_unfollows)
 
     def unfollow_everyone(self):
         return unfollow_everyone(self)
