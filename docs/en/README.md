@@ -18,13 +18,13 @@ Instabot is a module for the Python language, which not only implements the wrap
 
 * For error messages, use this [page](https://github.com/instagrambot/instabot/issues).
 * If you have questions or would like to share your experience using Instabot, please write to our [Telegram](https://t.me/instabotproject).
-* You can find answers to the most popular questions [here]().
+* You can find answers to the most popular questions [here](/docs/en/FAQ.md).
 
 ## Installation
 
 You can read the instructions for installing Instabot, following the link below.
 * Installing on [Windows](/docs/en/Installation_on_Windows.md),
-* Installing on [Unix](/docs/en/FAQ.md).
+* Installing on [Unix](/docs/en/Installation_on_Unix.md).
 
 ## How to use
 
