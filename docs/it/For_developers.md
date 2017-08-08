@@ -81,40 +81,40 @@ Questo vale sia per i commenti, che per le liste di hashtag ed utenti nei vari f
 
 | method        | descrizione | esempio  |
 | ------------- |:-------------:| ------:|
-| get_your_medias | Get list of your last medias | bot.get_you_medias()|
-| get_timeline_medias | Get list of media_ids from your timeline feed| bot.get_timeline_medias()|
-| get_user_medias | Get list of user's medias | bot.get_user_medias("ohld")|
-| get_hashtag_medias| Get list of medias by hashtag| bot.get_hashtag_medias("Dog")|
-| get_geotag_medias| Get list of medias by geotag| TODO |
-| get_timeline_users| Get list ofutenti from your timeline feed| bot.get_timeline_users()|
-| get_hashtag_users| Get list ofutenti who posted with hashtag| bot.get_hashtag_users("Dog") |
-| get_geotag_users| Get list ofutenti who posted with geotag| TODO |
-| get_userid_from_username| Convert username to user_id| bot.get_userid_from_username("ohld") |
-| get_user_followers| Get list of user's followers| bot.get_user_followers("competitor") |
-| get_user_following| Get list of user's following| bot.get_user_following("competitor") |
-| get_media_likers | Get list of media likers| bot.get_media_likers("12312412") |
-| get_media_comments | Get list of media's comments| bot.get_media_comments("12312412") |
-| get_comment | Get comment from comment file| bot.get_comment()|
-| get_media_commenters| Get list ofutenti who commented on the media| bot.get_media_commenters("12321")|
+| get_your_medias | Ottiene una lista dei tui media | bot.get_you_medias()|
+| get_timeline_medias | Ottiene una lista dei media_ids dal feed della tua timeline | bot.get_timeline_medias()|
+| get_user_medias | Ottiene una lista dei media di un dato utente | bot.get_user_medias("ohld")|
+| get_hashtag_medias| Ottiene una lista dei media in base all'hashtag | bot.get_hashtag_medias("Dog")|
+| get_geotag_medias| Ottiene una lista dei media in base al geotag| TODO |
+| get_timeline_users| Ottiene una lista di utenti in base al feed della tua timeline | bot.get_timeline_users()|
+| get_hashtag_users| Ottiene una lista di utenti in base all'hashtag| bot.get_hashtag_users("Dog") |
+| get_geotag_users| Ottiene una lista di utenti in base al geotag| TODO |
+| get_userid_from_username| Converte username nell'user_id| bot.get_userid_from_username("ohld") |
+| get_user_followers| Ottiene una lista di utenti che seguono un utente | bot.get_user_followers("competitor") |
+| get_user_following| Ottiene una lista di utenti seguiti da un dato utente | bot.get_user_following("competitor") |
+| get_media_likers | Ottiene una lista di utenti a cui piace un media | bot.get_media_likers("12312412") |
+| get_media_comments | Ottiene una lista di commenti sotto un media | bot.get_media_comments("12312412") |
+| get_comment | Ottiene una lista di commenti da un file | bot.get_comment()|
+| get_media_commenters| Ottiene una lista di utenti che hanno commentato sotto un media | bot.get_media_commenters("12321")|
 
 
 ### Like
 
 | method        | descrizione | esempio  |
 | ------------- |:-------------:| ------:|
-| like | Like media_id | bot.like("1231241210")|
-| like_medias | Like medias from list | bot.like_medias(["1323124", "123141245"])|
-| like_timeline | Like medias from your timeline feed| bot.like_timeline()|
-| like_user | Like last user's medias| bot.like_user("activefollower")|
-| like_hashtag | Like last medias with hashtag | bot.like_hashtag("dog")|
-| like_geotag | Like last medias with geotag| TODO|
+| like | Mette like ad un media | bot.like("1231241210")|
+| like_medias | Mette like ad un media presente in una lista | bot.like_medias(["1323124", "123141245"])|
+| like_timeline | Mette like ai media della timeline | bot.like_timeline()|
+| like_user | Mette like agli ultimi media dell'utente | bot.like_user("activefollower")|
+| like_hashtag | Mette like agli ultimi media in base all'hashtag | bot.like_hashtag("dog")|
+| like_geotag | Mette like agli ultimi media in base al geotag |TODO|
 
 ### Unlike
 
 | method        | descrizione | esempio  |
 | ------------- |:-------------:| ------:|
-| unlike | Remove like from media | bot.unlike("12321412512")|
-| unlike_medias | Remove likes from medias in list| bot.unlike_medias(["123", "321"])|
+| unlike | Toglie il like da un media | bot.unlike("12321412512")|
+| unlike_medias | Toglie il like da un media presente nella lista | bot.unlike_medias(["123", "321"])|
 
 ### Follow
 
