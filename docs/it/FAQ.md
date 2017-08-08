@@ -1,55 +1,59 @@
-# Popular questions on instabota.
+# Domande frequenti su Instabot.
 
-### How do I install a bot?
+### Come installo il bot?
 
-The installation depends on your operating system. [Installation for Windows](/docs/en/Installation_on_Windows.md). [Installation for Unix](/docs/en/Installation_on_Unix.md) (Linux, MacOS).
+L'installazione dipende dal tuo sistema operativo. [Installazione per Windows](/docs/it/Installation_on_Windows.md). [Installazione su Unix](/docs/it/Installation_on_Unix.md) (Linux, MacOS).
 
-All the work with the bot, like installation, occurs through the command line (terminal / CMD). Do not be afraid of it - there is nothing complicated in it.
+Tutto il lavoro del bot viene gestito dalla riga di comando (terminal / CMD). Non ti spaventare, non c'è nulla di complicato.
 
-### How do I start a bot?
+### Come faccio partire il bot?
 
-First you need to install it. Then go to the sample folder and run any script via the command line, for example:
+Per prima cosa devi installarlo. Poi naviga nella cartella "examples" e lancia uno qualsiasi degli script con la liena di comando, per esempio:
+
+
 ``` python
 python multi_script_CLI.py
 ```
 
-If the script needs to pass any parameters to run, for example, a list of hashtags for the liking, then the script will output it to you. In the example with like_hashtags.py, it will output:
+Se lo script necessita che siano passati dei parametri per funzionare, per esempio, una lista di hashtag per mettere "mi piace", allora lo script te lo mostrerà. Nell'esempio, lo script like_hahstag.py, mostrerà a schermo: 
 ```
 Usage: Pass hashtags to like
 Example: python like_hashtags.py dog cat
 ```
 
-It immediately becomes clear how to work with this script. For example, if you want to like the latest media with a hashtag **#cat** or **#dog**, then:
+Diventa quindi molto intuitivo come lavorare con questo script. Per esempio, se vuoi mettere like agli ultimi media pubblicati con l'hashtag **#cat** or **#dog**, allora scrivi nel terminale:
 ``` python
 python like_hashtags.py cat dog
 ```
 
-### Where do I enter the username and password from the Instagram account?
+### Dove inserisco Password e Username del mio account Instagram?
 
-They can not be specified at all: the bot itself will ask them to enter at the first start. They will be saved to the file secret.txt and will be downloaded from there when further starts. You can also pass them manually to the function login():
+Non vengono specificati per nulla: Il bot stesso li chiederà la prima volta che viene avviato. Verranno poi salvati nel file secret.txt
+e verranno quindi recuperati facilmente dal file. Puoi anche passarli allo script manualmente, alla funzione login():
 ``` python
 bot.login(username=«my_username», password=«my_password»)
 ```
 
-Also, when you start the script for the first time, you will be able to add several accounts to Instabot. In the future, if you specify more than one account, before each start, you will have the opportunity to choose an accent to work with.
+Inoltre, quando avvii lo script per la prima volta, potrai aggiungere diversi account ad Instabot. Nei futuri accessi, se specifichi più di un account, prima di ogni avvio, avrai la possibilità di scegliere l'account con cui lavorare.
 
-### When you enter the password, it is not displayed! What to do?
+### Quando inserisco la password, non si vede! Che posso fare?
 
-The password is not displayed specially so that no one can spy on it. Не переживайте, он вводится корректно. Если вы случайно ввели неправильный пароль, то при следующем запуске, если пароль не подойдет, Вас попросят ввести его еще раз. 
+La password non viene mostrata in modo che non possa essere rubata da qualcuno che ti spia alle spalle. Non ti preoccupare, è stata inserita correttamente. Se accidentalmente hai inserito la password errata, la prossima volta che esegui lo script, se la password non è corretta, ti verrà chiesto di inserire di nuovo.
 
-### When entering the login and password for the Instagram account, where do they go? Are they sent remotely?
+### Quando inserisco login e password per il mio account Instagram, dove vanno a finire? Sono trasmesse a qualche host remoto?
 
-The entered login and password are stored locally on your computer in the secret.txt file. It is not transmitted anywhere.
+Login e password vengono salvati in locale nel file secret.txt. Non vengono trasmessi da nessuna parte.
 
-### Will my account be banned?
+### Il mio account è a rischio di essere banato?
 
-Instabot has limits both on the number of subscriptions / likes / comments and so on per day, and on the frequency of requests - for example, do not subscribe too quickly. Instabot already has its own limits, which guarantee safe use. You can set your own values, but be careful. More details about this can be read here (make a page with a description of these parameters and how to change). The bot saves the number of likes / subscriptions / unsubscriptions and so on. And dumps them once a day.
+Instabot ha limiti sia sul numero di follow / like / commenti e così via su base giornaliera, sia sulla frequenza delle richieste - per esempio, non seguire persone troppo rapidamente. Instabot ha già dei suoi limiti, che garantiscono un utilizzo sicuro. È possibile impostare i propri valori, ma fai attenzione. 
+Ulteriori dettagli su questo possono essere letti qui (TODO --> fare una pagina con una descrizione di questi parametri e come modificare). Il bot salva il numero di like / follow / unfollow e così via. E li azzera una volta al giorno.
 
-### Is it possible to speed up, for example, an answer from everyone? Is it safe?
+### Esiste la possibilità di accelerare il processo, una volta per tutte? Rimane un approccio sicuro?
 
-There are parameters for the class `instabot.Bot ()`. If you run the __milti_script_CLI__ code, open it with a text editor, find the value __unfollow_delay = 30__ there, change it to whatever you want. Similarly, you can change other settings. But note, this can be unsafe.
+Ci sono parametri all'interno di `instabot.Bot ()`. Se lanci __milti_script_CLI__ , aperto con un editor di testo, puoi trovare  il parametro __unfollow_delay = 30__ qui, cambialo con ciò che preferisci. Similmente, puoi cambiare altri parametri nello stesso modo. Ma attenzione, potrebbe essere pericoloso.
 
-Agree that if you unsubscribe from 100 people per second, you will be banned for sure. The limits depend on the age and size of the account, so their fine-tuning is everyone's business. The values that stand by default in Instabot are safe for _most_. No one was banned because of them.
+Sarai d'accordo con me che se fai partire degli un-follow da 100 persone al secondo, sarai sicuramente bannato. I limiti dipendono dall'età e dalla dimensione dell'account, per cui il loro setup  è l'attività di tutti. I valori dati come impostazione predefinita in Instabot sono sicuri per _la maggior parte degli account_. Nessuno è stato bannato a causa di questi settaggi di default.
 
 ### I want the bot to unsubscribe from accounts that did not respond with a mutual subscription.
 
