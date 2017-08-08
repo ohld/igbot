@@ -12,7 +12,7 @@ Come dovresti sapere, Instagram ha chiuso le sue API nell'estate del 2016. Quest
 
 ## Che cos'è?
 
-Instabot è un modulo per il linguaggio python, che non racchiude soltanto un wrapper per le API Instagram, ma anche numerose funzioni molto utili, come "segui questa lista di persone", "metti like alle foto con questo hashtag", "non seguire più tutti quelli che non ti seguono", e via dicendo. Instabot è piuttosto intelligente: [leggi](/docs/it/Filtri.md), per esempio, per vedere come filtra le persone che sta per seguire.
+Instabot è un modulo per il linguaggio python, che non racchiude soltanto un wrapper per le API Instagram, ma anche numerose funzioni molto utili, come "segui questa lista di persone", "metti like alle foto con questo hashtag", "non seguire più tutti quelli che non ti seguono", e via dicendo. Instabot è piuttosto intelligente: [leggi](/docs/it/Filtration.md), per esempio, per vedere come filtra le persone che sta per seguire.
 
 ## Fai una domanda
 
