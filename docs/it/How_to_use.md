@@ -1,78 +1,79 @@
-# Instructions for use
+# Istruzioni per l'uso del modulo Instabot
 
-**Important! Read the instructions from start to finish, and then act! Good luck!**
+**Importante! Leggi le istruzioni dall'inizio alla fine, e poi passa all'utilizzo! Buona Fortuna!**
 
-## How to work?
+## Come farlo funzionare?
 
-You will need a downloaded project. In the ***instabot/examples/*** folder there are scripts for work.
+Avrai bisogno di un progetto scaricato. Nella cartella ***instabot/examples/*** ci sono script lavorabili.
 
-## How do I run the script?
+## Come far funzionare il bot?
 
-Open the command line, use ***cd*** to go to the project directory, namely ***instabot/examples***. Type.
-
-``` python
-python name.py param
-```
-
-Where ***name*** is the name of the script, ***param*** is the required parameter for running the script. Not all scripts need a parameter.
-
-## How do I know if I need an input parameter for a script?
-
-Run the script by typing.
+Apri la linea di comando, utilizza ***cd*** per navigare nella directory del progetto, solitamente ***instabot/examples***. 
+Digita
 
 ``` python
-python name.py
+python scriptscelto.py param
 ```
 
-If there are no necessary parameters, the script will stop and display an error.
-Example.
-Run the script.
+Dove ***scriptscelto*** è il nome dello script... scelto ;) , ***param*** è il parametro richiesto per weseguire lo script. Non tutti gli script necessitano di parametri.
+
+## Come faccio a capire se lo script necessita di parametri?
+
+Avvia lo script digitando
+
+``` python
+python scriptscelto.py
+```
+
+Se non ci sono parametri necessari, lo script si fermerà e mostrerà un errore.
+Per esempio.
+Avvia uno script.
+Digita.
 
 ``` python
 python like_hashtags.py. 
 ```
 
-The script stops and displays a message:
+Lo script si fermerà e mostrerà un messaggio:
 
 ``` python
 error: the following arguments are required: hashtags.
 ```
 
-That is, we had to enter a hashtag. Correct example:
+Eccolo, dovremo quindi inserire un hashtag. Esempio corretto. 
 
 ``` python
 python like_hashtags.py follow
 ```
 
-## All inclusive
+## Script Al Inclusive
 
-***multi_script_CLI.py*** is a script that contains all the functions. The first time you run it, you will be prompted to configure the script. Script settings are stored in the ***setting.txt*** file. Also files will be created: ***hashtag_file.txt, users_file.txt, whitelist.txt, blacklist.txt, comment.txt***.
+***multi_script_CLI.py*** è uno script che contiene tutte le funzioni. LA prima volta che lo avvii, verrà richiesto di configurarlo. La configurazione viene salvata nel file ***setting.txt***. Anche questi file vengono creati: ***hashtag_file.txt, users_file.txt, whitelist.txt, blacklist.txt, comment.txt***.
 
 ## 24/7
 
-Yes, there is a script that rounds up subscribers and subscriptions of certain people around the clock, and also likes photos by nickname and hashtag. All this allows the script - ***ultimate.py***, which is in the ***instabot/examples/ultimate*** folder. The folder also contains other text files for running the script. In these files, each new parameter needs to be written from a new line.
+Sì, c'è uno script che aumenta i follower e le persone che segui durantetutto l'arco della giornata, e può mettere like anche alle foto in base a nome profilo e hashtag. queste sono solo alcune delle funzionalità dello script - *** ultimate.py ***, che trovi nella cartella *** instabot / examples / ultimate ***. La cartella contiene anche altri file di testo per eseguire lo script. In questi file, ogni nuovo parametro deve essere scritto da una nuova linea.
 
 ## Schedule
 
-Also there is a script that will work around the clock, BUT this script will act according to plan. This script is ***ultimate.py*** in the ***instabot/examples/ultimate_schedule*** folder. You can open the code with any editor and fix it. This will be easy, since there are comments in important parts of the code.
+C'è un secndo script che può lavorare per tutta la giornata, MA questo script agirà secondo un piano. questo script è ***ultimate.py*** che trovi nella cartella ***instabot/examples/ultimate_schedule***. Puoi aprire il codice con un editor di testo e programmare il tutto. Dovrebbe essere molto semplice, perchè il codice è molto ben commentato.
 
-## How to configure the script correctly
+## Come configurare correttamente lo script
 
-To ensure that your account has not been banned, you need to configure the script Example. Suppose we need to keep photos on the hashtag every minute. First of all, time in seconds. Open ***like_hashtags.py*** with a text editor. Find such lines (approximately so they should look).
+Per garantire che il tuo account non venga bannato, devi configurare lo script example. Supponiamo che dobbiamo monitorare le foto con un determinato hashtag ogni minuto. Prima di tutto, indichiamo il tempo in secondi. Apri *** like_hashtags.py *** con un editor di testo. Trova queste linee (più o meno dovrebbero essere come queste).
 
 ``` python
 bot = Bot()
 bot.login(username=args.u, password=args.p,
           proxy=args.proxy)
 ```
-
-Next in line.
+E nelle linee successive
 
 ``` python
 bot = Bot()
 ```
 
-We need to write a parameter in parentheses. This parameter is ***like_delay***. This parameter needs to be set to 60, since we need every minute the bot to be happy with the photo on the hashtag. In the end, it will look like this.
+Dobbiamo scrivere un parametro nelle parentesi. Questo parametro è ***like_delay***. Questo parametro deve essere settato a 60, siccome abbiamo bisogno che il bot metta like alle foto con un determinato hashtag. Alla fine, dovrebbe risultare qualcosa di simile. 
 
 ``` python
 bot = Bot(like_delay=60)
@@ -80,56 +81,33 @@ bot.login(username=args.u, password=args.p,
           proxy=args.proxy)
 ```
 
-## Parameter List
+## Lista dei Parametri
 
-| parameter| description | example |
+| parametro| descrizione | esempio |
 | ------------- |:-------------:| ------:|
-| proxy | Proxy for Instabot | None|
-| max_likes_per_day| How many likes the bot will perform per day| 1000|
-| max_unlikes_per_day | How many medias the bot will unlike in a day| 1000|
-| max_follows_per_day| Max number of follow per day| 350|
-| max_unfollows_per_day| Max number of unfollow per day| 350|
-| max_comments_per_day| Max number of comments per day| 100|
-| max_likes_to_like| If the media has more likes then this value - it will be ignored and not be liked | 200|
-| filter_users | Filter users if True | True|
-| max_followers_to_follow| If the user has more followers than this value - the user will not be followed or liked. | 2000|
-| min_followers_to_follow| If the user has fewer followers than this value - the user will not be followed or liked.| 10|
-| max_following_to_follow| If the user has more followings than this value - the user will not be followed or liked.| 10000|
-| min_following_to_follow| If the user has fewer followings than this value - the user will not be followed or liked.| 10|
-| max_followers_to_following_ratio| if the user's followers/following is greater than this value - the user will not be followed or liked.| 10|
-| max_following_to_followers_ratio| if user's following/followers is greater than this value - he will not be followed or liked.| 2|
-| min_media_count_to_follow| If the user has fewer media count than this value - the user will not be followed. | 3|
-|max_following_to_block|If the user have a following more than this value - the user will be blocked in blocking scripts because he is a massfollower| 2000|
+| proxy | Proxy per Instabot | None|
+| max_likes_per_day| Quanti like il bot invierà al giorno| 1000|
+| max_unlikes_per_day | A quanti media il bot toglierà il like al giorno| 1000|
+| max_follows_per_day| Massimo numero di persone seguite al giorno| 350|
+| max_unfollows_per_day| Massimo numero di unfollow al giorno| 350|
+| max_comments_per_day| Massimo numero di commenti al giorno| 100|
+| max_likes_to_like| Se il media ha più like di questo valore, - viene ignorato e non viene messo like | 200|
+| filter_users | Filtra gli utenti se True | True|
+| max_followers_to_follow| Se l'utente ha più followers di questo valore - l'utente non verrà nè seguito nè verrà messo like | 2000|
+| min_followers_to_follow| Se l'utente ha meno followers di questo valore - l'utente non verrà nè seguito nè verrà messo like| 10|
+| max_following_to_follow| Se l'utente segue più utenti di questo valore - l'utente non verrà nè seguito nè verrà messo like| 10000|
+| min_following_to_follow| Se l'utente segue meno utenti di questo valore - l'utente non verrà nè seguito nè verrà messo like| 10|
+| max_followers_to_following_ratio| Se il rapporto tra followers/persone seguite dall'utente è più grande di questo valore - l'utente non verrà nè seguito nè verrà messo like| 10|
+| max_following_to_followers_ratio| Se il rapporto tra persone seguite/followers dall'utente è più grande di questo valore - he will not be followed or liked.| 2|
+| min_media_count_to_follow| Se l'utente ha meno media di questo valore - l'utente non verrà seguito | 3|
 | max_likes_to_like | Max number of likes that can media have to be liked | 100 |
-| like_delay | Delay between likes in seconds| 10|
-| unlike_delay | Delay between unlikes in seconds | 10|
-| follow_delay | Delay between follows in seconds| 30|
-| unfollow_delay | Delay between unfollows in seconds| 30|
-| comment_delay | Delay between comments in seconds|  60|
-| whitelist | Path to the file with users that shouldn't be unfollowed| "whitelist.txt"|
-| blacklist | Path to the file with users that shouldn't be followed, liked or commented | "blacklist.txt"|
-| comments_file | Path to the comments database | "comments.txt" |
-| stop_words| A list of stop words: don't follow a user if they have any of these stop words in their description| ['shop', 'store', 'free']|
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+|max_following_to_block|Se l'utente segue più persone di questo valore - l'utente verrà bloccato attraverso gli script di blocco, perchè è un massfollower | 2000|
+| like_delay | Ritardo tra i like, in secondi| 10|
+| unlike_delay | Ritardo tra gli un-like, in secondi | 10|
+| follow_delay | Ritardo tra i follow, in secondi | 30|
+| unfollow_delay | Ritardo tra gli un-follow, in secondi | 30|
+| comment_delay | Ritardo tra i commenti, in secondi |  60|
+| whitelist | Indirizzo della "lista bianca" degli utenti che non si smetterà di seguire | "whitelist.txt"|
+| blacklist | Indirizzo della "lista nera" degli utenti a cui non verrà messo follow, like o commento | "blacklist.txt"|
+| comments_file | Indirizzo del file contenente i commenti | "comments.txt" |
+| stop_words| Una lista di Stop Words: non seguire un utente se ha almeno una di queste parole in descrizione| ['shop', 'store', 'free']|
