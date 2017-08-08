@@ -1,43 +1,43 @@
-# Installation instructions on Windows
+# Istruzioni per l'installazione su Windows
 
-**Important! Read the instructions from start to finish, and then act! Good luck!**
+**Importante! Leggi le istruzioni dall'inizio alla fine, e poi passa all'utilizzo! Buona Fortuna!**
 
-## Installing Python 3
+## Installare Python 3
 
-1. Go to the Python [website](https://www.python.org/downloads/).
-2. Choose the version that suits you (depends on the operating system).
-3. Download.
-4. Run the installer.
-5. Follow the instructions that the installer offers you. Check "Add Python 3.x to Path" and click on Install Now (see the figure below). If you are an experienced user, select Customize installation.
+1. Vai sul sito di Python [vai al sito](https://www.python.org/downloads/).
+2. Scegli la versione adatta a te (dipende dal sistema operativo).
+3. Procedi al download della tua versione.
+4. Esegui l'installer.
+5. Segui le istruzioni dell'installer. Ricorda di mettere la spunta a "Add Python 3.x to Path" e clicca su Install Now (Guarda la figura qui sotto). Se sei un utente esperto, seleziona "Customize Installation".
 
 ![Install Python 3 and add to PATH](/docs/img/install_python_on_Windows.PNG "Install Python 3 and add to PATH").
 
-## Downloading a project from GitHub
+## Scaricare un progetto da Github
 
-There are two options for downloading the project:
+Ci sono due modi di scaricare un progetto: 
 
-a) Click the link https://github.com/instagrambot/instabot. Click on "Clone or download", and then on "Download ZIP". Unpack it.
-b) Installing the Git Client:
-1. Go to the Git [site](https://git-scm.com/downloads).
-2. Choose the version that suits you (depends on the operating system).
-3. Download.
-4. Run the installer.
-5. Follow the instructions that the installer suggests (click on Next). You can configure the client yourself if you are an experienced user.
-6. After installation, run the command line.
-7. At the command prompt, type.
+a) Click sul link https://github.com/instagrambot/instabot. Click su "Clone or download",  e successivamente "Download ZIP". Decomprimi l'archivio.
+b) Installare il client Git:
+1. Vai al sito di Git [sito](https://git-scm.com/downloads).
+2. Scegli la versione adatta a te (dipende dal sistema operativo).
+3. Procedi al download della tua versione.
+4. Esegui l'installer.
+5. Segui le istruzioni che ti vengono suggerite (clicca su Next). Puoi configurare il client da solo se sei un utente esperto.
+6. Dopo l'installazione, lancia il prompt dei comandi.
+7. E dal prompt dei comandi, digita:
 
 ``` python
 git clone https://github.com/instagrambot/instabot
 ```
-And press Enter.
+Ora premi enter.
 
-***Congratulations! You downloaded the project!***
+***Congratulazioni! Hai scaricato il progetto!***
 
-## Installing instabot in a virtual Python environment
+## Installare instabot in un ambiente virtuale Python
 
-At the command prompt, type.
+Dal prompt dei comandi, digita:
 
 ``` python
 pip install -U instabot
 ```
-And press Enter.
+E premi enter.
