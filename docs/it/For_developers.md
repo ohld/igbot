@@ -1,4 +1,4 @@
-## Documentation
+## Documentazione
 
 ### Bot Class
 
@@ -120,24 +120,24 @@ Questo vale sia per i commenti, che per le liste di hashtag ed utenti nei vari f
 
 | method        | descrizione | esempio  |
 | ------------- |:-------------:| ------:|
-| follow | Follow user | bot.follow("activefollower")|
-| follow_users | Followutenti from list | bot.follow(["activefollower1", "activefollower2"])|
+| follow | Segui utenti | bot.follow("activefollower")|
+| follow_users | Segui utenti dalla lista | bot.follow(["activefollower1", "activefollower2"])|
 
 ### Unfollow
 
 | method        | descrizione | esempio  |
 | ------------- |:-------------:| ------:|
-| unfollow | Unfollow user | bot.unfollow("competitor")|
-| unfollow_users | Unfollowutenti from list | bot.unfollow(["competitor1", "competitor2"])|
-| unfollow_non_followers | Unfollowutenti who don't follow you | bot.unfollow_non_followers()|
+| unfollow | Smetti di seguire gli utenti | bot.unfollow("competitor")|
+| unfollow_users | Smetti di seguire gli utenti dalla lista | bot.unfollow(["competitor1", "competitor2"])|
+| unfollow_non_followers | Smetti di seguire gli utenti che non ti seguono | bot.unfollow_non_followers()|
 
-### Comment
+### Commenti
 
 | method        | descrizione | esempio  |
 | ------------- |:-------------:| ------:|
-| comment | Put a comment under the media | bot.comment("1231234", "Nice pic!")|
-| comment_medias | Put comments under medias from list | bot.comment_medias(["123", "321"])|
-| comment_hashtag | Put comments under medias by hashtag| bot.comment_hashtag("Dog")|
-| comment_geotag | Put comments under medias by geotag | TODO |
-| comment_users | Put comments underutenti' last medias | bot.comment_users(["activefollower1", "activefollower2"]) |
-| is_commented | Check if media is already commented | bot.is_commented("123321") |
+| comment | Metti un commento sotto il media | bot.comment("1231234", "Nice pic!")|
+| comment_medias | Metti un commento sotto il media nella lista | bot.comment_medias(["123", "321"])|
+| comment_hashtag | Metti un commento sotto il media contenente l'hashtag | bot.comment_hashtag("Dog")|
+| comment_geotag | Metti un commento sotto il media geolocalizzato | TODO |
+| comment_users | Metti un commento sotto gli ultimi media degli utenti | bot.comment_users(["activefollower1", "activefollower2"]) |
+| is_commented | Controlla il media se ha già commentati | bot.is_commented("123321") |
