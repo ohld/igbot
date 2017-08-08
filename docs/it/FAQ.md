@@ -51,46 +51,49 @@ Ulteriori dettagli su questo possono essere letti qui (TODO --> fare una pagina 
 
 ### Esiste la possibilità di accelerare il processo, una volta per tutte? Rimane un approccio sicuro?
 
-Ci sono parametri all'interno di `instabot.Bot ()`. Se lanci __milti_script_CLI__ , aperto con un editor di testo, puoi trovare  il parametro __unfollow_delay = 30__ qui, cambialo con ciò che preferisci. Similmente, puoi cambiare altri parametri nello stesso modo. Ma attenzione, potrebbe essere pericoloso.
+Ci sono parametri all'interno di `instabot.Bot ()`. Se lanci __multi_script_CLI__ , aperto con un editor di testo, puoi trovare  il parametro __unfollow_delay = 30__ qui, cambialo con ciò che preferisci. Similmente, puoi cambiare altri parametri nello stesso modo. Ma attenzione, potrebbe essere pericoloso.
 
 Sarai d'accordo con me che se fai partire degli un-follow da 100 persone al secondo, sarai sicuramente bannato. I limiti dipendono dall'età e dalla dimensione dell'account, per cui il loro setup  è l'attività di tutti. I valori dati come impostazione predefinita in Instabot sono sicuri per _la maggior parte degli account_. Nessuno è stato bannato a causa di questi settaggi di default.
 
-### I want the bot to unsubscribe from accounts that did not respond with a mutual subscription.
+### Vorrei che il bot smettesse di seguire le persone che non mi seguono.
 
-For your task, the already written script, which lies in the examples folder: unfollow_non_followes.py, is suitable. Просто перейдите папку с этим скриптом на вашем компьютере и выполните в терминале. 
+Per questo compito, abbiamo già preparato uno script, che trovi nella cartella ***examples***: __unfollow_non_followers.py__ è perfetto. 
+Basta andare alla cartella con lo script sul proprio computer ed eseguire nel terminale.
+
 ``` python
 python unfollow_non_followers.py
 ```
 
-### I want the bot to put the likes of posts with hashtags, which I will list.
+### Vorrei che il bot metta like ai post che contengono un hashtag 
 
-Everything again is very simple! Run the example like_hashtags.py, for example, like this:
+Ancora molto semplice: esegui lo script like_hashtags.py, come questo:
+
 ``` python
 python like_hashtags.py dog cat
 ```
 
-### Too many scripts! Is there anything in one bottle?
+### Troppi Script! Ce n'è uno che possa riordinarli tutti?
 
-There is. Thanks to the efforts of our community, a very cool script was written. You can find it under the name [multi_script_CLI.py](/examples/multi_script_CLI.py). He is in English, but I think everything will be clear. I strongly advise you to try it!
+Eccolo. Grazie agli sforzi della community, è stato scritto uno script molto figo. Puoi trovarlo sotto il nome di [multi_script_CLI.py](/examples/multi_script_CLI.py). Scritto in inglese, ma penso che sia molto chiaro. Prova ad usarlo! 
 
-### How can I organize an auto-posting photo in the Instagram?
+### Come posso organizzare l'autoposting di immagini su Instagram?
 
-For this, we have a daddy in [examples](/examples/autopost). Below on that page you will find how to configure and run auto-hosting.
+Per questo, abbiamo una soluzione nella cartella [examples](/examples/autopost). In fondo alla pagina trovi alcune info su come configurare l'autoposting
 
-### AutoPost publishes only a photo or description and a hashtag, too?
+### L'AutoPost pubblica solo la foto o anche descrizione e hashtag?
 
-Hashtags is the same description - just add them there.
+Gli hashtag sono gestiti come le descrizioni.
 
-### Can I publish video via autoposting?
+### Posso pubblicare i video in AutoPost?
 
-Unfortunately no. This would increase the size of the project several times.
+Purtroppo no. Questo renderebbe molto complicato il progetto.
 
-### How can I help the project?
+### Come posso aiutare il progetto?
 
-Вы можете:
-* Put the star in Github. To do this, just click on the star here https://github.com/instagrambot (top right), May need to register (for free).
-* Login to [Telegram Group](https://t.me/instabotproject) and help newcomers to understand the installation and configuration of Instabot. 
-* Tell us about our project wherever possible. It will be enough to throw off the link: https://instagrambot.github.io.
-* You can find bugs and errors found in [Issues](https://github.com/instagrambot/instabot/issues), be sure to attach the _screenshots_ and _commands_ that you entered. This will help correct these errors and make Instabot better!
-* Correct these errors if you are a developer. Do this through the Pull request, following the standard PEP8.
-* To develop our [site](https://github.com/instagrambot/instagrambot.github.io). We need both a designer and a frontend developer. If you have long wanted to do something from scratch, welcome.
+Puoi aiutare in questi modi:
+* Metti una stella al prgetto in Github qui: https://github.com/instagrambot (in alto a destra). Potresti doverti registrare (gratuitamente)
+* Entra nel [Gruppo Telegram](https://t.me/instabotproject) e aiuta i nuovi arrivati a capire l'installazione,e la configurazione di Instabot. 
+* Racconta del progetto non appena possibile. è sufficiente diffondere il link: https://instagrambot.github.io.
+* Puoi segnalare bugs ed errori nella sezione [Issues](https://github.com/instagrambot/instabot/issues), assicurati di allegare _screenshots_ e _comandi_ che hai inserito. Questo ci aiuterà a correggere questi errori e rendere migliore Instabot
+* Correggi questi errori se sei uno sviluppatore. Fallo attraverso delle Pull request, seguendo lo standard PEP8.
+* Per sviluppare il nostro [sito](https://github.com/instagrambot/instagrambot.github.io). Abbiamo bisgno sia di designer sia di sviluppatori frontend. Se hai sempre desiderato creare qualcosa dal nulla, contattaci!
