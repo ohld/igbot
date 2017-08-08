@@ -1,10 +1,10 @@
-# How does the Instabot filter people?
+# Come fa Instabot a filtrare i profili?
 
-It's no secret that Instabot, before subscribing to people, filters them so as not to subscribe to a knowingly inactive and fake audience. Below you will find the entire list of conditions that apply in this filtration.
+Non è un segreto che Instabot, prima di mettere follow a dei profili, li filtri in modo da non seguire account falsi o inattivi. Sotto, trovate l'intera lista di condizioni che Insabot applica nella sua opera di selezione.
 
-## Options
+## Opzioni
 
-To begin with, it is worth pointing out the conditions that you are free to change. Below I will give those parameters of the bot constructor, which are related to filtering.
+Per cominciare, vale la pena indicare le condizioni che sei libero di cambiare. Sotto, ti darò i parametri della funzione ccostruttrice del bot, che sono correlati con le operazioni di selezione. 
 
 ``` python
 bot = Bot(max_likes_to_like=100,
@@ -17,23 +17,23 @@ bot = Bot(max_likes_to_like=100,
           min_media_count_to_follow=3,
           stop_words=['shop', 'store', 'free'])
 ```
-If you want to change these values to your own in some example, just replace the `bot = Bot ()` line with this one, but with your values.
-Next, I will write the names of these parameters instead of the values themselves.
+Se vuoi cambiare questi valori in qualcuno di tuo gradimento all'interno di qualche esempio, basta che sostituisci la linea `bot = Bot ()` con quella indicata qui sopra, ovviamente con i tuoi valori.
+Qui sotto, invece, trovi i nomi di questi parametri, ed i valori relativi.
 
-## User Filtering
+## Filtri per gli utenti
 
-_Notation_: True - you can subscribe, False - can not.
-* If the white list is True,
-* If in black - False,
-* If you have already subscribed to it - False,
-* If the business account is False,
-* If the confirmed account is False,
-* If the number of subscribers is less than min_followers_to_follow - False,
-* If the number of subscribers is greater than max_followers_to_follow - False,
-* If the number of subscriptions is less than min_following_to_follow - False,
-* If the number of subscriptions is greater than max_following_to_follow - False,
-* Если отношение подписки / подписчики больше max_following_to_followers_ratio - False,
-* If the subscriber / subscription ratio is greater than max_followers_to_following_ratio - False,
-* If the amount of media is less than min_media_count_to_follow - False,
-* If at least one stop word from stop_words is in user's state, its name or description is False,
-* If still not filtered - True.
+_Notation_: True - puoi seguire il profilo, False - non puoi.
+* Se l'utente è in whitelist.txt - True,
+* Se l'utente è in blacklist.txt - False,
+* Se segui già il profilo - False,
+* Se è un profilo Business - True,
+* Se è un profilo verificato - True,
+* Se il numero di follower è inferiore a min_followers_to_follow - False,
+* Se il numero di follower è superiore a max_followers_to_follow - False,
+* Se il numero di persone seguite è inferiore a min_following_to_follow - False,
+* Se il numero di persone seguite è superiore a max_following_to_follow - False,
+* Se il rapporto di  persone seguite / followers supera max_following_to_followers_ratio - False,
+* Se il rapporto di follower / persone seguite supera max_followers_to_following_ratio - False,
+* Se il numero di media è inferiore a min_media_count_to_follow - False,
+* Se almeno una delle stop word viene trovato nello stato, nella buo, nel suo nome, o nelle descrizioni - False,
+* Se non ancora filtrato - True.
