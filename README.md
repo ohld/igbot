@@ -1,6 +1,6 @@
 # Instabot
 
-Languages: [🇬🇧](/docs/en/README.md) [🇷🇺](/docs/ru/README.md)
+Languages: [🇬🇧](/docs/en/README.md) [🇷🇺](/docs/ru/README.md) [it] (/docs/it/README.md)
 
 [![Telegram Chat](https://img.shields.io/badge/chat%20on-Telegram-blue.svg)](https://t.me/instabotproject)
 [![Build Status](https://travis-ci.org/instagrambot/instabot.svg?branch=master)](https://travis-ci.org/instagrambot/instabot)
