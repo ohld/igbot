@@ -53,7 +53,7 @@ Agree that if you unsubscribe from 100 people per second, you will be banned for
 
 ### I want the bot to unsubscribe from accounts that did not respond with a mutual subscription.
 
-For your task, the already written script, which lies in the examples folder: unfollow_non_followes.py, is suitable. Просто перейдите папку с этим скриптом на вашем компьютере и выполните в терминале. 
+For your task, the already written script, which lies in the examples folder: unfollow_non_followes.py, is suitable. Just go to the folder with this script on your computer and run it in the terminal.
 ``` python
 python unfollow_non_followers.py
 ```
@@ -83,7 +83,7 @@ Unfortunately no. This would increase the size of the project several times.
 
 ### How can I help the project?
 
-Вы можете:
+You can:
 * Put the star in Github. To do this, just click on the star here https://github.com/instagrambot (top right), May need to register (for free).
 * Login to [Telegram Group](https://t.me/instabotproject) and help newcomers to understand the installation and configuration of Instabot. 
 * Tell us about our project wherever possible. It will be enough to throw off the link: https://instagrambot.github.io.
