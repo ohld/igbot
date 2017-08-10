@@ -1,4 +1,4 @@
-![Instabot is better that other open-source bots!] (Https://github.com/instagrambot/instabot/blob/master/docs/img/tag%20instabot.png "Instabot is better that other open-source bots! ")
+![Instabot is better that other open-source bots!](https://github.com/instagrambot/instabot/blob/master/docs/img/tag%20instabot.png "Instabot is better that other open-source bots!")
 
 # Instabot
 
