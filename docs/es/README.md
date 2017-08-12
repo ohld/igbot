@@ -1,43 +1,43 @@
 # Instabot
 
-Cool Instagram scripts for promotion and API wrapper. Written in Python.
+Cool Instagram scripts para promocionar y un contenedor de la API. Escrito en Python.
 
-![Instabot is better than other open-source bots!](/docs/img/tag%20instabot.png "Instabot is better than other open-source bots!")
+![Instabot es mejor que cualquier otro bot open-source!](/docs/img/tag%20instabot.png "Instabot es mejor que cualquier otro bot open-source!")
 
 ___
 [![Telegram Chat](https://img.shields.io/badge/chat%20on-Telegram-blue.svg)](https://t.me/joinchat/AAAAAEHxHAtKhKo4X4r7xg)
-[![Build Status](https://travis-ci.org/instagrambot/instabot.svg?branch=master)](https://travis-ci.org/instagrambot/instabot)
+[![Estado del Build](https://travis-ci.org/instagrambot/instabot.svg?branch=master)](https://travis-ci.org/instagrambot/instabot)
 
-As you may know, Instagram closed its API in summer 2016. This Python module can do the same things without any effort.
+Instagram cerro su API en el verano del 2016. Este modulo Python permite hacer las mismas cosas que sin esfuerzo.
 
-## What is it?
+## ¿Que es esto?
 
-Instabot is a module for the Python language, which not only implements the wrapper over the Instagram API, but also various useful functions, such as "subscribe to the list of people", "like photos by hashtags", "unsubscribe from non-followers" and so on. Instabot is smart enough: [read](/docs/en/Filtration.md), for example, how it filters people on which it is going to subscribe.
+Instabot es un modulo desarrolado en Python, que no solo implemente un contenedor sobre la API de instagram, sino tambien añade varias fucionalidades utiles, como por ejemplo "subscribirse a una lista de personas", "like a fotos por hashtags", "desuscribirse de las personas que no te siguen" y mucho mas. Instabot es lo suficientemente inteligente: [leer](/docs/en/Filtration.md), por ejemplo, como filtrar las personas a las cuales va a suscribirse.
 
-## Ask a Question
+## Haz tu pregunta
 
-* For error messages, use this [page](https://github.com/instagrambot/instabot/issues).
-* If you have questions or would like to share your experience using Instabot, please write to our [Telegram](https://t.me/instabotproject).
-* You can find answers to the most popular questions [here](/docs/en/FAQ.md).
+* Para mensajes de error, usa esta [pagina](https://github.com/instagrambot/instabot/issues).
+* Si tenes preguntas o te gustaria compartir tu experiencia usando Instabot, escribinos a nuestro [Telegram](https://t.me/instabotproject).
+* Podes encontrar las preguntas mas frecuentes [Aqui](/docs/en/FAQ.md).
 
-## Installation
+## Instalacion
 
-You can read the instructions for installing Instabot, following the link below.
+Para leer instrucciones de instalacion de Instabot, usa los siguientes links.
 * Installing on [Windows](/docs/en/Installation_on_Windows.md),
 * Installing on [Unix](/docs/en/Installation_on_Unix.md).
 
-## How to use
+## Cómo usarlo
 
-Read the instructions for use [here](/docs/en/How_to_use.md).
+Instruccines de uso [aca](/docs/en/How_to_use.md).
 
-## Update
+## Actualizaciones
 
-Since the Instabot project is young and actively developing, updates will come out quite often. So if you stumble upon an error, do not rush to bang: try to update Instabot - maybe this error has already been corrected.
+Dado que Instabot proyecto reciente y en constante desarrollo, es actualizado bastante seguido. Si te encontras con algun error, antes de reportarlo intenta actualizar Instabot - puede que el error ya haya sido correguido.
 
 ``` python
 pip install -U instabot
 ```
 
-## Developers
+## Para desarrolladores
 
-Developers better read the [documentation](/docs/en/For_developers.md).
+Los desarrolladores pueden leer la [documentacion](/docs/en/For_developers.md).
