@@ -1,4 +1,4 @@
-# Popular questions on instabota.
+# Popular questions on instabot.
 
 ### How do I install a bot?
 
