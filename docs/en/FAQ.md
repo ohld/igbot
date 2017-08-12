@@ -35,7 +35,7 @@ Also, when you start the script for the first time, you will be able to add seve
 
 ### When you enter the password, it is not displayed! What to do?
 
-The password is not displayed specially so that no one can spy on it. Не переживайте, он вводится корректно. Если вы случайно ввели неправильный пароль, то при следующем запуске, если пароль не подойдет, Вас попросят ввести его еще раз. 
+The password is not displayed specially so that no one can spy on it. Don't worry, it has been entered correctly. If you accidentally entered a wrong password, then the next time you run it, the password will not work and you will be asked to enter it again. 
 
 ### When entering the login and password for the Instagram account, where do they go? Are they sent remotely?
 
