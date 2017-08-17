@@ -9,7 +9,7 @@ import logging
 import time
 from random import randint
 from tqdm import tqdm
-
+import os
 from . import config
 from .api_photo import configurePhoto
 from .api_photo import uploadPhoto
@@ -44,12 +44,18 @@ class API(object):
         self.isLoggedIn = False
         self.LastResponse = None
         self.total_requests = 0
+        id_campaign = sys.argv[1]
+        logs_folder = "logs"
+        campaign_folder = logs_folder+"/"+id_campaign
+        log_path = campaign_folder+"/instabot.log"
 
+        if not os.path.exists(campaign_folder):
+            os.makedirs(campaign_folder)
         # handle logging
         self.logger = logging.getLogger('[instabot]')
         self.logger.setLevel(logging.DEBUG)
         logging.basicConfig(format='%(asctime)s %(message)s',
-                            filename='instabot.log',
+                            filename=log_path,
                             level=logging.INFO
                             )
         ch = logging.StreamHandler()
