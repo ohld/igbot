@@ -63,7 +63,7 @@ for row in rows:
         config = json.loads(row['parameters'])
         print("Going to like " + str(config['amount']) + " the timeline")
         # like timeline
-        bot.like_timeline()
+        bot.like_timeline(config['amount'])
 
     # like hashtag
     elif row['configName'] == "like_hashtag":
@@ -71,7 +71,7 @@ for row in rows:
         print("Going to like " + str(config['amount']) + " posts foreach hashtag:")
         for hashtag in config['list']:
             print(hashtag)
-            # bot.like_hashtag(hashtag)
+            bot.like_hashtag(hashtag, config['amount'])
 
     # like followers
     elif row['configName'] == "like_followers":
@@ -79,7 +79,7 @@ for row in rows:
         print("Going to like " + str(config['amount']) + " posts of followers of  each user:")
 
         for username in config['list']:
-            # bot.like_followers(username, nlikes=3)
+            bot.like_followers(username, config['amount'])
             print(username)
 
     # follow followers
@@ -88,7 +88,7 @@ for row in rows:
         print("Going to follow " + str(config['amount']) + " followers of each users:")
 
         for username in config['list']:
-            # bot.follow_followers(username)
+            bot.follow_followers(username,config['amount'])
             print(username)
     else:
         print("Unknown command:" + row['configName'])
