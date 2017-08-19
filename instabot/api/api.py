@@ -38,14 +38,13 @@ from .prepare import delete_credentials
 if sys.version_info.major == 3:
     import urllib.parse
 
-
 class API(object):
     def __init__(self):
         self.isLoggedIn = False
         self.LastResponse = None
         self.total_requests = 0
         id_campaign = sys.argv[1]
-        logs_folder = "logs"
+        logs_folder = "/home/ubuntu/instabot/run/logs"
         campaign_folder = logs_folder+"/"+id_campaign
         log_path = campaign_folder+"/instabot.log"
 
