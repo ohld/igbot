@@ -43,7 +43,7 @@ bot = Bot(
 id_campaign = sys.argv[1]
 db = MySQLdb.connect(host="localhost",  # your host, usually localhost
                      user="root",  # your username
-                     passwd="",  # your password
+                     passwd="password",  # your password
                      db="instaboost")
 cur = db.cursor(MySQLdb.cursors.DictCursor)
 
