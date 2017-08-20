@@ -25,7 +25,7 @@ def like_medias(self, medias):
             delay.error_delay(self)
             broken_items = medias[medias.index(media):]
             break
-            self.logger.info("Liked instagram post with id: %d :" % media)
+        self.logger.info("Liked instagram post with id: %d :" % media)
     self.logger.info("DONE: Total liked %d medias." % self.total_liked)
     return broken_items
 
