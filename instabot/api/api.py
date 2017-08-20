@@ -44,8 +44,8 @@ class API(object):
         self.LastResponse = None
         self.total_requests = 0
         id_campaign = sys.argv[1]
-        logs_folder = "/home/ubuntu/instabot/run/logs"
-        campaign_folder = logs_folder+"/"+id_campaign
+        logs_folder = os.environ['INSTABOT_LOGS_PATH']
+        campaign_folder = logs_folder+"/campaign/"+id_campaign
         log_path = campaign_folder+"/instabot.log"
 
         if not os.path.exists(campaign_folder):
