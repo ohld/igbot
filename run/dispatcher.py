@@ -9,7 +9,7 @@ sys.path.append(os.path.join(sys.path[0], '../'))
 
 from instabot import Bot
 bot = Bot(
-    max_likes_per_day=250,  # default 1000
+    max_likes_per_day=350,  # default 1000
     max_unlikes_per_day=500,  # default 1000
     max_follows_per_day=100,  # default 350
     max_unfollows_per_day=100,  # default 350
