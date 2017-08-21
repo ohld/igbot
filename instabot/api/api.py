@@ -509,6 +509,7 @@ class API(object):
         return self.SendRequest('feed/liked/?max_id=' + str(maxid))
 
     def getTotalFollowers(self, usernameId, amount=None):
+        self.logger.info("Getting %s followers  of %s This might take a while." % (amount,usernameId))
         sleep_track = 0
         followers = []
         next_max_id = ''
@@ -519,7 +520,7 @@ class API(object):
             else:
                 total_followers = self.LastJson["user"]['follower_count']
             if total_followers > 200000:
-                print("Consider temporarily saving the result of this big operation. This will take a while.\n")
+                self.logger.info("Consider temporarily saving the result of this big operation. This will take a while.")
         else:
             return False
         with tqdm(total=total_followers, desc="Getting followers", leave=False) as pbar:
@@ -533,12 +534,14 @@ class API(object):
                         sleep_track += 1
                         if sleep_track >= 20000:
                             sleep_time = randint(120, 180)
-                            print("\nWaiting %.2f min. due to too many requests." % float(sleep_time / 60))
+                            self.logger.info("Waiting %.2f min. due to too many requests." % float(sleep_time / 60))
                             time.sleep(sleep_time)
                             sleep_track = 0
                     if len(temp["users"]) == 0 or len(followers) >= total_followers:
+                        self.logger.info("Done getting followers for %s" % usernameId)
                         return followers[:total_followers]
                 except:
+                    self.logger.info("Done getting followers for %s" % usernameId)
                     return followers[:total_followers]
                 if temp["big_list"] is False:
                     return followers[:total_followers]

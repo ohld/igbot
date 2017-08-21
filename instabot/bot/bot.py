@@ -1,8 +1,10 @@
 import datetime
 import atexit
 import signal
+import sys
 
 from ..api import API
+from ..api import api_db
 
 from .bot_get import get_media_owner, get_your_medias, get_user_medias
 from .bot_get import get_timeline_medias, get_hashtag_medias, get_user_info
@@ -21,7 +23,7 @@ from .bot_photo import download_photo, download_photos, upload_photo
 
 from .bot_video import upload_video
 
-from .bot_follow import follow, follow_users, follow_followers, follow_following
+from .bot_follow import follow, follow_users, follow_followers, follow_following, getCurrentUserFollowing
 
 from .bot_unfollow import unfollow, unfollow_users, unfollow_non_followers
 from .bot_unfollow import unfollow_everyone, update_unfollow_file
@@ -129,9 +131,6 @@ class Bot(API):
         self.block_delay = block_delay
         self.unblock_delay = unblock_delay
 
-        # current following
-        self.following = []
-
         # proxy
         self.proxy = proxy
 
@@ -149,6 +148,14 @@ class Bot(API):
             self.comments = read_list_from_file(comments_file)
 
         self.logger.info('Instabot Started')
+
+        #campaign
+        self.id_campaign = sys.argv[1]
+
+        self.id_user = api_db.getUserId(self.id_campaign)
+
+        # current following
+        self.following = getCurrentUserFollowing(self)
 
     def version(self):
         try:
