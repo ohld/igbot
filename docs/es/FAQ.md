@@ -13,43 +13,43 @@ Primero tenes que instalarlo. Despues vas a la carpeta de ejemplos y ejecutas al
 python multi_script_CLI.py
 ```
 
-If the script needs to pass any parameters to run, for example, a list of hashtags for the liking, then the script will output it to you. In the example with like_hashtags.py, it will output:
+Si el script necesita que le pasen algun parametro para ejecutarse, por ejemplo, una lista de hashtags para a likear, el script lo notificara. Por ejemplo, like_hashtags.py, tendra como salida:
 ```
 Usage: Pass hashtags to like
 Example: python like_hashtags.py dog cat
 ```
 
-It immediately becomes clear how to work with this script. For example, if you want to like the latest media with a hashtag **#cat** or **#dog**, then:
+Explica claramente como funciona el script en particular. Por ejemplo, si quiere likear los contenidos mas recientes con el hashtag **#cat** o **#dog**, entonces debe ejecutar:
 ``` python
 python like_hashtags.py cat dog
 ```
 
-### Where do I enter the username and password from the Instagram account?
+### ¿Donde debo ingresar el nombre de usario y contraseña de Instagram?
 
-They can not be specified at all: the bot itself will ask them to enter at the first start. They will be saved to the file secret.txt and will be downloaded from there when further starts. You can also pass them manually to the function login():
+El bot pedira que los ingrese la primera vez que se ejecute. Se guardaran en secret.txt y se tomaran de dicho archivo en futuras ejecuciones. Tambien pueden ingresarse manualmente usando la funcion login():
 ``` python
 bot.login(username=«my_username», password=«my_password»)
 ```
 
-Also, when you start the script for the first time, you will be able to add several accounts to Instabot. In the future, if you specify more than one account, before each start, you will have the opportunity to choose an accent to work with.
+Ademas, cuando ejecute el script por primera vez, podra agregar multiples cuentas a Instabot. En futuras ejecuciones, si ingreso mas de una cuenta, antes de que comience el stript, podra elegir la cuenta a usar.
 
-### When you enter the password, it is not displayed! What to do?
+### Cuando ingreso la contraseña no se ve en pantalla! ¿Que hago?
 
-The password is not displayed specially so that no one can spy on it. Не переживайте, он вводится корректно. Если вы случайно ввели неправильный пароль, то при следующем запуске, если пароль не подойдет, Вас попросят ввести его еще раз. 
+La contraseña no se muestra especificamente para que no sea vista por otros. Не переживайте, он вводится корректно. Если вы случайно ввели неправильный пароль, то при следующем запуске, если пароль не подойдет, Вас попросят ввести его еще раз. 
 
-### When entering the login and password for the Instagram account, where do they go? Are they sent remotely?
+### Cuando ingreso mi usuario y contraseña de Instagram ¿Donde se guardan? ¿Se retrasmiten a algun lado?
 
-The entered login and password are stored locally on your computer in the secret.txt file. It is not transmitted anywhere.
+El/los usuarios y contraseñas ingresadas se guardan localmente en la computadora donde se ejecutaron en el archivo secret.txt. No son reenviados a ningun sitio externo.
 
-### Will my account be banned?
+### ¿Instagram va a bannear/bloquear mi cuenta por usar Instabot?
 
-Instabot has limits both on the number of subscriptions / likes / comments and so on per day, and on the frequency of requests - for example, do not subscribe too quickly. Instabot already has its own limits, which guarantee safe use. You can set your own values, but be careful. More details about this can be read here (make a page with a description of these parameters and how to change). The bot saves the number of likes / subscriptions / unsubscriptions and so on. And dumps them once a day.
+Los Términos de servicio Instagram establecen que no se puede usar bots. Para evitar ser detectado como tal, Instabot tiene establecidos limites en el numero de subscripciones / likes / commentarios y demas por dia, asi como tambien en la frecuencia de las requests(llamadas) - para, por ejemplo, evitar subscribirse demasiado rapido. Instabot ya viene preconfigurado con sus propios limites, los cuales garantizan un uso seguro. Estos valores pueden ser cambiados, pero sea cuidadoso. Aqui hay mas detalles (make a page with a description of these parameters and how to change). El bot guarda el numero de likes / follows / unfollows etc y los resetea una vez al dia.
 
-### Is it possible to speed up, for example, an answer from everyone? Is it safe?
+### ¿Es posible acelerar los tiempos de espera, por ejemplo, entre unfollows/desuscripciones? ¿Es seguro?
 
-There are parameters for the class `instabot.Bot ()`. If you run the __milti_script_CLI__ code, open it with a text editor, find the value __unfollow_delay = 30__ there, change it to whatever you want. Similarly, you can change other settings. But note, this can be unsafe.
+Son parametros de la clase `instabot.Bot ()`. Si usa el script __milti_script_CLI__ , puede abrirlo con un editor de texto, buscar el valor __unfollow_delay = 30__ , y cambiarlo a lo que desee. De igual manera, puede cambiar los demas parameteros. Pero note que esto puede ser inseguro.
 
-Agree that if you unsubscribe from 100 people per second, you will be banned for sure. The limits depend on the age and size of the account, so their fine-tuning is everyone's business. The values that stand by default in Instabot are safe for _most_. No one was banned because of them.
+Si usted se desubscribe/unfollow 100 personar por segundo, su cuenta va a ser seguramente banneada/bloqueada/suspendida. Los limites dependen de la antiguedad y el tamaño de la cuenta, entonces el ajuste fino de su cuenta en particular depuende exclusivamente de usted mismo. Los valores configurados por defecto son los seguros _para la mayoria_. Nadie que haya usado los valores por defecto ha sido baneado.
 
 ### I want the bot to unsubscribe from accounts that did not respond with a mutual subscription.
 
