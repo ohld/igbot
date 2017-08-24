@@ -20,7 +20,7 @@ def download_photo(self, media_id, path='photos/', filename=None, description=Fa
     if description:
         media = self.get_media_info(media_id)[0]
         caption = media['caption']['text']
-        with open('{path}{0}_{1}.txt'.format(media['user']['username'], media_id, path=path), encoding='utf8', 'w') as f:
+        with open('{path}{0}_{1}.txt'.format(media['user']['username'], media_id, path=path), encoding='utf8', mode='w') as f:
             f.write(caption)
     photo = super(self.__class__, self).downloadPhoto(media_id, filename, False, path)
     if photo:
