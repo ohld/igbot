@@ -478,6 +478,35 @@ class API(object):
         })
         return self.SendRequest('friendships/show/' + str(userId) + '/', self.generateSignature(data))
 
+    def _prepareRecipients(self, users, threadId=None, useQuotes=False):
+        if not isinstance(users, list):
+            print('Users must be an list')
+            return False
+        result = {'users': '[[{}]]'.format(','.join(users))}
+        if threadId:
+            result['thread'] = '["{}"]'.format(threadId) if useQuotes else '[{}]'.format(threadId)
+        return result
+
+    def sendDirectItem(self, itemType, users, **options):
+        data = {
+            '_uuid': self.uuid,
+            '_uid': self.user_id,
+            '_csrftoken': self.token,
+            'client_context': self.generateUUID(True),
+            'action': 'send_item'
+        }
+        url = ''
+        if itemType == 'message':
+            data['text'] = options.get('text')
+            url = 'direct_v2/threads/broadcast/text/'
+        recipients = self._prepareRecipients(users, threadId=options.get('thread'), useQuotes=False)
+        if not recipients:
+            return False
+        data['recipient_users'] = recipients.get('users')
+        if recipients.get('thread'):
+            data['thread_ids'] = recipients.get('thread')
+        return self.SendRequest(url, data)
+
     def generateSignature(self, data):
         try:
             parsedData = urllib.parse.quote(data)
