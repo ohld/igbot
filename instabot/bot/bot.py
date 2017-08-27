@@ -33,6 +33,8 @@ from .bot_comment import comment_hashtag, is_commented, comment_user
 
 from .bot_block import block, unblock, block_users, unblock_users, block_bots
 
+from .bot_delete import delete_media, delete_medias
+
 from .bot_checkpoint import save_checkpoint, load_checkpoint
 
 from .bot_filter import filter_medias, check_media, filter_users, check_user
@@ -375,6 +377,14 @@ class Bot(API):
 
     def update_unfollow_file(self):
         return update_unfollow_file(self)
+
+    # delete
+
+    def delete_media(self, media_id):
+        return delete_media(self, media_id)
+
+    def delete_medias(self, medias):
+        return delete_medias(self, medias)
 
     # archive
 

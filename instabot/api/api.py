@@ -239,14 +239,14 @@ class API(object):
         return self.SendRequest('media/' + str(media['id']) + '/' + str(action) + '/?media_type=' +
                                 str(media['media_type']), self.generateSignature(data))
 
-    def deleteMedia(self, mediaId):
+    def deleteMedia(self, media):
         data = json.dumps({
             '_uuid': self.uuid,
             '_uid': self.user_id,
             '_csrftoken': self.token,
-            'media_id': mediaId
+            'media_id': media.get('id')
         })
-        return self.SendRequest('media/' + str(mediaId) + '/delete/', self.generateSignature(data))
+        return self.SendRequest('media/' + str(media.get('id')) + '/delete/', self.generateSignature(data))
 
     def changePassword(self, newPassword):
         data = json.dumps({
