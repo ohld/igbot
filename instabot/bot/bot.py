@@ -21,6 +21,8 @@ from .bot_photo import download_photo, download_photos, upload_photo
 
 from .bot_video import upload_video
 
+from .bot_direct import send_message, send_messages
+
 from .bot_follow import follow, follow_users, follow_followers, follow_following
 
 from .bot_unfollow import unfollow, unfollow_users, unfollow_non_followers
@@ -377,6 +379,14 @@ class Bot(API):
 
     def update_unfollow_file(self):
         return update_unfollow_file(self)
+
+    # direct
+
+    def send_message(self, text, user_ids, thread_id=None):
+        return send_message(self, text, user_ids, thread_id)
+
+    def send_messages(self, text, user_ids):
+        return send_messages(self, text, user_ids)
 
     # delete
 
