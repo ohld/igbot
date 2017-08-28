@@ -415,8 +415,8 @@ class Bot(API):
     def comment(self, media_id, comment_text):
         return comment(self, media_id, comment_text)
 
-    def comment_hashtag(self, hashtag):
-        return comment_hashtag(self, hashtag)
+    def comment_hashtag(self, hashtag, amount=None):
+        return comment_hashtag(self, hashtag, amount)
 
     def comment_medias(self, medias):
         return comment_medias(self, medias)
