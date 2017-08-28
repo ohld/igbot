@@ -7,7 +7,7 @@ from ..api import API
 from ..api import api_db
 
 from .bot_get import get_media_owner, get_your_medias, get_user_medias
-from .bot_get import get_timeline_medias, get_hashtag_medias, get_user_info
+from .bot_get import get_timeline_medias, get_hashtag_medias, get_user_info, get_location_medias
 from .bot_get import get_geotag_medias, get_timeline_users, get_hashtag_users
 from .bot_get import get_media_commenters, get_userid_from_username, get_username_from_userid
 from .bot_get import get_user_followers, get_user_following, get_media_likers, get_popular_medias
@@ -15,7 +15,7 @@ from .bot_get import get_media_comments, get_geotag_users, get_locations_from_co
 from .bot_get import get_comment, get_media_info, get_user_likers, get_archived_medias, get_total_user_medias
 
 from .bot_like import like, like_medias, like_timeline, like_user, like_users
-from .bot_like import like_hashtag, like_geotag, like_followers, like_following
+from .bot_like import like_hashtag, like_geotag, like_followers, like_following, like_posts_by_location
 
 from .bot_unlike import unlike, unlike_medias, unlike_user
 
@@ -152,10 +152,10 @@ class Bot(API):
         #campaign
         self.id_campaign = sys.argv[1]
 
-        self.id_user = api_db.getUserId(self.id_campaign)
+        #self.id_user = api_db.getUserId(self.id_campaign)
 
         # current following
-        self.following = getCurrentUserFollowing(self)
+        #self.following = getCurrentUserFollowing(self)
 
     def version(self):
         try:
@@ -239,6 +239,9 @@ class Bot(API):
     def get_total_user_medias(self, user_id):
         return get_total_user_medias(self, user_id)
 
+    def get_location_medias(self,id_location,filtration=True, amount=None):
+        return get_location_medias(self, id_location, filtration, amount)
+        
     def get_hashtag_medias(self, hashtag, filtration=True):
         return get_hashtag_medias(self, hashtag, filtration)
 
@@ -312,6 +315,9 @@ class Bot(API):
 
     def like_hashtag(self, hashtag, amount=None):
         return like_hashtag(self, hashtag, amount)
+        
+    def like_posts_by_location(self,id_location,amount):
+        return like_posts_by_location(self,id_location,amount)
 
     def like_geotag(self, geotag, amount=None):
         return like_geotag(self, geotag, amount)
