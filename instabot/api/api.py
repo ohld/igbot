@@ -510,6 +510,10 @@ class API(object):
             url = 'direct_v2/threads/broadcast/hashtag/'
             data['text'] = options.get('text', '')
             data['hashtag'] = options.get('hashtag', '')
+        if itemType == 'profile':
+            url = 'direct_v2/threads/broadcast/profile/'
+            data['profile_user_id'] = options.get('profile_user_id')
+            data['text'] = options.get('text', '')
         recipients = self._prepareRecipients(users, threadId=options.get('thread'), useQuotes=False)
         if not recipients:
             return False
