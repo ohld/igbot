@@ -497,13 +497,19 @@ class API(object):
         }
         url = ''
         if itemType == 'message':
-            data['text'] = options.get('text')
+            data['text'] = options.get('text', '')
             url = 'direct_v2/threads/broadcast/text/'
         if itemType == 'media_share':
             data['media_type'] = options.get('media_type', 'photo')
             data['text'] = options.get('text', '')
             data['media_id'] = options.get('media_id', '')
             url = 'direct_v2/threads/broadcast/media_share/'
+        if itemType == 'like':
+            url = 'direct_v2/threads/broadcast/like/'
+        if itemType == 'hashtag':
+            url = 'direct_v2/threads/broadcast/hashtag/'
+            data['text'] = options.get('text', '')
+            data['hashtag'] = options.get('hashtag', '')
         recipients = self._prepareRecipients(users, threadId=options.get('thread'), useQuotes=False)
         if not recipients:
             return False
