@@ -1,6 +1,7 @@
 from tqdm import tqdm
 from . import limits
 from . import delay
+from ..api import api_db
 
 
 def like(self, media_id):
@@ -14,26 +15,34 @@ def like(self, media_id):
     return False
 
 
-def like_medias(self, medias):
+def like_medias(self, medias, bot_operation=None, bot_operation_value=None):
     broken_items = []
     if len(medias) == 0:
         self.logger.info("Nothing to like.")
         return broken_items
     self.logger.info("Going to like %d medias." % (len(medias)))
     for media in tqdm(medias):
-        if not self.like(media):
+        #if reaching the limit break
+        if not self.like(media['pk']):
             delay.error_delay(self)
-            broken_items = medias[medias.index(media):]
+            broken_items.append(media)
             break
-        self.logger.info("Liked instagram post with id: %d :" % media)
+        self.logger.info("Liked instagram post with id: %d :" % media['pk'])
+
+        api_db.insert("insert into likes (id_campaign,id_user,username,full_name,code,post_id,image,bot_operation,bot_operation_value) values (%s,%s,%s,%s,%s,%s,%s,%s,%s)",
+                      self.id_campaign, self.id_user, media['user']['username'],media['user']['full_name'],
+                      media['code'],media['pk'],media['image_versions2']['candidates'][0]['url'],bot_operation, bot_operation_value)
+
+
     self.logger.info("DONE: Total liked %d medias." % self.total_liked)
     return broken_items
 
 
 def like_timeline(self, amount=None):
-    self.logger.info("Liking timeline feed:")
-    medias = self.get_timeline_medias()[:amount]
-    return self.like_medias(medias)
+    self.logger.info("Liking %s items from timeline feed:" % amount)
+    medias = self.get_timeline_medias(amount=amount)
+    bot_operation="like_timeline"
+    return self.like_medias(medias,bot_operation)
 
 
 def like_user(self, user_id, amount=None, filtration=True):
@@ -61,9 +70,12 @@ def like_users(self, user_ids, nlikes=None, filtration=True):
 
 def like_hashtag(self, hashtag, amount=None):
     """ Likes last medias from hashtag """
+    self.logger.info("Amount is %s" % amount)
     self.logger.info("Going to like media with hashtag #%s." % hashtag)
-    medias = self.get_hashtag_medias(hashtag)
-    return self.like_medias(medias[:amount])
+    medias = self.get_hashtag_medias(hashtag=hashtag, filtration=True, amount=amount)
+    bot_operation="like_hashtag"
+    bot_operation_value = hashtag
+    return self.like_medias(medias[:amount],bot_operation, bot_operation_value)
 
 
 def like_geotag(self, geotag, amount=None):

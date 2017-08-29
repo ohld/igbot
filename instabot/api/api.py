@@ -146,6 +146,7 @@ class API(object):
             self.LastJson = json.loads(response.text)
             return True
         else:
+
             self.logger.warning("Request return " +
                                 str(response.status_code) + " error!")
             if response.status_code == 429:
@@ -175,9 +176,40 @@ class API(object):
     def autoCompleteUserList(self):
         return self.SendRequest('friendships/autocomplete_user_list/')
 
-    def getTimelineFeed(self):
-        """ Returns 8 medias from timeline feed of logged user """
-        return self.SendRequest('feed/timeline/')
+
+
+    def getTimelineFeed(self, amount=20):
+        self.logger.info("Trying to get %s items from timeline feed" % amount)
+
+        user_feed = []
+        next_max_id = None
+        securityBreak=0
+
+        while len(user_feed) < amount and securityBreak<50:
+
+            if not next_max_id:
+                self.SendRequest('feed/timeline/')
+            else:
+                self.SendRequest('feed/timeline/?max_id=' + str(next_max_id))
+
+            temp = self.LastJson
+            if "items" not in temp:  # maybe user is private, (we have not access to posts)
+                return []
+
+            for item in temp["items"]:
+                if 'pk' in item.keys():
+                    user_feed.append(item)
+
+            if "next_max_id" not in temp:
+                self.logger.info("Total received % posts from timeline feed" % len(user_feed))
+                return user_feed
+
+            next_max_id = temp["next_max_id"]
+
+            securityBreak = securityBreak+1
+            self.logger.info("Total received % posts from timeline feed" % len(user_feed))
+
+        return user_feed
 
     def megaphoneLog(self):
         return self.SendRequest('megaphone/log/')
@@ -380,13 +412,43 @@ class API(object):
     def getSelfUserFeed(self, maxid='', minTimestamp=None):
         return self.getUserFeed(self.user_id, maxid, minTimestamp)
 
-    def getHashtagFeed(self, hashtagString, maxid=''):
-        return self.SendRequest('feed/tag/' + hashtagString + '/?max_id=' + str(
-            maxid) + '&rank_token=' + self.rank_token + '&ranked_content=true&')
+    def getHashtagFeed(self, hashtagString, maxid=None, amount=50):
+        self.logger.info("Trying to get %s items with hashtag %s" % (amount, hashtagString))
+
+        feed = []
+        next_max_id = None
+        securityBreak = 0
+
+        while len(feed) < amount and securityBreak < 50:
+            if not next_max_id:
+                self.SendRequest('feed/tag/' + hashtagString)
+            else:
+                self.SendRequest('feed/tag/' + hashtagString + '/?max_id='+str(next_max_id))
+
+            temp = self.LastJson
+            if "items" not in temp:  # maybe user is private, (we have not access to posts)
+                return []
+
+            for item in temp["items"]:
+                if 'pk' in item.keys():
+                    feed.append(item)
+
+            if "next_max_id" not in temp:
+                self.logger.info("Total Received %s items with hashtag %s" % (len(feed), hashtagString))
+                return feed
+
+            next_max_id = temp["next_max_id"]
+
+            securityBreak = securityBreak + 1
+
+        self.logger.info("Total Received %s items with hashtag %s" % (len(feed),hashtagString))
+        return feed
 
     def getLocationFeed(self, locationId, maxid=''):
-        return self.SendRequest('feed/location/' + str(locationId) + '/?max_id=' + str(
-            maxid) + '&rank_token=' + self.rank_token + '&ranked_content=true&')
+        #return self.SendRequest('feed/location/' + str(locationId) + '/?max_id=' + str(
+        #    maxid) + '&rank_token=' + self.rank_token + '&ranked_content=true&')
+        self.logger.info("Getting feed for %s" %locationId)
+        return self.SendRequest('feed/location/' + str(locationId))
 
     def getPopularFeed(self):
         popularFeed = self.SendRequest(
@@ -597,6 +659,7 @@ class API(object):
                 return user_feed
             next_max_id = temp["next_max_id"]
 
+    #this gives all medias posted by the logged user
     def getTotalSelfUserFeed(self, minTimestamp=None):
         return self.getTotalUserFeed(self.user_id, minTimestamp)
 

@@ -36,11 +36,12 @@ def get_archived_medias(self, as_dict=False):
     return self.filter_medias(self.LastJson["items"], False)
 
 
-def get_timeline_medias(self, filtration=True):
-    if not self.getTimelineFeed():
+def get_timeline_medias(self, filtration=True, amount=50):
+    medias = self.getTimelineFeed(amount)
+    if not medias:
         self.logger.warning("Error while getting timeline feed.")
         return []
-    return self.filter_medias(self.LastJson["items"], filtration)
+    return self.filter_medias(medias, filtration)
 
 
 def get_user_medias(self, user_id, filtration=True, is_comment=False):
@@ -74,10 +75,12 @@ def get_user_likers(self, user_id, media_count=10):
     return list(your_likers)
 
 
-def get_hashtag_medias(self, hashtag, filtration=True):
-    if not self.getHashtagFeed(hashtag):
-        self.logger.warning("Error while getting hashtag feed.")
+def get_hashtag_medias(self, hashtag, filtration=True, amount=50):
+    medias = self.getHashtagFeed(hashtagString=hashtag, amount=amount)
+    if not medias:
+        self.logger.warning("Error while getting hashtag feed for %s." % hashtag)
         return []
+
     return self.filter_medias(self.LastJson["items"], filtration)
 
 

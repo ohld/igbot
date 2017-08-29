@@ -14,7 +14,7 @@ def follow(self, user_id):
         if super(self.__class__, self).follow(user_id):
             self.logger.info("Followed user with id: %s" % user_id)
             self.total_followed += 1
-            api_db.insert("insert into new_followings (id_campaign,id_user,following_id) values (%s,%s,%s)", self.id_campaign,self.id_user,user_id)
+            api_db.insert("insert into followings (id_campaign,id_user,following_id) values (%s,%s,%s)", self.id_campaign,self.id_user,user_id)
             return True
     else:
         self.logger.info("Out of follows for today.")
@@ -27,8 +27,8 @@ def follow_users(self, user_ids):
         self.logger.info("Out of follows for today.")
         return
 
-    #get followed list
-    result = api_db.select("select following_id from new_followings where id_user=%s",self.id_user)
+    #get followings list
+    result = api_db.select("select following_id from followings where id_user=%s",self.id_user)
     followed_list = []
     for i in result:
         followed_list.append(i['following_id'])
@@ -36,19 +36,18 @@ def follow_users(self, user_ids):
     skipped_list = self.read_list_from_file(
         "skipped.txt")  # Read skipped.txt file
     self.logger.info("Going to follow %s users" % len(user_ids))
-    # remove skipped and followed list from user_ids
+    # remove skipped and already followed users  from user_ids
     user_ids = list((set(user_ids) - set(followed_list)) - set(skipped_list))
     self.logger.info("After filtering followedlist and skippedlist.txt,  %s  users left to follow." % len(
         user_ids))
-    x=1
+
     for user_id in tqdm(user_ids):
-        self.logger.info("Followers loop iteration %s" % x)
         if not self.follow(user_id):
             self.logger.info("This id %s is a broken item" % user_id)
             delay.error_delay(self)
             broken_items = user_ids[user_ids.index(user_id):]
             break
-        x=x+1
+
     self.logger.info("DONE: Total followed %d users." % self.total_followed)
     return broken_items
 

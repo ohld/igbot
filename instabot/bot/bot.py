@@ -155,6 +155,7 @@ class Bot(API):
         self.id_user = api_db.getUserId(self.id_campaign)
 
         # current following
+        #TODO -> maybe this is not necesary
         self.following = getCurrentUserFollowing(self)
 
     def version(self):
@@ -181,6 +182,7 @@ class Bot(API):
 
     def prepare(self):
         storage = load_checkpoint(self)
+
         if storage is not None:
             self.total_liked, self.total_unliked, self.total_followed, self.total_unfollowed, self.total_commented, self.total_blocked, self.total_unblocked, self.total_requests, self.start_time, self.total_archived, self.total_unarchived = storage
         if not self.whitelist:
@@ -227,8 +229,8 @@ class Bot(API):
         """
         return get_archived_medias(self, as_dict)
 
-    def get_timeline_medias(self):
-        return get_timeline_medias(self)
+    def get_timeline_medias(self, amount):
+        return get_timeline_medias(self, amount=amount)
 
     def get_popular_medias(self):
         return get_popular_medias(self)
@@ -239,8 +241,8 @@ class Bot(API):
     def get_total_user_medias(self, user_id):
         return get_total_user_medias(self, user_id)
 
-    def get_hashtag_medias(self, hashtag, filtration=True):
-        return get_hashtag_medias(self, hashtag, filtration)
+    def get_hashtag_medias(self, hashtag, filtration=True, amount=50):
+        return get_hashtag_medias(self, hashtag, filtration, amount)
 
     def get_geotag_medias(self, geotag, filtration=True):
         return get_geotag_medias(self, geotag, filtration)
@@ -301,11 +303,11 @@ class Bot(API):
     def like(self, media_id):
         return like(self, media_id)
 
-    def like_medias(self, media_ids):
-        return like_medias(self, media_ids)
+    def like_medias(self, medias, bot_operation,bot_operation_value=None):
+        return like_medias(self, medias, bot_operation,bot_operation_value)
 
     def like_timeline(self, amount=None):
-        return like_timeline(self, amount)
+        return like_timeline(self, amount=amount)
 
     def like_user(self, user_id, amount=None, filtration=True):
         return like_user(self, user_id, amount, filtration)
