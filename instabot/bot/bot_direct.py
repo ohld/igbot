@@ -59,6 +59,20 @@ def send_media(self, media_id, user_ids, text=None, thread_id=None):
     return False
 
 
+def send_medias(self, media_id, user_ids, text):
+    broken_items = []
+    if len(user_ids) == 0:
+        self.logger.info("User must be at least one.")
+        return broken_items
+    self.logger.info("Going to send %d messages." % (len(user_ids)))
+    for user in tqdm(user_ids):
+        if not self.send_media(media_id, user, text):
+            delay.error_delay(self)
+            broken_items = user_ids[user_ids.index(user):]
+            break
+    return broken_items
+
+
 def _get_user_ids(self, user_ids):
     if isinstance(user_ids, str):
         user_ids = self.convert_to_user_id(user_ids)
