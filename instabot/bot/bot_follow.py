@@ -41,8 +41,7 @@ def follow_users(self, users, bot_operation, bot_operation_value):
     
     users = self.removeAlreadyFollowedUsers(users)
     
-    self.logger.info("After filtering followedlist and skippedlist.txt,  %s  users left to follow." % len(
-        user_ids))
+    self.logger.info("After filtering followedlist  %s  users left to follow." % len(users))
 
     for user in tqdm(users):
         if not self.follow(user['pk']):
