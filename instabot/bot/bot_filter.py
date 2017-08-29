@@ -142,7 +142,7 @@ def check_user(self, user, filter_closed_acc=False):
     #        api_db.insert("insert into default_followings (id_user,following_id) values(%s,%s)",id_user,following_id)
 
 
-    if not user['friendship_status']['following']:
+    if user['friendship_status']['following']:
         # Log to Console
         self.logger.info("I am already following %s, Skipping " % user_id)
         return False
