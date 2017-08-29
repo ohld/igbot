@@ -364,8 +364,8 @@ class Bot(API):
     def follow(self, user_id):
         return follow(self, user_id)
 
-    def follow_users(self, user_ids):
-        return follow_users(self, user_ids)
+    def follow_users(self, users, bot_operation, bo_operation_value):
+        return follow_users(self, users, bot_operation, bo_operation_value)
 
     def follow_followers(self, user_id, nfollows=None):
         return follow_followers(self, user_id, nfollows)

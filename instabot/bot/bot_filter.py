@@ -112,13 +112,15 @@ def filter_users(self, user_id_list):
     return [str(user["pk"]) for user in user_id_list]
 
 
-def check_user(self, user_id, filter_closed_acc=False):
+def check_user(self, user, filter_closed_acc=False):
     if not self.filter_users:
         return True
 
     delay.small_delay(self)
-    user_id = self.convert_to_user_id(user_id)
+    #user_id = self.convert_to_user_id(user_id)
 
+    user_id=user['pk']
+    
     if not user_id:
         print('\n\033[91m not user_id , Skipping \033[0m')  # Log to Console
         return False
@@ -129,24 +131,25 @@ def check_user(self, user_id, filter_closed_acc=False):
         print('\n\033[91m user_id in self.blacklist \033[0m')  # Log to Console
         return False
 
-    if not self.following:
+    #this is not required at the moment
+    #if not self.following:
         # Log to Console
-        self.logger.info("My own following list is empty , downloading ...")
-        self.following = self.get_user_following(self.user_id)
+    #    self.logger.info("My own following list is empty , downloading ...")
+    #    self.following = self.get_user_following(self.user_id)
         #log this in db
-        id_user = api_db.getUserId(self.id_campaign)
-        for following_id in self.following:
-            api_db.insert("insert into default_followings (id_user,following_id) values(%s,%s)",id_user,following_id)
+    #    id_user = api_db.getUserId(self.id_campaign)
+    #    for following_id in self.following:
+    #        api_db.insert("insert into default_followings (id_user,following_id) values(%s,%s)",id_user,following_id)
 
 
-    if user_id in self.following:
+    if not user['friendship_status']['following']:
         # Log to Console
         self.logger.info("I am already following %s, Skipping " % user_id)
         return False
 
     user_info = self.get_user_info(user_id)
     if not user_info:
-        self.logger.info('not user_info , Skipping')  # Log to Console
+        self.logger.info('Error: Could not retrieve user info , Skipping') 
         return False
 
     self.logger.info('USER_NAME: %s , FOLLOWER: %s , FOLLOWING: %s ' % (user_info[

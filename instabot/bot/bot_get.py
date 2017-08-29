@@ -122,9 +122,9 @@ def get_timeline_users(self):
 
 def get_hashtag_users(self, hashtag):
     users = []
-    self.getHashtagFeed(hashtag)
-    for i in self.LastJson['items']:
-        users.append(str(i['user']['pk']))
+    feed=self.getHashtagFeed(hashtag)
+    for i in feed:
+        users.append(str(i['user']))
     return users
 
 

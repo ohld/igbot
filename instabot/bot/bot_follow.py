@@ -4,10 +4,10 @@ from . import limits
 from . import delay
 from ..api import api_db
 
-def follow(self, user_id):
-    user_id = self.convert_to_user_id(user_id)
-    self.logger.info('Going to Follow user_id: %s ' % (user_id))
-    if not self.check_user(user_id):
+def follow(self, user):
+    #user_id = self.convert_to_user_id(user_id)
+    self.logger.info('Going to Follow user: %s ' % user['username']
+    if not self.check_user(user):
         return True
     if limits.check_if_bot_can_follow(self):
         delay.follow_delay(self)
@@ -21,36 +21,47 @@ def follow(self, user_id):
     return False
 
 
-def follow_users(self, user_ids):
+def follow_users(self, users, bot_operation, bot_operation_value):
     broken_items = []
     if not limits.check_if_bot_can_follow(self):
         self.logger.info("Out of follows for today.")
         return
 
     #get followings list
-    result = api_db.select("select following_id from followings where id_user=%s",self.id_user)
-    followed_list = []
-    for i in result:
-        followed_list.append(i['following_id'])
+    #result = api_db.select("select following_id from followings where id_user=%s",self.id_user)
+    #followed_list = []
+    #for i in result:
+    #    followed_list.append(i['following_id'])
 
-    skipped_list = self.read_list_from_file(
-        "skipped.txt")  # Read skipped.txt file
-    self.logger.info("Going to follow %s users" % len(user_ids))
+    #skipped_list = self.read_list_from_file(
+    #    "skipped.txt")  # Read skipped.txt file
+    self.logger.info("Going to follow %s users" % len(users))
     # remove skipped and already followed users  from user_ids
-    user_ids = list((set(user_ids) - set(followed_list)) - set(skipped_list))
+    #user_ids = list((set(user_ids) - set(followed_list)) - set(skipped_list))
+    
+    users = self.removeAlreadyFollowedUsers(users)
+    
     self.logger.info("After filtering followedlist and skippedlist.txt,  %s  users left to follow." % len(
         user_ids))
 
-    for user_id in tqdm(user_ids):
-        if not self.follow(user_id):
-            self.logger.info("This id %s is a broken item" % user_id)
+    for user in tqdm(users):
+        if not self.follow(user['pk']):
+            self.logger.info("This user %s is a broken item" % user['username'])
             delay.error_delay(self)
-            broken_items = user_ids[user_ids.index(user_id):]
+            broken_items = user['pk']
             break
+        #insert the following in database
+        #todo complete the insert
+        result = api_db.select("insert into followings (id_user,id_campaign,username,full_name,bot_operation,bot_operation_value,details) values (%s,%s,%s,%s,%s,%s,%s)",
+        self.id_user,self.id_campaign,user['username'],user['full_name'],bot_operation,bot_operaetion_value,'null')
+        
 
     self.logger.info("DONE: Total followed %d users." % self.total_followed)
     return broken_items
 
+
+def removeAlreadyFollowedUsers(self,users):
+    
 
 def follow_followers(self, user_id, nfollows=None):
     self.logger.info("Follow followers of: %s" % user_id)

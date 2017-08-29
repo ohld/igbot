@@ -15,17 +15,24 @@ import argparse
 sys.path.append(os.path.join(sys.path[0], '../'))
 from instabot import Bot
 
-parser = argparse.ArgumentParser(add_help=True)
-parser.add_argument('-u', type=str, help="username")
-parser.add_argument('-p', type=str, help="password")
-parser.add_argument('-proxy', type=str, help="proxy")
-parser.add_argument('hashtags', type=str, nargs='+', help='hashtags')
-args = parser.parse_args()
 
 bot = Bot()
-bot.login(username=args.u, password=args.p,
-          proxy=args.proxy)
+bot.login(username="catalinbardas",password="atitudinE22")
+hashtags=['bucuresti']
 
-for hashtag in args.hashtags:
-    users = bot.get_hashtag_users(hashtag)
-    bot.follow_users(users)
+for hashtag in hashtags:
+    feed=bot.getHashtagFeed(hashtag,2)
+    users=[]
+    for media in feed:
+        user = media['user']
+        user['media']={};
+        user['media']['code'] = media['code']
+        user['media']['image'] = media['image_versions2']['candidates'][0]['url']
+        user['media']['post_id']=media['pk']
+        users.append(user)
+    
+if not users[0]['friendship_status']['following']:
+    print("user is not following")
+else:
+    print("user is following")
+print(users[0])
