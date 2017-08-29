@@ -61,6 +61,11 @@ def follow_users(self, users, bot_operation, bot_operation_value):
 
 
 def removeAlreadyFollowedUsers(self,users):
+    filteredList=[]
+    for u in users:
+        if not u['friendship_status']['following']:
+            filteredList.append(u)
+    remove filteredList
     
 
 def follow_followers(self, user_id, nfollows=None):
