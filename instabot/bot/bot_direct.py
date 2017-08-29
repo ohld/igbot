@@ -36,6 +36,29 @@ def send_messages(self, text, user_ids):
     return broken_items
 
 
+def send_media(self, media_id, user_ids, text=None, thread_id=None):
+    """
+    :param media_id:
+    :param self: bot
+    :param text: text of message
+    :param user_ids: list of user_ids for creating group or one user_id for send to one person
+    :param thread_id: thread_id
+    """
+    user_ids = _get_user_ids(self, user_ids)
+    if not isinstance(text, str) and type(user_ids) not in (list, str):
+        self.logger.error('Text must be an string, user_ids must be an list or string')
+        return False
+    media = self.get_media_info(media_id)
+    media = media[0] if isinstance(media, list) else media
+    delay.small_delay(self)
+    if super(self.__class__, self).sendDirectItem('media_share', user_ids, text=text, thread=thread_id,
+                                                  media_type=media.get('media_type'), media_id=media.get('id')):
+        # ToDo: need to add counter
+        return True
+    self.logger.info("Message to {user_ids} wasn't sended".format(user_ids=user_ids))
+    return False
+
+
 def _get_user_ids(self, user_ids):
     if isinstance(user_ids, str):
         user_ids = self.convert_to_user_id(user_ids)

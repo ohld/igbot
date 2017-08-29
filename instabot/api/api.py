@@ -499,6 +499,11 @@ class API(object):
         if itemType == 'message':
             data['text'] = options.get('text')
             url = 'direct_v2/threads/broadcast/text/'
+        if itemType == 'media_share':
+            data['media_type'] = options.get('media_type', 'photo')
+            data['text'] = options.get('text', '')
+            data['media_id'] = options.get('media_id', '')
+            url = 'direct_v2/threads/broadcast/media_share/'
         recipients = self._prepareRecipients(users, threadId=options.get('thread'), useQuotes=False)
         if not recipients:
             return False
