@@ -21,7 +21,7 @@ from .bot_photo import download_photo, download_photos, upload_photo
 
 from .bot_video import upload_video
 
-from .bot_direct import send_message, send_messages, send_media, send_medias, send_hashtag, send_profile
+from .bot_direct import send_message, send_messages, send_media, send_medias, send_hashtag, send_profile, send_like
 
 from .bot_follow import follow, follow_users, follow_followers, follow_following
 
@@ -399,6 +399,9 @@ class Bot(API):
 
     def send_profile(self, profile_user_id, user_ids, text='', thread_id=None):
         return send_profile(self, profile_user_id, user_ids, text, thread_id)
+
+    def send_like(self, user_ids, thread_id=None):
+        send_like(self, user_ids, thread_id)
 
     # delete
 
