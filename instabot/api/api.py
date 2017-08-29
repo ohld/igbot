@@ -444,11 +444,45 @@ class API(object):
         self.logger.info("Total Received %s items with hashtag %s" % (len(feed),hashtagString))
         return feed
 
-    def getLocationFeed(self, locationId, maxid=''):
-        #return self.SendRequest('feed/location/' + str(locationId) + '/?max_id=' + str(
-        #    maxid) + '&rank_token=' + self.rank_token + '&ranked_content=true&')
-        self.logger.info("Getting feed for %s" %locationId)
-        return self.SendRequest('feed/location/' + str(locationId))
+    def getLocationFeed(self, locationId, amount):
+        self.logger.info("Getting %s medias from location: %s" % (amount,locationId))
+
+        feed = []
+        next_max_id = None
+        security_check=0
+
+        while len(feed)<amount and security_check<100:
+
+            if not next_max_id:
+                self.SendRequest('feed/location/' + str(locationId))
+            else:
+                self.SendRequest('feed/location/' + str(locationId) + '/?max_id=' + str(next_max_id))
+
+            temp = self.LastJson
+            if "items" not in temp: #if no items
+                return []
+
+            for item in temp["items"]:
+                feed.append(item)
+            if "more_available" not in temp or temp["more_available"] is False:
+                return feed
+
+            if "next_max_id" in temp:
+                next_max_id = temp["next_max_id"]
+            else:
+                self.logger.info("Retrived %s medias from location %s" % (len(feed),id_location))
+                return feed
+
+            security_check +=1
+
+            sleep_time = randint(1, 3)
+            self.logger.info("Received %s items" % len(temp['items']))
+            self.logger.info("Waiting %s seconds" % sleep_time)
+            time.sleep(sleep_time)
+
+        self.logger.info("Retrived %s medias from location %s" % (len(feed),locationId))
+        return feed
+
 
     def getPopularFeed(self):
         popularFeed = self.SendRequest(

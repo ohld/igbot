@@ -111,3 +111,11 @@ def like_following(self, user_id, nlikes=None):
         self.logger.info("%s not found / closed / has no following." % user_id)
     else:
         self.like_users(following_ids, nlikes)
+        
+def like_posts_by_location(self, id_location, amount):
+    self.logger.info("Going to like %s medias from location %s." % (amount,id_location))
+    medias = self.get_location_medias(id_location=id_location, amount=amount)
+    return self.like_medias(medias[:amount])
+    
+   
+   
