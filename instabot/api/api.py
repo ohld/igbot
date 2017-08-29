@@ -201,13 +201,20 @@ class API(object):
                     user_feed.append(item)
 
             if "next_max_id" not in temp:
-                self.logger.info("Total received % posts from timeline feed" % len(user_feed))
+                self.logger.info("Total received %s posts from timeline feed" % len(user_feed))
                 return user_feed
 
             next_max_id = temp["next_max_id"]
 
             securityBreak = securityBreak+1
-            self.logger.info("Total received % posts from timeline feed" % len(user_feed))
+            self.logger.info("Iteration %s ,received %s items, total received %s" % (securityBreak, len(temp['items']), len(user_feed)))
+
+            sleep_time = randint(1, 3)
+            self.logger.info("Sleeping %s seconds" % sleep_time)
+            time.sleep(sleep_time)
+
+
+        self.logger.info("Total received %s posts from timeline feed" % len(user_feed))
 
         return user_feed
 
@@ -412,20 +419,21 @@ class API(object):
     def getSelfUserFeed(self, maxid='', minTimestamp=None):
         return self.getUserFeed(self.user_id, maxid, minTimestamp)
 
-    def getHashtagFeed(self, hashtagString, maxid=None, amount=50):
-        self.logger.info("Trying to get %s items with hashtag %s" % (amount, hashtagString))
+    def getHashtagFeed(self, hashtagString, amount=50):
+        self.logger.info("Trying to get %s medias with hashtag %s" % (amount, hashtagString))
 
         feed = []
         next_max_id = None
         securityBreak = 0
 
-        while len(feed) < amount and securityBreak < 50:
+        while len(feed)<amount and securityBreak<50:
             if not next_max_id:
                 self.SendRequest('feed/tag/' + hashtagString)
             else:
                 self.SendRequest('feed/tag/' + hashtagString + '/?max_id='+str(next_max_id))
 
             temp = self.LastJson
+
             if "items" not in temp:  # maybe user is private, (we have not access to posts)
                 return []
 
@@ -439,7 +447,12 @@ class API(object):
 
             next_max_id = temp["next_max_id"]
 
+            self.logger.info("Iteration %s ,received %s items, total received %s" % (securityBreak, len(temp['items']), len(feed)))
             securityBreak = securityBreak + 1
+            sleep_time = randint(1, 3)
+            self.logger.info("Sleeping %s seconds" % sleep_time)
+            time.sleep(sleep_time)
+
 
         self.logger.info("Total Received %s items with hashtag %s" % (len(feed),hashtagString))
         return feed
@@ -470,17 +483,18 @@ class API(object):
             if "next_max_id" in temp:
                 next_max_id = temp["next_max_id"]
             else:
-                self.logger.info("Retrived %s medias from location %s" % (len(feed),id_location))
+                self.logger.info("Retrieved %s medias from location %s" % (len(feed),locationId))
                 return feed
 
             security_check +=1
 
             sleep_time = randint(1, 3)
-            self.logger.info("Received %s items" % len(temp['items']))
-            self.logger.info("Waiting %s seconds" % sleep_time)
+            self.logger.info("Iteration %s ,received %s items, total received %s" % (security_check, len(temp['items']), len(feed)))
+
+            self.logger.info("Sleeping %s seconds" % sleep_time)
             time.sleep(sleep_time)
 
-        self.logger.info("Retrived %s medias from location %s" % (len(feed),locationId))
+        self.logger.info("Retrieved %s medias from location %s" % (len(feed),locationId))
         return feed
 
 

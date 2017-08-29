@@ -9,7 +9,9 @@ from ..api import api_db
 # Adding useless userd_ids to the skipped_list file: skipped.txt , so
 # InstaBot will not try to follow them again or InstaBot will not like
 # their medias anymore
+# TODO if needed save the data in db
 def skippedlist_adder(self, user_id):
+    return False
     # user_id = self.convert_to_user_id(user_id)
     skipped = self.read_list_from_file("skipped.txt")
     if user_id not in skipped:
@@ -158,18 +160,18 @@ def check_user(self, user, filter_closed_acc=False):
     if filter_closed_acc and "is_private" in user_info:
         if user_info["is_private"]:
             # Log to Console
-            self.logger.info('info : account is PRIVATE , !!!')
+            self.logger.info('account is PRIVATE , Skipping !!!')
             return False
     if "is_business" in user_info:
         if user_info["is_business"]:
             # Log to Console
-            self.logger.info('\n info : \033[91m is BUSINESS , Skipping \033[0m')
+            self.logger.info('\033[91m '+user['username']+ 'is BUSINESS , Skipping \033[0m')
             skippedlist_adder(self, user_id)  # Add user_id to skipped.txt
             return False
     if "is_verified" in user_info:
         if user_info["is_verified"]:
             # Log to Console
-            print('\n info : \033[91m is VERIFIED , Skipping \033[0m')
+            self.logger.info('\033[91m is VERIFIED , Skipping \033[0m')
             skippedlist_adder(self, user_id)  # Add user_id to skipped.txt
             return False
     if "follower_count" in user_info and "following_count" in user_info:

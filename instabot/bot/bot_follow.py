@@ -14,9 +14,8 @@ def follow(self, user):
     #if limits.check_if_bot_can_follow(self):
     delay.follow_delay(self)
     if super(self.__class__, self).follow(user['pk']):
-        self.logger.info("Followed user %s " % user['username'])
+        self.logger.info("Successfully followed user %s " % user['username'])
         self.total_followed += 1
-        api_db.insert("insert into followings (id_campaign,id_user,following_id) values (%s,%s,%s)", self.id_campaign,self.id_user,user_id)
         return True
     
     return False
@@ -49,14 +48,14 @@ def follow_users(self, users, bot_operation, bot_operation_value):
             break
         
         if self.follow(user):
-            #insert the following in database
-            #todo complete the insert
-            result = api_db.select("insert into followings (id_user,id_campaign,username,full_name,bot_operation,bot_operation_value,details) values (%s,%s,%s,%s,%s,%s,%s)",
-            self.id_user,self.id_campaign,user['username'],user['full_name'],bot_operation,bot_operaetion_value,'null')
+            api_db.insert("insert into followings (id_campaign,id_user,instagram_id_user,username,full_name,bot_operation,bot_operation_value) values (%s,%s,%s,%s,%s,%s,%s)",
+                          self.id_campaign, self.id_user, user['pk'], user['username'], user['full_name'], bot_operation,bot_operation_value)
             totalFollowed=totalFollowed+1
-        
+        else:
+            broken_items.append(user)
 
     self.logger.info("DONE: Total followed %d users." % totalFollowed)
+    self.logger.warning("Could not follow %d users." % len(broken_items))
     
     return True
 

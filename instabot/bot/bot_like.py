@@ -21,6 +21,7 @@ def like_medias(self, medias, bot_operation=None, bot_operation_value=None):
         self.logger.info("Nothing to like.")
         return broken_items
     self.logger.info("Going to like %d medias." % (len(medias)))
+    this_session_total_liked=0
     for media in tqdm(medias):
         #if reaching the limit break
         if not self.like(media['pk']):
@@ -29,11 +30,12 @@ def like_medias(self, medias, bot_operation=None, bot_operation_value=None):
             break
         self.logger.info("Liked instagram post with id: %d :" % media['pk'])
 
-        api_db.insert("insert into likes (id_campaign,id_user,username,full_name,code,post_id,image,bot_operation,bot_operation_value) values (%s,%s,%s,%s,%s,%s,%s,%s,%s)",
-                      self.id_campaign, self.id_user, media['user']['username'],media['user']['full_name'],
+        api_db.insert("insert into likes (id_campaign,id_user,username,full_name,instagram_id_user,code,id_post,image,bot_operation,bot_operation_value) values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)",
+                      self.id_campaign, self.id_user, media['user']['username'],media['user']['full_name'],media['user']['pk'],
                       media['code'],media['pk'],media['image_versions2']['candidates'][0]['url'],bot_operation, bot_operation_value)
+        this_session_total_liked=this_session_total_liked+1
 
-
+    self.logger.info("DONE: Total liked in this session %d medias." % this_session_total_liked)
     self.logger.info("DONE: Total liked %d medias." % self.total_liked)
     return broken_items
 
@@ -73,7 +75,7 @@ def like_hashtag(self, hashtag, amount=None):
     self.logger.info("Amount is %s" % amount)
     self.logger.info("Going to like media with hashtag #%s." % hashtag)
     medias = self.get_hashtag_medias(hashtag=hashtag, filtration=True, amount=amount)
-    bot_operation="like_hashtag"
+    bot_operation="like_posts_by_hashtag"
     bot_operation_value = hashtag
     return self.like_medias(medias[:amount],bot_operation, bot_operation_value)
 
@@ -115,7 +117,9 @@ def like_following(self, user_id, nlikes=None):
 def like_posts_by_location(self, id_location, amount):
     self.logger.info("Going to like %s medias from location %s." % (amount,id_location))
     medias = self.get_location_medias(id_location=id_location, amount=amount)
-    return self.like_medias(medias[:amount])
+    bot_operation="like_posts_by_location"
+    bot_operation_value=id_location
+    return self.like_medias(medias[:amount],bot_operation,bot_operation_value)
     
    
    

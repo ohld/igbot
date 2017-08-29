@@ -4,6 +4,7 @@
 
 import time
 import random
+import logging
 
 
 def add_dispersion(delay_value):
@@ -12,11 +13,14 @@ def add_dispersion(delay_value):
 
 # this function will sleep only if elapsed time since `last_action` is less than `target_delay`
 def sleep_if_need(last_action, target_delay):
+    logger = logging.getLogger('[instabot]')
     now = time.time()
     elapsed_time = now - last_action
     if (elapsed_time < target_delay):
         remains_to_wait = target_delay - elapsed_time
-        time.sleep(add_dispersion(remains_to_wait))
+        sleep_time = add_dispersion(remains_to_wait)
+        time.sleep(sleep_time)
+        logger.info("Sleep %s seconds" % sleep_time)
 
 
 def like_delay(bot):

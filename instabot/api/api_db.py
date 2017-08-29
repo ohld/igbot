@@ -10,6 +10,12 @@ def getConnection():
                          user="root",  # your username
                          passwd="password",  # your password
                          db="instaboost")
+    db.set_character_set('utf8mb4')
+    dbc = db.cursor()
+    dbc.execute('SET NAMES utf8mb4;')
+    dbc.execute('SET CHARACTER SET utf8mb4;')
+    dbc.execute('SET character_set_connection=utf8mb4;')
+
     return db
 
 def getUserId(campaignId):

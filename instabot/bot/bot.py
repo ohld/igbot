@@ -49,6 +49,7 @@ from .bot_stats import save_user_stats
 class Bot(API):
 
     def __init__(self,
+                 id_campaign,
                  whitelist=False,
                  blacklist=False,
                  comments_file=False,
@@ -70,7 +71,7 @@ class Bot(API):
                  max_following_to_followers_ratio=2,
                  min_media_count_to_follow=3,
                  max_following_to_block=2000,
-                 like_delay=10,
+                 like_delay=15,
                  unlike_delay=10,
                  follow_delay=30,
                  unfollow_delay=30,
@@ -150,9 +151,9 @@ class Bot(API):
         self.logger.info('Instabot Started')
 
         #campaign
-        self.id_campaign = sys.argv[1]
+        self.id_campaign = id_campaign
 
-        #self.id_user = api_db.getUserId(self.id_campaign)
+        self.id_user = api_db.getUserId(self.id_campaign)
 
         # current following
         #self.following = getCurrentUserFollowing(self)
