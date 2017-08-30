@@ -19,8 +19,8 @@ def sleep_if_need(last_action, target_delay):
     if (elapsed_time < target_delay):
         remains_to_wait = target_delay - elapsed_time
         sleep_time = add_dispersion(remains_to_wait)
-        time.sleep(sleep_time)
         logger.info("Sleep %s seconds" % sleep_time)
+        time.sleep(sleep_time)
 
 
 def like_delay(bot):

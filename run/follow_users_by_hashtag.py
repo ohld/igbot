@@ -21,7 +21,6 @@ args = parser.parse_args()
 bot = Bot(id_campaign=args.id_campaign)
 bot.login(username=args.u, password=args.p)
 
-#todo -> create the details object and persist it in db
 
 feed=bot.getHashtagFeed(args.hashtag,args.amount)
 users=[]
@@ -31,8 +30,8 @@ for media in feed:
     user['media']={}
     user['media']['code'] = media['code']
     user['media']['image'] = media['image_versions2']['candidates'][0]['url']
-    user['media']['post_id']=media['pk']
+    user['media']['id']=media['pk']
     users.append(user)
 
-bot.follow_users(users[:args.amount],"like_users_by_hashtag",args.hashtag)
+bot.follow_users(users[:args.amount],"follow_users_by_hashtag",args.hashtag)
     

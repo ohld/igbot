@@ -48,8 +48,10 @@ def follow_users(self, users, bot_operation, bot_operation_value):
             break
         
         if self.follow(user):
-            api_db.insert("insert into followings (id_campaign,id_user,instagram_id_user,username,full_name,bot_operation,bot_operation_value) values (%s,%s,%s,%s,%s,%s,%s)",
-                          self.id_campaign, self.id_user, user['pk'], user['username'], user['full_name'], bot_operation,bot_operation_value)
+
+            api_db.insertBotAction(self.id_campaign, self.id_user, user['pk'], user['full_name'], user['username'],
+                                   user['profile_pic_url'],user['media']['id'], user['media']['image'],
+                                   user['media']['code'], bot_operation,bot_operation_value)
             totalFollowed=totalFollowed+1
         else:
             broken_items.append(user)
