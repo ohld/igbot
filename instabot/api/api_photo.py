@@ -26,6 +26,13 @@ def downloadPhoto(self, media_id, filename, media=False, path='photos/'):
         return os.path.abspath(path + filename)
 
 
+def compatibleAspectRatio(size):
+    min_ratio, max_ratio = 4.0 / 5.0, 90.0 / 47.0
+    width, height = size
+    this_ratio = 1.0 * width / height
+    return min_ratio <= this_ratio <= max_ratio
+
+
 def configurePhoto(self, upload_id, photo, caption=''):
     (w, h) = getImageSize(photo)
     data = json.dumps({
@@ -52,6 +59,9 @@ def configurePhoto(self, upload_id, photo, caption=''):
 def uploadPhoto(self, photo, caption=None, upload_id=None):
     if upload_id is None:
         upload_id = str(int(time.time() * 1000))
+    if not compatibleAspectRatio(getImageSize(photo)):
+        self.logger.info('Not compatible photo aspect ratio')
+        return False
     data = {
         'upload_id': upload_id,
         '_uuid': self.uuid,
