@@ -43,10 +43,11 @@ class API(object):
         self.isLoggedIn = False
         self.LastResponse = None
         self.total_requests = 0
-        id_campaign = sys.argv[1]
+
+    def initLogging(self,id_campaign):
         logs_folder = os.environ['INSTABOT_LOGS_PATH']
-        campaign_folder = logs_folder+"/campaign/"+id_campaign
-        log_path = campaign_folder+"/instabot.log"
+        campaign_folder = logs_folder + "/campaign/" + id_campaign
+        log_path = campaign_folder + "/instabot.log"
 
         if not os.path.exists(campaign_folder):
             os.makedirs(campaign_folder)

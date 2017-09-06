@@ -80,6 +80,7 @@ class Bot(API):
                  unblock_delay=30,
                  stop_words=['shop', 'store', 'free']):
         super(self.__class__, self).__init__()
+        self.initLogging(id_campaign)
 
         self.total_liked = 0
         self.total_unliked = 0
