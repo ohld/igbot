@@ -81,7 +81,7 @@ def get_hashtag_medias(self, hashtag, filtration=True, amount=50):
         self.logger.warning("Error while getting hashtag feed for %s." % hashtag)
         return []
 
-    return self.filter_medias(self.LastJson["items"], filtration)
+    return self.filter_medias(medias, filtration)
     
 def get_location_medias(self, id_location,filtration=True,amount=None):
     medias = self.getLocationFeed(id_location,amount)

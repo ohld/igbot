@@ -71,9 +71,7 @@ def like_users(self, user_ids, nlikes=None, filtration=True):
 
 
 def like_hashtag(self, hashtag, amount=None):
-    """ Likes last medias from hashtag """
-    self.logger.info("Amount is %s" % amount)
-    self.logger.info("Going to like media with hashtag #%s." % hashtag)
+    self.logger.info("Going to like %s media with hashtag #%s." % (amount,hashtag))
     medias = self.get_hashtag_medias(hashtag=hashtag, filtration=True, amount=amount)
     bot_operation="like_posts_by_hashtag"
     bot_operation_value = hashtag
