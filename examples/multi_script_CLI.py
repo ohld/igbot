@@ -27,14 +27,14 @@ def initial_checker():
         fh = open(comment, 'w')
         fh = open(setting, 'w')
         print("""
-        Welcome to instabot, it seems this is the first time you use this bot.
-        Before start, let's setting a basic things up first.
-        So the bot will function perfectly.
+        Welcome to instabot, it seems this is the first time you've used this bot.
+        Before starting, let's setup the basics.
+        So the bot functions the way you want.
         """)
         setting_input()
         print("""
         You can add hashtag database, competitor database,
-        whitelist, and blacklist also add user in setting menu.
+        whitelists, blacklists and also add users in setting menu.
         Have fun with the bot!
         """)
         time.sleep(5)
@@ -51,34 +51,34 @@ def setting_input():
     with open(setting, "w") as f:
         while True:
             print(
-                "How many like you want to do in a day? (enter to use default number: 1000)")
+                "How many likes do you want to do in a day? (enter to use default number: 1000)")
             f.write(str(int(sys.stdin.readline().strip()or "1000")) + "\n")
             print("How about unlike? (enter to use default number: 1000)")
             f.write(str(int(sys.stdin.readline().strip()or "1000")) + "\n")
             print(
-                "How many follow you want to do in a day? (enter to use default number: 350)")
+                "How many follows do you want to do in a day? (enter to use default number: 350)")
             f.write(str(int(sys.stdin.readline().strip()or "350")) + "\n")
             print("How about unfollow? (enter to use default number: 350)")
             f.write(str(int(sys.stdin.readline().strip()or "350")) + "\n")
             print(
-                "How many comment you want to do in a day? (enter to use default number:100)")
+                "How many comments do you want to do in a day? (enter to use default number:100)")
             f.write(str(int(sys.stdin.readline().strip()or "100")) + "\n")
             print("Maximal likes in media you will like?")
             print(
-                "We will skip media that have greater like from this value (enter to use default number: 100)")
+                "We will skip media that have greater like than this value (enter to use default number: 100)")
             f.write(str(int(sys.stdin.readline().strip()or "100")) + "\n")
             print("Maximal followers of account you want to follow?")
-            print("We will skip media that have greater followers from this value (enter to use default number: 2000)")
+            print("We will skip media that have greater followers than this value (enter to use default number: 2000)")
             f.write(str(int(sys.stdin.readline().strip()or "2000")) + "\n")
-            print("Minimal followers of account you want to follow?")
+            print("Minimum followers a account should have before we follow?")
             print(
-                "we will skip media that have lesser follower from this value(enter to use default number: 10)")
+                "We will skip media that have lesser followers than this value (enter to use default number: 10)")
             f.write(str(int(sys.stdin.readline().strip()or "10")) + "\n")
-            print("Maximal following of account you want to follow?")
-            print("We will skip media that have greater following from this value (enter to use default number: 7500)")
+            print("Maximum following of account you want to follow?")
+            print("We will skip media that have a greater following than this value (enter to use default number: 7500)")
             f.write(str(int(sys.stdin.readline().strip()or "7500")) + "\n")
-            print("Minimal following of account you want to follow?")
-            print("we will skip media that have lesser following from this value (enter to use default number: 10)")
+            print("Minimum following of account you want to follow?")
+            print("We will skip media that have lesser following from this value (enter to use default number: 10)")
             f.write(str(int(sys.stdin.readline().strip()or "10")) + "\n")
             print(
                 "Maximal followers to following_ratio (enter to use default number: 10)")
@@ -87,7 +87,7 @@ def setting_input():
             f.write(str(int(sys.stdin.readline().strip()or "2")) + "\n")
             print("Minimal media the account you will follow have.")
             print(
-                "we will skip media that have lesser media from this value (enter to use default number: 3)")
+                "We will skip media that have lesser media from this value (enter to use default number: 3)")
             f.write(str(int(sys.stdin.readline().strip()or "3")) + "\n")
             print(
                 "Delay from one like to another like you will perform (enter to use default number: 10)")
@@ -138,7 +138,7 @@ def parameter_setting():
 
 def username_adder():
     with open(SECRET_FILE, "a") as f:
-        print("we will add your instagram account.")
+        print("We will add your instagram account.")
         print("Don't worry. It will be stored locally.")
         while True:
             print("Enter your login: ")
@@ -151,7 +151,7 @@ def username_adder():
 
 
 def hashtag_adder():
-    print("current database:")
+    print("Current Database:")
     print(bot.read_list_from_file(hashtag_file))
     with open(hashtag_file, "a") as f:
         print('Add hashtag to database')
@@ -160,12 +160,12 @@ def hashtag_adder():
             f.write(str(sys.stdin.readline().strip()) + "\n")
             print("Do you want to add another hashtag? (y/n)\n")
             if "y" not in sys.stdin.readline():
-                print('done adding hashtag to database')
+                print('Done adding hashtag to database')
                 break
 
 
 def competitor_adder():
-    print("current database:")
+    print("Current Database:")
     print(bot.read_list_from_file(users_file))
     with open(users_file, "a") as f:
         print('Add username to database')
@@ -179,7 +179,7 @@ def competitor_adder():
 
 
 def blacklist_adder():
-    print("current database:")
+    print("Current Database:")
     print(bot.read_list_from_file(blacklist))
     with open(blacklist, "a") as f:
         print('Add username to blacklist')
@@ -193,7 +193,7 @@ def blacklist_adder():
 
 
 def whitelist_adder():
-    print("current database:")
+    print("Current Database:")
     print(bot.read_list_from_file(whitelist))
     with open(whitelist, "a") as f:
         print('Add username to whitelist')
@@ -207,7 +207,7 @@ def whitelist_adder():
 
 
 def comment_adder():
-    print("current database:")
+    print("Current Database:")
     print(bot.read_list_from_file(comment))
     with open(comment, "a") as f:
         print('Add comment')
@@ -239,11 +239,11 @@ def menu():
     while ans:
         print("""
         1.Follow
-        2.like
-        3.comment
-        4.unfollow
+        2.Like
+        3.Comment
+        4.Unfollow
         5.Block
-        6.setting
+        6.Setting
         7.Exit
         """)
         ans = input("What would you like to do?\n").strip()
@@ -263,7 +263,7 @@ def menu():
             bot.logout()
             sys.exit()
         else:
-            print("\n Not Valid Choice Try again")
+            print("\n Not A Valid Choice, Try again")
 
 
 def menu_follow():
@@ -273,15 +273,15 @@ def menu_follow():
         1. Follow from hashtag
         2. Follow followers
         3. Follow following
-        4. Follow someone media likers
+        4. Follow by likes on media
         5. Main menu
         """)
-        ans = input("how do you want to follow?\n").strip()
+        ans = input("How do you want to follow?\n").strip()
 
         if ans == "1":
             print("""
-            1.insert hashtag
-            2.use hashtag database
+            1.Insert hashtag
+            2.Use hashtag database
             """)
             if "1" in sys.stdin.readline():
                 hashtag = input("what?\n").strip()
@@ -293,8 +293,8 @@ def menu_follow():
 
         elif ans == "2":
             print("""
-            1.insert username
-            2.use username database
+            1.Insert username
+            2.Use username database
             """)
             if "1" in sys.stdin.readline():
                 user_id = input("who?\n").strip()
@@ -305,8 +305,8 @@ def menu_follow():
 
         elif ans == "3":
             print("""
-            1.insert username
-            2.use username database
+            1.Insert username
+            2.Use username database
             """)
             if "1" in sys.stdin.readline():
                 user_id = input("who?\n").strip()
@@ -317,8 +317,8 @@ def menu_follow():
 
         elif ans == "4":
             print("""
-            1.insert username
-            2.use username database
+            1.Insert username
+            2.Use username database
             """)
             if "1" in sys.stdin.readline():
                 user_id = input("who?\n").strip()
@@ -334,7 +334,7 @@ def menu_follow():
             menu()
 
         else:
-            print("the number is not in the list you know")
+            print("This number is not in the list?")
             menu_follow()
 
 
@@ -349,12 +349,12 @@ def menu_like():
         5. Like our timeline
         6. Main menu
         """)
-        ans = input("how do you want to like?\n").strip()
+        ans = input("How do you want to like?\n").strip()
 
         if ans == "1":
             print("""
-            1.insert hashtag(s)
-            2.use hashtag database
+            1.Insert hashtag(s)
+            2.Use hashtag database
             """)
             hashtags = []
             if "1" in sys.stdin.readline():
@@ -366,8 +366,8 @@ def menu_like():
 
         elif ans == "2":
             print("""
-            1.insert username
-            2.use username database
+            1.Insert username
+            2.Use username database
             """)
             if "1" in sys.stdin.readline():
                 user_id = input("who?\n").strip()
@@ -377,8 +377,8 @@ def menu_like():
 
         elif ans == "3":
             print("""
-            1.insert username
-            2.use username database
+            1.Insert username
+            2.Use username database
             """)
             if "1" in sys.stdin.readline():
                 user_id = input("who?\n").strip()
@@ -388,8 +388,8 @@ def menu_like():
 
         elif ans == "4":
             print("""
-            1.insert username
-            2.use username database
+            1.Insert username
+            2.Use username database
             """)
             if "1" in sys.stdin.readline():
                 user_id = input("who?\n").strip()
@@ -408,7 +408,7 @@ def menu_like():
             menu()
 
         else:
-            print("the number is not in the list you know")
+            print("This number is not in the list?")
             menu_like()
 
 
@@ -422,12 +422,12 @@ def menu_comment():
         4. Comment our timeline
         5. Main menu
         """)
-        ans = input("how do you want to comment?\n").strip()
+        ans = input("How do you want to comment?\n").strip()
 
         if ans == "1":
             print("""
-            1.insert hashtag
-            2.use hashtag database
+            1.Insert hashtag
+            2.Use hashtag database
             """)
             if "1" in sys.stdin.readline():
                 hashtag = input("what?").strip()
@@ -438,8 +438,8 @@ def menu_comment():
 
         elif ans == "2":
             print("""
-            1.insert username
-            2.use username database
+            1.Insert username
+            2.Use username database
             """)
             if "1" in sys.stdin.readline():
                 user_id = input("who?\n").strip()
@@ -469,7 +469,7 @@ def menu_comment():
             menu()
 
         else:
-            print("the number is not in the list you know")
+            print("This number is not in the list?")
             menu_comment()
 
 
@@ -477,10 +477,10 @@ def menu_unfollow():
     ans = True
     while ans:
         print("""
-        1. unfollow non followers
-        2. unfollow everyone
+        1. Unfollow non followers
+        2. Unfollow everyone
         """)
-        ans = input("how do you want to unfollow?\n").strip()
+        ans = input("How do you want to unfollow?\n").strip()
 
         if ans == "1":
             bot.unfollow_non_followers()
@@ -494,7 +494,7 @@ def menu_unfollow():
             menu()
 
         else:
-            print("the number is not in the list you know")
+            print("This number is not in the list?")
             menu_unfollow()
 
 
@@ -514,7 +514,7 @@ def menu_block():
             menu()
 
         else:
-            print("the number is not in the list you know")
+            print("This number is not in the list?")
             menu_block()
 
 
@@ -536,7 +536,7 @@ def menu_setting():
 
         if ans == "1":
             parameter_setting()
-            change = input("want to change it? y/n\n").strip()
+            change = input("Want to change it? y/n\n").strip()
             if change == 'y' or change == 'Y':
                 setting_input()
             else:
@@ -555,18 +555,18 @@ def menu_setting():
             whitelist_adder()
         elif ans == "8":
             print(
-                "this will clear all database except your user accounts and paramater settings")
+                "Whis will clear all database except your user accounts and paramater settings")
             time.sleep(5)
             fh = open(hashtag_file, 'w')
             fh = open(users_file, 'w')
             fh = open(whitelist, 'w')
             fh = open(blacklist, 'w')
             fh = open(comment, 'w')
-            print("done, you can add new one!")
+            print("Done, you can add new one!")
         elif ans == "9":
             menu()
         else:
-            print("the number is not in the list you know")
+            print("This number is not in the list?")
             menu_setting()
 
 
@@ -588,8 +588,8 @@ SECRET_FILE = "secret.txt"
 initial_checker()
 
 if os.stat(setting).st_size == 0:
-    print("Look like setting are broken")
-    print("let's make new one")
+    print("Looks like setting are broken")
+    print("Let's make new one")
     setting_input()
 
 f = open(setting)
