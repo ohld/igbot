@@ -1,2 +1,2 @@
 web: python web.py
-worker: python in/1.py
+worker: python examples/ultimate_schedule/ultimate.py
