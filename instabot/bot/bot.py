@@ -1,19 +1,25 @@
 import datetime
 import atexit
 import signal
+import json
+import requests
 
 from ..api import API
 
-from .bot_get import get_media_owner, get_your_medias, get_user_medias
-from .bot_get import get_timeline_medias, get_hashtag_medias, get_user_info
-from .bot_get import get_geotag_medias, get_timeline_users, get_hashtag_users, get_media_id_from_link
-from .bot_get import get_media_commenters, get_userid_from_username, get_username_from_userid
-from .bot_get import get_user_followers, get_user_following, get_media_likers, get_popular_medias
-from .bot_get import get_media_comments, get_geotag_users, get_locations_from_coordinates, convert_to_user_id
-from .bot_get import get_comment, get_media_info, get_user_likers, get_archived_medias, get_total_user_medias
+from .bot_get import (
+    get_media_owner, get_your_medias, get_user_medias,
+    get_timeline_medias, get_hashtag_medias, get_user_info,
+    get_geotag_medias, get_timeline_users, get_hashtag_users, get_media_id_from_link,
+    get_media_commenters, get_userid_from_username, get_username_from_userid,
+    get_user_followers, get_user_following, get_media_likers, get_popular_medias,
+    get_media_comments, get_geotag_users, get_locations_from_coordinates, convert_to_user_id,
+    get_comment, get_media_info, get_user_likers, get_archived_medias, get_total_user_medias
+)
 
-from .bot_like import like, like_medias, like_timeline, like_user, like_users
-from .bot_like import like_hashtag, like_geotag, like_followers, like_following
+from .bot_like import (
+    like, like_medias, like_timeline, like_user, like_users,
+    like_hashtag, like_geotag, like_followers, like_following
+)
 
 from .bot_unlike import unlike, unlike_medias, unlike_user
 
@@ -25,13 +31,17 @@ from .bot_direct import send_message, send_messages, send_media, send_medias, se
 
 from .bot_follow import follow, follow_users, follow_followers, follow_following
 
-from .bot_unfollow import unfollow, unfollow_users, unfollow_non_followers
-from .bot_unfollow import unfollow_everyone, update_unfollow_file
+from .bot_unfollow import (
+    unfollow, unfollow_users, unfollow_non_followers,
+    unfollow_everyone, update_unfollow_file
+)
 
 from .bot_archive import archive, archive_medias, unarchive_medias
 
-from .bot_comment import comment, comment_medias, comment_geotag, comment_users
-from .bot_comment import comment_hashtag, is_commented, comment_user
+from .bot_comment import (
+    comment, comment_medias, comment_geotag, comment_users,
+    comment_hashtag, is_commented, comment_user
+)
 
 from .bot_block import block, unblock, block_users, unblock_users, block_bots
 
@@ -39,11 +49,14 @@ from .bot_delete import delete_media, delete_medias
 
 from .bot_checkpoint import save_checkpoint, load_checkpoint
 
-from .bot_filter import filter_medias, check_media, filter_users, check_user
-from .bot_filter import check_not_bot
+from .bot_filter import (
+    filter_medias, check_media, filter_users, check_user, check_not_bot
+)
 
-from .bot_support import check_if_file_exists, read_list_from_file, check_whitelists
-from .bot_support import add_whitelist, add_blacklist
+from .bot_support import (
+    check_if_file_exists, read_list_from_file, check_whitelists,
+    add_whitelist, add_blacklist
+)
 
 from .bot_stats import save_user_stats
 
@@ -79,7 +92,7 @@ class Bot(API):
                  comment_delay=60,
                  block_delay=30,
                  unblock_delay=30,
-                 stop_words=['shop', 'store', 'free']):
+                 stop_words=None):
         super(self.__class__, self).__init__()
 
         self.total_liked = 0
@@ -119,7 +132,7 @@ class Bot(API):
         self.max_followers_to_following_ratio = max_followers_to_following_ratio
         self.max_following_to_followers_ratio = max_following_to_followers_ratio
         self.min_media_count_to_follow = min_media_count_to_follow
-        self.stop_words = stop_words
+        self.stop_words = stop_words or ['shop', 'store', 'free']
 
         # limits - block
         self.max_following_to_block = max_following_to_block
@@ -169,12 +182,42 @@ class Bot(API):
         self.print_counters()
 
     def login(self, **args):
+        session = args.pop('session', None)
         if self.proxy:
             args['proxy'] = self.proxy
         super(self.__class__, self).login(**args)
         self.prepare()
+        if not session:
+            # don't logout user
+            return
         signal.signal(signal.SIGTERM, self.logout)
         atexit.register(self.logout)
+
+    def login_info(self):
+        return {
+            'user_id': self.user_id,
+            'rank_token': self.rank_token,
+            'token': self.token,
+            'username': self.username
+        }
+
+    def save_session(self, filename):
+        with open(filename, 'wt') as f:
+            json.dump(self.login_info(), f)
+        self.logger.info('Session stored to {}'.format(filename))
+
+    def load_session(self, filename):
+        with open(filename, 'rt') as f:
+            session = json.load(f)
+        assert all([i in session for i in ['user_id', 'rank_token', 'token']])
+        self.user_id = session['user_id']
+        self.rank_token = session['rank_token']
+        self.token = session['token']
+        self.username = session['username']
+        if not hasattr(self, 'session'):
+            self.session = requests.Session()
+        self.isLoggedIn = True
+        self.logger.info('Session loaded from {}'.format(filename))
 
     def prepare(self):
         storage = load_checkpoint(self)
