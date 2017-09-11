@@ -1,7 +1,6 @@
 import datetime
 import atexit
 import signal
-import sys
 
 from ..api import API
 from ..api import api_db
@@ -50,6 +49,7 @@ class Bot(API):
 
     def __init__(self,
                  id_campaign,
+                 id_log,
                  whitelist=False,
                  blacklist=False,
                  comments_file=False,
@@ -153,9 +153,9 @@ class Bot(API):
 
         #campaign
         self.id_campaign = id_campaign
+        self.id_log = id_log
 
         self.id_user = api_db.getUserId(self.id_campaign)
-
         # current following
         #self.following = getCurrentUserFollowing(self)
 

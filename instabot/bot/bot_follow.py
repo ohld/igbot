@@ -51,7 +51,7 @@ def follow_users(self, users, bot_operation, bot_operation_value):
 
             api_db.insertBotAction(self.id_campaign, self.id_user, user['pk'], user['full_name'], user['username'],
                                    user['profile_pic_url'],user['media']['id'], user['media']['image'],
-                                   user['media']['code'], bot_operation,bot_operation_value)
+                                   user['media']['code'], bot_operation,bot_operation_value,self.id_log)
             totalFollowed=totalFollowed+1
         else:
             broken_items.append(user)
@@ -59,7 +59,7 @@ def follow_users(self, users, bot_operation, bot_operation_value):
     self.logger.info("DONE: Total followed %d users." % totalFollowed)
     self.logger.warning("Could not follow %d users." % len(broken_items))
     
-    return True
+    return totalFollowed
 
 
 def removeAlreadyFollowedUsers(users):

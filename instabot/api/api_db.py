@@ -50,7 +50,7 @@ def insertBotAction(*args):
 
     query="insert into bot_action (id_campaign, id_user, instagram_id_user, " \
           "full_name, username, user_image, post_id, post_image, " \
-          "post_link,bot_operation,bot_operation_value) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+          "post_link,bot_operation,bot_operation_value,id_log) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
 
     insert(query,*args)
 

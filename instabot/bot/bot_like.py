@@ -19,7 +19,7 @@ def like_medias(self, medias, bot_operation=None, bot_operation_value=None):
     broken_items = []
     if len(medias) == 0:
         self.logger.info("Nothing to like.")
-        return broken_items
+        return 0
     self.logger.info("Going to like %d medias." % (len(medias)))
     this_session_total_liked=0
     for media in tqdm(medias):
@@ -32,12 +32,12 @@ def like_medias(self, medias, bot_operation=None, bot_operation_value=None):
 
         api_db.insertBotAction(self.id_campaign, self.id_user, media['user']['pk'], media['user']['full_name'], media['user']['username'],
                                media['user']['profile_pic_url'], media['pk'], media['image_versions2']['candidates'][0]['url'],
-                               media['code'], bot_operation, bot_operation_value)
+                               media['code'], bot_operation, bot_operation_value,self.id_log)
         this_session_total_liked=this_session_total_liked+1
 
     self.logger.info("DONE: Total liked in this session %d medias." % this_session_total_liked)
     self.logger.info("DONE: Total liked %d medias." % self.total_liked)
-    return broken_items
+    return this_session_total_liked
 
 
 def like_timeline(self, amount=None):
