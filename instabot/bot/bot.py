@@ -212,7 +212,7 @@ class Bot(API):
         self.user_id = session['user_id']
         self.rank_token = session['rank_token']
         self.token = session['token']
-        if self.session is None:
+        if not hasattr(self, 'session'):
             self.session = requests.Session()
         self.isLoggedIn = True
         self.logger.info('Session loaded from {}'.format(filename))
