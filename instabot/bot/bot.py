@@ -197,7 +197,8 @@ class Bot(API):
         return {
             'user_id': self.user_id,
             'rank_token': self.rank_token,
-            'token': self.token
+            'token': self.token,
+            'username': self.username
         }
 
     def save_session(self, filename):
@@ -212,6 +213,7 @@ class Bot(API):
         self.user_id = session['user_id']
         self.rank_token = session['rank_token']
         self.token = session['token']
+        self.username = session['username']
         if not hasattr(self, 'session'):
             self.session = requests.Session()
         self.isLoggedIn = True
