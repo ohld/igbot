@@ -6,7 +6,7 @@
     2) likes user's feed
 
     Notes:
-    2) You should pass user_id, not username
+    1) You should pass user_id, not username
 """
 
 import time

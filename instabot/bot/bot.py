@@ -6,7 +6,7 @@ from ..api import API
 
 from .bot_get import get_media_owner, get_your_medias, get_user_medias
 from .bot_get import get_timeline_medias, get_hashtag_medias, get_user_info
-from .bot_get import get_geotag_medias, get_timeline_users, get_hashtag_users
+from .bot_get import get_geotag_medias, get_timeline_users, get_hashtag_users, get_media_id_from_link
 from .bot_get import get_media_commenters, get_userid_from_username, get_username_from_userid
 from .bot_get import get_user_followers, get_user_following, get_media_likers, get_popular_medias
 from .bot_get import get_media_comments, get_geotag_users, get_locations_from_coordinates, convert_to_user_id
@@ -21,10 +21,12 @@ from .bot_photo import download_photo, download_photos, upload_photo
 
 from .bot_video import upload_video
 
+from .bot_direct import send_message, send_messages, send_media, send_medias, send_hashtag, send_profile, send_like
+
 from .bot_follow import follow, follow_users, follow_followers, follow_following
 
 from .bot_unfollow import unfollow, unfollow_users, unfollow_non_followers
-from .bot_unfollow import unfollow_everyone
+from .bot_unfollow import unfollow_everyone, update_unfollow_file
 
 from .bot_archive import archive, archive_medias, unarchive_medias
 
@@ -32,6 +34,8 @@ from .bot_comment import comment, comment_medias, comment_geotag, comment_users
 from .bot_comment import comment_hashtag, is_commented, comment_user
 
 from .bot_block import block, unblock, block_users, unblock_users, block_bots
+
+from .bot_delete import delete_media, delete_medias
 
 from .bot_checkpoint import save_checkpoint, load_checkpoint
 
@@ -286,6 +290,9 @@ class Bot(API):
     def get_user_likers(self, user_id, media_count=10):
         return get_user_likers(self, user_id, media_count)
 
+    def get_media_id_from_link(self, link):
+        return get_media_id_from_link(self, link)
+
     def convert_to_user_id(self, usernames):
         return convert_to_user_id(self, usernames)
 
@@ -367,11 +374,45 @@ class Bot(API):
     def unfollow_users(self, user_ids):
         return unfollow_users(self, user_ids)
 
-    def unfollow_non_followers(self):
-        return unfollow_non_followers(self)
+    def unfollow_non_followers(self, n_to_unfollows=None):
+        return unfollow_non_followers(self, n_to_unfollows)
 
     def unfollow_everyone(self):
         return unfollow_everyone(self)
+
+    def update_unfollow_file(self):
+        return update_unfollow_file(self)
+
+    # direct
+
+    def send_message(self, text, user_ids, thread_id=None):
+        return send_message(self, text, user_ids, thread_id)
+
+    def send_messages(self, text, user_ids):
+        return send_messages(self, text, user_ids)
+
+    def send_media(self, media_id, user_ids, text=None, thread_id=None):
+        return send_media(self, media_id, user_ids, text, thread_id)
+
+    def send_medias(self, media_id, user_ids, text=None):
+        return send_medias(self, media_id, user_ids, text)
+
+    def send_hashtag(self, hashtag, user_ids, text='', thread_id=None):
+        return send_hashtag(self, hashtag, user_ids, text, thread_id)
+
+    def send_profile(self, profile_user_id, user_ids, text='', thread_id=None):
+        return send_profile(self, profile_user_id, user_ids, text, thread_id)
+
+    def send_like(self, user_ids, thread_id=None):
+        send_like(self, user_ids, thread_id)
+
+    # delete
+
+    def delete_media(self, media_id):
+        return delete_media(self, media_id)
+
+    def delete_medias(self, medias):
+        return delete_medias(self, medias)
 
     # archive
 
@@ -392,8 +433,8 @@ class Bot(API):
     def comment(self, media_id, comment_text):
         return comment(self, media_id, comment_text)
 
-    def comment_hashtag(self, hashtag):
-        return comment_hashtag(self, hashtag)
+    def comment_hashtag(self, hashtag, amount=None):
+        return comment_hashtag(self, hashtag, amount)
 
     def comment_medias(self, medias):
         return comment_medias(self, medias)

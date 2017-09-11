@@ -239,14 +239,14 @@ class API(object):
         return self.SendRequest('media/' + str(media['id']) + '/' + str(action) + '/?media_type=' +
                                 str(media['media_type']), self.generateSignature(data))
 
-    def deleteMedia(self, mediaId):
+    def deleteMedia(self, media):
         data = json.dumps({
             '_uuid': self.uuid,
             '_uid': self.user_id,
             '_csrftoken': self.token,
-            'media_id': mediaId
+            'media_id': media.get('id')
         })
-        return self.SendRequest('media/' + str(mediaId) + '/delete/', self.generateSignature(data))
+        return self.SendRequest('media/' + str(media.get('id')) + '/delete/', self.generateSignature(data))
 
     def changePassword(self, newPassword):
         data = json.dumps({
@@ -477,6 +477,50 @@ class API(object):
             '_csrftoken': self.token
         })
         return self.SendRequest('friendships/show/' + str(userId) + '/', self.generateSignature(data))
+
+    def _prepareRecipients(self, users, threadId=None, useQuotes=False):
+        if not isinstance(users, list):
+            print('Users must be an list')
+            return False
+        result = {'users': '[[{}]]'.format(','.join(users))}
+        if threadId:
+            result['thread'] = '["{}"]'.format(threadId) if useQuotes else '[{}]'.format(threadId)
+        return result
+
+    def sendDirectItem(self, itemType, users, **options):
+        data = {
+            '_uuid': self.uuid,
+            '_uid': self.user_id,
+            '_csrftoken': self.token,
+            'client_context': self.generateUUID(True),
+            'action': 'send_item'
+        }
+        url = ''
+        if itemType == 'message':
+            data['text'] = options.get('text', '')
+            url = 'direct_v2/threads/broadcast/text/'
+        if itemType == 'media_share':
+            data['media_type'] = options.get('media_type', 'photo')
+            data['text'] = options.get('text', '')
+            data['media_id'] = options.get('media_id', '')
+            url = 'direct_v2/threads/broadcast/media_share/'
+        if itemType == 'like':
+            url = 'direct_v2/threads/broadcast/like/'
+        if itemType == 'hashtag':
+            url = 'direct_v2/threads/broadcast/hashtag/'
+            data['text'] = options.get('text', '')
+            data['hashtag'] = options.get('hashtag', '')
+        if itemType == 'profile':
+            url = 'direct_v2/threads/broadcast/profile/'
+            data['profile_user_id'] = options.get('profile_user_id')
+            data['text'] = options.get('text', '')
+        recipients = self._prepareRecipients(users, threadId=options.get('thread'), useQuotes=False)
+        if not recipients:
+            return False
+        data['recipient_users'] = recipients.get('users')
+        if recipients.get('thread'):
+            data['thread_ids'] = recipients.get('thread')
+        return self.SendRequest(url, data)
 
     def generateSignature(self, data):
         try:
