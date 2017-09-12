@@ -31,6 +31,85 @@ def getGroupedOperations(configs):
 
     return groupedOperations
 
+def handleLikeOperation(bot,availableOperations, opIndex,parameters,amount):
+    
+    totalAmount=0
+    
+    if 'like_timeline' in availableOperations[opIndex]['configName']:
+        bot.logger.info("Bot operation: %s, amount %s",'like_timeline',amount)
+        totalAmount=totalAmount + bot.like_timeline(args.amount)
+        del availableOperations[opIndex]
+    elif 'like_posts_by_hashtag' in availableOperations[opIndex]['configName']:
+        if len(parameters['list'])==0:
+            bot.logger.info("No hashtag left for operation like_posts_by_hashtag, skipping this operation...")
+            del availableOperations[opIndex]
+            return 0;
+
+        hashtagIndex=randint(0,len(parameters['list'])-1)
+        hashtag = parameters['list'][hashtagIndex]
+
+        bot.logger.info("Bot operation: %s, hashtag: %s, amount %s", 'like_posts_by_hashtag', hashtag, amount)
+        totalAmount = totalAmount + bot.like_hashtag(hashtag,args.amount)
+        #remove the hastagh to no use it again his session
+        del parameters['list'][hashtagIndex]
+        availableOperations[opIndex]['parameters'] = json.dumps(parameters)
+
+
+    elif 'like_posts_by_location' in availableOperations[opIndex]['configName']:
+
+        if len(parameters['list'])==0:
+            bot.logger.info("No location left for operation like_posts_by_location, skipping this operation...")
+            del availableOperations[opIndex]
+            return 0;
+
+        locationIndex=randint(0,len(parameters['list'])-1)
+        location = parameters['list'][locationIndex]
+        bot.logger.info("Bot operation: %s, locationId: %s, amount %s",'like_posts_by_location', location,amount)
+        totalAmount = totalAmount + bot.like_posts_by_location(location,args.amount)
+
+        del parameters['list'][locationIndex]
+        availableOperations[opIndex]['parameters'] = json.dumps(parameters)
+        
+    else:
+        bot.logger.info("Invalid operation %s",availableOperations[opIndex]['configName'])
+    
+    return totalAmount
+    
+
+def handleFollowOperations(bot,availableOperations, opIndex,parameters,amount):
+    
+    totalAmount=0
+    
+    if 'follow_users_by_hashtag' in availableOperations[opIndex]['configName']:
+        if len(parameters['list'])==0:
+            bot.logger.info("No hashtag left for operation follow_users_by_hashtag, skipping this operation...")
+            del availableOperations[opIndex]
+            return 0;
+
+        hashtagIndex = randint(0, len(parameters['list']) - 1)
+        hashtag = parameters['list'][hashtagIndex]
+        bot.logger.info("Bot operation: %s, hashtag: %s, amount %s", 'follow_users_by_hashtag', hashtag, amount)
+
+        feed = bot.getHashtagFeed(hashtag, args.amount)
+        users = []
+
+        for media in feed:
+            user = media['user']
+            user['media'] = {}
+            user['media']['code'] = media['code']
+            user['media']['image'] = media['image_versions2']['candidates'][0]['url']
+            user['media']['id'] = media['pk']
+            users.append(user)
+        bot_operation='follow_users_by_hashtag'
+
+        totalAmount = totalAmount + bot.follow_users(users[:args.amount], bot_operation)
+        # remove the hastagh to no use it again in this session
+        del parameters['list'][hashtagIndex]
+        availableOperations[opIndex]['parameters'] = json.dumps(parameters)
+    else:
+        bot.logger.info("Invalid operation %s",availableOperations[opIndex]['configName'])
+    
+    return totalAmount
 
 bot = Bot(
     id_campaign=args.id_campaign,
@@ -94,71 +173,15 @@ while totalAmount<args.amount and securityBreak<10:
     parameters = availableOperations[opIndex]['parameters']
     parameters = json.loads(parameters)
 
-
-    if 'like_timeline' in availableOperations[opIndex]['configName']:
-        bot.logger.info("Bot operation: %s, amount %s",'like_timeline',args.amount)
-        totalAmount=totalAmount + bot.like_timeline(args.amount)
-        del availableOperations[opIndex]
-
-    elif 'like_posts_by_hashtag' in availableOperations[opIndex]['configName']:
-        if len(parameters['list'])==0:
-            bot.logger.info("No hashtag left for operation like_posts_by_hashtag, skipping this operation...")
-            del availableOperations[opIndex]
-            continue
-
-        hashtagIndex=randint(0,len(parameters['list'])-1)
-        hashtag = parameters['list'][hashtagIndex]
-
-        bot.logger.info("Bot operation: %s, hashtag: %s, amount %s", 'like_posts_by_hashtag', hashtag, args.amount)
-        totalAmount = totalAmount + bot.like_hashtag(hashtag,args.amount)
-        #remove the hastagh to no use it again his session
-        del parameters['list'][hashtagIndex]
-        availableOperations[opIndex]['parameters'] = json.dumps(parameters)
-
-
-    elif 'like_posts_by_location' in availableOperations[opIndex]['configName']:
-
-        if len(parameters['list'])==0:
-            bot.logger.info("No location left for operation like_posts_by_location, skipping this operation...")
-            del availableOperations[opIndex]
-            continue
-
-        locationIndex=randint(0,len(parameters['list'])-1)
-        location = parameters['list'][locationIndex]
-        bot.logger.info("Bot operation: %s, locationId: %s, amount %s",'like_posts_by_location', location, args.amount)
-        totalAmount = totalAmount + bot.like_posts_by_location(location,args.amount)
-
-        del parameters['list'][locationIndex]
-        availableOperations[opIndex]['parameters'] = json.dumps(parameters)
-
-    elif 'follow_users_by_hashtag' in availableOperations[opIndex]['configName']:
-        if len(parameters['list'])==0:
-            bot.logger.info("No hashtag left for operation follow_users_by_hashtag, skipping this operation...")
-            del availableOperations[opIndex]
-            continue
-
-        hashtagIndex = randint(0, len(parameters['list']) - 1)
-        hashtag = parameters['list'][hashtagIndex]
-        bot.logger.info("Bot operation: %s, hashtag: %s, amount %s", 'follow_users_by_hashtag', hashtag, args.amount)
-
-        feed = bot.getHashtagFeed(hashtag, args.amount)
-        users = []
-
-        for media in feed:
-            user = media['user']
-            user['media'] = {}
-            user['media']['code'] = media['code']
-            user['media']['image'] = media['image_versions2']['candidates'][0]['url']
-            user['media']['id'] = media['pk']
-            users.append(user)
-        bot_operation='follow_users_by_hashtag'
-
-        totalAmount = totalAmount + bot.follow_users(users[:args.amount], bot_operation)
-        # remove the hastagh to no use it again in this session
-        del parameters['list'][hashtagIndex]
-        availableOperations[opIndex]['parameters'] = json.dumps(parameters)
+    if args.operation_type=="like":
+        actionsNumber = handleLikeOperation(bot,availableOperations,opIndex,parameters)
+    elif args.operation_type=="follow":
+        actionsNumber = handleFollowOperation(bot,availableOperations,opIndex,parameters)
     else:
-        exit('Invalid operation')
+        bot.logger.info("Invalid operation: %s",args.operation_type)
+    
+    totalAmount=totalAmount+actionsNumber
+    
 
     securityBreak=securityBreak+1
 
