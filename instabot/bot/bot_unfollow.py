@@ -5,10 +5,10 @@ from . import delay
 from ..api import api_db
 
 def unfollowBotCreatedFollowings(self,amount,unfollowUsersSince=48):
-    self.logger.info("Going to unfollow %s users from bot created followings", amount);
+    self.logger.info("Going to unfollow %s users from bot created followings", amount)
     selectFollowings="select * from bot_action where  bot_operation like %s and timestamp> (NOW() - INTERVAL %s HOUR) and id_user= %s and bot_operation_reverted is null order by timestamp asc limit %s";
     
-    followings = api_db.select(selectFollowings,'follow' + '%',unfollowUsersSince,self.id_user,amount);
+    followings = api_db.select(selectFollowings,'follow' + '%',unfollowUsersSince,self.id_user,amount)
     self.logger.info("Found %s users in database to unfollow",len(followings))
     
     totalUnfollow=0

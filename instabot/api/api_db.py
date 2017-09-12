@@ -8,7 +8,7 @@ def getConnection():
 
     db = MySQLdb.connect(host="localhost",  # your host, usually localhost
                          user="root",  # your username
-                         passwd="",  # your password
+                         passwd="password",  # your password
                          db="instaboost")
     db.set_character_set('utf8mb4')
     dbc = db.cursor()
@@ -54,7 +54,7 @@ def insertBotAction(*args):
           "post_link,bot_operation,bot_operation_value,id_log) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
 
     id = insert(query,*args)
-    return id;
+    return id
     
 
 

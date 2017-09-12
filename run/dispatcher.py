@@ -43,7 +43,7 @@ def handleLikeOperation(bot,availableOperations, opIndex,parameters,amount):
         if len(parameters['list'])==0:
             bot.logger.info("No hashtag left for operation like_posts_by_hashtag, skipping this operation...")
             del availableOperations[opIndex]
-            return 0;
+            return 0
 
         hashtagIndex=randint(0,len(parameters['list'])-1)
         hashtag = parameters['list'][hashtagIndex]
@@ -60,7 +60,7 @@ def handleLikeOperation(bot,availableOperations, opIndex,parameters,amount):
         if len(parameters['list'])==0:
             bot.logger.info("No location left for operation like_posts_by_location, skipping this operation...")
             del availableOperations[opIndex]
-            return 0;
+            return 0
 
         locationIndex=randint(0,len(parameters['list'])-1)
         location = parameters['list'][locationIndex]
@@ -86,7 +86,7 @@ def handleFollowOperations(bot,availableOperations, opIndex,parameters,amount):
         if len(parameters['list'])==0:
             bot.logger.info("No hashtag left for operation follow_users_by_hashtag, skipping this operation...")
             del availableOperations[opIndex]
-            return 0;
+            return 0
 
         hashtagIndex = randint(0, len(parameters['list']) - 1)
         hashtag = parameters['list'][hashtagIndex]
@@ -116,7 +116,7 @@ def handleFollowOperations(bot,availableOperations, opIndex,parameters,amount):
 bot = Bot(
     id_campaign=args.id_campaign,
     id_log=args.id_log,
-    max_likes_per_day=500,  # default 1000
+    max_likes_per_day=1100,  # default 1000
     max_unlikes_per_day=500,  # default 1000
     max_follows_per_day=200,  # default 350
     max_unfollows_per_day=200,  # default 350
@@ -180,23 +180,19 @@ while totalAmount<args.amount and securityBreak<10:
     if args.operation_type=="like":
         actionsNumber = handleLikeOperation(bot,availableOperations,opIndex,parameters,args.amount)
     elif args.operation_type=="follow":
-        
-        followAmount=args.amount/2
-        actionsNumber = handleFollowOperations(bot,availableOperations,opIndex,parameters,followAmount)
-        #for each user followed, another one is unfollowed
-        
-        unfollowSince=48
-        #TODO verify if the paramters actionsNumber is valid. Maybe it s not a good solution to create a depedency between follow/unfollow
-        totalUsersUnfollowed = bot.unfollowBotCreatedFollowings(actionsNumber,unfollowSince)
-        
-        
+        actionsNumber = handleFollowOperations(bot,availableOperations,opIndex,parameters,args.amount)
+
     else:
         bot.logger.info("Invalid operation: %s",args.operation_type)
     
     totalAmount=totalAmount+actionsNumber
-    
 
     securityBreak=securityBreak+1
+
+# for each user followed, another one is unfollowed
+    if args.operation_type=="follow":
+        unfollowSince = 48
+        totalUsersUnfollowed = bot.unfollowBotCreatedFollowings(args.amount, unfollowSince)
 
 bot.logger.info("DONE dispatcher.py: Total bot actions %s",totalAmount)
 
