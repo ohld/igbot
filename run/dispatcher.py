@@ -78,7 +78,9 @@ def handleLikeOperation(bot,availableOperations, opIndex,parameters,amount):
 
 def handleFollowOperations(bot,availableOperations, opIndex,parameters,amount):
     
+    
     totalAmount=0
+    
     
     if 'follow_users_by_hashtag' in availableOperations[opIndex]['configName']:
         if len(parameters['list'])==0:
@@ -102,7 +104,7 @@ def handleFollowOperations(bot,availableOperations, opIndex,parameters,amount):
             users.append(user)
         bot_operation='follow_users_by_hashtag'
 
-        totalAmount = totalAmount + bot.follow_users(users[:args.amount], bot_operation)
+        totalAmount = totalAmount + bot.follow_users(users[:args.amount], bot_operation, hashtag)
         # remove the hastagh to no use it again in this session
         del parameters['list'][hashtagIndex]
         availableOperations[opIndex]['parameters'] = json.dumps(parameters)
@@ -150,7 +152,9 @@ id_campaign = args.id_campaign
 
 campaign = api_db.fetchOne("select username,password from campaign where id_campaign=%s",id_campaign)
 
+
 bot.login(username=campaign['username'], password=campaign['password'])
+
 
 configs = api_db.select("SELECT configName,parameters FROM campaign_config where id_campaign=%s",id_campaign)
 
@@ -174,9 +178,18 @@ while totalAmount<args.amount and securityBreak<10:
     parameters = json.loads(parameters)
 
     if args.operation_type=="like":
-        actionsNumber = handleLikeOperation(bot,availableOperations,opIndex,parameters)
+        actionsNumber = handleLikeOperation(bot,availableOperations,opIndex,parameters,args.amount)
     elif args.operation_type=="follow":
-        actionsNumber = handleFollowOperation(bot,availableOperations,opIndex,parameters)
+        
+        followAmount=args.amount/2
+        actionsNumber = handleFollowOperations(bot,availableOperations,opIndex,parameters,followAmount)
+        #for each user followed, another one is unfollowed
+        
+        unfollowSince=48
+        #TODO verify if the paramters actionsNumber is valid. Maybe it s not a good solution to create a depedency between follow/unfollow
+        totalUsersUnfollowed = bot.unfollowBotCreatedFollowings(actionsNumber,unfollowSince)
+        
+        
     else:
         bot.logger.info("Invalid operation: %s",args.operation_type)
     

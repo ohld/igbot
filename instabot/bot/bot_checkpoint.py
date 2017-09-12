@@ -47,8 +47,12 @@ class Checkpoint(object):
 
 def save_checkpoint(self):
     cp = Checkpoint(self)
-
-    with open(CHECKPOINT_PATH % self.username, 'wb') as f:
+    
+    logs_folder = os.environ['INSTABOT_LOGS_PATH']
+    campaign_folder = logs_folder + "/campaign/" + self.id_campaign+"/"
+    log_path = campaign_folder + CHECKPOINT_PATH;
+        
+    with open(log_path % self.username, 'wb') as f:
         pickle.dump(cp, f, -1)
     return True
 

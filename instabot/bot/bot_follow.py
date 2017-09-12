@@ -11,7 +11,6 @@ def follow(self, user):
     if not self.check_user(user):
         return False
     
-    #if limits.check_if_bot_can_follow(self):
     delay.follow_delay(self)
     if super(self.__class__, self).follow(user['pk']):
         self.logger.info("Successfully followed user %s " % user['username'])

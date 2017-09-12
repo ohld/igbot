@@ -2,20 +2,45 @@ from tqdm import tqdm
 
 from . import limits
 from . import delay
+from ..api import api_db
 
+def unfollowBotCreatedFollowings(self,amount,unfollowUsersSince=48):
+    self.logger.info("Going to unfollow %s users from bot created followings", amount);
+    selectFollowings="select * from bot_action where  bot_operation like %s and timestamp> (NOW() - INTERVAL %s HOUR) and id_user= %s and bot_operation_reverted is null order by timestamp asc limit %s";
+    
+    followings = api_db.select(selectFollowings,'follow' + '%',unfollowUsersSince,self.id_user,amount);
+    self.logger.info("Found %s users in database to unfollow",len(followings))
+    
+    totalUnfollow=0
+    for f in followings:
+        status = unfollow(self,f['instagram_id_user'])
+        status=True
+        if status==True:
+        
+            lastBotAction=api_db.insertBotAction(self.id_campaign, self.id_user, f['instagram_id_user'], f['full_name'], f['username'],
+                                   f['user_image'],f['post_id'], f['post_image'],
+                                   f['post_link'], 'unfollow_bot_created_followings',None,self.id_log)
+                               
+            api_db.insert("update bot_action set bot_operation_reverted=%s where id=%s",lastBotAction,f['id'])
+            totalUnfollow=totalUnfollow+1;
+        else:
+            self.logger.info("Error: could not follow %s",f['instagram_id_user'])
+        if totalUnfollow>amount:
+            break
+        
+        self.logger.info("Total users unfollowed: %s",totalUnfollow)
+        
+    return totalUnfollow
 
+        
 def unfollow(self, user_id):
     user_id = self.convert_to_user_id(user_id)
-    user_info = self.get_user_info(user_id)
-    print('\n===> Going to UN-Follow user_id: %s , user_name: %s' %
-          (user_id, user_info["username"]))
-    if self.check_user(user_id):
-        return True  # whitelisted user
+    self.logger.info('Going to UN-Follow user_id: %s',user_id)
+    
     if limits.check_if_bot_can_unfollow(self):
         delay.unfollow_delay(self)
         if super(self.__class__, self).unfollow(user_id):
-            print('\033[93m===> UN-FOLLOWED , user_id: %s , user_name: %s \033[0m\n' %
-                  (user_id, user_info["username"]))
+            self.logger.info('Unfollowed user_id: %s',user_id)
             self.total_unfollowed += 1
             return True
     else:

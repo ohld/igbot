@@ -24,7 +24,7 @@ from .bot_video import upload_video
 
 from .bot_follow import follow, follow_users, follow_followers, follow_following, getCurrentUserFollowing
 
-from .bot_unfollow import unfollow, unfollow_users, unfollow_non_followers
+from .bot_unfollow import unfollow, unfollow_users, unfollow_non_followers,unfollowBotCreatedFollowings
 from .bot_unfollow import unfollow_everyone, update_unfollow_file
 
 from .bot_archive import archive, archive_medias, unarchive_medias
@@ -379,6 +379,9 @@ class Bot(API):
 
     def unfollow(self, user_id):
         return unfollow(self, user_id)
+        
+    def unfollowBotCreatedFollowings(self,amount,unfollowUsersSince=48):
+        return unfollowBotCreatedFollowings(self,amount,unfollowUsersSince)
 
     def unfollow_users(self, user_ids):
         return unfollow_users(self, user_ids)
