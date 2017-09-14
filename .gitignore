@@ -107,4 +107,3 @@ bot_cp_*
 # Settings files
 examples/*.txt
 *.checkpoint
-examples/follow_user_followers.py
