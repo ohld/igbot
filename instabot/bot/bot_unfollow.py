@@ -46,7 +46,8 @@ def unfollow_non_followers(self, n_to_unfollows=None):
     self.update_unfollow_file()
     print("\n\033[91m ===> Start Unfollowing Non_Followers List <===\033[0m")
     unfollow_file = "unfollow.txt"
-    new_unfollow_list = list(line.strip() for line in open(unfollow_file))
+    with open(unfollow_file) as unfollow_data:
+        new_unfollow_list = list(line.strip() for line in unfollow_data)
     for user in tqdm(new_unfollow_list[:n_to_unfollows]):  # select only first n_to_unfollows users to unfollow
         self.unfollow(user)
     print(
@@ -77,7 +78,7 @@ def update_unfollow_file(self):  # Update unfollow.txt
     new_unfollow_list += [x for x in unfollow_file if x in unfollow_list]
     new_unfollow_list += [x for x in unfollow_list if x not in unfollow_file]
     print("\n Writing to unfollow.txt")
-    out = open('unfollow.txt', 'w')
-    for line in new_unfollow_list:
-        out.write(str(line) + "\n")
+    with open('unfollow.txt', 'w') as out:
+        for line in new_unfollow_list:
+            out.write(str(line) + "\n")
     print("\n Updating unfollow.txt , Task Done")
