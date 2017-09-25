@@ -25,6 +25,9 @@ def searchTags(self, query):
 
 
 def searchLocation(self, query, lat=None, lng=None):
-    locationFeed = self.SendRequest(
+    self.SendRequest(
         'fbsearch/places/?rank_token=' + str(self.rank_token) + '&query=' + str(query) + '&lat=' + str(lat) + '&lng=' + str(lng))
-    return locationFeed
+    if not self.LastJson['items']:
+        return False
+    else:
+        return self.LastJson['items']

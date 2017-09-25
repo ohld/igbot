@@ -3,10 +3,22 @@ from tqdm import tqdm
 from . import limits
 from . import delay
 from ..api import api_db
+import json
+
+
+
+
 
 def unfollowBotCreatedFollowings(self,amount,unfollowUsersSince=48):
+
+    #check if user wants to unfollow
+    userWantsToUnfollow = getIfUserWantsToUnfollow(self)
+    if userWantsToUnfollow==False:
+        self.logger.info("User does not want to unfollow !")
+        return False
+
     self.logger.info("Going to unfollow %s users from bot created followings", amount)
-    selectFollowings="select * from bot_action where  bot_operation like %s and timestamp> (NOW() - INTERVAL %s HOUR) and id_user= %s and bot_operation_reverted is null order by timestamp asc limit %s";
+    selectFollowings="select * from bot_action where  bot_operation like %s and timestamp< (NOW() - INTERVAL %s HOUR) and id_user= %s and bot_operation_reverted is null order by timestamp asc limit %s"
     
     followings = api_db.select(selectFollowings,'follow' + '%',unfollowUsersSince,self.id_user,amount)
     self.logger.info("Found %s users in database to unfollow",len(followings))
@@ -14,7 +26,6 @@ def unfollowBotCreatedFollowings(self,amount,unfollowUsersSince=48):
     totalUnfollow=0
     for f in followings:
         status = unfollow(self,f['instagram_id_user'])
-        status=True
         if status==True:
         
             lastBotAction=api_db.insertBotAction(self.id_campaign, self.id_user, f['instagram_id_user'], f['full_name'], f['username'],
@@ -22,7 +33,7 @@ def unfollowBotCreatedFollowings(self,amount,unfollowUsersSince=48):
                                    f['post_link'], 'unfollow_bot_created_followings',None,self.id_log)
                                
             api_db.insert("update bot_action set bot_operation_reverted=%s where id=%s",lastBotAction,f['id'])
-            totalUnfollow=totalUnfollow+1;
+            totalUnfollow=totalUnfollow+1
         else:
             self.logger.info("Error: could not follow %s",f['instagram_id_user'])
         if totalUnfollow>amount:
@@ -32,7 +43,18 @@ def unfollowBotCreatedFollowings(self,amount,unfollowUsersSince=48):
         
     return totalUnfollow
 
-        
+def getIfUserWantsToUnfollow(self):
+    query = "SELECT * FROM `campaign_config` where configName='unfollow_after_48' and id_campaign= %s"
+
+    result = api_db.fetchOne(query,self.id_campaign)
+    if not result:
+        return False
+
+    parameters=result['parameters']
+
+    resultParsed = json.loads(parameters)
+    return resultParsed['enabled']
+
 def unfollow(self, user_id):
     user_id = self.convert_to_user_id(user_id)
     self.logger.info('Going to UN-Follow user_id: %s',user_id)

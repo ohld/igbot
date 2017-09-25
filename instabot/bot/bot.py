@@ -167,7 +167,9 @@ class Bot(API):
         return next((p.version for p in pkg_resources.working_set if p.project_name.lower() == 'instabot'), "No match")
 
     def logout(self):
-        save_checkpoint(self)
+        if self.id_campaign!=False:
+            save_checkpoint(self)
+
         super(self.__class__, self).logout()
         self.logger.info("Bot stopped. "
                          "Worked: %s" % (datetime.datetime.now() - self.start_time))
@@ -319,8 +321,8 @@ class Bot(API):
     def like_hashtag(self, hashtag, amount=None):
         return like_hashtag(self, hashtag, amount)
 
-    def like_posts_by_location(self,id_location,amount):
-        return like_posts_by_location(self,id_location,amount)
+    def like_posts_by_location(self,locationObject,amount):
+        return like_posts_by_location(self,locationObject,amount)
 
     def like_geotag(self, geotag, amount=None):
         return like_geotag(self, geotag, amount)

@@ -30,7 +30,7 @@ def getGroupedOperations(configs):
             groupedOperations['follow'].append(c)
 
     return groupedOperations
-
+#todo like_own_followers like_other_users_followers
 def handleLikeOperation(bot,availableOperations, opIndex,parameters,amount):
     
     totalAmount=0
@@ -63,9 +63,13 @@ def handleLikeOperation(bot,availableOperations, opIndex,parameters,amount):
             return 0
 
         locationIndex=randint(0,len(parameters['list'])-1)
-        location = parameters['list'][locationIndex]
+        locationObject=parameters['list'][locationIndex]
+        location = locationObject['id']
+
+
         bot.logger.info("Bot operation: %s, locationId: %s, amount %s",'like_posts_by_location', location,amount)
-        totalAmount = totalAmount + bot.like_posts_by_location(location,args.amount)
+
+        totalAmount = totalAmount + bot.like_posts_by_location(locationObject,args.amount)
 
         del parameters['list'][locationIndex]
         availableOperations[opIndex]['parameters'] = json.dumps(parameters)
@@ -75,7 +79,7 @@ def handleLikeOperation(bot,availableOperations, opIndex,parameters,amount):
     
     return totalAmount
     
-
+#TODO follow_users_by_location,follow_other_users_followers
 def handleFollowOperations(bot,availableOperations, opIndex,parameters,amount):
     
     

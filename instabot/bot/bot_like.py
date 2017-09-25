@@ -112,11 +112,11 @@ def like_following(self, user_id, nlikes=None):
     else:
         self.like_users(following_ids, nlikes)
         
-def like_posts_by_location(self, id_location, amount):
-    self.logger.info("Going to like %s medias from location %s." % (amount,id_location))
-    medias = self.get_location_medias(id_location=id_location, amount=amount)
+def like_posts_by_location(self, locationObject, amount):
+    self.logger.info("Going to like %s medias from location %s." % (amount,locationObject['name']))
+    medias = self.get_location_medias(id_location=locationObject['id'], amount=amount)
     bot_operation="like_posts_by_location"
-    bot_operation_value=id_location
+    bot_operation_value=locationObject['name']
     return self.like_medias(medias[:amount],bot_operation,bot_operation_value)
     
    

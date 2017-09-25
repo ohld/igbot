@@ -45,6 +45,8 @@ class API(object):
         self.total_requests = 0
 
     def initLogging(self,id_campaign):
+        if id_campaign==False:
+            id_campaign="general"
         logs_folder = os.environ['INSTABOT_LOGS_PATH']
         campaign_folder = logs_folder + "/campaign/" + id_campaign
         log_path = campaign_folder + "/instabot.log"
@@ -63,7 +65,9 @@ class API(object):
         formatter = logging.Formatter(
             '%(asctime)s - %(levelname)s - %(message)s')
         ch.setFormatter(formatter)
-        self.logger.addHandler(ch)
+        #dirty hack -> disable the output to console
+        if id_campaign!="general":
+            self.logger.addHandler(ch)
 
     def setUser(self, username, password):
         self.username = username
@@ -124,6 +128,7 @@ class API(object):
             self.logger.critical("Not logged in.")
             raise Exception("Not logged in!")
 
+        #self.logger.info("Requesting %s: ",config.API_URL + endpoint)
         self.session.headers.update({'Connection': 'close',
                                      'Accept': '*/*',
                                      'Content-type': 'application/x-www-form-urlencoded; charset=UTF-8',

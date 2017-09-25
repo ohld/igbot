@@ -19,8 +19,11 @@ def getConnection():
     return db
 
 def getUserId(campaignId):
-    row = fetchOne("select id_user from campaign where id_campaign=%s",campaignId)
-    return row['id_user']
+    if campaignId!=False:
+        row = fetchOne("select id_user from campaign where id_campaign=%s",campaignId)
+        return row['id_user']
+    else:
+        return False
 
 
 def fetchOne(query,*args):
