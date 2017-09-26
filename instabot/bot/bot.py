@@ -80,7 +80,7 @@ class Bot(API):
                  block_delay=30,
                  unblock_delay=30,
                  stop_words=['shop', 'store', 'free']):
-        super(self.__class__, self).__init__()
+        super(Bot, self).__init__()
 
         self.total_liked = 0
         self.total_unliked = 0
@@ -163,7 +163,7 @@ class Bot(API):
 
     def logout(self):
         save_checkpoint(self)
-        super(self.__class__, self).logout()
+        super(Bot, self).logout()
         self.logger.info("Bot stopped. "
                          "Worked: %s" % (datetime.datetime.now() - self.start_time))
         self.print_counters()
@@ -171,7 +171,7 @@ class Bot(API):
     def login(self, **args):
         if self.proxy:
             args['proxy'] = self.proxy
-        super(self.__class__, self).login(**args)
+        super(Bot, self).login(**args)
         self.prepare()
         signal.signal(signal.SIGTERM, self.logout)
         atexit.register(self.logout)
