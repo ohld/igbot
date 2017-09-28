@@ -433,7 +433,6 @@ def menu_comment():
                 hashtag = input("what?").strip()
             else:
                 hashtag = random.choice(bot.read_list_from_file(hashtag_file))
-            #for hashtags in hashtag:
             bot.comment_hashtag(hashtag)
 
         elif ans == "2":
