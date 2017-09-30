@@ -20,7 +20,7 @@ def unfollowBotCreatedFollowings(self,amount,unfollowUsersSince=48):
     self.logger.info("Going to unfollow %s users from bot created followings", amount)
     selectFollowings="select * from bot_action where  bot_operation like %s and timestamp< (NOW() - INTERVAL %s HOUR) and id_user= %s and bot_operation_reverted is null order by timestamp asc limit %s"
     
-    followings = api_db.select(selectFollowings,'follow' + '%',unfollowUsersSince,self.id_user,amount)
+    followings = api_db.select(selectFollowings,'follow' + '%',unfollowUsersSince,self.web_application_id_user,amount)
     self.logger.info("Found %s users in database to unfollow",len(followings))
     
     totalUnfollow=0
@@ -28,7 +28,7 @@ def unfollowBotCreatedFollowings(self,amount,unfollowUsersSince=48):
         status = unfollow(self,f['instagram_id_user'])
         if status==True:
         
-            lastBotAction=api_db.insertBotAction(self.id_campaign, self.id_user, f['instagram_id_user'], f['full_name'], f['username'],
+            lastBotAction=api_db.insertBotAction(self.id_campaign, self.web_application_id_user, f['instagram_id_user'], f['full_name'], f['username'],
                                    f['user_image'],f['post_id'], f['post_image'],
                                    f['post_link'], 'unfollow_bot_created_followings',None,self.id_log)
                                

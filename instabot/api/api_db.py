@@ -26,6 +26,13 @@ def getUserId(campaignId):
         return False
 
 
+def getWebApplicationUser(id_user):
+    if id_user!=False:
+        row = fetchOne("select * from users where id_user=%s",id_user)
+        return row
+    else:
+        return False
+
 def fetchOne(query,*args):
     db = getConnection()
     cur = db.cursor(MySQLdb.cursors.DictCursor)
@@ -55,6 +62,14 @@ def insertBotAction(*args):
     query="insert into bot_action (id_campaign, id_user, instagram_id_user, " \
           "full_name, username, user_image, post_id, post_image, " \
           "post_link,bot_operation,bot_operation_value,id_log) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+
+    id = insert(query,*args)
+    return id
+
+def insertFollower(*args):
+
+    query="insert ignore into followers (id_user,instagram_id_follower,full_name,username,user_image,is_verified) " \
+          " VALUES (%s,%s,%s,%s,%s,%s)"
 
     id = insert(query,*args)
     return id

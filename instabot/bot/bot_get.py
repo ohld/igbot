@@ -82,15 +82,17 @@ def get_hashtag_medias(self, hashtag, filtration=True, amount=50):
         return []
 
     return self.filter_medias(medias, filtration)
-    
-def get_location_medias(self, id_location,filtration=True,amount=None):
-    medias = self.getLocationFeed(id_location,amount)
+
+
+def get_location_medias(self, id_location, filtration=True, amount=None):
+    medias = self.getLocationFeed(id_location, amount)
     if not medias:
         self.logger.warning("Error while getting location feed.")
         return []
-        
+
     return self.filter_medias(medias, filtration)
-    
+
+
 def get_geotag_medias(self, geotag, filtration=True):
     # TODO: returns list of medias from geotag
     pass
@@ -122,7 +124,7 @@ def get_timeline_users(self):
 
 def get_hashtag_users(self, hashtag):
     users = []
-    feed=self.getHashtagFeed(hashtag)
+    feed = self.getHashtagFeed(hashtag)
     for i in feed:
         users.append(str(i['user']))
     return users
@@ -155,10 +157,9 @@ def get_user_info(self, user_id):
     return self.LastJson['user']
 
 
-def get_user_followers(self, user_id, nfollows):
-    user_id = self.convert_to_user_id(user_id)
-    followers = self.getTotalFollowers(user_id, nfollows)
-    return [str(item['pk']) for item in followers][::-1] if followers else []
+def get_user_followers(self, user_id, amount, next_max_id):
+    # user_id = self.convert_to_user_id(user_id)
+    return self.getTotalFollowers(user_id, amount, next_max_id)
 
 
 def get_user_following(self, user_id, nfollows=None):

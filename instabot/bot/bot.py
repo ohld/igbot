@@ -155,7 +155,7 @@ class Bot(API):
         self.id_campaign = id_campaign
         self.id_log = id_log
 
-        self.id_user = api_db.getUserId(self.id_campaign)
+        self.web_application_id_user = api_db.getUserId(self.id_campaign)
         # current following
         #self.following = getCurrentUserFollowing(self)
 
@@ -277,8 +277,8 @@ class Bot(API):
     def get_user_info(self, user_id):
         return get_user_info(self, user_id)
 
-    def get_user_followers(self, user_id, nfollows=None):
-        return get_user_followers(self, user_id, nfollows)
+    def get_user_followers(self, user_id, amount=None, next_max_id=None):
+        return get_user_followers(self, user_id, amount, next_max_id)
 
     def get_user_following(self, user_id, nfollows=None):
         return get_user_following(self, user_id, nfollows)

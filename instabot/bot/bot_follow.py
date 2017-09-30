@@ -48,7 +48,7 @@ def follow_users(self, users, bot_operation, bot_operation_value):
         
         if self.follow(user):
 
-            api_db.insertBotAction(self.id_campaign, self.id_user, user['pk'], user['full_name'], user['username'],
+            api_db.insertBotAction(self.id_campaign, self.web_application_id_user, user['pk'], user['full_name'], user['username'],
                                    user['profile_pic_url'],user['media']['id'], user['media']['image'],
                                    user['media']['code'], bot_operation,bot_operation_value,self.id_log)
             totalFollowed=totalFollowed+1
@@ -101,7 +101,7 @@ def follow_following(self, user_id, nfollows=None):
 def getCurrentUserFollowing(self):
     result = api_db.select("select d.*  "
                              "from default_followings d "
-                             "where d.id_user=%s",self.id_user)
+                             "where d.id_user=%s",self.web_application_id_user)
 
     if len(result)<1:
         self.logger.info("Getting current user following from database: empty set")

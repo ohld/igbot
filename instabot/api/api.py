@@ -517,7 +517,7 @@ class API(object):
         return self.getUserFollowings(self.user_id)
 
     def getUserFollowers(self, usernameId, maxid=''):
-        if maxid == '':
+        if maxid == '' or maxid==None:
             return self.SendRequest('friendships/' + str(usernameId) + '/followers/?rank_token=' + self.rank_token)
         else:
             return self.SendRequest(
@@ -624,44 +624,44 @@ class API(object):
     def getLikedMedia(self, maxid=''):
         return self.SendRequest('feed/liked/?max_id=' + str(maxid))
 
-    def getTotalFollowers(self, usernameId, amount=None):
-        self.logger.info("Getting %s followers  of %s This might take a while." % (amount,usernameId))
-        sleep_track = 0
+    def getTotalFollowers(self, usernameId, amount=50, next_max_id=None):
+        self.logger.info("Trying to get %s followers  of %s This might take a while." % (amount,usernameId))
+        self.logger.info("Next max id is: %s",next_max_id)
         followers = []
-        next_max_id = ''
-        self.getUsernameInfo(usernameId)
-        if "user" in self.LastJson:
-            if amount:
-                total_followers = amount
-            else:
-                total_followers = self.LastJson["user"]['follower_count']
-            if total_followers > 200000:
-                self.logger.info("Consider temporarily saving the result of this big operation. This will take a while.")
-        else:
-            return False
-        with tqdm(total=total_followers, desc="Getting followers", leave=False) as pbar:
-            while True:
-                self.getUserFollowers(usernameId, next_max_id)
-                temp = self.LastJson
-                try:
-                    pbar.update(len(temp["users"]))
-                    for item in temp["users"]:
-                        followers.append(item)
-                        sleep_track += 1
-                        if sleep_track >= 20000:
-                            sleep_time = randint(120, 180)
-                            self.logger.info("Waiting %.2f min. due to too many requests." % float(sleep_time / 60))
-                            time.sleep(sleep_time)
-                            sleep_track = 0
-                    if len(temp["users"]) == 0 or len(followers) >= total_followers:
-                        self.logger.info("Done getting followers for %s" % usernameId)
-                        return followers[:total_followers]
-                except:
-                    self.logger.info("Done getting followers for %s" % usernameId)
-                    return followers[:total_followers]
-                if temp["big_list"] is False:
-                    return followers[:total_followers]
-                next_max_id = temp["next_max_id"]
+        securityBreak=0
+        result={}
+        previous_next_max_id=next_max_id
+        while len(followers) < amount and securityBreak < 100:
+
+            self.getUserFollowers(usernameId, next_max_id)
+            temp = self.LastJson
+
+            for item in temp["users"]:
+                followers.append(item)
+
+            if "next_max_id" not in temp:
+                self.logger.info("Total received %s followers of user %s" % (len(followers), usernameId))
+                result['followers'] = followers
+                result['next_max_id']=None
+                result['previous_next_max_id']=previous_next_max_id
+                return result
+
+            next_max_id = temp["next_max_id"]
+            previous_next_max_id = next_max_id
+
+            securityBreak = securityBreak + 1
+            self.logger.info("Iteration %s ,received %s items, total received %s followers" % (securityBreak, len(temp['users']), len(followers)))
+
+            sleep_time = randint(2, 8)
+            self.logger.info("Sleeping %s seconds" % sleep_time)
+            time.sleep(sleep_time)
+
+        self.logger.info("Total received %s followers of user %s" % (len(followers), usernameId))
+
+        result['followers'] = followers
+        result['next_max_id'] = next_max_id
+        result['previous_next_max_id'] = previous_next_max_id
+        return result
 
     def getTotalFollowings(self, usernameId, amount=None):
         sleep_track = 0

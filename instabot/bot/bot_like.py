@@ -30,7 +30,7 @@ def like_medias(self, medias, bot_operation=None, bot_operation_value=None):
             break
         self.logger.info("Liked instagram post with id: %d :" % media['pk'])
 
-        api_db.insertBotAction(self.id_campaign, self.id_user, media['user']['pk'], media['user']['full_name'], media['user']['username'],
+        api_db.insertBotAction(self.id_campaign, self.web_application_id_user, media['user']['pk'], media['user']['full_name'], media['user']['username'],
                                media['user']['profile_pic_url'], media['pk'], media['image_versions2']['candidates'][0]['url'],
                                media['code'], bot_operation, bot_operation_value,self.id_log)
         this_session_total_liked=this_session_total_liked+1
