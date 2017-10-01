@@ -9,11 +9,12 @@ from .bot_get import get_media_owner, get_your_medias, get_user_medias
 from .bot_get import get_timeline_medias, get_hashtag_medias, get_user_info, get_location_medias
 from .bot_get import get_geotag_medias, get_timeline_users, get_hashtag_users
 from .bot_get import get_media_commenters, get_userid_from_username, get_username_from_userid
-from .bot_get import get_user_followers, get_user_following, get_media_likers, get_popular_medias
+from .bot_get import get_user_followers, get_user_following, get_media_likers, get_popular_medias, crawl_user_followers
 from .bot_get import get_media_comments, get_geotag_users, get_locations_from_coordinates, convert_to_user_id
 from .bot_get import get_comment, get_media_info, get_user_likers, get_archived_medias, get_total_user_medias
 
-from .bot_like import like, like_medias, like_timeline, like_user, like_users
+from .bot_like import like, like_medias, like_timeline, like_user, like_users, check_if_own_follower_is_valid, \
+    like_own_followers
 from .bot_like import like_hashtag, like_geotag, like_followers, like_following, like_posts_by_location
 
 from .bot_unlike import unlike, unlike_medias, unlike_user
@@ -24,7 +25,7 @@ from .bot_video import upload_video
 
 from .bot_follow import follow, follow_users, follow_followers, follow_following, getCurrentUserFollowing
 
-from .bot_unfollow import unfollow, unfollow_users, unfollow_non_followers,unfollowBotCreatedFollowings
+from .bot_unfollow import unfollow, unfollow_users, unfollow_non_followers, unfollowBotCreatedFollowings
 from .bot_unfollow import unfollow_everyone, update_unfollow_file
 
 from .bot_archive import archive, archive_medias, unarchive_medias
@@ -46,7 +47,6 @@ from .bot_stats import save_user_stats
 
 
 class Bot(API):
-
     def __init__(self,
                  id_campaign,
                  id_log,
@@ -61,15 +61,15 @@ class Bot(API):
                  max_comments_per_day=100,
                  max_blocks_per_day=100,
                  max_unblocks_per_day=100,
-                 max_likes_to_like=100,
+                 max_likes_to_like=500000,
                  filter_users=True,
                  max_followers_to_follow=2000,
                  min_followers_to_follow=10,
                  max_following_to_follow=2000,
                  min_following_to_follow=10,
                  max_followers_to_following_ratio=10,
-                 max_following_to_followers_ratio=2,
-                 min_media_count_to_follow=3,
+                 max_following_to_followers_ratio=4,
+                 min_media_count_to_follow=20,
                  max_following_to_block=2000,
                  like_delay=15,
                  unlike_delay=10,
@@ -78,7 +78,7 @@ class Bot(API):
                  comment_delay=60,
                  block_delay=30,
                  unblock_delay=30,
-                 stop_words=['shop', 'store', 'free']):
+                 stop_words=['sex', 'penis']):
         super(self.__class__, self).__init__()
         self.initLogging(id_campaign)
 
@@ -151,13 +151,13 @@ class Bot(API):
 
         self.logger.info('Instabot Started')
 
-        #campaign
+        # campaign
         self.id_campaign = id_campaign
         self.id_log = id_log
 
         self.web_application_id_user = api_db.getUserId(self.id_campaign)
         # current following
-        #self.following = getCurrentUserFollowing(self)
+        # self.following = getCurrentUserFollowing(self)
 
     def version(self):
         try:
@@ -167,7 +167,7 @@ class Bot(API):
         return next((p.version for p in pkg_resources.working_set if p.project_name.lower() == 'instabot'), "No match")
 
     def logout(self):
-        if self.id_campaign!=False:
+        if self.id_campaign != False:
             save_checkpoint(self)
 
         super(self.__class__, self).logout()
@@ -244,7 +244,7 @@ class Bot(API):
     def get_total_user_medias(self, user_id):
         return get_total_user_medias(self, user_id)
 
-    def get_location_medias(self,id_location,filtration=True, amount=None):
+    def get_location_medias(self, id_location, filtration=True, amount=None):
         return get_location_medias(self, id_location, filtration, amount)
 
     def get_hashtag_medias(self, hashtag, filtration=True, amount=50):
@@ -280,6 +280,9 @@ class Bot(API):
     def get_user_followers(self, user_id, amount=None, next_max_id=None):
         return get_user_followers(self, user_id, amount, next_max_id)
 
+    def crawl_user_followers(self, amount=1500):
+        return crawl_user_followers(self, amount)
+
     def get_user_following(self, user_id, nfollows=None):
         return get_user_following(self, user_id, nfollows)
 
@@ -309,26 +312,30 @@ class Bot(API):
     def like(self, media_id):
         return like(self, media_id)
 
-    def like_medias(self, medias, bot_operation,bot_operation_value=None):
-        return like_medias(self, medias, bot_operation,bot_operation_value)
+    def like_medias(self, medias, bot_operation, bot_operation_value=None):
+        return like_medias(self, medias, bot_operation, bot_operation_value)
 
     def like_timeline(self, amount=None):
         return like_timeline(self, amount=amount)
 
-    def like_user(self, user_id, amount=None, filtration=True):
-        return like_user(self, user_id, amount, filtration)
+    def like_user(self, userObject, bot_operation, bot_operation_value=None, amount=2, filtration=True):
+        return like_user(self, userObject=userObject, bot_operation=bot_operation,
+                         bot_operation_value=bot_operation_value, amount=amount,filtration=filtration)
 
     def like_hashtag(self, hashtag, amount=None):
         return like_hashtag(self, hashtag, amount)
 
-    def like_posts_by_location(self,locationObject,amount):
-        return like_posts_by_location(self,locationObject,amount)
+    def like_posts_by_location(self, locationObject, amount):
+        return like_posts_by_location(self, locationObject, amount)
 
     def like_geotag(self, geotag, amount=None):
         return like_geotag(self, geotag, amount)
 
     def like_users(self, user_ids, nlikes=None, filtration=True):
         return like_users(self, user_ids, nlikes, filtration)
+
+    def like_own_followers(self, likesAmount):
+        like_own_followers(self, likesAmount=likesAmount)
 
     def like_followers(self, user_id, nlikes=None):
         return like_followers(self, user_id, nlikes)
@@ -381,9 +388,9 @@ class Bot(API):
 
     def unfollow(self, user_id):
         return unfollow(self, user_id)
-        
-    def unfollowBotCreatedFollowings(self,amount,unfollowUsersSince=48):
-        return unfollowBotCreatedFollowings(self,amount,unfollowUsersSince)
+
+    def unfollowBotCreatedFollowings(self, amount, unfollowUsersSince=48):
+        return unfollowBotCreatedFollowings(self, amount, unfollowUsersSince)
 
     def unfollow_users(self, user_ids):
         return unfollow_users(self, user_ids)

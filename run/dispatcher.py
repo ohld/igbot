@@ -30,7 +30,7 @@ def getGroupedOperations(configs):
             groupedOperations['follow'].append(c)
 
     return groupedOperations
-#todo like_own_followers like_other_users_followers
+#todo  like_other_users_followers
 def handleLikeOperation(bot,availableOperations, opIndex,parameters,amount):
     
     totalAmount=0
@@ -73,7 +73,10 @@ def handleLikeOperation(bot,availableOperations, opIndex,parameters,amount):
 
         del parameters['list'][locationIndex]
         availableOperations[opIndex]['parameters'] = json.dumps(parameters)
-        
+    elif 'like_own_followers' in availableOperations[opIndex]['configName']:
+        bot.logger.info("Bot operation: %s, amount %s", 'like_own_followers', amount)
+        totalAmount = totalAmount + bot.like_own_followers(args.amount)
+        del availableOperations[opIndex]
     else:
         bot.logger.info("Invalid operation %s",availableOperations[opIndex]['configName'])
     
@@ -125,14 +128,12 @@ bot = Bot(
     max_follows_per_day=200,  # default 350
     max_unfollows_per_day=200,  # default 350
     max_comments_per_day=0,
-    max_likes_to_like=10000,  # default 100
-    max_followers_to_follow=30000,  # default 2000
-    min_followers_to_follow=100,  # default 10
-    max_following_to_follow=30000,  # default 2000
-    min_following_to_follow=100,  # default 10
-    max_followers_to_following_ratio=15,  # default 10
-    max_following_to_followers_ratio=3,  # default 2
-    min_media_count_to_follow=6,  # default 3
+    max_followers_to_follow=9000000,  # default 2000
+    min_followers_to_follow=10,  # default 10
+    max_following_to_follow=9000000,  # default 2000
+    min_following_to_follow=10,  # default 10
+    max_following_to_followers_ratio=4,  # default 2
+    min_media_count_to_follow=20,  # default 3
     like_delay=15,  # default 10,
     unlike_delay=15,  # default 1-
     follow_delay=40,  # default 30,
@@ -198,6 +199,7 @@ while totalAmount<args.amount and securityBreak<10:
         unfollowSince = 48
         totalUsersUnfollowed = bot.unfollowBotCreatedFollowings(args.amount, unfollowSince)
 
+    bot.crawl_user_followers(amount=1500)
 bot.logger.info("DONE dispatcher.py: Total bot actions %s",totalAmount)
 
 

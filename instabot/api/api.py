@@ -624,6 +624,7 @@ class API(object):
     def getLikedMedia(self, maxid=''):
         return self.SendRequest('feed/liked/?max_id=' + str(maxid))
 
+    #maybe the function name is a bit misleading
     def getTotalFollowers(self, usernameId, amount=50, next_max_id=None):
         self.logger.info("Trying to get %s followers  of %s This might take a while." % (amount,usernameId))
         self.logger.info("Next max id is: %s",next_max_id)
@@ -652,7 +653,7 @@ class API(object):
             securityBreak = securityBreak + 1
             self.logger.info("Iteration %s ,received %s items, total received %s followers" % (securityBreak, len(temp['users']), len(followers)))
 
-            sleep_time = randint(2, 8)
+            sleep_time = randint(5, 10)
             self.logger.info("Sleeping %s seconds" % sleep_time)
             time.sleep(sleep_time)
 

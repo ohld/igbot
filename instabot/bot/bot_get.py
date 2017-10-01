@@ -5,7 +5,7 @@
 
 import random
 from tqdm import tqdm
-
+from ..api import api_db
 from . import delay
 
 
@@ -45,7 +45,6 @@ def get_timeline_medias(self, filtration=True, amount=50):
 
 
 def get_user_medias(self, user_id, filtration=True, is_comment=False):
-    user_id = self.convert_to_user_id(user_id)
     self.getUserFeed(user_id)
     if self.LastJson["status"] == 'fail':
         self.logger.warning("This is a closed account.")
@@ -160,6 +159,35 @@ def get_user_info(self, user_id):
 def get_user_followers(self, user_id, amount, next_max_id):
     # user_id = self.convert_to_user_id(user_id)
     return self.getTotalFollowers(user_id, amount, next_max_id)
+
+
+# this function is used to crawl
+def crawl_user_followers(self, amount):
+    webApplicationUser = api_db.getWebApplicationUser(self.web_application_id_user)
+
+    if not webApplicationUser['followers_next_max_id']:
+        next_max_id = None
+    else:
+        next_max_id = webApplicationUser['followers_next_max_id']
+
+    result = self.get_user_followers(user_id=self.user_id, amount=amount, next_max_id=next_max_id)
+
+    if len(result['followers']) == 0:
+        self.logger.info("No followers received for user: %s ! SKIPPING" % self.user_id)
+        exit(0)
+
+    for follower in result['followers']:
+        api_db.insertFollower(webApplicationUser['id_user'], follower['pk'], follower['full_name'],
+                              follower['username'],
+                              follower['profile_pic_url'], follower['is_verified'])
+
+    next_id = result['next_max_id']
+    if next_id == None:
+        next_id = result['previous_next_max_id']
+
+    api_db.insert("update users set followers_next_max_id=%s where id_user=%s" % (next_id, self.web_application_id_user))
+
+    self.logger.info("DONE updating followers list !")
 
 
 def get_user_following(self, user_id, nfollows=None):
