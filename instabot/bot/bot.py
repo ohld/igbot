@@ -389,8 +389,8 @@ class Bot(API):
     def unfollow(self, user_id):
         return unfollow(self, user_id)
 
-    def unfollowBotCreatedFollowings(self, amount, unfollowUsersSince=48):
-        return unfollowBotCreatedFollowings(self, amount, unfollowUsersSince)
+    def unfollowBotCreatedFollowings(self, amount):
+        return unfollowBotCreatedFollowings(self, amount)
 
     def unfollow_users(self, user_ids):
         return unfollow_users(self, user_ids)

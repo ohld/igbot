@@ -6,63 +6,66 @@ from ..api import api_db
 import json
 
 
-
-
-
-def unfollowBotCreatedFollowings(self,amount,unfollowUsersSince=48):
-
-    #check if user wants to unfollow
+def unfollowBotCreatedFollowings(self, amount):
+    # check if user wants to unfollow
     userWantsToUnfollow = getIfUserWantsToUnfollow(self)
-    if userWantsToUnfollow==False:
+    if userWantsToUnfollow == False or userWantsToUnfollow['enabled']==False:
         self.logger.info("User does not want to unfollow !")
         return False
+    else:
+        self.logger.info("User wants to unfollow after %s hours" % userWantsToUnfollow['after_x_hours'])
 
     self.logger.info("Going to unfollow %s users from bot created followings", amount)
-    selectFollowings="select * from bot_action where  bot_operation like %s and timestamp< (NOW() - INTERVAL %s HOUR) and id_user= %s and bot_operation_reverted is null order by timestamp asc limit %s"
-    
-    followings = api_db.select(selectFollowings,'follow' + '%',unfollowUsersSince,self.web_application_id_user,amount)
-    self.logger.info("Found %s users in database to unfollow",len(followings))
-    
-    totalUnfollow=0
+    selectFollowings = "select * from bot_action where  bot_operation like %s and timestamp< (NOW() - INTERVAL %s HOUR) and id_user= %s and bot_operation_reverted is null order by timestamp asc limit %s"
+
+    followings = api_db.select(selectFollowings, 'follow' + '%', userWantsToUnfollow['after_x_hours'],
+                               self.web_application_id_user,
+                               amount)
+    self.logger.info("Found %s users in database to unfollow", len(followings))
+
+    totalUnfollow = 0
     for f in followings:
-        status = unfollow(self,f['instagram_id_user'])
-        if status==True:
-        
-            lastBotAction=api_db.insertBotAction(self.id_campaign, self.web_application_id_user, f['instagram_id_user'], f['full_name'], f['username'],
-                                   f['user_image'],f['post_id'], f['post_image'],
-                                   f['post_link'], 'unfollow_bot_created_followings',None,self.id_log)
-                               
-            api_db.insert("update bot_action set bot_operation_reverted=%s where id=%s",lastBotAction,f['id'])
-            totalUnfollow=totalUnfollow+1
+        status = unfollow(self, f['instagram_id_user'])
+        if status == True:
+
+            lastBotAction = api_db.insertBotAction(self.id_campaign, self.web_application_id_user,
+                                                   f['instagram_id_user'], f['full_name'], f['username'],
+                                                   f['user_image'], f['post_id'], f['post_image'],
+                                                   f['post_link'], 'unfollow_bot_created_followings', None, self.id_log)
+
+            api_db.insert("update bot_action set bot_operation_reverted=%s where id=%s", lastBotAction, f['id'])
+            totalUnfollow = totalUnfollow + 1
         else:
-            self.logger.info("Error: could not follow %s",f['instagram_id_user'])
-        if totalUnfollow>amount:
+            self.logger.info("Error: could not follow %s", f['instagram_id_user'])
+        if totalUnfollow > amount:
             break
-        
-        self.logger.info("Total users unfollowed: %s",totalUnfollow)
-        
+
+        self.logger.info("Total users unfollowed: %s", totalUnfollow)
+
     return totalUnfollow
 
-def getIfUserWantsToUnfollow(self):
-    query = "SELECT * FROM `campaign_config` where configName='unfollow_after_48' and id_campaign= %s"
 
-    result = api_db.fetchOne(query,self.id_campaign)
+def getIfUserWantsToUnfollow(self):
+    query = "SELECT * FROM `campaign_config` where configName='unfollow' and id_campaign= %s"
+
+    result = api_db.fetchOne(query, self.id_campaign)
     if not result:
         return False
 
-    parameters=result['parameters']
+    parameters = result['parameters']
 
     resultParsed = json.loads(parameters)
-    return resultParsed['enabled']
+    return resultParsed
+
 
 def unfollow(self, user_id):
     user_id = self.convert_to_user_id(user_id)
-    self.logger.info('Going to UN-Follow user_id: %s',user_id)
-    
+    self.logger.info('Going to UN-Follow user_id: %s', user_id)
+
     if limits.check_if_bot_can_unfollow(self):
         delay.unfollow_delay(self)
         if super(self.__class__, self).unfollow(user_id):
-            self.logger.info('Unfollowed user_id: %s',user_id)
+            self.logger.info('Unfollowed user_id: %s', user_id)
             self.total_unfollowed += 1
             return True
     else:
