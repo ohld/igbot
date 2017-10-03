@@ -7,7 +7,7 @@ from ..api import api_db
 def follow(self, user):
     #user_id = self.convert_to_user_id(user_id)
     self.logger.info('Going to Follow user: %s ' % user['username'])
-    
+    user['instagram_user_id']=user['pk']
     if not self.check_user(user):
         return False
     
