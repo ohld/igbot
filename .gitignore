@@ -2,7 +2,6 @@
 secret.txt
 
 # Files with downloaded data
-*.csv
 *.tsv
 
 # Photos

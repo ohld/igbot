@@ -59,7 +59,8 @@ def uploadVideo(self, video, thumbnail, caption=None, upload_id=None):
         upload_url = body['video_upload_urls'][3]['url']
         upload_job = body['video_upload_urls'][3]['job']
 
-        videoData = open(video, 'rb').read()
+        with open(video, 'rb') as video_bytes:
+            videoData = video_bytes.read()
         # solve issue #85 TypeError: slice indices must be integers or None or have an __index__ method
         request_size = int(math.floor(len(videoData) / 4))
         lastRequestExtra = (len(videoData) - (request_size * 3))
