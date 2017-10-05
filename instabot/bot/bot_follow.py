@@ -43,7 +43,7 @@ def follow_users(self, user_ids):
     user_ids = list((set(user_ids) - set(followed_list)) - set(skipped_list))
     print('\n\033[92m After filtering followedlist.txt and skippedlist.txt, [ %s ] user_ids left to follow. \033[0m' % len(
         user_ids))  # Log to console
-    for user_id in tqdm(user_ids):
+    for user_id in tqdm(user_ids, desc='Processed users'):
         if not self.follow(user_id):
             delay.error_delay(self)
             broken_items = user_ids[user_ids.index(user_id):]

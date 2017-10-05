@@ -141,13 +141,17 @@ class API(object):
             self.LastJson = json.loads(response.text)
             return True
         else:
-            self.logger.warning("Request return " +
-                                str(response.status_code) + " error!")
+            self.logger.error("Request return " + str(response.status_code) + " error!")
             if response.status_code == 429:
                 sleep_minutes = 5
                 self.logger.warning("That means 'too many requests'. "
                                     "I'll go to sleep for %d minutes." % sleep_minutes)
                 time.sleep(sleep_minutes * 60)
+            elif response.status_code == 400:
+                response_data = json.loads(response.text)
+                self.logger.info("Instagram error message: %s", response_data.get('message'))
+                if response_data.get('error_type'):
+                    self.logger.info('Error type: %s', response_data.get('error_type'))
 
             # for debugging
             try:

@@ -62,13 +62,14 @@ def uploadPhoto(self, photo, caption=None, upload_id=None):
     if not compatibleAspectRatio(getImageSize(photo)):
         self.logger.info('Not compatible photo aspect ratio')
         return False
-    data = {
-        'upload_id': upload_id,
-        '_uuid': self.uuid,
-        '_csrftoken': self.token,
-        'image_compression': '{"lib_name":"jt","lib_version":"1.3.0","quality":"87"}',
-        'photo': ('pending_media_%s.jpg' % upload_id, open(photo, 'rb'), 'application/octet-stream', {'Content-Transfer-Encoding': 'binary'})
-    }
+    with open(photo, 'rb') as photo_bytes:
+        data = {
+            'upload_id': upload_id,
+            '_uuid': self.uuid,
+            '_csrftoken': self.token,
+            'image_compression': '{"lib_name":"jt","lib_version":"1.3.0","quality":"87"}',
+            'photo': ('pending_media_%s.jpg' % upload_id, photo_bytes, 'application/octet-stream', {'Content-Transfer-Encoding': 'binary'})
+        }
     m = MultipartEncoder(data, boundary=self.uuid)
     self.session.headers.update({'X-IG-Capabilities': '3Q4=',
                                  'X-IG-Connection-Type': 'WIFI',
