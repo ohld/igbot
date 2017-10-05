@@ -33,18 +33,18 @@ bot = Bot()
 bot.login()
 
 if deliveryMethod == 0:
-	with open('messages.csv', 'rU') as f:
-	    reader = csv.reader(f)
-	    for row in reader:
-	    	print 'Messaging ' + row[0]
-	    	bot.send_message(row[1], row[0])
-	    	print 'Waiting ' + str(banDelay) + ' seconds...'
-	    	time.sleep(banDelay)
+    with open('messages.csv', 'rU') as f:
+        reader = csv.reader(f)
+        for row in reader:
+            print('Messaging ' + row[0])
+            bot.send_message(row[1], row[0])
+            print('Waiting ' + str(banDelay) + ' seconds...')
+            time.sleep(banDelay)
 elif deliveryMethod == 1:
-	bot.send_message(directMessage, instaUsers)
-	print('Sent A Group Message To All Users..')
+    bot.send_message(directMessage, instaUsers)
+    print('Sent A Group Message To All Users..')
 elif deliveryMethod == 2:
-	bot.send_messages(directMessage, instaUsers)
-	print('Sent An Individual Messages To All Users..')
+    bot.send_messages(directMessage, instaUsers)
+    print('Sent An Individual Messages To All Users..')
 else:
-	print('Invalid Selection.')
+    print('Invalid Selection.')
