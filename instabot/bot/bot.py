@@ -147,42 +147,12 @@ class Bot(API, BotArchive, BotBlock, BotComment, BotDelete,
         self.print_counters()
 
     def login(self, **args):
-        session = args.pop('session', None)
         if self.proxy:
             args['proxy'] = self.proxy
         super(Bot, self).login(**args)
         self.prepare()
-        if not session:
-            # don't logout user
-            return
         signal.signal(signal.SIGTERM, self.logout)
         atexit.register(self.logout)
-
-    def login_info(self):
-        return {
-            'user_id': self.user_id,
-            'rank_token': self.rank_token,
-            'token': self.token,
-            'username': self.username
-        }
-
-    def save_session(self, filename):
-        with open(filename, 'wt') as f:
-            json.dump(self.login_info(), f)
-        self.logger.info('Session stored to {}'.format(filename))
-
-    def load_session(self, filename):
-        with open(filename, 'rt') as f:
-            session = json.load(f)
-        assert all([i in session for i in ['user_id', 'rank_token', 'token']])
-        self.user_id = session['user_id']
-        self.rank_token = session['rank_token']
-        self.token = session['token']
-        self.username = session['username']
-        if not hasattr(self, 'session'):
-            self.session = requests.Session()
-        self.isLoggedIn = True
-        self.logger.info('Session loaded from {}'.format(filename))
 
     def prepare(self):
         storage = load_checkpoint(self)
