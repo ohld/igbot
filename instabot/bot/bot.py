@@ -1,8 +1,6 @@
 import datetime
 import atexit
 import signal
-import json
-import requests
 
 from ..api import API
 
