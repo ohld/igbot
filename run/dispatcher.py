@@ -25,7 +25,9 @@ def getGroupedOperations(configs):
     for c in configs:
         if 'like' in c['configName']:
             groupedOperations['like'].append(c)
-        elif 'follow' in c['configName']:
+        # the unfollow operation it's skip at this point. It is executed after follow_users operation.
+        # This is a dirty hack maybe it can be improved !
+        elif 'follow' in c['configName'] and c['configName'] != "unfollow":
             groupedOperations['follow'].append(c)
 
     return groupedOperations
@@ -82,7 +84,7 @@ def handleLikeOperation(bot, availableOperations, opIndex, parameters, amount):
     return totalAmount
 
 
-# TODO follow_users_by_location,follow_other_users_followers
+# TODO follow_other_users_followers
 def handleFollowOperations(bot, availableOperations, opIndex, parameters, amount):
     totalAmount = 0
 
@@ -96,21 +98,26 @@ def handleFollowOperations(bot, availableOperations, opIndex, parameters, amount
         hashtag = parameters['list'][hashtagIndex]
         bot.logger.info("Bot operation: %s, hashtag: %s, amount %s", 'follow_users_by_hashtag', hashtag, amount)
 
-        feed = bot.getHashtagFeed(hashtag, args.amount)
-        users = []
-
-        for media in feed:
-            user = media['user']
-            user['media'] = {}
-            user['media']['code'] = media['code']
-            user['media']['image'] = media['image_versions2']['candidates'][0]['url']
-            user['media']['id'] = media['pk']
-            users.append(user)
-        bot_operation = 'follow_users_by_hashtag'
-
-        totalAmount = totalAmount + bot.follow_users(users[:args.amount], bot_operation, hashtag)
+        totalAmount = totalAmount + bot.follow_users_by_hashtag(hashtag=hashtag, amount=args.amount)
         # remove the hastagh to no use it again in this session
         del parameters['list'][hashtagIndex]
+        availableOperations[opIndex]['parameters'] = json.dumps(parameters)
+
+    elif 'follow_users_by_location' in availableOperations[opIndex]['configName']:
+        if len(parameters['list']) == 0:
+            bot.logger.info("No location left for operation follow_users_by_location, skipping this operation...")
+            del availableOperations[opIndex]
+            return 0
+
+        locationIndex = randint(0, len(parameters['list']) - 1)
+        locationObject = parameters['list'][locationIndex]
+        location = locationObject['id']
+
+        bot.logger.info("Bot operation: %s, locationId: %s, amount %s", 'follow_users_by_location', location, amount)
+
+        totalAmount = totalAmount + bot.follow_users_by_location(locationObject, args.amount)
+
+        del parameters['list'][locationIndex]
         availableOperations[opIndex]['parameters'] = json.dumps(parameters)
     else:
         bot.logger.info("Invalid operation %s", availableOperations[opIndex]['configName'])
@@ -156,7 +163,7 @@ securityBreak = 0
 
 bot.logger.info("Generating random operations of type %s", args.operation_type)
 
-while totalAmount < args.amount and securityBreak < 10:
+while totalAmount < args.amount and securityBreak < 20:
     if len(availableOperations) == 0:
         bot.logger.info("DONE: No more available operations.")
         break

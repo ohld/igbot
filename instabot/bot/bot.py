@@ -13,8 +13,7 @@ from .bot_get import get_user_followers, get_user_following, get_media_likers, g
 from .bot_get import get_media_comments, get_geotag_users, get_locations_from_coordinates, convert_to_user_id
 from .bot_get import get_comment, get_media_info, get_user_likers, get_archived_medias, get_total_user_medias
 
-from .bot_like import like, like_medias, like_timeline, like_user, like_users, check_if_own_follower_is_valid, \
-    like_own_followers
+from .bot_like import like, like_medias, like_timeline, like_user, like_users, like_own_followers
 from .bot_like import like_hashtag, like_geotag, like_followers, like_following, like_posts_by_location
 
 from .bot_unlike import unlike, unlike_medias, unlike_user
@@ -23,7 +22,7 @@ from .bot_photo import download_photo, download_photos, upload_photo
 
 from .bot_video import upload_video
 
-from .bot_follow import follow, follow_users, follow_followers, follow_following, getCurrentUserFollowing
+from .bot_follow import follow, follow_users, follow_followers, follow_following, follow_users_by_location, follow_users_by_hashtag
 
 from .bot_unfollow import unfollow, unfollow_users, unfollow_non_followers, unfollowBotCreatedFollowings
 from .bot_unfollow import unfollow_everyone, update_unfollow_file
@@ -383,6 +382,12 @@ class Bot(API):
 
     def follow_following(self, user_id):
         return follow_following(self, user_id)
+
+    def follow_users_by_location(self, locationObject, amount):
+        return follow_users_by_location(self, locationObject=locationObject, amount=amount)
+
+    def follow_users_by_hashtag(self,hashtag,amount):
+        return follow_users_by_hashtag(self, hashtag=hashtag, amount=amount)
 
     # unfollow
 

@@ -640,8 +640,11 @@ class API(object):
             for item in temp["users"]:
                 followers.append(item)
 
+            securityBreak = securityBreak + 1
+            self.logger.info("Iteration %s ,received %s items, total received %s followers" % (securityBreak, len(temp['users']), len(followers)))
+
             if "next_max_id" not in temp:
-                self.logger.info("Total received %s followers of user %s" % (len(followers), usernameId))
+                self.logger.info("End of the line: Total received %s followers of user %s" % (len(followers), usernameId))
                 result['followers'] = followers
                 result['next_max_id']=None
                 result['previous_next_max_id']=previous_next_max_id
@@ -650,8 +653,6 @@ class API(object):
             next_max_id = temp["next_max_id"]
             previous_next_max_id = next_max_id
 
-            securityBreak = securityBreak + 1
-            self.logger.info("Iteration %s ,received %s items, total received %s followers" % (securityBreak, len(temp['users']), len(followers)))
 
             sleep_time = randint(5, 10)
             self.logger.info("Sleeping %s seconds" % sleep_time)

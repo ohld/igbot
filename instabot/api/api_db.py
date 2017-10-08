@@ -68,8 +68,8 @@ def insertBotAction(*args):
 
 def insertFollower(*args):
 
-    query="insert ignore into followers (id_user,instagram_id_follower,full_name,username,user_image,is_verified) " \
-          " VALUES (%s,%s,%s,%s,%s,%s)"
+    query="insert into followers (id_user,instagram_id_follower,full_name,username,user_image,is_verified) " \
+          " VALUES (%s,%s,%s,%s,%s,%s) ON DUPLICATE KEY UPDATE instagram_id_follower=instagram_id_follower"
 
     id = insert(query,*args)
     return id
