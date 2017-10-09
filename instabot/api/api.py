@@ -637,6 +637,24 @@ class API(object):
                 return user_feed
             next_max_id = temp["next_max_id"]
 
+    def getTotalHashtagFeed(self, hashtagString, amount=100):
+        hashtag_feed = []
+        next_max_id = ''
+
+        with tqdm(total=amount, desc="Getting hashtag medias", leave=False) as pbar:
+            while True:
+                self.getHashtagFeed(hashtagString, next_max_id)
+                temp = self.LastJson
+                try:
+                    pbar.update(len(temp["items"]))
+                    for item in temp["items"]:
+                        hashtag_feed.append(item)
+                    if len(temp["items"]) == 0 or len(hashtag_feed) >= amount:
+                        return hashtag_feed[:amount]
+                except:
+                    return hashtag_feed[:amount]
+                next_max_id = temp["next_max_id"]
+
     def getTotalSelfUserFeed(self, minTimestamp=None):
         return self.getTotalUserFeed(self.user_id, minTimestamp)
 

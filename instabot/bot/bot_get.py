@@ -81,6 +81,12 @@ def get_hashtag_medias(self, hashtag, filtration=True):
     return self.filter_medias(self.LastJson["items"], filtration)
 
 
+def get_total_hashtag_medias(self, hashtag, amount=100, filtration=False):
+    medias = self.getTotalHashtagFeed(hashtag, amount)
+
+    return self.filter_medias(medias, filtration=filtration)
+
+
 def get_geotag_medias(self, geotag, filtration=True):
     # TODO: returns list of medias from geotag
     pass
