@@ -34,30 +34,32 @@ def read_list_from_file(file_path, quiet=False):
         return []
 
 
-def check_whitelists(self):
-    """
-        Check whitelists in folder with script
-    """
-    default_names = ('whitelist.txt',
-                     'friends_{0}.txt'.format(self.username),
-                     'friends_{0}.txt'.format(self.user_id),
-                     'friends.txt')
+class BotSupport(object):
+    def check_whitelists(self):
+        """
+            Check whitelists in folder with script
+        """
+        default_names = ('whitelist.txt',
+                         'friends_{0}.txt'.format(self.username),
+                         'friends_{0}.txt'.format(self.user_id),
+                         'friends.txt')
 
-    for file_path in default_names:
-        whitelist = read_list_from_file(file_path, quiet=True)
-        if whitelist:
-            self.logger.info('Found whitelist: {0} ({1} users)'.format(file_path, len(whitelist)))
-            return whitelist
-    return []
+        for file_path in default_names:
+            whitelist = read_list_from_file(file_path, quiet=True)
+            if whitelist:
+                self.logger.info('Found whitelist: {0} ({1} users)'.format(
+                    file_path, len(whitelist)))
+                return whitelist
+        return []
 
+    def add_whitelist(self, file_path):
+        file_contents = read_list_from_file(file_path)
+        self.whitelist = [self.convert_to_user_id(
+            item) for item in file_contents]
+        return not not self.whitelist
 
-def add_whitelist(self, file_path):
-    file_contents = read_list_from_file(file_path)
-    self.whitelist = [self.convert_to_user_id(item) for item in file_contents]
-    return not not self.whitelist
-
-
-def add_blacklist(self, file_path):
-    file_contents = read_list_from_file(file_path)
-    self.blacklist = [self.convert_to_user_id(item) for item in file_contents]
-    return not not self.blacklist
+    def add_blacklist(self, file_path):
+        file_contents = read_list_from_file(file_path)
+        self.blacklist = [self.convert_to_user_id(
+            item) for item in file_contents]
+        return not not self.blacklist

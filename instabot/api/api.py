@@ -11,35 +11,22 @@ from random import randint
 from tqdm import tqdm
 
 from . import config
-from .api_photo import configurePhoto
-from .api_photo import uploadPhoto
-from .api_photo import downloadPhoto
+from .api_photo import APIPhoto
 
-from .api_video import configureVideo
-from .api_video import uploadVideo
+from .api_video import APIVideo
 
-from .api_search import fbUserSearch
-from .api_search import searchUsers
-from .api_search import searchUsername
-from .api_search import searchTags
-from .api_search import searchLocation
+from .api_search import APISearch
 
-from .api_profile import removeProfilePicture
-from .api_profile import setPrivateAccount
-from .api_profile import setPublicAccount
-from .api_profile import getProfileData
-from .api_profile import editProfile
-from .api_profile import setNameAndPhone
+from .api_profile import APIProfile
 
-from .prepare import get_credentials
-from .prepare import delete_credentials
+from .prepare import get_credentials, delete_credentials
 
 # The urllib library was split into other modules from Python 2 to Python 3
 if sys.version_info.major == 3:
     import urllib.parse
 
 
-class API(object):
+class API(APIPhoto, APIVideo, APISearch, APIProfile):
     def __init__(self):
         self.isLoggedIn = False
         self.LastResponse = None
@@ -141,7 +128,8 @@ class API(object):
             self.LastJson = json.loads(response.text)
             return True
         else:
-            self.logger.error("Request return " + str(response.status_code) + " error!")
+            self.logger.error("Request return " +
+                              str(response.status_code) + " error!")
             if response.status_code == 429:
                 sleep_minutes = 5
                 self.logger.warning("That means 'too many requests'. "
@@ -149,9 +137,11 @@ class API(object):
                 time.sleep(sleep_minutes * 60)
             elif response.status_code == 400:
                 response_data = json.loads(response.text)
-                self.logger.info("Instagram error message: %s", response_data.get('message'))
+                self.logger.info("Instagram error message: %s",
+                                 response_data.get('message'))
                 if response_data.get('error_type'):
-                    self.logger.info('Error type: %s', response_data.get('error_type'))
+                    self.logger.info('Error type: %s',
+                                     response_data.get('error_type'))
 
             # for debugging
             try:
@@ -190,21 +180,6 @@ class API(object):
             'experiment': 'ig_android_profile_contextual_feed'
         })
         return self.SendRequest('qe/expose/', self.generateSignature(data))
-
-    def uploadPhoto(self, photo, caption=None, upload_id=None):
-        return uploadPhoto(self, photo, caption, upload_id)
-
-    def downloadPhoto(self, media_id, filename, media=False, path='photos/'):
-        return downloadPhoto(self, media_id, filename, media, path)
-
-    def configurePhoto(self, upload_id, photo, caption=''):
-        return configurePhoto(self, upload_id, photo, caption)
-
-    def uploadVideo(self, photo, caption=None, upload_id=None):
-        return uploadVideo(self, photo, caption, upload_id)
-
-    def configureVideo(self, upload_id, video, thumbnail, caption=''):
-        return configureVideo(self, upload_id, video, thumbnail, caption)
 
     def editMedia(self, mediaId, captionText=''):
         data = json.dumps({
@@ -284,21 +259,6 @@ class API(object):
         return self.SendRequest('media/' + str(mediaId) + '/comment/' + str(commentId) + '/delete/',
                                 self.generateSignature(data))
 
-    def removeProfilePicture(self):
-        return removeProfilePicture(self)
-
-    def setPrivateAccount(self):
-        return setPrivateAccount(self)
-
-    def setPublicAccount(self):
-        return setPublicAccount(self)
-
-    def getProfileData(self):
-        return getProfileData(self)
-
-    def editProfile(self, url, phone, first_name, biography, email, gender):
-        return editProfile(self, url, phone, first_name, biography, email, gender)
-
     def getUsernameInfo(self, usernameId):
         return self.SendRequest('users/' + str(usernameId) + '/info/')
 
@@ -340,21 +300,6 @@ class API(object):
 
     def getSelfGeoMedia(self):
         return self.getGeoMedia(self.user_id)
-
-    def fbUserSearch(self, query):
-        return fbUserSearch(self, query)
-
-    def searchUsers(self, query):
-        return searchUsers(self, query)
-
-    def searchUsername(self, username):
-        return searchUsername(self, username)
-
-    def searchTags(self, query):
-        return searchTags(self, query)
-
-    def searchLocation(self, query='', lat=None, lng=None):
-        return searchLocation(self, query, lat, lng)
 
     def syncFromAdressBook(self, contacts):
         return self.SendRequest('address_book/link/?include=extra_display_name,thumbnails',
@@ -431,9 +376,6 @@ class API(object):
     def getMediaComments(self, mediaId):
         return self.SendRequest('media/' + str(mediaId) + '/comments/?')
 
-    def setNameAndPhone(self, name='', phone=''):
-        return setNameAndPhone(self, name, phone)
-
     def getDirectShare(self):
         return self.SendRequest('direct_share/inbox/?')
 
@@ -488,7 +430,8 @@ class API(object):
             return False
         result = {'users': '[[{}]]'.format(','.join(users))}
         if threadId:
-            result['thread'] = '["{}"]'.format(threadId) if useQuotes else '[{}]'.format(threadId)
+            result['thread'] = '["{}"]'.format(
+                threadId) if useQuotes else '[{}]'.format(threadId)
         return result
 
     def sendDirectItem(self, itemType, users, **options):
@@ -518,7 +461,8 @@ class API(object):
             url = 'direct_v2/threads/broadcast/profile/'
             data['profile_user_id'] = options.get('profile_user_id')
             data['text'] = options.get('text', '')
-        recipients = self._prepareRecipients(users, threadId=options.get('thread'), useQuotes=False)
+        recipients = self._prepareRecipients(
+            users, threadId=options.get('thread'), useQuotes=False)
         if not recipients:
             return False
         data['recipient_users'] = recipients.get('users')
@@ -562,7 +506,8 @@ class API(object):
             else:
                 total_followers = self.LastJson["user"]['follower_count']
             if total_followers > 200000:
-                print("Consider temporarily saving the result of this big operation. This will take a while.\n")
+                print(
+                    "Consider temporarily saving the result of this big operation. This will take a while.\n")
         else:
             return False
         with tqdm(total=total_followers, desc="Getting followers", leave=False) as pbar:
@@ -576,7 +521,8 @@ class API(object):
                         sleep_track += 1
                         if sleep_track >= 20000:
                             sleep_time = randint(120, 180)
-                            print("\nWaiting %.2f min. due to too many requests." % float(sleep_time / 60))
+                            print("\nWaiting %.2f min. due to too many requests." % float(
+                                sleep_time / 60))
                             time.sleep(sleep_time)
                             sleep_track = 0
                     if len(temp["users"]) == 0 or len(followers) >= total_followers:
@@ -598,7 +544,8 @@ class API(object):
             else:
                 total_following = self.LastJson["user"]['following_count']
             if total_following > 200000:
-                print("Consider temporarily saving the result of this big operation. This will take a while.\n")
+                print(
+                    "Consider temporarily saving the result of this big operation. This will take a while.\n")
         else:
             return False
         with tqdm(total=total_following, desc="Getting following", leave=False) as pbar:
@@ -612,7 +559,8 @@ class API(object):
                         sleep_track += 1
                         if sleep_track >= 20000:
                             sleep_time = randint(120, 180)
-                            print("\nWaiting %.2f min. due to too many requests." % float(sleep_time / 60))
+                            print("\nWaiting %.2f min. due to too many requests." % float(
+                                sleep_time / 60))
                             time.sleep(sleep_time)
                             sleep_track = 0
                     if len(temp["users"]) == 0 or len(following) >= total_following:
@@ -629,7 +577,8 @@ class API(object):
         while 1:
             self.getUserFeed(usernameId, next_max_id, minTimestamp)
             temp = self.LastJson
-            if "items" not in temp:  # maybe user is private, (we have not access to posts)
+            # maybe user is private, (we have not access to posts)
+            if "items" not in temp:
                 return []
             for item in temp["items"]:
                 user_feed.append(item)
