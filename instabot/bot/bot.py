@@ -13,7 +13,7 @@ from .bot_get import get_user_followers, get_user_following, get_media_likers, g
 from .bot_get import get_media_comments, get_geotag_users, get_locations_from_coordinates, convert_to_user_id
 from .bot_get import get_comment, get_media_info, get_user_likers, get_archived_medias, get_total_user_medias
 
-from .bot_like import like, like_medias, like_timeline, like_user, like_users, like_own_followers
+from .bot_like import like, like_medias, like_timeline, like_user, like_users, like_own_followers,like_other_users_followers
 from .bot_like import like_hashtag, like_geotag, like_followers, like_following, like_posts_by_location
 
 from .bot_unlike import unlike, unlike_medias, unlike_user
@@ -77,7 +77,7 @@ class Bot(API):
                  comment_delay=60,
                  block_delay=30,
                  unblock_delay=30,
-                 stop_words=['sex', 'penis']):
+                 stop_words=['sex', 'penis','fuck']):
         super(self.__class__, self).__init__()
         self.initLogging(id_campaign)
 
@@ -333,8 +333,11 @@ class Bot(API):
     def like_users(self, user_ids, nlikes=None, filtration=True):
         return like_users(self, user_ids, nlikes, filtration)
 
-    def like_own_followers(self, likesAmount):
-        like_own_followers(self, likesAmount=likesAmount)
+    def like_own_followers(self, amount):
+        like_own_followers(self, amount=amount)
+
+    def like_other_users_followers(self, userObject, amount):
+        like_other_users_followers(self, userObject=userObject, amount=amount)
 
     def like_followers(self, user_id, nlikes=None):
         return like_followers(self, user_id, nlikes)

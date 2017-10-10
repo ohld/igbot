@@ -33,7 +33,6 @@ def getGroupedOperations(configs):
     return groupedOperations
 
 
-# todo  like_other_users_followers
 def handleLikeOperation(bot, availableOperations, opIndex, parameters, amount):
     totalAmount = 0
 
@@ -41,6 +40,22 @@ def handleLikeOperation(bot, availableOperations, opIndex, parameters, amount):
         bot.logger.info("Bot operation: %s, amount %s", 'like_timeline', amount)
         totalAmount = totalAmount + bot.like_timeline(args.amount)
         del availableOperations[opIndex]
+    elif 'like_other_users_followers' in availableOperations[opIndex]['configName']:
+        if len(parameters['list']) == 0:
+            bot.logger.info("No hashtag left for operation like_other_users_followers, skipping this operation...")
+            del availableOperations[opIndex]
+            return 0
+        userIndex = randint(0, len(parameters['list']) - 1)
+        userObject = parameters['list'][userIndex]
+
+        bot.logger.info("Bot operation: %s, instagram user: %s, amount %s", 'like_other_users_followers', userObject['user'] , amount)
+
+        totalAmount = totalAmount + bot.like_other_users_followers(userObject, amount=amount)
+
+        del parameters['list'][userIndex]
+        availableOperations[opIndex]['parameters'] = json.dumps(parameters)
+
+
     elif 'like_posts_by_hashtag' in availableOperations[opIndex]['configName']:
         if len(parameters['list']) == 0:
             bot.logger.info("No hashtag left for operation like_posts_by_hashtag, skipping this operation...")

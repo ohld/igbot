@@ -157,7 +157,6 @@ def get_user_info(self, user_id):
 
 
 def get_user_followers(self, user_id, amount, next_max_id):
-    # user_id = self.convert_to_user_id(user_id)
     return self.getTotalFollowers(user_id, amount, next_max_id)
 
 

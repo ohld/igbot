@@ -65,26 +65,28 @@ def like_user(self, userObject, bot_operation, bot_operation_value=None, amount=
 
 
 def like_own_followers(self, likesAmount=100):
-    nrLikesPerFollower=2
-    followersAmount=likesAmount/nrLikesPerFollower
+    nrLikesPerFollower = 2
+    followersAmount = likesAmount / nrLikesPerFollower
 
     batchSize = followersAmount
     followers = []
     securityBreak = 0
     followersResult = 0
 
+    self.logger.info(
+        "Going to retrieve from database %s followers to perform %s likes " % (followersAmount, likesAmount))
+    totalFollowersResult = api_db.fetchOne(
+        "select count(*) as total_followers from followers where id_user=%s order by id_follower asc",
+        self.web_application_id_user)
 
-    self.logger.info("Going to retrieve from database %s followers to perform %s likes " % (followersAmount, likesAmount))
-    totalFollowersResult = api_db.fetchOne("select count(*) as total_followers from followers where id_user=%s order by id_follower asc",self.web_application_id_user)
-
-    self.logger.info('Total followers: %s',totalFollowersResult['total_followers'])
+    self.logger.info('Total followers: %s', totalFollowersResult['total_followers'])
     sqlLimitFromWhere = randint(0, (totalFollowersResult['total_followers'] - batchSize))
 
-    self.logger.info('Start getting followers starting with index: %s',sqlLimitFromWhere)
+    self.logger.info('Start getting followers starting with index: %s', sqlLimitFromWhere)
     while len(followers) <= followersAmount and securityBreak < 100 and followersResult != None:
 
         followersResult = api_db.select("select * from followers where id_user=%s order by id_user asc limit %s,%s",
-                                        self.web_application_id_user, sqlLimitFromWhere,batchSize)
+                                        self.web_application_id_user, sqlLimitFromWhere, batchSize)
 
         # nothing left in db
         if len(followersResult) < 1:
@@ -112,21 +114,22 @@ def like_own_followers(self, likesAmount=100):
                 securityBreak, len(followersResult), len(filteredFollowers), len(followers)))
 
         securityBreak = securityBreak + 1
-        sqlLimitFromWhere+=sqlLimitFromWhere+batchSize
+        sqlLimitFromWhere += sqlLimitFromWhere + batchSize
 
     followers = followers[:followersAmount]
 
     self.logger.info("Total received %s followers from database. Going to start liking !" % len(followers))
 
-    totalLiked=0
+    totalLiked = 0
 
     for f in followers:
         if not limits.check_if_bot_can_like(self):
             self.logger.info("Out of likes for today.")
             return
-        totalLiked = totalLiked + self.like_user(userObject=f, bot_operation="like_own_followers", amount=nrLikesPerFollower)
+        totalLiked = totalLiked + self.like_user(userObject=f, bot_operation="like_own_followers",
+                                                 amount=nrLikesPerFollower)
 
-    self.logger.info('Total liked %s posts of your own followers !',totalLiked)
+    self.logger.info('Total liked %s posts of your own followers !', totalLiked)
 
     return totalLiked
 
@@ -196,3 +199,63 @@ def like_posts_by_location(self, locationObject, amount):
     bot_operation = "like_posts_by_location"
     bot_operation_value = locationObject['name']
     return self.like_medias(medias[:amount], bot_operation, bot_operation_value)
+
+
+def like_other_users_followers(self, userObject, amount):
+    a = 1
+    userObject['user']
+    user_id = self.get_userid_from_username(username=userObject['user'])
+
+    self.logger.info('Going to like %s followers of user: %s , id: %s' % (amount, userObject['user'], user_id))
+
+    if not userObject['next_max_id']:
+        next_max_id = userObject['next_max_id']
+    else:
+        next_max_id = None
+
+    result = self.get_user_followers(user_id=user_id, amount=amount, next_max_id=next_max_id)
+
+    if len(result['followers']) == 0:
+        self.logger.info("No followers received for user: %s ! SKIPPING" % userObject['user'])
+        exit(0)
+
+    followers = []
+    iteration = 0
+    securityBreak = 0
+
+    while len(followers) <= amount and securityBreak < 300:
+
+        iteration = iteration + 1
+        securityBreak = securityBreak + 1
+
+        follower = result['followers'][iteration]
+
+        # check if this follower is valid -> this might not be required / usefull
+        follower['instagram_user_id'] = follower['pk']
+
+        if self.check_user(follower) == True:
+            followers.append(follower)
+
+        sleep_time = randint(1, 3)
+        self.logger.info("Sleeping %s seconds" % sleep_time)
+        time.sleep(sleep_time)
+        self.logger.info("Current followers %s:", len(followers))
+
+    self.logger.info("Total received %s followers" % len(followers))
+    followers = followers[:amount]
+
+    totalLiked = 0
+    nrLikesPerFollower = 1
+
+    exit()
+
+    for f in followers:
+        if not limits.check_if_bot_can_like(self):
+            self.logger.info("Out of likes for today.")
+            return
+        totalLiked = totalLiked + self.like_user(userObject=f, bot_operation="like_own_followers",
+                                                 amount=nrLikesPerFollower)
+
+    self.logger.info('Total liked %s posts of your own followers !', totalLiked)
+
+    return totalLiked

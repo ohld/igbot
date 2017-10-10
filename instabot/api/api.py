@@ -624,7 +624,7 @@ class API(object):
     def getLikedMedia(self, maxid=''):
         return self.SendRequest('feed/liked/?max_id=' + str(maxid))
 
-    #maybe the function name is a bit misleading
+    #maybe the function name is a bit misleading - because is called totalFollowers
     def getTotalFollowers(self, usernameId, amount=50, next_max_id=None):
         self.logger.info("Trying to get %s followers  of %s This might take a while." % (amount,usernameId))
         self.logger.info("Next max id is: %s",next_max_id)
