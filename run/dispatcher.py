@@ -128,10 +128,10 @@ def handleFollowOperations(bot, availableOperations, opIndex, parameters, amount
 bot = Bot(
     id_campaign=args.id_campaign,
     id_log=args.id_log,
-    max_likes_per_day=1100,  # default 1000
+    max_likes_per_day=3100,  # default 1000
     max_unlikes_per_day=500,  # default 1000
-    max_follows_per_day=200,  # default 350
-    max_unfollows_per_day=200,  # default 350
+    max_follows_per_day=230,  # default 350
+    max_unfollows_per_day=230,  # default 350
     max_comments_per_day=0,
     max_followers_to_follow=9000000,  # default 2000
     min_followers_to_follow=10,  # default 10
