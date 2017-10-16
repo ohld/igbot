@@ -334,10 +334,10 @@ class Bot(API):
         return like_users(self, user_ids, nlikes, filtration)
 
     def like_own_followers(self, amount):
-        like_own_followers(self, amount=amount)
+        return like_own_followers(self, likesAmount=amount)
 
     def like_other_users_followers(self, userObject, amount):
-        like_other_users_followers(self, userObject=userObject, amount=amount)
+        return like_other_users_followers(self, userObject=userObject, amount=amount)
 
     def like_followers(self, user_id, nlikes=None):
         return like_followers(self, user_id, nlikes)

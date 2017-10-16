@@ -518,10 +518,10 @@ class API(object):
 
     def getUserFollowers(self, usernameId, maxid=''):
         if maxid == '' or maxid==None:
-            return self.SendRequest('friendships/' + str(usernameId) + '/followers/?rank_token=' + self.rank_token)
+            return self.SendRequest('friendships/' + str(usernameId) + '/followers')
         else:
             return self.SendRequest(
-                'friendships/' + str(usernameId) + '/followers/?rank_token=' + self.rank_token + '&max_id=' + str(
+                'friendships/' + str(usernameId) + '/followers/?max_id=' + str(
                     maxid))
 
     def getSelfUserFollowers(self):

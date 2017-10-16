@@ -158,8 +158,8 @@ bot = Bot(
     unlike_delay=15,  # default 1-
     follow_delay=40,  # default 30,
     unfollow_delay=40,  # default 30,
-    comment_delay=60,  # default 60,
-    stop_words=['penis', 'sex', 'cunt', 'dead'])
+    comment_delay=60,  # default 60
+    )
 
 id_campaign = args.id_campaign
 
