@@ -35,7 +35,7 @@ from .bot_comment import comment_hashtag, is_commented, comment_user
 
 from .bot_block import block, unblock, block_users, unblock_users, block_bots
 
-from .bot_delete import delete_media, delete_medias
+from .bot_delete import delete_media, delete_medias, delete_comment
 
 from .bot_checkpoint import save_checkpoint, load_checkpoint
 
@@ -416,6 +416,9 @@ class Bot(API):
 
     def delete_medias(self, medias):
         return delete_medias(self, medias)
+
+    def delete_comment(self, media_id, comment_id):
+        return delete_comment(self, media_id, comment_id)
 
     # archive
 

@@ -26,3 +26,11 @@ def delete_medias(self, medias):
             break
     self.logger.info("DONE: Total deleted %d medias." % (len(medias) - len(broken_items)))
     return broken_items
+
+
+def delete_comment(self, media_id, comment_id):
+    if super(self.__class__, self).deleteComment(media_id, comment_id):
+        delay.small_delay(self)
+        return True
+    self.logger.info("Comment with %s in media %s is not deleted." % (comment_id, media_id))
+    return False
