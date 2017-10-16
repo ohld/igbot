@@ -9,7 +9,7 @@ def unfollow(self, user_id):
     user_info = self.get_user_info(user_id)
     print('\n===> Going to UN-Follow user_id: %s , user_name: %s' %
           (user_id, user_info["username"]))
-    if self.check_user(user_id):
+    if self.check_user(user_id, unfollowing=True):
         return True  # whitelisted user
     if limits.check_if_bot_can_unfollow(self):
         delay.unfollow_delay(self)

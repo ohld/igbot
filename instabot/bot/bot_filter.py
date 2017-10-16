@@ -108,8 +108,9 @@ def filter_users(self, user_id_list):
     return [str(user["pk"]) for user in user_id_list]
 
 
-def check_user(self, user_id, filter_closed_acc=False):
-    if not self.filter_users:
+def check_user(self, user_id, filter_closed_acc=False, unfollowing=False):
+    if not self.filter_users and not unfollowing:
+        print('\n\033[91m filter_users is False , Skipping \033[0m')  # Log to Console
         return True
 
     delay.small_delay(self)
