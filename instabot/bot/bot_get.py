@@ -161,9 +161,26 @@ def get_user_info(self, user_id):
 # if we don't get followers from database it means that there are no followers left
 #in this case update the user flag to disabled
 #simmilar approach for like_other_users_
+#next max id is in user_object ? why use it as paramemeter
 def get_user_followers(self, user_object, amount, next_max_id):
     user_id = self.get_userid_from_username(username=user_object['username'])
+    
+    #maybe put this code in a function to use it with like functionality
+    self.logger.info('Not enough followers in database, going to get them from instagram')
+    instagramFollowers = self.getTotalFollowers(user_id, amount, next_max_id)
 
+    #insert follower in db
+    for follower in instagramFollowers:
+            api_db.insertFollower(webApplicationUser['id_user'], follower['pk'], follower['full_name'],
+                                  follower['username'],
+                                  follower['profile_pic_url'], follower['is_verified'])
+
+        next_id = result['next_max_id']
+        if next_id == None:
+            next_id = result['previous_next_max_id']
+
+       #update the next id of user_object row
+        
     self.logger.info("Trying to retrieve from DATABASE %s followers of user %s , id: %s" % (amount,user_object['username'], user_id))
     query="select iuf.*, id_campaign from instagram_user_followers iuf " \
           "join instagram_users on (iuf.fk=instagram_users.id) " \
@@ -176,23 +193,12 @@ def get_user_followers(self, user_object, amount, next_max_id):
 
     self.logger.info('Recevied from database %s followers', len(followers))
 
-    if len(followers)<amount:
-        self.logger.info('Not enough followers in database, going to get them from instagram')
-        instagramFollowers = self.getTotalFollowers(user_id, amount, next_max_id)
-
-        for follower in instagramFollowers:
-            api_db.insertFollower(webApplicationUser['id_user'], follower['pk'], follower['full_name'],
-                                  follower['username'],
-                                  follower['profile_pic_url'], follower['is_verified'])
-
-        next_id = result['next_max_id']
-        if next_id == None:
-            next_id = result['previous_next_max_id']
-
-        self.logger.info(
-            "Going to update the followers_next_max_id: %s of user: %s" % (next_id, self.web_application_id_user))
-        api_db.insert("update users set followers_next_max_id=%s where id_user=%s", next_id,
-                      self.web_application_id_user)
+    if len(followers)==0
+        #skip nothing left to do
+        
+     #start liking followers
+     
+        
 
         exit()
     else:
