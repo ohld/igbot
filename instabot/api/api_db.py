@@ -46,7 +46,7 @@ def select(query, *args):
     cur.execute(query,args)
     rows = cur.fetchall()
     db.close()
-    return rows
+    return list(rows)
 
 def insert(query, *args):
     db = getConnection()
@@ -68,7 +68,7 @@ def insertBotAction(*args):
 
 def insertFollower(*args):
 
-    query="insert into followers (id_user,instagram_id_follower,full_name,username,user_image,is_verified) " \
+    query="insert into own_followers (id_user,instagram_id_follower,full_name,username,user_image,is_verified) " \
           " VALUES (%s,%s,%s,%s,%s,%s) ON DUPLICATE KEY UPDATE instagram_id_follower=instagram_id_follower"
 
     id = insert(query,*args)

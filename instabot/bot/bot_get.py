@@ -155,12 +155,54 @@ def get_user_info(self, user_id):
         return False
     return self.LastJson['user']
 
+#TODO i think it would be a lot simpler to go with this approach:
+# each time this operation is triggered automatically get a batch of followers, just to make sure we have them in database
+# next select from database the required amount of followers.
+# if we don't get followers from database it means that there are no followers left
+#in this case update the user flag to disabled
+#simmilar approach for like_other_users_
+def get_user_followers(self, user_object, amount, next_max_id):
+    user_id = self.get_userid_from_username(username=user_object['username'])
 
-def get_user_followers(self, user_id, amount, next_max_id):
-    return self.getTotalFollowers(user_id, amount, next_max_id)
+    self.logger.info("Trying to retrieve from DATABASE %s followers of user %s , id: %s" % (amount,user_object['username'], user_id))
+    query="select iuf.*, id_campaign from instagram_user_followers iuf " \
+          "join instagram_users on (iuf.fk=instagram_users.id) " \
+          "join campaign_config on (instagram_users.id_config=campaign_config.id_config) " \
+          "where iuf.username=%s " \
+          "and iuf.username not in  " \
+          "(select username from bot_action where id_campaign=campaign_config.id_campaign)"
+
+    followers = api_db.select(query, user_object['username'])
+
+    self.logger.info('Recevied from database %s followers', len(followers))
+
+    if len(followers)<amount:
+        self.logger.info('Not enough followers in database, going to get them from instagram')
+        instagramFollowers = self.getTotalFollowers(user_id, amount, next_max_id)
+
+        for follower in instagramFollowers:
+            api_db.insertFollower(webApplicationUser['id_user'], follower['pk'], follower['full_name'],
+                                  follower['username'],
+                                  follower['profile_pic_url'], follower['is_verified'])
+
+        next_id = result['next_max_id']
+        if next_id == None:
+            next_id = result['previous_next_max_id']
+
+        self.logger.info(
+            "Going to update the followers_next_max_id: %s of user: %s" % (next_id, self.web_application_id_user))
+        api_db.insert("update users set followers_next_max_id=%s where id_user=%s", next_id,
+                      self.web_application_id_user)
+
+        exit()
+    else:
+        return followers
+
+    exit()
 
 
-# this function is used to crawl
+
+# this function is used to crawl followers of the logged user.
 def crawl_user_followers(self, amount):
     self.logger.info("Going to extract followers from instagram !")
     webApplicationUser = api_db.getWebApplicationUser(self.web_application_id_user)

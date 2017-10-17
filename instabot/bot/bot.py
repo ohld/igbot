@@ -276,8 +276,8 @@ class Bot(API):
     def get_user_info(self, user_id):
         return get_user_info(self, user_id)
 
-    def get_user_followers(self, user_id, amount=None, next_max_id=None):
-        return get_user_followers(self, user_id, amount, next_max_id)
+    def get_user_followers(self, user_object, amount=None, next_max_id=None):
+        return get_user_followers(self, user_object, amount, next_max_id)
 
     def crawl_user_followers(self, amount=1500):
         return crawl_user_followers(self, amount)

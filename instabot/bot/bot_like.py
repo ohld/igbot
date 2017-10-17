@@ -4,7 +4,7 @@ from . import delay
 from ..api import api_db
 from random import randint
 import time
-
+import json
 
 def like(self, media_id):
     if limits.check_if_bot_can_like(self):
@@ -194,26 +194,24 @@ def like_following(self, user_id, nlikes=None):
 
 
 def like_posts_by_location(self, locationObject, amount):
-    self.logger.info("Going to like %s medias from location %s." % (amount, locationObject['name']))
-    medias = self.get_location_medias(id_location=locationObject['id'], amount=amount)
+    self.logger.info("Going to like %s medias from location %s." % (amount, locationObject['location']))
+    medias = self.get_location_medias(id_location=locationObject['id_location'], amount=amount)
     bot_operation = "like_posts_by_location"
-    bot_operation_value = locationObject['name']
+    bot_operation_value = locationObject['location']
     return self.like_medias(medias[:amount], bot_operation, bot_operation_value)
 
 
 def like_other_users_followers(self, userObject, amount):
-    a = 1
-    userObject['user']
-    user_id = self.get_userid_from_username(username=userObject['user'])
 
-    self.logger.info('Going to like %s followers of user: %s , id: %s' % (amount, userObject['user'], user_id))
 
-    if not userObject['next_max_id']:
-        next_max_id = userObject['next_max_id']
-    else:
-        next_max_id = None
+    self.logger.info('Going to like %s followers of user: %s' % (amount, userObject['username']))
 
-    result = self.get_user_followers(user_id=user_id, amount=amount, next_max_id=next_max_id)
+    result = self.get_user_followers(user_object=userObject, amount=amount, next_max_id=userObject['next_max_id'])
+
+    with open('data.txt', 'w') as outfile:
+        json.dump(result, outfile)
+
+    exit()
 
     if len(result['followers']) == 0:
         self.logger.info("No followers received for user: %s ! SKIPPING" % userObject['user'])
@@ -222,6 +220,8 @@ def like_other_users_followers(self, userObject, amount):
     followers = []
     iteration = 0
     securityBreak = 0
+
+    self.logger.info("Going to check users")
 
     while len(followers) <= amount and securityBreak < 300:
 
@@ -247,14 +247,13 @@ def like_other_users_followers(self, userObject, amount):
     totalLiked = 0
     nrLikesPerFollower = 1
 
-    exit()
+
 
     for f in followers:
         if not limits.check_if_bot_can_like(self):
             self.logger.info("Out of likes for today.")
-            return
-        totalLiked = totalLiked + self.like_user(userObject=f, bot_operation="like_own_followers",
-                                                 amount=nrLikesPerFollower)
+            return totalLiked
+        totalLiked = totalLiked + self.like_user(userObject=f, bot_operation="like_own_followers",bot_operation_value=userObject['user'],amount=nrLikesPerFollower)
 
     self.logger.info('Total liked %s posts of your own followers !', totalLiked)
 
