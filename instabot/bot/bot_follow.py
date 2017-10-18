@@ -3,17 +3,15 @@ from tqdm import tqdm
 from . import limits
 from . import delay
 from ..api import api_db
+from random import randint
+import time
 
 
 def follow(self, user):
     self.logger.info('Going to Follow user: %s ' % user['username'])
 
-    #this returns 404 , why ?
-    #if not self.check_user(user):
-    #    return False
-
     delay.follow_delay(self)
-    if super(self.__class__, self).follow(user['pk']):
+    if super(self.__class__, self).follow(user['instagram_id_user']):
         self.logger.info("Successfully followed user %s " % user['username'])
         self.total_followed += 1
         return True
@@ -21,6 +19,7 @@ def follow(self, user):
     return False
 
 
+#todo add check user
 def follow_users_by_location(self, locationObject, amount):
     self.logger.info("Going to follow %s users from location %s." % (amount, locationObject['location']))
 
@@ -40,6 +39,7 @@ def follow_users_by_location(self, locationObject, amount):
     bot_operation = 'follow_users_by_location'
     return self.follow_users(users[:amount], bot_operation, locationObject['location'])
 
+#todo add check user
 def follow_users_by_hashtag(self,hashtag,amount):
     feed = self.getHashtagFeed(hashtag, amount)
     users = []
@@ -56,6 +56,72 @@ def follow_users_by_hashtag(self,hashtag,amount):
 
     return self.follow_users(users[:amount], bot_operation, hashtag)
 
+def follow_other_users_followers(self,userObject,amount):
+    self.logger.info('Going to follow %s followers of user: %s' % (amount, userObject['username']))
+
+    self.crawl_other_user_followers(userObject=userObject, amount=500)
+    
+    totalFollowersResult = api_db.fetchOne("select count(*) as total_followers from instagram_user_followers  where fk=%s order by id asc", userObject['id'])
+
+    self.logger.info('Total followers in  database: %s', totalFollowersResult['total_followers'])
+    
+    batchSize=amount*3;
+
+    self.logger.info('Getting followers from DATABASE starting with limit %s' % ( batchSize))
+    query="select iuf.*, id_campaign from instagram_user_followers iuf " \
+    "join instagram_users on (iuf.fk=instagram_users.id) " \
+    "join campaign_config on (instagram_users.id_config=campaign_config.id_config) " \
+    "where instagram_users.username=%s " \
+    "and iuf.username not in  " \
+    "(select username from bot_action where id_campaign=campaign_config.id_campaign and bot_operation like %s) limit %s"
+    
+    followers = api_db.select(query, userObject['username'], 'follow' + '%', batchSize)
+
+    self.logger.info('Received from database %s followers', len(followers))
+    
+    users = []
+
+    iteration = 0
+    securityBreak = 0
+    filteredFollowers=[]
+    
+    
+    # check if this follower is valid -> this might not be required / usefull as it takes alot of time to perform the check
+    self.logger.info("Going to check users")
+
+    while len(filteredFollowers) < amount and securityBreak < 400 and len(followers)>iteration+1:
+      iteration = iteration + 1
+      securityBreak = securityBreak + 1
+
+      follower = followers[iteration]
+    
+      if self.check_user(follower) == True:
+        follower['friendship_status']={}
+        follower['profile_pic_url']=None
+        follower['friendship_status']['following']=False
+        follower['media'] = {}
+        follower['media']['code'] = None
+        follower['media']['image'] = None
+        follower['media']['id'] = None
+        filteredFollowers.append(follower)
+      else:
+        #delete the user from database
+        self.logger.info('User is not valid, going to delete it from database')
+        api_db.insert("delete from instagram_user_followers where id=%s",follower['id'])
+        
+      sleep_time = randint(1, 3)
+      self.logger.info("Sleeping %s seconds" % sleep_time)
+      time.sleep(sleep_time)
+      self.logger.info("Current followers %s, iteration %s" % ( len(filteredFollowers), securityBreak))
+
+    self.logger.info("Total received %s FILTERED followers" % len(filteredFollowers))
+    filteredFollowers = filteredFollowers[:amount]
+    
+  
+    bot_operation = 'follow_other_users_followers'
+    return self.follow_users(filteredFollowers[:amount], bot_operation, userObject['username'])
+    
+    
 def follow_users(self, users, bot_operation, bot_operation_value):
     broken_items = []
 
@@ -84,7 +150,7 @@ def follow_users(self, users, bot_operation, bot_operation_value):
 
         if self.follow(user):
 
-            api_db.insertBotAction(self.id_campaign, self.web_application_id_user, user['pk'], user['full_name'],
+            api_db.insertBotAction(self.id_campaign, self.web_application_id_user, user['instagram_id_user'], user['full_name'],
                                    user['username'],
                                    user['profile_pic_url'], user['media']['id'], user['media']['image'],
                                    user['media']['code'], bot_operation, bot_operation_value, self.id_log)

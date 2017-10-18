@@ -63,7 +63,7 @@ def like_user(self, userObject, bot_operation, bot_operation_value=None, amount=
         return False
     return self.like_medias(medias[:amount], bot_operation=bot_operation, bot_operation_value=bot_operation_value)
 
-
+#TODO check if get medias return lasst user posts
 def like_own_followers(self, likesAmount=100):
     nrLikesPerFollower = 1
     followersAmount = likesAmount / nrLikesPerFollower

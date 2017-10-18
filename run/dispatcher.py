@@ -19,6 +19,7 @@ parser.add_argument('-id_log', type=str, help="id_log")
 parser.add_argument('-amount', type=int, help='amount')
 args = parser.parse_args()
 
+
 #TODO simplify this file
 
 def getGroupedOperations(configs):
@@ -65,19 +66,17 @@ def handleLikeOperation(bot, availableOperations, opIndex, amount):
         del availableOperations[opIndex]
     elif 'like_other_users_followers' in availableOperations[opIndex]['configName']:
         if len(availableOperations[opIndex]['list']) == 0:
-            bot.logger.info("No hashtag left for operation like_other_users_followers, skipping this operation...")
+            bot.logger.info("No users left for operation like_other_users_followers, skipping this operation...")
             del availableOperations[opIndex]
             return 0
         userIndex = randint(0, len(availableOperations[opIndex]['list']) - 1)
         userObject = availableOperations[opIndex]['list'][userIndex]
 
         bot.logger.info("Bot operation: %s, instagram user: %s, amount %s", 'like_other_users_followers', userObject['username'] , amount)
-
        
         totalAmount = totalAmount + bot.like_other_users_followers(userObject, amount=amount)
 
         del availableOperations[opIndex]['list'][userIndex]
-
 
     elif 'like_posts_by_hashtag' in availableOperations[opIndex]['configName']:
         if len(availableOperations[opIndex]['list']) == 0:
@@ -120,7 +119,6 @@ def handleLikeOperation(bot, availableOperations, opIndex, amount):
     return totalAmount
 
 
-# TODO follow_other_users_followers
 def handleFollowOperations(bot, availableOperations, opIndex, amount):
     totalAmount = 0
 
@@ -152,6 +150,20 @@ def handleFollowOperations(bot, availableOperations, opIndex, amount):
         totalAmount = totalAmount + bot.follow_users_by_location(locationObject, args.amount)
 
         del availableOperations[opIndex]['list'][locationIndex]
+        
+    elif 'follow_other_users_followers' in availableOperations[opIndex]['configName']:
+        if len(availableOperations[opIndex]['list']) == 0:
+            bot.logger.info("No users left for operation follow_other_users_followers, skipping this operation...")
+            del availableOperations[opIndex]
+            return 0
+        userIndex = randint(0, len(availableOperations[opIndex]['list']) - 1)
+        userObject = availableOperations[opIndex]['list'][userIndex]
+
+        bot.logger.info("Bot operation: %s, instagram user: %s, amount %s", 'follow_other_users_followers', userObject['username'] , amount)
+       
+        totalAmount = totalAmount + bot.follow_other_users_followers(userObject, amount=amount)
+
+        del availableOperations[opIndex]['list'][userIndex]
     else:
         bot.logger.info("Invalid operation %s", availableOperations[opIndex]['configName'])
 
@@ -215,12 +227,13 @@ while totalAmount < args.amount and securityBreak < 30:
 
     securityBreak = securityBreak + 1
 
+
+
 # for each user followed, another one is unfollowed
-
-
+# todo: maybe this is not a good approach because user might want to unfollow without following
 if args.operation_type == "follow":
     totalUsersUnfollowed = bot.unfollowBotCreatedFollowings(amount=args.amount)
 
-#bot.crawl_user_followers(amount=1500)
+bot.crawl_user_followers(amount=1500)
 
 bot.logger.info("DONE dispatcher.py: Total bot actions %s", totalAmount)

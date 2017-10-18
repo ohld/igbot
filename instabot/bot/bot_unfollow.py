@@ -9,16 +9,16 @@ import json
 def unfollowBotCreatedFollowings(self, amount):
     # check if user wants to unfollow
     userWantsToUnfollow = getIfUserWantsToUnfollow(self)
-    if userWantsToUnfollow == False or userWantsToUnfollow['enabled']==False:
+    if userWantsToUnfollow == False:
         self.logger.info("User does not want to unfollow !")
         return False
     else:
-        self.logger.info("User wants to unfollow after %s hours" % userWantsToUnfollow['after_x_hours'])
+        self.logger.info("User wants to unfollow after %s hours" % userWantsToUnfollow['value'])
 
     self.logger.info("Going to unfollow %s users from bot created followings", amount)
     selectFollowings = "select * from bot_action where  bot_operation like %s and timestamp< (NOW() - INTERVAL %s HOUR) and id_user= %s and bot_operation_reverted is null order by timestamp asc limit %s"
 
-    followings = api_db.select(selectFollowings, 'follow' + '%', userWantsToUnfollow['after_x_hours'],
+    followings = api_db.select(selectFollowings, 'follow' + '%', userWantsToUnfollow['value'],
                                self.web_application_id_user,
                                amount)
     self.logger.info("Found %s users in database to unfollow", len(followings))
@@ -46,16 +46,14 @@ def unfollowBotCreatedFollowings(self, amount):
 
 
 def getIfUserWantsToUnfollow(self):
-    query = "SELECT * FROM `campaign_config` where configName='unfollow' and id_campaign= %s"
+    query = 'select _key,value from  campaign_config join campaign_config_parameters using (id_config) where configName="unfollow"  and id_campaign= %s and _key="after_x_hours" and campaign_config.enabled=1'
 
     result = api_db.fetchOne(query, self.id_campaign)
     if not result:
         return False
 
-    parameters = result['parameters']
-
-    resultParsed = json.loads(parameters)
-    return resultParsed
+   
+    return result
 
 
 def unfollow(self, user_id):

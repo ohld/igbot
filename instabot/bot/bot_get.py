@@ -7,6 +7,8 @@ import random
 from tqdm import tqdm
 from ..api import api_db
 from . import delay
+from random import randint
+import time
 
 
 def get_media_owner(self, media_id):
@@ -171,7 +173,9 @@ def crawl_other_user_followers(self, userObject, amount=100):
 
     #insert follower in db
     for follower in instagramFollowersResult['followers']:
-      api_db.insertUserFollower(userObject['id'], follower['pk'], follower['full_name'],follower['username'],follower['profile_pic_url'], follower['is_verified'])
+      
+      if follower['is_private']==False:
+        api_db.insertUserFollower(userObject['id'], follower['pk'], follower['full_name'],follower['username'],follower['profile_pic_url'], follower['is_verified'])
   
     #update the next id
     if instagramFollowersResult['next_max_id']==None:
@@ -188,15 +192,18 @@ def crawl_other_user_followers(self, userObject, amount=100):
 #this function is used to crawl followers of the logged user.
 def crawl_user_followers(self, amount):
     self.logger.info("Going to extract followers from instagram !")
+    sleep_time = randint(1, 4)
+    self.logger.info("Sleeping %s seconds" % sleep_time)
+    time.sleep(sleep_time)
+      
     webApplicationUser = api_db.getWebApplicationUser(self.web_application_id_user)
 
     if not webApplicationUser['followers_next_max_id']:
         next_max_id = None
     else:
         next_max_id = webApplicationUser['followers_next_max_id']
-
-    #TODO this should be improved
-    result = self.getUserFollowers(user_id=self.user_id, amount=amount, next_max_id=next_max_id)
+    
+    result = self.getUserFollowers(usernameId=self.user_id, amount=amount, next_max_id=next_max_id)
 
     if len(result['followers']) == 0:
         self.logger.info("No followers received for user: %s ! SKIPPING" % self.user_id)

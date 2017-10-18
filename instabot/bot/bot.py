@@ -22,7 +22,7 @@ from .bot_photo import download_photo, download_photos, upload_photo
 
 from .bot_video import upload_video
 
-from .bot_follow import follow, follow_users, follow_followers, follow_following, follow_users_by_location, follow_users_by_hashtag
+from .bot_follow import follow, follow_users, follow_followers, follow_following, follow_users_by_location, follow_users_by_hashtag,follow_other_users_followers
 
 from .bot_unfollow import unfollow, unfollow_users, unfollow_non_followers, unfollowBotCreatedFollowings
 from .bot_unfollow import unfollow_everyone, update_unfollow_file
@@ -391,6 +391,9 @@ class Bot(API):
 
     def follow_users_by_hashtag(self,hashtag,amount):
         return follow_users_by_hashtag(self, hashtag=hashtag, amount=amount)
+      
+    def follow_other_users_followers(self, userObject, amount):
+        return follow_other_users_followers(self, userObject, amount)
 
     # unfollow
 
