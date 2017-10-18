@@ -49,7 +49,7 @@ def like_timeline(self, amount=None):
     self.logger.info("Liking %s items from timeline feed:" % amount)
     medias = self.get_timeline_medias(amount=amount)
     bot_operation = "like_timeline"
-    return self.like_medias(medias, bot_operation)
+    return self.like_medias(medias[:amount], bot_operation)
 
 
 def like_user(self, userObject, bot_operation, bot_operation_value=None, amount=2, filtration=True):
@@ -79,14 +79,15 @@ def like_own_followers(self, likesAmount=100):
         "select count(*) as total_followers from own_followers where id_user=%s order by id asc",
         self.web_application_id_user)
 
-    self.logger.info('Total followers: %s', totalFollowersResult['total_followers'])
+    self.logger.info('Total followers in databasse : %s', totalFollowersResult['total_followers'])
     sqlLimitFromWhere = randint(0, (totalFollowersResult['total_followers'] - batchSize))
 
-    self.logger.info('Start getting followers starting with index: %s', sqlLimitFromWhere)
+   
     #this while looks reduntant
-    while len(followers) <= followersAmount and securityBreak < 10 and followersResult != None:
-
-        followersResult = api_db.select("select * from followers where id_user=%s order by id_user asc limit %s,%s",
+    while len(followers) < followersAmount and securityBreak < 10 and followersResult != None:
+        self.logger.info('Start getting followers starting with offset: %s , limit %s' % ( sqlLimitFromWhere, batchSize))
+        
+        followersResult = api_db.select("select * from own_followers where id_user=%s order by id_user asc limit %s,%s",
                                         self.web_application_id_user, sqlLimitFromWhere, batchSize)
 
         # nothing left in db
@@ -104,6 +105,9 @@ def like_own_followers(self, likesAmount=100):
             sleep_time = randint(1, 3)
             self.logger.info("Sleeping %s seconds" % sleep_time)
             time.sleep(sleep_time)
+            
+            if (len(followers) + len(filteredFollowers))>followersAmount:
+              break
 
         followers = followers + filteredFollowers
 
@@ -112,11 +116,11 @@ def like_own_followers(self, likesAmount=100):
                 securityBreak, len(followersResult), len(filteredFollowers), len(followers)))
 
         securityBreak = securityBreak + 1
-        sqlLimitFromWhere += sqlLimitFromWhere + batchSize
+        sqlLimitFromWhere = sqlLimitFromWhere + batchSize
 
     followers = followers[:followersAmount]
 
-    self.logger.info("Total received %s followers from database. Going to start liking !" % len(followers))
+    self.logger.info("Going to start liking %s followers !" % len(followers))
 
     totalLiked = 0
 

@@ -48,7 +48,7 @@ def getEnhancedOperation(operation):
         operation['list'] = hashtags
 
     if 'like_posts_by_location' in operation['configName'] or 'follow_users_by_location' in operation['configName']:
-        locations = api_db.select("select * from instagram_location where id_config=%s and enabled=1", operation['id_config'])
+        locations = api_db.select("select * from instagram_locations where id_config=%s and enabled=1", operation['id_config'])
         operation['list'] = locations
 
     parameters= api_db.select("select * from campaign_config_parameters where id_config=%s", operation['id_config'])
@@ -88,7 +88,7 @@ def handleLikeOperation(bot, availableOperations, opIndex, amount):
         hashtagObject = availableOperations[opIndex]['list'][hashtagIndex]
 
         bot.logger.info("Bot operation: %s, hashtag: %s, amount %s", 'like_posts_by_hashtag', hashtagObject['hashtag'], amount)
-        totalAmount = totalAmount + bot.like_hashtag(hashtag, args.amount)
+        totalAmount = totalAmount + bot.like_hashtag(hashtagObject['hashtag'], args.amount)
         # remove the hastagh to no use it again his session
         del availableOperations[opIndex]['list'][hashtagIndex]
 

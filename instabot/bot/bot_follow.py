@@ -30,7 +30,7 @@ def follow_users_by_location(self, locationObject, amount):
     for media in medias:
         user = media['user']
         user['media'] = {}
-        user['instagram_user_id']=media['pk']
+        user['instagram_id_user']=user['pk']
         user['media']['code'] = media['code']
         user['media']['image'] = media['image_versions2']['candidates'][0]['url']
         user['media']['id'] = media['pk']
@@ -47,7 +47,7 @@ def follow_users_by_hashtag(self,hashtag,amount):
     for media in feed:
         user = media['user']
         user['media'] = {}
-        user['instagram_user_id'] = media['pk']
+        user['instagram_id_user'] = user['pk']
         user['media']['code'] = media['code']
         user['media']['image'] = media['image_versions2']['candidates'][0]['url']
         user['media']['id'] = media['pk']
@@ -67,7 +67,7 @@ def follow_other_users_followers(self,userObject,amount):
     
     batchSize=amount*3;
 
-    self.logger.info('Getting followers from DATABASE starting with limit %s' % ( batchSize))
+    self.logger.info('Getting followers from DATABASE limit %s' % ( batchSize))
     query="select iuf.*, id_campaign from instagram_user_followers iuf " \
     "join instagram_users on (iuf.fk=instagram_users.id) " \
     "join campaign_config on (instagram_users.id_config=campaign_config.id_config) " \
