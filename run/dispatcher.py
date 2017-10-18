@@ -73,6 +73,7 @@ def handleLikeOperation(bot, availableOperations, opIndex, amount):
 
         bot.logger.info("Bot operation: %s, instagram user: %s, amount %s", 'like_other_users_followers', userObject['username'] , amount)
 
+       
         totalAmount = totalAmount + bot.like_other_users_followers(userObject, amount=amount)
 
         del availableOperations[opIndex]['list'][userIndex]

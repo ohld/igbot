@@ -66,13 +66,20 @@ def insertBotAction(*args):
     id = insert(query,*args)
     return id
 
-def insertFollower(*args):
+def insertOwnFollower(*args):
 
-    query="insert into own_followers (id_user,instagram_id_follower,full_name,username,user_image,is_verified) " \
-          " VALUES (%s,%s,%s,%s,%s,%s) ON DUPLICATE KEY UPDATE instagram_id_follower=instagram_id_follower"
+    query="insert into own_followers (id_user,instagram_id_user,full_name,username,user_image,is_verified) " \
+          " VALUES (%s,%s,%s,%s,%s,%s) ON DUPLICATE KEY UPDATE instagram_id_user=instagram_id_user"
 
     id = insert(query,*args)
     return id
+  
+def insertUserFollower(*args):
+  query="insert into instagram_user_followers (fk,instagram_id_user,full_name,username,user_image,is_verified) " \
+  " VALUES (%s,%s,%s,%s,%s,%s) ON DUPLICATE KEY UPDATE instagram_id_user=instagram_id_user"
+
+  id = insert(query,*args)
+  return id
     
 
 

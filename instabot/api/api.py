@@ -516,14 +516,7 @@ class API(object):
     def getSelfUsersFollowing(self):
         return self.getUserFollowings(self.user_id)
 
-    def getUserFollowers(self, usernameId, maxid=''):
-        if maxid == '' or maxid==None:
-            return self.SendRequest('friendships/' + str(usernameId) + '/followers')
-        else:
-            return self.SendRequest(
-                'friendships/' + str(usernameId) + '/followers/?max_id=' + str(
-                    maxid))
-
+ 
     def getSelfUserFollowers(self):
         return self.getUserFollowers(self.user_id)
 
@@ -624,8 +617,7 @@ class API(object):
     def getLikedMedia(self, maxid=''):
         return self.SendRequest('feed/liked/?max_id=' + str(maxid))
 
-    #maybe the function name is a bit misleading - because is called totalFollowers
-    def getTotalFollowers(self, usernameId, amount=50, next_max_id=None):
+    def getUserFollowers(self, usernameId, amount=50, next_max_id=None):
         self.logger.info("Trying to get %s followers  of %s This might take a while." % (amount,usernameId))
         self.logger.info("Next max id is: %s",next_max_id)
         followers = []
@@ -633,8 +625,12 @@ class API(object):
         result={}
         previous_next_max_id=next_max_id
         while len(followers) < amount and securityBreak < 100:
-
-            self.getUserFollowers(usernameId, next_max_id)
+   
+            if next_max_id == '' or next_max_id==None:
+              self.SendRequest('friendships/' + str(usernameId) + '/followers')
+            else:
+              self.SendRequest('friendships/' + str(usernameId) + '/followers/?max_id=' + str(next_max_id))
+          
             temp = self.LastJson
 
             for item in temp["users"]:

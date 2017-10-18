@@ -116,7 +116,7 @@ def filter_users(self, user_id_list):
 
 
 def check_user(self, user, filter_closed_acc=False):
-    user_id = user['instagram_user_id']
+    user_id = user['instagram_id_user']
 
     self.logger.info("Going to check user %s id: %s if worth liking/following", user['full_name'], user_id)
 

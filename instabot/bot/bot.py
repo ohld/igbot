@@ -9,7 +9,7 @@ from .bot_get import get_media_owner, get_your_medias, get_user_medias
 from .bot_get import get_timeline_medias, get_hashtag_medias, get_user_info, get_location_medias
 from .bot_get import get_geotag_medias, get_timeline_users, get_hashtag_users
 from .bot_get import get_media_commenters, get_userid_from_username, get_username_from_userid
-from .bot_get import get_user_followers, get_user_following, get_media_likers, get_popular_medias, crawl_user_followers
+from .bot_get import crawl_other_user_followers, get_user_following, get_media_likers, get_popular_medias, crawl_user_followers
 from .bot_get import get_media_comments, get_geotag_users, get_locations_from_coordinates, convert_to_user_id
 from .bot_get import get_comment, get_media_info, get_user_likers, get_archived_medias, get_total_user_medias
 
@@ -276,8 +276,8 @@ class Bot(API):
     def get_user_info(self, user_id):
         return get_user_info(self, user_id)
 
-    def get_user_followers(self, user_object, amount=None, next_max_id=None):
-        return get_user_followers(self, user_object, amount, next_max_id)
+    def crawl_other_user_followers(self, userObject, amount=None):
+        return crawl_other_user_followers(self, userObject, amount)
 
     def crawl_user_followers(self, amount=1500):
         return crawl_user_followers(self, amount)
