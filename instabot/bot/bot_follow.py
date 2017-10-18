@@ -22,9 +22,9 @@ def follow(self, user):
 
 
 def follow_users_by_location(self, locationObject, amount):
-    self.logger.info("Going to follow %s users from location %s." % (amount, locationObject['name']))
+    self.logger.info("Going to follow %s users from location %s." % (amount, locationObject['location']))
 
-    medias = self.getLocationFeed(locationObject['id'],amount)
+    medias = self.getLocationFeed(locationObject['id_location'],amount)
 
     users = []
 
@@ -38,7 +38,7 @@ def follow_users_by_location(self, locationObject, amount):
         users.append(user)
 
     bot_operation = 'follow_users_by_location'
-    return self.follow_users(users[:amount], bot_operation, locationObject['name'])
+    return self.follow_users(users[:amount], bot_operation, locationObject['location'])
 
 def follow_users_by_hashtag(self,hashtag,amount):
     feed = self.getHashtagFeed(hashtag, amount)

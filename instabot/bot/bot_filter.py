@@ -144,14 +144,6 @@ def check_user(self, user, filter_closed_acc=False):
             self.logger.info(
                 '\n\033[91m SKIPPING: user_info["following_count"] < self.min_following_to_follow , Skipping %s vs %s \033[0m' % (user_info['following_count'], self.min_following_to_follow))
             return False
-        try:
-            if user_info["following_count"] / user_info["follower_count"] > self.max_following_to_followers_ratio:
-                self.logger.info(
-                    '\n\033[91m ["following_count"] / ["follower_count"] > self.max_following_to_followers_ratio , Skipping \033[0m')
-                return False
-        except ZeroDivisionError:
-            self.logger.info('!!! Exxxcept ZeroDivisionError !!! ')
-            return False
 
     if 'media_count' in user_info:
         if user_info["media_count"] < self.min_media_count_to_follow:
@@ -159,10 +151,10 @@ def check_user(self, user, filter_closed_acc=False):
             self.logger.info('SKIPPING: user_info["media_count"] < self.min_media_count_to_follow , BOT or InActive , Skipping %s vs %s' % (user_info['media_count'], self.min_media_count_to_follow))
             return False  # bot or inactive user
 
-    if search_stop_words_in_user(self, user_info):
+    #if search_stop_words_in_user(self, user_info):
         # Log to Console
-        self.logger.info('\n\033[91m search_stop_words_in_user , Skipping \033[0m')
-        return False
+    #    self.logger.info('\n\033[91m search_stop_words_in_user , Skipping \033[0m')
+    #    return False
 
     return True
 
