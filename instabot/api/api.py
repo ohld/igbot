@@ -152,9 +152,10 @@ class API(object):
             self.LastJson = json.loads(response.text)
             return True
         else:
-
+          
             self.logger.warning("Request return " +
                                 str(response.status_code) + " error!")
+            self.logger.warning("HTTP ERROR: " + response.test)
             if response.status_code == 429:
                 sleep_minutes = 5
                 self.logger.warning("That means 'too many requests'. "
@@ -483,12 +484,11 @@ class API(object):
 
             for item in temp["items"]:
                 feed.append(item)
-            if "more_available" not in temp or temp["more_available"] is False:
-                return feed
 
             if "next_max_id" in temp:
                 next_max_id = temp["next_max_id"]
             else:
+                self.logger.info('Next max id is empty, going to return !')
                 self.logger.info("Retrieved %s medias from location %s" % (len(feed),locationId))
                 return feed
 

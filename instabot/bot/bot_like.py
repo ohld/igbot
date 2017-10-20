@@ -80,6 +80,10 @@ def like_own_followers(self, likesAmount=100):
         self.web_application_id_user)
 
     self.logger.info('Total followers in databasse : %s', totalFollowersResult['total_followers'])
+    if totalFollowersResult['total_followers']<batchSize:
+      self.logger.info("There are not enough followers in database to perform %s likes. Going to perform %s likes. " % (batchSize, totalFollowersResult['total_followers']))
+      batchSize=totalFollowersResult['total_followers']
+      
     sqlLimitFromWhere = randint(0, (totalFollowersResult['total_followers'] - batchSize))
 
    
@@ -136,12 +140,7 @@ def like_own_followers(self, likesAmount=100):
     return totalLiked
 
 
-# this function is used to decide if the follower worth liking
-def check_if_own_follower_is_valid(self, follower):
-    self.logger.info('Going to check user: %s if worth liking/following ' % follower['full_name'])
 
-    exit()
-    return True
 
 
 def like_users(self, user_ids, nlikes=None, filtration=True):

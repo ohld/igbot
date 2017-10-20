@@ -7,6 +7,8 @@ import json
 from instabot import Bot
 from instabot.api import api_db
 from random import randint
+import traceback
+
 
 stdout = sys.stdout
 sys.stdout = codecs.getwriter('utf8')(sys.stdout)
@@ -191,49 +193,54 @@ bot = Bot(
     comment_delay=60,  # default 60
     )
 
-id_campaign = args.id_campaign
+try:
+  id_campaign = args.id_campaign
 
-campaign = api_db.fetchOne("select username,password from campaign where id_campaign=%s", id_campaign)
+  campaign = api_db.fetchOne("select username,password from campaign where id_campaign=%s", id_campaign)
 
-bot.login(username=campaign['username'], password=campaign['password'])
+  bot.login(username=campaign['username'], password=campaign['password'])
 
-configs = api_db.select("SELECT configName,id_config FROM campaign_config where id_campaign=%s and enabled=1", id_campaign)
+  configs = api_db.select("SELECT configName,id_config FROM campaign_config where id_campaign=%s and enabled=1", id_campaign)
 
-groupedOperations = getGroupedOperations(configs)
+  groupedOperations = getGroupedOperations(configs)
 
-availableOperations = groupedOperations[args.operation_type]
+  availableOperations = groupedOperations[args.operation_type]
 
-totalAmount = 0
-securityBreak = 0
+  totalAmount = 0
+  securityBreak = 0
 
-bot.logger.info("Generating random operations of type %s", args.operation_type)
+  bot.logger.info("Generating random operations of type %s", args.operation_type)
 
-while totalAmount < args.amount and securityBreak < 30:
-    if len(availableOperations) == 0:
-        bot.logger.info("DONE: No more available operations.")
-        break
+  while totalAmount < args.amount and securityBreak < 30:
+      if len(availableOperations) == 0:
+          bot.logger.info("DONE: No more available operations.")
+          break
 
-    opIndex = randint(0, (len(availableOperations) - 1))
+      opIndex = randint(0, (len(availableOperations) - 1))
 
-    if args.operation_type == "like":
-        actionsNumber = handleLikeOperation(bot, availableOperations, opIndex, args.amount)
-    elif args.operation_type == "follow":
-        actionsNumber = handleFollowOperations(bot, availableOperations, opIndex, args.amount)
+      if args.operation_type == "like":
+          actionsNumber = handleLikeOperation(bot, availableOperations, opIndex, (args.amount-totalAmount))
+      elif args.operation_type == "follow":
+          actionsNumber = handleFollowOperations(bot, availableOperations, opIndex, (args.amount-totalAmount))
 
-    else:
-        bot.logger.info("Invalid operation: %s", args.operation_type)
+      else:
+          bot.logger.info("Invalid operation: %s", args.operation_type)
 
-    totalAmount = totalAmount + actionsNumber
+      totalAmount = totalAmount + actionsNumber
 
-    securityBreak = securityBreak + 1
+      securityBreak = securityBreak + 1
 
+  bot.logger.info("DISPATCHER SUMMARY: Actual amount: %s, expected amount %s, securityBreak: %s" % (totalAmount, args.amount, securityBreak))
 
+  # for each user followed, another one is unfollowed
+  # todo: maybe this is not a good approach because user might want to unfollow without following
+  if args.operation_type == "follow":
+      totalUsersUnfollowed = bot.unfollowBotCreatedFollowings(amount=args.amount)
 
-# for each user followed, another one is unfollowed
-# todo: maybe this is not a good approach because user might want to unfollow without following
-if args.operation_type == "follow":
-    totalUsersUnfollowed = bot.unfollowBotCreatedFollowings(amount=args.amount)
+  bot.crawl_user_followers(amount=100)
 
-bot.crawl_user_followers(amount=1500)
-
-bot.logger.info("DONE dispatcher.py: Total bot actions %s", totalAmount)
+  bot.logger.info("DONE dispatcher.py: Total bot actions %s", totalAmount)
+except:
+  bot.logger.info("RUNTIME ERROR !")
+  exceptionDetail = traceback.format_exc()
+  bot.logger.info(exceptionDetail)
