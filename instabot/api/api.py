@@ -155,7 +155,7 @@ class API(object):
           
             self.logger.warning("Request return " +
                                 str(response.status_code) + " error!")
-            self.logger.warning("HTTP ERROR: " + response.test)
+            self.logger.warning("HTTP ERROR: " + response.text)
             if response.status_code == 429:
                 sleep_minutes = 5
                 self.logger.warning("That means 'too many requests'. "
