@@ -45,11 +45,17 @@ class API(object):
         self.total_requests = 0
 
     def initLogging(self,id_campaign):
+        filename = time.strftime("%d.%m.%Y") + ".log"
+
         if id_campaign==False:
             id_campaign="general"
+            filename="instabot.log"
+
         logs_folder = os.environ['INSTABOT_LOGS_PATH']
         campaign_folder = logs_folder + "/campaign/" + id_campaign
-        log_path = campaign_folder + "/instabot.log"
+
+
+        log_path = campaign_folder + "/"+filename
 
         if not os.path.exists(campaign_folder):
             os.makedirs(campaign_folder)
