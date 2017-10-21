@@ -18,7 +18,6 @@ def like(self, media_id):
 
 
 def like_medias(self, medias, bot_operation=None, bot_operation_value=None):
-    broken_items = []
     if len(medias) == 0:
         self.logger.info("Nothing to like.")
         return 0
@@ -26,19 +25,20 @@ def like_medias(self, medias, bot_operation=None, bot_operation_value=None):
     this_session_total_liked = 0
     for media in tqdm(medias):
         # if reaching the limit break
-        if not self.like(media['pk']):
-            delay.error_delay(self)
-            broken_items.append(media)
-            self.logger.info("ERROR: GOING TO BREAK ! COULD NOT LIKE A POST WITH ID: %s", media['pk'])
-            break
-        self.logger.info("Liked instagram post with id: %d :" % media['pk'])
+        if self.like(media['pk']):
+            self.logger.info("Liked instagram post with id: %d :" % media['pk'])
 
-        api_db.insertBotAction(self.id_campaign, self.web_application_id_user, media['user']['pk'],
-                               media['user']['full_name'], media['user']['username'],
-                               media['user']['profile_pic_url'], media['pk'],
-                               media['image_versions2']['candidates'][0]['url'],
-                               media['code'], bot_operation, bot_operation_value, self.id_log)
-        this_session_total_liked = this_session_total_liked + 1
+            api_db.insertBotAction(self.id_campaign, self.web_application_id_user, media['user']['pk'],
+                                   media['user']['full_name'], media['user']['username'],
+                                   media['user']['profile_pic_url'], media['pk'],
+                                   media['image_versions2']['candidates'][0]['url'],
+                                   media['code'], bot_operation, bot_operation_value, self.id_log)
+            this_session_total_liked = this_session_total_liked + 1
+        else:
+            # delay.error_delay(self)
+            # self.logger.info("ERROR: GOING TO BREAK ! COULD NOT LIKE A POST WITH ID: %s", media['pk'])
+            # break
+            self.logger.info("ERROR: COULD NOT LIKE POST WITH ID: %s . GOING TO CONTINUE...", media['pk'])
 
     self.logger.info("DONE: Total liked in this session %d medias." % this_session_total_liked)
     self.logger.info("DONE: Total liked %d medias." % self.total_liked)

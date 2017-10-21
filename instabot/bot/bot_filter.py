@@ -118,7 +118,7 @@ def filter_users(self, user_id_list):
 def check_user(self, user, filter_closed_acc=False):
     user_id = user['instagram_id_user']
 
-    self.logger.info("Going to check user %s id: %s if worth liking/following", user['full_name'], user_id)
+    #self.logger.info("Going to check user %s id: %s if worth liking/following", user['full_name'], user_id)
 
     # delay.small_delay(self)
 
@@ -131,9 +131,20 @@ def check_user(self, user, filter_closed_acc=False):
         self.logger.info('Error: Could not retrieve user info , Skipping')
         return False
 
-    self.logger.info('USER_NAME: %s , FOLLOWER: %s , FOLLOWING: %s  MEDIA %s' % (user_info[
-                                                                            "username"], user_info["follower_count"],
-                                                                        user_info["following_count"], user_info['media_count']))
+    #self.logger.info('USER_NAME: %s , FOLLOWER: %s , FOLLOWING: %s  MEDIA %s' % (user_info[
+    #                                                                        "username"], user_info["follower_count"],
+    #                                                                    user_info["following_count"], user_info['media_count']))
+
+    #print('\n USER_NAME: %s , FOLLOWER: %s , FOLLOWING: %s ' % (user_info[
+    #                                                                "username"], user_info["follower_count"],
+    #                                                            user_info["following_count"]))  # Log to Console
+
+    #skip private user
+    if "is_private" in user_info:
+        if user_info["is_private"]:
+            self.logger.info('USER IS PRIVATE')
+            return False
+
     if "follower_count" in user_info:
         if user_info["follower_count"] < self.min_followers_to_follow:
             self.logger.info('SKIPPING: user_info["follower_count"] < self.min_followers_to_follow , Skipping %s vs %s' % (user_info["follower_count"], self.min_followers_to_follow))
@@ -141,8 +152,7 @@ def check_user(self, user, filter_closed_acc=False):
 
     if "following_count" in user_info:
         if user_info["following_count"] < self.min_following_to_follow:
-            self.logger.info(
-                '\n\033[91m SKIPPING: user_info["following_count"] < self.min_following_to_follow , Skipping %s vs %s \033[0m' % (user_info['following_count'], self.min_following_to_follow))
+            self.logger.info('\n\033[91m SKIPPING: user_info["following_count"] < self.min_following_to_follow , Skipping %s vs %s \033[0m' % (user_info['following_count'], self.min_following_to_follow))
             return False
 
     if 'media_count' in user_info:

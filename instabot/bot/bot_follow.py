@@ -65,7 +65,7 @@ def follow_other_users_followers(self,userObject,amount):
 
     self.logger.info('Total followers in  database: %s', totalFollowersResult['total_followers'])
     
-    batchSize=amount*3;
+    batchSize=amount*3
 
     self.logger.info('Getting followers from DATABASE limit %s' % ( batchSize))
     query="select iuf.*, id_campaign from instagram_user_followers iuf " \

@@ -152,11 +152,25 @@ class API(object):
             self.LastJson = json.loads(response.text)
             return True
         else:
-          
-            self.logger.warning("Request return " +
-                                str(response.status_code) + " error!")
-            self.logger.warning("HTTP ERROR: " + response.text)
-            if response.status_code == 429:
+
+            if response.status_code != 404:
+                self.logger.warning("HTTP ERROR: STATUS %s , BODY: %s " % (str(response.status_code), response.text))
+            else:
+                self.logger.warning("HTTP ERROR: STATUS %s" % (str(response.status_code)))
+
+            self.logger.info("REQUEST ERROR: %s: ",config.API_URL + endpoint)
+
+            if response.status_code == 400:
+                response = json.loads(response.text)
+                if 'spam' in response:
+                    self.logger.info('SPAM IS IN RESPONSE %s',response)
+                else:
+                    self.logger.info('SPAM IS NOT IN RESPONSE %s', response)
+                sleep_minutes = 10
+                self.logger.warning("BOT IS BLOCKED, going to sleep %s minutes" % sleep_minutes)
+                time.sleep(sleep_minutes * 60)
+
+            elif response.status_code == 429:
                 sleep_minutes = 5
                 self.logger.warning("That means 'too many requests'. "
                                     "I'll go to sleep for %d minutes." % sleep_minutes)

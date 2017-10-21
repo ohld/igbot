@@ -51,6 +51,8 @@ def get_user_medias(self, user_id, filtration=True, is_comment=False):
     if self.LastJson["status"] == 'fail':
         self.logger.warning("This is a closed account.")
         return []
+    if 'items'not in self.LastJson:
+        return []
     return self.filter_medias(self.LastJson["items"], filtration, is_comment=is_comment)
 
 
