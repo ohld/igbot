@@ -64,7 +64,7 @@ def handleLikeOperation(bot, availableOperations, opIndex, amount):
 
     if 'like_timeline' in availableOperations[opIndex]['configName']:
         bot.logger.info("Bot operation: %s, amount %s", 'like_timeline', amount)
-        totalAmount = totalAmount + bot.like_timeline(args.amount)
+        totalAmount = totalAmount + bot.like_timeline(amount)
         del availableOperations[opIndex]
     elif 'like_other_users_followers' in availableOperations[opIndex]['configName']:
         if len(availableOperations[opIndex]['list']) == 0:
@@ -90,7 +90,7 @@ def handleLikeOperation(bot, availableOperations, opIndex, amount):
         hashtagObject = availableOperations[opIndex]['list'][hashtagIndex]
 
         bot.logger.info("Bot operation: %s, hashtag: %s, amount %s", 'like_posts_by_hashtag', hashtagObject['hashtag'], amount)
-        totalAmount = totalAmount + bot.like_hashtag(hashtagObject['hashtag'], args.amount)
+        totalAmount = totalAmount + bot.like_hashtag(hashtagObject['hashtag'], amount)
         # remove the hastagh to no use it again his session
         del availableOperations[opIndex]['list'][hashtagIndex]
 
@@ -108,12 +108,12 @@ def handleLikeOperation(bot, availableOperations, opIndex, amount):
 
         bot.logger.info("Bot operation: %s,  location: %s, amount %s", 'like_posts_by_location', locationObject['location'], amount)
 
-        totalAmount = totalAmount + bot.like_posts_by_location(locationObject, args.amount)
+        totalAmount = totalAmount + bot.like_posts_by_location(locationObject, amount)
 
         del availableOperations[opIndex]['list'][locationIndex]
     elif 'like_own_followers' in availableOperations[opIndex]['configName']:
         bot.logger.info("Bot operation: %s, amount %s", 'like_own_followers', amount)
-        totalAmount = totalAmount + bot.like_own_followers(args.amount)
+        totalAmount = totalAmount + bot.like_own_followers(amount)
         del availableOperations[opIndex]
     else:
         bot.logger.info("Invalid operation %s", availableOperations[opIndex]['configName'])
@@ -134,7 +134,7 @@ def handleFollowOperations(bot, availableOperations, opIndex, amount):
         hashtagObject = availableOperations[opIndex]['list'][hashtagIndex]
         bot.logger.info("Bot operation: %s, hashtag: %s, amount %s", 'follow_users_by_hashtag', hashtagObject['hashtag'], amount)
 
-        totalAmount = totalAmount + bot.follow_users_by_hashtag(hashtag=hashtagObject['hashtag'], amount=args.amount)
+        totalAmount = totalAmount + bot.follow_users_by_hashtag(hashtag=hashtagObject['hashtag'], amount=amount)
         # remove the hastagh to no use it again in this session
         del availableOperations[opIndex]['list'][hashtagIndex]
 
@@ -149,7 +149,7 @@ def handleFollowOperations(bot, availableOperations, opIndex, amount):
 
         bot.logger.info("Bot operation: %s, location: %s, amount %s", 'follow_users_by_location', locationObject['location'], amount)
 
-        totalAmount = totalAmount + bot.follow_users_by_location(locationObject, args.amount)
+        totalAmount = totalAmount + bot.follow_users_by_location(locationObject, amount)
 
         del availableOperations[opIndex]['list'][locationIndex]
         
@@ -212,11 +212,13 @@ try:
   bot.logger.info("Generating random operations of type %s", args.operation_type)
 
   while totalAmount < args.amount and securityBreak < 30:
+
       if len(availableOperations) == 0:
           bot.logger.info("DONE: No more available operations.")
           break
 
       opIndex = randint(0, (len(availableOperations) - 1))
+      bot.logger.info('Generated new operation of type: %s . Actual amount %s, expected amount %s' % (availableOperations[opIndex]['configName'], totalAmount, args.amount))
 
       if args.operation_type == "like":
           actionsNumber = handleLikeOperation(bot, availableOperations, opIndex, (args.amount-totalAmount))
