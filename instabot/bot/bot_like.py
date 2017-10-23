@@ -6,6 +6,7 @@ from random import randint
 import time
 import json
 
+#todo ignore if own media
 def like(self, media_id):
     if limits.check_if_bot_can_like(self):
         delay.like_delay(self)

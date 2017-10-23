@@ -1,9 +1,11 @@
 import datetime
 import atexit
 import signal
+import math
 
 from ..api import API
 from ..api import api_db
+from random import randint
 
 from .bot_get import get_media_owner, get_your_medias, get_user_medias
 from .bot_get import get_timeline_medias, get_hashtag_medias, get_user_info, get_location_medias
@@ -44,6 +46,7 @@ from .bot_support import add_whitelist, add_blacklist
 
 from .bot_stats import save_user_stats
 
+from .bot_util import  getBotOperations,getOperationsAmount
 
 class Bot(API):
     def __init__(self,
@@ -504,3 +507,79 @@ class Bot(API):
 
     def save_user_stats(self, username, path=""):
         return save_user_stats(self, username, path=path)
+
+    def getBotOperations(self, id_campaign):
+        return getBotOperations(self, id_campaign)
+
+    def getOperationsAmount(self,id_campaign):
+        return getOperationsAmount(self,id_campaign)
+
+    def start(self, likesAmount, followAmount, operations):
+        result = {}
+        result['no_likes'] = 0
+        result['no_follows'] = 0
+
+        self.logger.info("Going to loop through %s operations and execute them !" , len(operations))
+
+        for operation in operations:
+
+            if 'like_posts_by_hashtag' == operation['configName']:
+                if likesAmount <1:
+                    self.logger.info("Likes to perform 0, going to skip !")
+                    continue
+                performedPostsByHashtagLikes = 0
+                expectedPostsByHashtagLikes = int(math.ceil(math.ceil(operation['percentageAmount'] * likesAmount) / math.ceil(100)))
+
+                iteration = 0
+                securityBreak = 20
+
+                self.logger.info("Start bot operation: %s, percentage: %s , totalAmount: %s, totalToPerformAfterPecerntageApplied: %s" % ('like_posts_by_hashtag', operation['percentageAmount'], likesAmount, expectedPostsByHashtagLikes))
+
+
+                while iteration < securityBreak and performedPostsByHashtagLikes < expectedPostsByHashtagLikes:
+                    if len(operation['list']) == 0:
+                        self.logger.info(
+                            "No hashtag left for operation like_posts_by_hashtag, skipping this operation...")
+                        break
+
+
+                    hashtagIndex = randint(0, len(operation['list']) - 1)
+                    hashtagObject = operation['list'][hashtagIndex]
+
+                    self.logger.info("Iteration: %s, hashtag: %s, amount %s",iteration, hashtagObject['hashtag'], expectedPostsByHashtagLikes - performedPostsByHashtagLikes)
+                    performedPostsByHashtagLikes += self.like_hashtag(hashtagObject['hashtag'], expectedPostsByHashtagLikes - performedPostsByHashtagLikes)
+
+                    self.logger.info("End bot operation: %s, iteration: %s, hashtag: %s, expected: %s, actual:%s",
+                                    'like_posts_by_hashtag', iteration, hashtagObject['hashtag'],
+                                    expectedPostsByHashtagLikes, performedPostsByHashtagLikes)
+                    del operation['list'][hashtagIndex]
+                    iteration += 1
+
+                result['no_likes']=+ performedPostsByHashtagLikes
+
+            if 'like_posts_by_hashtag' == operation['configName']:
+                a=1
+
+            if 'like_other_users_followers' == operation['configName']:
+                a=2
+
+            if 'like_own_followers' == operation['configName']:
+                a=3
+
+            if 'like_posts_by_location' == operation['configName']:
+                a=4
+
+            #this one should have low percentage
+            if 'like_timeline' == operation['configName']:
+                a=4
+            if 'follow_other_users_followers' == operation['configName']:
+                a=5
+            if 'follow_users_by_hashtag' == operation['configName']:
+                a=6
+            if 'follow_users_by_location' == operation['configName']:
+                a=7
+            if 'unfollow' == operation['configName']:
+                a=7
+
+
+        return result
