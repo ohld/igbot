@@ -11,11 +11,13 @@ from .bot_get import get_media_owner, get_your_medias, get_user_medias
 from .bot_get import get_timeline_medias, get_hashtag_medias, get_user_info, get_location_medias
 from .bot_get import get_geotag_medias, get_timeline_users, get_hashtag_users
 from .bot_get import get_media_commenters, get_userid_from_username, get_username_from_userid
-from .bot_get import crawl_other_user_followers, get_user_following, get_media_likers, get_popular_medias, crawl_user_followers
+from .bot_get import crawl_other_user_followers, get_user_following, get_media_likers, get_popular_medias, \
+    crawl_user_followers
 from .bot_get import get_media_comments, get_geotag_users, get_locations_from_coordinates, convert_to_user_id
 from .bot_get import get_comment, get_media_info, get_user_likers, get_archived_medias, get_total_user_medias
 
-from .bot_like import like, like_medias, like_timeline, like_user, like_users, like_own_followers,like_other_users_followers
+from .bot_like import like, like_medias, like_timeline, like_user, like_users, like_own_followers, \
+    like_other_users_followers
 from .bot_like import like_hashtag, like_geotag, like_followers, like_following, like_posts_by_location
 
 from .bot_unlike import unlike, unlike_medias, unlike_user
@@ -24,7 +26,8 @@ from .bot_photo import download_photo, download_photos, upload_photo
 
 from .bot_video import upload_video
 
-from .bot_follow import follow, follow_users, follow_followers, follow_following, follow_users_by_location, follow_users_by_hashtag,follow_other_users_followers
+from .bot_follow import follow, follow_users, follow_followers, follow_following, follow_users_by_location, \
+    follow_users_by_hashtag, follow_other_users_followers
 
 from .bot_unfollow import unfollow, unfollow_users, unfollow_non_followers, unfollowBotCreatedFollowings
 from .bot_unfollow import unfollow_everyone, update_unfollow_file
@@ -46,7 +49,8 @@ from .bot_support import add_whitelist, add_blacklist
 
 from .bot_stats import save_user_stats
 
-from .bot_util import  getBotOperations,getOperationsAmount
+from .bot_util import getBotOperations, getOperationsAmount
+
 
 class Bot(API):
     def __init__(self,
@@ -80,7 +84,7 @@ class Bot(API):
                  comment_delay=60,
                  block_delay=30,
                  unblock_delay=30,
-                 stop_words=['sex', 'penis','fuck']):
+                 stop_words=['sex', 'penis', 'fuck']):
         super(self.__class__, self).__init__()
         self.initLogging(id_campaign)
 
@@ -322,7 +326,7 @@ class Bot(API):
 
     def like_user(self, userObject, bot_operation, bot_operation_value=None, amount=2, filtration=True):
         return like_user(self, userObject=userObject, bot_operation=bot_operation,
-                         bot_operation_value=bot_operation_value, amount=amount,filtration=filtration)
+                         bot_operation_value=bot_operation_value, amount=amount, filtration=filtration)
 
     def like_hashtag(self, hashtag, amount=None):
         return like_hashtag(self, hashtag, amount)
@@ -392,9 +396,9 @@ class Bot(API):
     def follow_users_by_location(self, locationObject, amount):
         return follow_users_by_location(self, locationObject=locationObject, amount=amount)
 
-    def follow_users_by_hashtag(self,hashtag,amount):
+    def follow_users_by_hashtag(self, hashtag, amount):
         return follow_users_by_hashtag(self, hashtag=hashtag, amount=amount)
-      
+
     def follow_other_users_followers(self, userObject, amount):
         return follow_other_users_followers(self, userObject, amount)
 
@@ -511,138 +515,299 @@ class Bot(API):
     def getBotOperations(self, id_campaign):
         return getBotOperations(self, id_campaign)
 
-    def getOperationsAmount(self,id_campaign):
-        return getOperationsAmount(self,id_campaign)
+    def getOperationsAmount(self, id_campaign):
+        return getOperationsAmount(self, id_campaign)
 
     def start(self, likesAmount, followAmount, operations):
         result = {}
         result['no_likes'] = 0
         result['no_follows'] = 0
 
-        self.logger.info("Going to loop through %s operations and execute them !" , len(operations))
+        self.logger.info("bot.start: Going to loop through %s operations and execute them !", len(operations))
 
         for operation in operations:
-            
+
             if 'like_own_followers' == operation['configName']:
-                if likesAmount <1:
-                    self.logger.info("Likes to perform 0, going to skip !")
+                if likesAmount < 1:
+                    self.logger.info("like_own_followers: Likes to perform 0, going to skip !")
                     continue
-                
-                performedLikes = 0
+
                 expectedLikes = int(math.ceil(math.ceil(operation['percentageAmount'] * likesAmount) / math.ceil(100)))
 
-                self.logger.info("Start bot operation: %s, percentage: %s , totalAmountOfLikes: %s, totalToPerformAfterPecerntageApplied: %s" % ('like_timeline', operation['percentageAmount'], likesAmount, expectedLikes))
-                performedLikes = totalAmount + bot.like_own_followers(expectedLikes)
-                
-                self.logger.info("End operation: %s, expected: %s, actual: %s" % ('like_own_followers', expectedLikes, performedLikes ))
-                
-                result['no_likes']=+ performedLikes
-                
+                self.logger.info(
+                    "like_own_followers: Start bot operation: %s, percentage: %s , totalAmountOfLikes: %s, totalToPerformAfterPecerntageApplied: %s" % (
+                        'like_own_followers', operation['percentageAmount'], likesAmount, expectedLikes))
+                performedLikes = self.like_own_followers(expectedLikes)
+
+                self.logger.info("like_own_followers: End operation: %s, expected: %s, performed: %s" % (
+                    'like_own_followers', expectedLikes, performedLikes))
+
+                result['no_likes'] = + performedLikes
+
             if 'like_timeline' == operation['configName']:
-                #maybe this check can be set globally for all likes operation type
-                if likesAmount <1:
-                    self.logger.info("Likes to perform 0, going to skip !")
+                # maybe this check can be set globally for all likes operation type
+                if likesAmount < 1:
+                    self.logger.info("like_timeline:Likes to perform 0, going to skip !")
                     continue
-                
-                performedLikes = 0
+
                 expectedLikes = int(math.ceil(math.ceil(operation['percentageAmount'] * likesAmount) / math.ceil(100)))
 
-                self.logger.info("Start bot operation: %s, percentage: %s , totalAmountOfLikes: %s, totalToPerformAfterPecerntageApplied: %s" % ('like_timeline', operation['percentageAmount'], likesAmount, expectedLikes))
-                performedLikes = totalAmount + bot.like_timeline(expectedLikes)
-                
-                self.logger.info("End operation: %s, expected: %s, actual: %s" % ('like_timeline', expectedLikes, performedLikes ))
-                
-                result['no_likes']=+ performedLikes
-                
-            #move this to a separate function
+                self.logger.info(
+                    "like_timeline: Start bot operation: %s, percentage: %s , totalAmountOfLikes: %s, totalToPerformAfterPecerntageApplied: %s" % (
+                        'like_timeline', operation['percentageAmount'], likesAmount, expectedLikes))
+                performedLikes = self.like_timeline(expectedLikes)
+
+                self.logger.info(
+                    "like_timeline: End operation: %s, expected: %s, performed: %s" % ('like_timeline', expectedLikes, performedLikes))
+
+                result['no_likes'] = + performedLikes
+
             if 'like_posts_by_hashtag' == operation['configName']:
-                if likesAmount <1:
-                    self.logger.info("Likes to perform 0, going to skip !")
+                if likesAmount < 1:
+                    self.logger.info("like_posts_by_hashtag: Likes to perform 0, going to skip !")
                     continue
-                performedPostsByHashtagLikes = 0
-                expectedPostsByHashtagLikes = int(math.ceil(math.ceil(operation['percentageAmount'] * likesAmount) / math.ceil(100)))
+                performedLikes = 0
+                expectedLikes = int(math.ceil(math.ceil(operation['percentageAmount'] * likesAmount) / math.ceil(100)))
 
                 iteration = 0
-                securityBreak = 30
+                securityBreak = 40
 
-                self.logger.info("Start bot operation: %s, percentage: %s , totalAmountOfLikes: %s, totalToPerformAfterPecerntageApplied: %s" % ('like_posts_by_hashtag', operation['percentageAmount'], likesAmount, expectedPostsByHashtagLikes))
+                self.logger.info(
+                    "like_posts_by_hashtag: Start bot operation: %s, percentage: %s , totalAmountOfLikes: %s, totalToPerformAfterPecerntageApplied: %s" % (
+                        'like_posts_by_hashtag', operation['percentageAmount'], likesAmount,
+                        expectedLikes))
 
-
-                while iteration < securityBreak and performedPostsByHashtagLikes < expectedPostsByHashtagLikes:
+                while iteration < securityBreak and performedLikes< expectedLikes:
                     if len(operation['list']) == 0:
                         self.logger.info(
-                            "No hashtag left for operation like_posts_by_hashtag, skipping this operation...")
+                            "like_posts_by_hashtag: No hashtag left for operation like_posts_by_hashtag, skipping this operation...")
                         break
-
 
                     hashtagIndex = randint(0, len(operation['list']) - 1)
                     hashtagObject = operation['list'][hashtagIndex]
 
-                    self.logger.info("Iteration: %s, hashtag: %s, amountToPerform %s, initialAmount: %s ",iteration, hashtagObject['hashtag'], expectedPostsByHashtagLikes - performedPostsByHashtagLikes, expectedPostsByHashtagLikes)
-                    performedPostsByHashtagLikes += self.like_hashtag(hashtagObject['hashtag'], expectedPostsByHashtagLikes - performedPostsByHashtagLikes)
+                    self.logger.info("like_posts_by_hashtag: Iteration: %s, hashtag: %s, amountToPerform %s, initialAmount: %s ", iteration,
+                                     hashtagObject['hashtag'],expectedLikes - performedLikes,expectedLikes)
+                    performedLikes += self.like_hashtag(hashtagObject['hashtag'],expectedLikes- performedLikes)
 
-                    self.logger.info("End iteration of operation: %s, iteration: %s, hashtag: %s, expected: %s, actual:%s",
-                                    'like_posts_by_hashtag', iteration, hashtagObject['hashtag'],
-                                    expectedPostsByHashtagLikes, performedPostsByHashtagLikes)
+                    self.logger.info(
+                        "like_posts_by_hashtag: End  iteration: %s, hashtag: %s, expected: %s, actual:%s",
+                        iteration, hashtagObject['hashtag'],expectedLikes, performedLikes)
                     del operation['list'][hashtagIndex]
                     iteration += 1
-                self.logger.info("End bot operation %s ","like_posts_by_hashtag")
-                
-                result['no_likes']=+ performedPostsByHashtagLikes
+                self.logger.info("like_posts_by_hashtag: End bot operation %s ", "like_posts_by_hashtag")
 
-            
+                result['no_likes'] = + performedLikes
 
             if 'like_other_users_followers' == operation['configName']:
-                a=2
-
-            if 'like_posts_by_location' == operation['configName']:
-                 ##TODO double check this
-                if likesAmount <1:
-                    self.logger.info("Likes to perform 0, going to skip !")
+                if likesAmount < 1:
+                    self.logger.info("like_other_users_followers: Likes to perform 0, going to skip !")
                     continue
-                performedPostsByLocationLikes = 0
-                expectedPostsByLocationLikes = int(math.ceil(math.ceil(operation['percentageAmount'] * likesAmount) / math.ceil(100)))
+                performedLikes = 0
+                expectedLikes = int(math.ceil(math.ceil(operation['percentageAmount'] * likesAmount) / math.ceil(100)))
 
                 iteration = 0
-                securityBreak = 30
+                securityBreak = 40
 
-                self.logger.info("Start bot operation: %s, percentage: %s , totalAmountOfLikes: %s, totalToPerformAfterPecerntageApplied: %s" % ('like_posts_by_location', operation['percentageAmount'], likesAmount, expectedPostsByLocationLikes))
+                self.logger.info(
+                    "like_other_users_followers: Start bot operation: %s, percentage: %s , totalAmountOfLikes: %s, totalToPerformAfterPecerntageApplied: %s" % (
+                        'like_other_users_followers', operation['percentageAmount'], likesAmount, expectedLikes))
 
-
-                while iteration < securityBreak and performedPostsByLocationLikes < expectedPostsByLocationLikes:
+                while iteration < securityBreak and performedLikes < expectedLikes:
                     if len(operation['list']) == 0:
                         self.logger.info(
-                            "No hashtag left for operation like_posts_by_location, skipping this operation...")
+                            "like_other_users_followers: No users left for operation like_other_users_followers, skipping this operation...")
                         break
 
+                    index = randint(0, len(operation['list']) - 1)
+                    userObject = operation['list'][index]
+
+                    self.logger.info(
+                        "like_other_users_followers: Iteration: %s, user: %s, amountToPerform in this iteration:  %s, initialAmount: %s ",
+                        iteration, userObject['username'], expectedLikes - performedLikes, expectedLikes)
+
+                    performedLikes += self.like_other_users_followers(userObject, expectedLikes - performedLikes)
+
+                    self.logger.info("%s: iteration: %s, user: %s, expected: %s, actual:%s",
+                                     'like_other_users_followers', iteration, userObject['username'], expectedLikes,
+                                     performedLikes)
+                    del operation['list'][index]
+                    iteration += 1
+                self.logger.info("like_other_users_followers: End bot operation %s ")
+
+                result['no_likes'] = + performedLikes
+
+            if 'like_posts_by_location' == operation['configName']:
+                if likesAmount < 1:
+                    self.logger.info("like_posts_by_location: Likes to perform 0, going to skip !")
+                    continue
+                performedLikes = 0
+                expectedLikes = int(math.ceil(math.ceil(operation['percentageAmount'] * likesAmount) / math.ceil(100)))
+
+                iteration = 0
+                securityBreak = 40
+
+                self.logger.info(
+                    "like_posts_by_location: Start bot operation: %s, percentage: %s , totalAmountOfLikes: %s, totalToPerformAfterPecerntageApplied: %s" % (
+                        'like_posts_by_location', operation['percentageAmount'], likesAmount, expectedLikes))
+
+                while iteration < securityBreak and performedLikes < expectedLikes:
+                    if len(operation['list']) == 0:
+                        self.logger.info(
+                            "like_posts_by_location: No location left for operation like_posts_by_location, skipping this operation...")
+                        break
 
                     locationIndex = randint(0, len(operation['list']) - 1)
                     locationObject = operation['list'][locationIndex]
 
-                    self.logger.info("Iteration: %s, location: %s, amountToPerform this iteration:  %s, initialAmount: %s ",iteration, locationObject['location'], expectedPostsByLocationLikes - performedPostsByLocationLikes, expectedPostsByHashtagLikes)
-                   
-                    performedPostsByLocationLikes += self.like_posts_by_location(locationObject, expectedPostsByLocationLikes - performedPostsByLocationLikes)
+                    self.logger.info(
+                        "like_posts_by_location: Iteration: %s, location: %s, amountToPerform in this iteration:  %s, initialAmount: %s ",
+                        iteration, locationObject['location'], expectedLikes - performedLikes, expectedLikes)
 
-                    self.logger.info("End iteration of operation: %s, iteration: %s, location: %s, expected: %s, actual:%s",
-                                    'like_posts_by_location', iteration, locationObject['location'],
-                                    expectedPostsByLocationLikes, performedPostsByLocationLikes)
+                    performedLikes += self.like_posts_by_location(locationObject, expectedLikes - performedLikes)
+
+                    self.logger.info("%s: iteration: %s, location: %s, expected: %s, actual:%s",
+                                     'LIKE_POSTS_BY_LOCATION', iteration, locationObject['location'], expectedLikes,
+                                     performedLikes)
                     del operation['list'][locationIndex]
                     iteration += 1
-                self.logger.info("End bot operation %s ","like_posts_by_location")
-                
-                result['no_likes']=+ performedPostsByHashtagLikes
+                self.logger.info("like_posts_by_location: End bot operation %s ", "like_posts_by_location")
 
-            #this one should have low percentage
-            if 'like_timeline' == operation['configName']:
-                a=4
-            if 'follow_other_users_followers' == operation['configName']:
-                a=5
+                result['no_likes'] = + performedLikes
+
             if 'follow_users_by_hashtag' == operation['configName']:
-                a=6
-            if 'follow_users_by_location' == operation['configName']:
-                a=7
-            if 'unfollow' == operation['configName']:
-                a=7
+                if followAmount < 1:
+                    self.logger.info("Follows to perform 0, going to skip !")
+                    continue
+                performedFollow = 0
+                expectedFollow = int(math.ceil(math.ceil(operation['percentageAmount'] * followAmount) / math.ceil(100)))
 
+                iteration = 0
+                securityBreak = 30
+
+                self.logger.info(
+                    "follow_users_by_hashtag: Start bot operation: %s, percentage: %s , totalFollowToPerform: %s, totalToPerformAfterPecerntageApplied: %s" % (
+                        'follow_users_by_hashtag', operation['percentageAmount'], followAmount, expectedFollow))
+
+                while iteration < securityBreak and performedFollow < expectedFollow:
+                    if len(operation['list']) == 0:
+                        self.logger.info(
+                            "follow_users_by_hashtag: No hashtags left for operation follow_users_by_hashtag, skipping this operation...")
+                        break
+
+                    index = randint(0, len(operation['list']) - 1)
+                    hashtagObject = operation['list'][index]
+
+                    self.logger.info(
+                        "follow_users_by_hashtag: Iteration: %s, hashtag: %s, amountToPerform in this iteration:  %s, initialAmount: %s ",
+                        iteration, hashtagObject['hashtag'], expectedFollow - performedFollow, expectedFollow)
+
+                    performedFollow += self.follow_users_by_hashtag(hashtag=hashtagObject['hashtag'],
+                                                                    amount=expectedFollow - performedFollow)
+
+                    self.logger.info("%s: iteration: %s, hashtag: %s, expected: %s, actual:%s",
+                                     'follow_users_by_hashtag', iteration, hashtagObject['hashtag'], expectedFollow,
+                                     performedFollow)
+                    del operation['list'][index]
+                    iteration += 1
+                self.logger.info("follow_users_by_hashtag: End bot operation %s ", "follow_users_by_hashtag")
+
+                result['no_follows'] = + performedFollow
+
+            if 'follow_users_by_location' == operation['configName']:
+                if followAmount < 1:
+                    self.logger.info("follow_users_by_location: Follows to perform 0, going to skip !")
+                    continue
+
+                performedFollow = 0
+                expectedFollow = int(math.ceil(math.ceil(operation['percentageAmount'] * followAmount) / math.ceil(100)))
+
+                iteration = 0
+                securityBreak = 30
+
+                self.logger.info(
+                    "follow_users_by_location: Start bot operation: %s, percentage: %s , totalFollowToPerform: %s, totalToPerformAfterPecerntageApplied: %s" % (
+                        'follow_users_by_location', operation['percentageAmount'], followAmount, expectedFollow))
+
+                while iteration < securityBreak and performedFollow < expectedFollow:
+                    if len(operation['list']) == 0:
+                        self.logger.info(
+                            "follow_users_by_location: No location left for operation follow_users_by_location, skipping this operation...")
+                        break
+
+                    index = randint(0, len(operation['list']) - 1)
+                    locationObject = operation['list'][index]
+
+                    self.logger.info(
+                        "follow_users_by_location: Iteration: %s, location: %s, amountToPerform in this iteration:  %s, initialAmount: %s ",
+                        iteration, locationObject['location'], expectedFollow - performedFollow, expectedFollow)
+
+                    performedFollow += self.follow_users_by_location(locationObject=locationObject,amount=expectedFollow - performedFollow)
+
+                    self.logger.info("%s: iteration: %s, location: %s, expected: %s, actual:%s",
+                                     'follow_users_by_location', iteration, locationObject['location'], expectedFollow,
+                                     performedFollow)
+                    del operation['list'][index]
+                    iteration += 1
+                self.logger.info("follow_users_by_location: End bot operation %s ", "follow_users_by_location")
+
+                result['no_follows'] = + performedFollow
+
+            if 'follow_other_users_followers' == operation['configName']:
+                if followAmount < 1:
+                    self.logger.info("follow_other_users_followers: Follows to perform 0, going to skip !")
+                    continue
+
+                performedFollow = 0
+                expectedFollow = int(
+                    math.ceil(math.ceil(operation['percentageAmount'] * followAmount) / math.ceil(100)))
+
+                iteration = 0
+                securityBreak = 30
+
+                self.logger.info(
+                    "follow_other_users_followers: Start bot operation: %s, percentage: %s , totalFollowToPerform: %s, totalToPerformAfterPecerntageApplied: %s" % (
+                        'follow_other_users_followers', operation['percentageAmount'], followAmount, expectedFollow))
+
+                while iteration < securityBreak and performedFollow < expectedFollow:
+                    if len(operation['list']) == 0:
+                        self.logger.info(
+                            "follow_other_users_followers: No users left for operation follow_other_users_followers, skipping this operation...")
+                        break
+
+                    index = randint(0, len(operation['list']) - 1)
+                    userObject = operation['list'][index]
+
+                    self.logger.info(
+                        "follow_other_users_followers: Iteration: %s, user: %s, amountToPerform in this iteration:  %s, initialAmount: %s ",
+                        iteration, userObject['username'], expectedFollow - performedFollow, expectedFollow)
+
+                    performedFollow += self.follow_other_users_followers(userObject=userObject, amount=expectedFollow-performedFollow)
+
+                    self.logger.info("%s: iteration: %s, user: %s, expected: %s, actual:%s",
+                                     'follow_other_users_followers', iteration, locationObject['location'], expectedFollow,
+                                     performedFollow)
+                    del operation['list'][index]
+                    iteration += 1
+                self.logger.info("follow_other_users_followers: End bot operation %s ", "follow_other_users_followers")
+
+                result['no_follows'] = + performedFollow
+
+            if 'unfollow' == operation['configName']:
+
+                if followAmount < 1:
+                    self.logger.info("unfollow: Unfollow to perform 0, going to skip !")
+                    continue
+
+                expectedFollow = int(math.ceil(math.ceil(operation['percentageAmount'] * followAmount) / math.ceil(100)))
+
+                self.logger.info(
+                    "unfollow: Start bot operation: %s, percentage: %s , totalUNFOLLOWToPerform: %s, totalToPerformAfterPecerntageApplied: %s" % (
+                        'unfollow', operation['percentageAmount'], followAmount, expectedFollow))
+                performedFollow = self.unfollowBotCreatedFollowings(amount=expectedFollow)
+
+                self.logger.info("unfollow: End operation: %s, expected: %s, actual: %s" % ('unfollow', expectedFollow, performedFollow))
+
+                result['no_follows'] = + performedLikes
 
         return result

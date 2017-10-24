@@ -6,9 +6,6 @@ import codecs
 from instabot import Bot
 import traceback
 from instabot.api import api_db
-import math
-
-
 
 stdout = sys.stdout
 sys.stdout = codecs.getwriter('utf8')(sys.stdout)
@@ -106,11 +103,11 @@ try:
         currentIteration = currentIteration + 1
 
     bot.logger.info(
-        "DISPATCHER: BOT END. Summary: Last iteration %s, Likes performed %s Likes expected %s . Follows/Unfollow performed %s , Expected follow/unfollow %s ." % (currentIteration,  totalPerformedLikes, totalExpectedLikesAmount, totalPerformedFollows, totalExpectedFollowAmount))
+        "DISPATCHER: BOT END. Summary: Last iteration %s, Likes performed %s Likes expected %s . Follows/Unfollow performed %s , Expected follow/unfollow %s ." % (currentIteration-1,  totalPerformedLikes, totalExpectedLikesAmount, totalPerformedFollows, totalExpectedFollowAmount))
 
     #bot.crawl_user_followers(amount=100)
 except:
-  bot.logger.info("RUNTIME ERROR !")
+  bot.logger.info("FATAL ERROR !")
   exceptionDetail = traceback.format_exc()
   bot.logger.info(exceptionDetail)
 
