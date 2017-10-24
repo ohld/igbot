@@ -61,6 +61,8 @@ try:
 
     bot.logger.info("DISPATCHER: Started bot, going to perform %s likes, %s follow/unfollow during %s iterations" % (totalExpectedLikesAmount, totalExpectedFollowAmount, numberOfIterations))
 
+    #todo -> increase security break when done
+    
     # if we still have some likes or follow to perform
     while (totalPerformedLikes < totalExpectedLikesAmount or totalPerformedFollows < totalExpectedFollowAmount) and currentIteration < securityBreak:
         #if no more likes needed to perform

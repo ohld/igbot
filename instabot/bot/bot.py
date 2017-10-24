@@ -522,7 +522,39 @@ class Bot(API):
         self.logger.info("Going to loop through %s operations and execute them !" , len(operations))
 
         for operation in operations:
+            
+            if 'like_own_followers' == operation['configName']:
+                if likesAmount <1:
+                    self.logger.info("Likes to perform 0, going to skip !")
+                    continue
+                
+                performedLikes = 0
+                expectedLikes = int(math.ceil(math.ceil(operation['percentageAmount'] * likesAmount) / math.ceil(100)))
 
+                self.logger.info("Start bot operation: %s, percentage: %s , totalAmountOfLikes: %s, totalToPerformAfterPecerntageApplied: %s" % ('like_timeline', operation['percentageAmount'], likesAmount, expectedLikes))
+                performedLikes = totalAmount + bot.like_own_followers(expectedLikes)
+                
+                self.logger.info("End operation: %s, expected: %s, actual: %s" % ('like_own_followers', expectedLikes, performedLikes ))
+                
+                result['no_likes']=+ performedLikes
+                
+            if 'like_timeline' == operation['configName']:
+                #maybe this check can be set globally for all likes operation type
+                if likesAmount <1:
+                    self.logger.info("Likes to perform 0, going to skip !")
+                    continue
+                
+                performedLikes = 0
+                expectedLikes = int(math.ceil(math.ceil(operation['percentageAmount'] * likesAmount) / math.ceil(100)))
+
+                self.logger.info("Start bot operation: %s, percentage: %s , totalAmountOfLikes: %s, totalToPerformAfterPecerntageApplied: %s" % ('like_timeline', operation['percentageAmount'], likesAmount, expectedLikes))
+                performedLikes = totalAmount + bot.like_timeline(expectedLikes)
+                
+                self.logger.info("End operation: %s, expected: %s, actual: %s" % ('like_timeline', expectedLikes, performedLikes ))
+                
+                result['no_likes']=+ performedLikes
+                
+            #move this to a separate function
             if 'like_posts_by_hashtag' == operation['configName']:
                 if likesAmount <1:
                     self.logger.info("Likes to perform 0, going to skip !")
@@ -531,9 +563,9 @@ class Bot(API):
                 expectedPostsByHashtagLikes = int(math.ceil(math.ceil(operation['percentageAmount'] * likesAmount) / math.ceil(100)))
 
                 iteration = 0
-                securityBreak = 20
+                securityBreak = 30
 
-                self.logger.info("Start bot operation: %s, percentage: %s , totalAmount: %s, totalToPerformAfterPecerntageApplied: %s" % ('like_posts_by_hashtag', operation['percentageAmount'], likesAmount, expectedPostsByHashtagLikes))
+                self.logger.info("Start bot operation: %s, percentage: %s , totalAmountOfLikes: %s, totalToPerformAfterPecerntageApplied: %s" % ('like_posts_by_hashtag', operation['percentageAmount'], likesAmount, expectedPostsByHashtagLikes))
 
 
                 while iteration < securityBreak and performedPostsByHashtagLikes < expectedPostsByHashtagLikes:
@@ -546,28 +578,59 @@ class Bot(API):
                     hashtagIndex = randint(0, len(operation['list']) - 1)
                     hashtagObject = operation['list'][hashtagIndex]
 
-                    self.logger.info("Iteration: %s, hashtag: %s, amount %s",iteration, hashtagObject['hashtag'], expectedPostsByHashtagLikes - performedPostsByHashtagLikes)
+                    self.logger.info("Iteration: %s, hashtag: %s, amountToPerform %s, initialAmount: %s ",iteration, hashtagObject['hashtag'], expectedPostsByHashtagLikes - performedPostsByHashtagLikes, expectedPostsByHashtagLikes)
                     performedPostsByHashtagLikes += self.like_hashtag(hashtagObject['hashtag'], expectedPostsByHashtagLikes - performedPostsByHashtagLikes)
 
-                    self.logger.info("End bot operation: %s, iteration: %s, hashtag: %s, expected: %s, actual:%s",
+                    self.logger.info("End iteration of operation: %s, iteration: %s, hashtag: %s, expected: %s, actual:%s",
                                     'like_posts_by_hashtag', iteration, hashtagObject['hashtag'],
                                     expectedPostsByHashtagLikes, performedPostsByHashtagLikes)
                     del operation['list'][hashtagIndex]
                     iteration += 1
-
+                self.logger.info("End bot operation %s ","like_posts_by_hashtag")
+                
                 result['no_likes']=+ performedPostsByHashtagLikes
 
-            if 'like_posts_by_hashtag' == operation['configName']:
-                a=1
+            
 
             if 'like_other_users_followers' == operation['configName']:
                 a=2
 
-            if 'like_own_followers' == operation['configName']:
-                a=3
-
             if 'like_posts_by_location' == operation['configName']:
-                a=4
+                 ##TODO double check this
+                if likesAmount <1:
+                    self.logger.info("Likes to perform 0, going to skip !")
+                    continue
+                performedPostsByLocationLikes = 0
+                expectedPostsByLocationLikes = int(math.ceil(math.ceil(operation['percentageAmount'] * likesAmount) / math.ceil(100)))
+
+                iteration = 0
+                securityBreak = 30
+
+                self.logger.info("Start bot operation: %s, percentage: %s , totalAmountOfLikes: %s, totalToPerformAfterPecerntageApplied: %s" % ('like_posts_by_location', operation['percentageAmount'], likesAmount, expectedPostsByLocationLikes))
+
+
+                while iteration < securityBreak and performedPostsByLocationLikes < expectedPostsByLocationLikes:
+                    if len(operation['list']) == 0:
+                        self.logger.info(
+                            "No hashtag left for operation like_posts_by_location, skipping this operation...")
+                        break
+
+
+                    locationIndex = randint(0, len(operation['list']) - 1)
+                    locationObject = operation['list'][locationIndex]
+
+                    self.logger.info("Iteration: %s, location: %s, amountToPerform this iteration:  %s, initialAmount: %s ",iteration, locationObject['location'], expectedPostsByLocationLikes - performedPostsByLocationLikes, expectedPostsByHashtagLikes)
+                   
+                    performedPostsByLocationLikes += self.like_posts_by_location(locationObject, expectedPostsByLocationLikes - performedPostsByLocationLikes)
+
+                    self.logger.info("End iteration of operation: %s, iteration: %s, location: %s, expected: %s, actual:%s",
+                                    'like_posts_by_location', iteration, locationObject['location'],
+                                    expectedPostsByLocationLikes, performedPostsByLocationLikes)
+                    del operation['list'][locationIndex]
+                    iteration += 1
+                self.logger.info("End bot operation %s ","like_posts_by_location")
+                
+                result['no_likes']=+ performedPostsByHashtagLikes
 
             #this one should have low percentage
             if 'like_timeline' == operation['configName']:
