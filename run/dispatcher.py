@@ -9,6 +9,7 @@ from instabot.api import api_db
 from random import randint
 import traceback
 
+exit(0);
 
 stdout = sys.stdout
 sys.stdout = codecs.getwriter('utf8')(sys.stdout)

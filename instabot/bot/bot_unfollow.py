@@ -36,7 +36,8 @@ def unfollowBotCreatedFollowings(self, amount):
             api_db.insert("update bot_action set bot_operation_reverted=%s where id=%s", lastBotAction, f['id'])
             totalUnfollow = totalUnfollow + 1
         else:
-            self.logger.info("Error: could not follow %s", f['instagram_id_user'])
+            self.logger.info("Error: could not follow %s. Going to disable this follower! ", f['instagram_id_user'])
+            api_db.insert("update bot_action set bot_operation_reverted=%s where id=%s", lastBotAction, f['id'])
         if totalUnfollow > amount:
             break
 
@@ -57,7 +58,6 @@ def getIfUserWantsToUnfollow(self):
 
 
 def unfollow(self, user_id):
-    user_id = self.convert_to_user_id(user_id)
     self.logger.info('Going to UN-Follow user_id: %s', user_id)
 
     if limits.check_if_bot_can_unfollow(self):

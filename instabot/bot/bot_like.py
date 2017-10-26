@@ -207,7 +207,7 @@ def like_other_users_followers(self, userObject, amount):
 
     self.logger.info('Going to like %s followers of user: %s' % (amount, userObject['username']))
 
-    self.crawl_other_user_followers(userObject=userObject, amount=1000)
+    self.crawl_other_user_followers(userObject=userObject, amount=500)
     
     totalFollowersResult = api_db.fetchOne("select count(*) as total_followers from instagram_user_followers  where fk=%s order by id asc", userObject['id'])
 

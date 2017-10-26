@@ -49,7 +49,7 @@ from .bot_support import add_whitelist, add_blacklist
 
 from .bot_stats import save_user_stats
 
-from .bot_util import getBotOperations, getOperationsAmount
+from .bot_util import getBotOperations, getFollowAmount, getLikeAmount
 
 
 class Bot(API):
@@ -514,6 +514,14 @@ class Bot(API):
 
     def getBotOperations(self, id_campaign):
         return getBotOperations(self, id_campaign)
+      
+    def getLikeAmount(self, id_campaign):
+        return getLikeAmount(self, id_campaign)
+      
+    def getFollowAmount(self, id_campaign):
+      return getFollowAmount(self, id_campaign)
+      
+     
 
     def getOperationsAmount(self, id_campaign):
         return getOperationsAmount(self, id_campaign)
@@ -524,7 +532,7 @@ class Bot(API):
         result['no_follows'] = 0
 
         self.logger.info("bot.start: Going to loop through %s operations and execute them !", len(operations))
-
+        #fix it
         for operation in operations:
 
             if 'like_own_followers' == operation['configName']:
@@ -808,6 +816,6 @@ class Bot(API):
 
                 self.logger.info("unfollow: End operation: %s, expected: %s, actual: %s" % ('unfollow', expectedFollow, performedFollow))
 
-                result['no_follows'] = + performedLikes
+                result['no_follows'] = + performedFollow
 
         return result

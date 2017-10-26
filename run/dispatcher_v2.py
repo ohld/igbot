@@ -6,10 +6,14 @@ import codecs
 from instabot import Bot
 import traceback
 from instabot.api import api_db
+import math
+
 
 stdout = sys.stdout
 sys.stdout = codecs.getwriter('utf8')(sys.stdout)
 sys.path.append(os.path.join(sys.path[0], '../'))
+
+
 
 parser = argparse.ArgumentParser(add_help=True)
 parser.add_argument('-id_campaign', type=str, help="id_campaign")
@@ -38,35 +42,33 @@ try:
         comment_delay=60,  # default 60
     )
 
-    # assume we trigger this operation 7 times/day
-    operationsAmount = bot.getOperationsAmount(args.id_campaign)
-    totalExpectedLikesAmount = operationsAmount['likes']
-    totalExpectedFollowAmount = operationsAmount['follows']
+    campaign = api_db.fetchOne("select username,password from campaign where id_campaign=%s", args.id_campaign)
+    bot.login(username=campaign['username'], password=campaign['password'])
+    
+    totalExpectedLikesAmount = bot.getLikeAmount(args.id_campaign)
+    totalExpectedFollowAmount = bot.getFollowAmount(args.id_campaign)
 
+    
+    #todo assume we trigger this operation 10 times/day
     numberOfIterations = 2
     currentIteration = 1
     unperformedLikes = 0
     unperformedFollows = 0
     totalPerformedLikes = 0
     totalPerformedFollows = 0
+    #todo -> increase security break when done
     securityBreak = 20
 
 
-    campaign = api_db.fetchOne("select username,password from campaign where id_campaign=%s", args.id_campaign)
-
-    bot.login(username=campaign['username'], password=campaign['password'])
-
     bot.logger.info("DISPATCHER: Started bot, going to perform %s likes, %s follow/unfollow during %s iterations" % (totalExpectedLikesAmount, totalExpectedFollowAmount, numberOfIterations))
 
-    #todo -> increase security break when done
-    
     # if we still have some likes or follow to perform
     while (totalPerformedLikes < totalExpectedLikesAmount or totalPerformedFollows < totalExpectedFollowAmount) and currentIteration < securityBreak:
         #if no more likes needed to perform
         if totalExpectedLikesAmount<=totalPerformedLikes:
             currentIterationLikesAmount=0
         else:
-            currentIterationLikesAmount = totalExpectedLikesAmount / numberOfIterations
+            currentIterationLikesAmount = int(math.ceil(math.ceil(totalExpectedLikesAmount) / math.ceil(numberOfIterations)))
 
         #if no more follows are needed
         if totalExpectedFollowAmount<=totalPerformedFollows:
@@ -98,7 +100,8 @@ try:
         bot.logger.info(
             "DISPATCHER: Overall total expected likes so far %s, actual likes %s, unperformed likes: %s , expected follows so far %s, actual follows %s, unperformedFollows: %s" % (expectedLikesSorFar, totalPerformedLikes, unperformedLikes, expectedFollowSorFar, totalPerformedFollows, unperformedFollows))
 
-        bot.logger.info("DISPATCHER:  Total Remained likes to perform %s, total remained follows to perform %s " % (totalExpectedLikesAmount - totalPerformedLikes, totalExpectedFollowAmount - totalPerformedFollows))
+        bot.logger.info("DISPATCHER: Total likes to perform: %s,  likes remained to perform: %s" % (totalExpectedLikesAmount, totalExpectedLikesAmount - totalPerformedLikes))
+        bot.logger.info("DISPATCHER: Total follow to perform: %s,  follow remained to perform: %s" % (totalExpectedFollowAmount, totalExpectedFollowAmount - totalPerformedFollows))
 
         currentIteration = currentIteration + 1
 

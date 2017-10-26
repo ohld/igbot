@@ -438,9 +438,23 @@ class API(object):
         return query
 
     def getUserFeed(self, usernameId, maxid='', minTimestamp=None):
+        self.logger.info("api: TODO: check if the items ar in order !.  Gettin user feed of user: %s" % (usernameId))
+        
         query = self.SendRequest(
             'feed/user/' + str(usernameId) + '/?max_id=' + str(maxid) + '&min_timestamp=' + str(minTimestamp) +
             '&rank_token=' + str(self.rank_token) + '&ranked_content=true')
+        
+        items=0
+        
+        if 'items' in self.LastJson:
+           items=len(self.LastJson['items'])
+        
+        self.logger.info("api: Received %s items from user %s feed" %(items, usernameId))
+        
+        sleep_time = randint(1, 3)
+        self.logger.info("api: Sleeping %s seconds" % sleep_time)
+        time.sleep(sleep_time)
+            
         return query
 
     def getSelfUserFeed(self, maxid='', minTimestamp=None):
