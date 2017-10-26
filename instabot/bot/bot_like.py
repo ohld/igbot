@@ -213,7 +213,7 @@ def like_other_users_followers(self, userObject, amount):
 
     self.logger.info('Total followers in  database: %s', totalFollowersResult['total_followers'])
     
-    batchSize=amount*3;
+    batchSize=amount*3
     sqlLimitFromWhere = randint(0, (totalFollowersResult['total_followers'] - batchSize))
 
     self.logger.info('Getting followers from DATABASE starting with offset: %s, limit %s' % ( sqlLimitFromWhere, batchSize))

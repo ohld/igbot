@@ -384,8 +384,8 @@ class Bot(API):
     def follow(self, user_id):
         return follow(self, user_id)
 
-    def follow_users(self, users, bot_operation, bo_operation_value):
-        return follow_users(self, users, bot_operation, bo_operation_value)
+    def follow_users(self, users, amount, bot_operation, bo_operation_value):
+        return follow_users(self, users, amount, bot_operation, bo_operation_value)
 
     def follow_followers(self, user_id, nfollows=None):
         return follow_followers(self, user_id, nfollows)
@@ -523,16 +523,15 @@ class Bot(API):
       
      
 
-    def getOperationsAmount(self, id_campaign):
-        return getOperationsAmount(self, id_campaign)
 
     def start(self, likesAmount, followAmount, operations):
+
         result = {}
         result['no_likes'] = 0
         result['no_follows'] = 0
 
         self.logger.info("bot.start: Going to loop through %s operations and execute them !", len(operations))
-        #fix it
+
         for operation in operations:
 
             if 'like_own_followers' == operation['configName']:
@@ -793,7 +792,7 @@ class Bot(API):
                     performedFollow += self.follow_other_users_followers(userObject=userObject, amount=expectedFollow-performedFollow)
 
                     self.logger.info("%s: iteration: %s, user: %s, expected: %s, actual:%s",
-                                     'follow_other_users_followers', iteration, locationObject['location'], expectedFollow,
+                                     'follow_other_users_followers', iteration, userObject['username'], expectedFollow,
                                      performedFollow)
                     del operation['list'][index]
                     iteration += 1

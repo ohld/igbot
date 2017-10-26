@@ -168,7 +168,6 @@ def crawl_other_user_followers(self, userObject, amount=100):
     
     user_id = self.get_userid_from_username(username=userObject['username'])
     
-    #maybe put this code in a function to use it with like functionality
     self.logger.info('Getting some followers from instagram')
     
     instagramFollowersResult = self.getUserFollowers(user_id, amount=amount, next_max_id = userObject['next_max_id'])

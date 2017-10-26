@@ -143,7 +143,7 @@ def getBotOperations(self, id_campaign):
           self.logger.info("BOTUTIL: no available operations of type follow. Probably it is set the unfollow operation with fixed percentage !")
         else:
           remainingFollowPercentage = math.ceil(math.ceil(100 - totalFollowPercentage) / math.ceil(totalFollowOperations))
-          self.logger.info("BOTUTIL: Remaining follow percentage %s,", remainingFollowPercentage)
+          self.logger.info("BOTUTIL: Each operation of type follow will receive %s extra percentage !", remainingFollowPercentage)
 
           for operation in operations:
               if 'follow' in operation['configName'] and operation['configName']!="unfollow":

@@ -438,8 +438,7 @@ class API(object):
         return query
 
     def getUserFeed(self, usernameId, maxid='', minTimestamp=None):
-        self.logger.info("api: TODO: check if the items ar in order !.  Gettin user feed of user: %s" % (usernameId))
-        
+
         query = self.SendRequest(
             'feed/user/' + str(usernameId) + '/?max_id=' + str(maxid) + '&min_timestamp=' + str(minTimestamp) +
             '&rank_token=' + str(self.rank_token) + '&ranked_content=true')
