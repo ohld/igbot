@@ -127,7 +127,7 @@ def getBotOperations(self, id_campaign):
 
     #apply percentage
     if totalLikePercentage<100 and totalLikePercentage>0:
-        self.logger.info("BOTUTIL: Unused percentage is %s, going to distribute it to %s operations" % (100-totalLikePercentage, totalLikeOperations))
+        self.logger.info("BOTUTIL: Unused LIKE percentage is %s, going to distribute it to %s like operations" % (100-totalLikePercentage, totalLikeOperations))
         remainingLikePercentage = math.ceil (math.ceil(100-totalLikePercentage) / math.ceil(totalLikeOperations))
         self.logger.info("BOTUTIL: Each operation will receive %s extra percentage !", remainingLikePercentage)
 
@@ -137,7 +137,7 @@ def getBotOperations(self, id_campaign):
 
     if totalFollowPercentage<100 and totalFollowPercentage>0:
         
-        self.logger.info("BOTUTIL: Unused percentage is %s, going to distribute it to %s operations" % (100- totalFollowPercentage, totalFollowOperations))
+        self.logger.info("BOTUTIL: Unused follow percentage is %s, going to distribute it to %s follow operations" % (100- totalFollowPercentage, totalFollowOperations))
         
         if totalFollowOperations==0:
           self.logger.info("BOTUTIL: no available operations of type follow. Probably it is set the unfollow operation with fixed percentage !")
@@ -146,7 +146,7 @@ def getBotOperations(self, id_campaign):
           self.logger.info("BOTUTIL: Each operation of type follow will receive %s extra percentage !", remainingFollowPercentage)
 
           for operation in operations:
-              if 'follow' in operation['configName'] and operation['configName']!="unfollow":
+              if  str(operation['configName']).startswith("follow") and operation['configName']!="unfollow":
                   operation['percentageAmount'] += remainingFollowPercentage
 
     for op in operations:

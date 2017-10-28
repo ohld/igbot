@@ -192,9 +192,9 @@ def crawl_other_user_followers(self, userObject, amount=100):
 
 #this function is used to crawl followers of the logged user.
 def crawl_user_followers(self, amount):
-    self.logger.info("Going to extract followers from instagram !")
+    self.logger.info("crawl_user_followers:Going to extract followers from instagram !")
     sleep_time = randint(1, 4)
-    self.logger.info("Sleeping %s seconds" % sleep_time)
+    self.logger.info("crawl_user_followers:Sleeping %s seconds" % sleep_time)
     time.sleep(sleep_time)
       
     webApplicationUser = api_db.getWebApplicationUser(self.web_application_id_user)
@@ -207,7 +207,7 @@ def crawl_user_followers(self, amount):
     result = self.getUserFollowers(usernameId=self.user_id, amount=amount, next_max_id=next_max_id)
 
     if len(result['followers']) == 0:
-        self.logger.info("No followers received for user: %s ! SKIPPING" % self.user_id)
+        self.logger.info("crawl_user_followers:No followers received for user: %s ! SKIPPING" % self.user_id)
         exit(0)
 
     for follower in result['followers']:
@@ -219,10 +219,10 @@ def crawl_user_followers(self, amount):
     if next_id == None:
         next_id = result['previous_next_max_id']
 
-    self.logger.info("Going to update the followers_next_max_id: %s of user: %s" % (next_id, self.web_application_id_user))
-    api_db.insert("update users set followers_next_max_id=%s where id_user=%s",next_id, self.web_application_id_user)
+    self.logger.info("crawl_user_followers:Going to update the followers_next_max_id: %s of user: %s" % (next_id, self.web_application_id_user))
+    api_db.insert("crawl_user_followers:update users set followers_next_max_id=%s where id_user=%s",next_id, self.web_application_id_user)
 
-    self.logger.info("DONE updating followers list !")
+    self.logger.info("crawl_user_followers:DONE updating followers list !")
 
 
 def get_user_following(self, user_id, nfollows=None):

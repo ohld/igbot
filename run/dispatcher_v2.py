@@ -7,7 +7,7 @@ from instabot import Bot
 import traceback
 from instabot.api import api_db
 import math
-import datetime
+from datetime import datetime
 
 
 stdout = sys.stdout
@@ -45,26 +45,28 @@ try:
 
     campaign = api_db.fetchOne("select username,password from campaign where id_campaign=%s", args.id_campaign)
     bot.login(username=campaign['username'], password=campaign['password'])
-    
+
     totalExpectedLikesAmount = bot.getLikeAmount(args.id_campaign)
     totalExpectedFollowAmount = bot.getFollowAmount(args.id_campaign)
 
-    
     #todo assume we trigger this operation 10 times/day
     numberOfIterations = 10
     currentIteration = 1
+
     unperformedLikes = 0
     unperformedFollows = 0
+
     totalPerformedLikes = 0
     totalPerformedFollows = 0
+
     securityBreak = 30
 
-    lastHour=1 #1 am
+    startingDate=datetime.now().date()
 
     bot.logger.info("DISPATCHER: Started bot, going to perform %s likes, %s follow/unfollow during %s iterations" % (totalExpectedLikesAmount, totalExpectedFollowAmount, numberOfIterations))
 
     # if we still have some likes or follow to perform
-    while (totalPerformedLikes < totalExpectedLikesAmount or totalPerformedFollows < totalExpectedFollowAmount) and currentIteration < securityBreak and datetime.datetime.now().hour!=lastHour:
+    while (totalPerformedLikes < totalExpectedLikesAmount or totalPerformedFollows < totalExpectedFollowAmount) and currentIteration < securityBreak and startingDate<=datetime.now().date():
         #if no more likes needed to perform
         if totalExpectedLikesAmount<=totalPerformedLikes:
             currentIterationLikesAmount=0
@@ -99,7 +101,7 @@ try:
 
 
         bot.logger.info(
-            "DISPATCHER: Overall total expected likes so far %s, actual likes %s, unperformed likes: %s , expected follows so far %s, actual follows %s, unperformedFollows: %s" % (expectedLikesSorFar, totalPerformedLikes, unperformedLikes, expectedFollowSorFar, totalPerformedFollows, unperformedFollows))
+            "DISPATCHER: Overall total expected likes so far %s, actual likes %s,  expected follows so far %s, actual follows %s" % (expectedLikesSorFar, totalPerformedLikes, expectedFollowSorFar, totalPerformedFollows))
 
         bot.logger.info("DISPATCHER: Total likes to perform: %s,  likes remained to perform: %s" % (totalExpectedLikesAmount, totalExpectedLikesAmount - totalPerformedLikes))
         bot.logger.info("DISPATCHER: Total follow to perform: %s,  follow remained to perform: %s" % (totalExpectedFollowAmount, totalExpectedFollowAmount - totalPerformedFollows))
@@ -107,12 +109,13 @@ try:
         currentIteration = currentIteration + 1
 
     bot.logger.info(
-        "DISPATCHER: BOT END. Summary: Last iteration %s, Likes performed %s Likes expected %s . Follows/Unfollow performed %s , Expected follow/unfollow %s ." % (currentIteration-1,  totalPerformedLikes, totalExpectedLikesAmount, totalPerformedFollows, totalExpectedFollowAmount))
+        "DISPATCHER: END. Summary: Last iteration %s, Likes performed %s Likes expected %s . Follows/Unfollow performed %s , Expected follow/unfollow %s ." % (currentIteration-1,  totalPerformedLikes, totalExpectedLikesAmount, totalPerformedFollows, totalExpectedFollowAmount))
 
     bot.crawl_user_followers(amount=100)
 except:
-  bot.logger.info("FATAL ERROR !")
   exceptionDetail = traceback.format_exc()
+  print(exceptionDetail)
+  bot.logger.info("FATAL ERROR !")
   bot.logger.info(exceptionDetail)
 
 

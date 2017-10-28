@@ -162,8 +162,6 @@ class Bot(API):
         self.id_log = id_log
 
         self.web_application_id_user = api_db.getUserId(self.id_campaign)
-        # current following
-        # self.following = getCurrentUserFollowing(self)
 
     def version(self):
         try:
@@ -533,6 +531,7 @@ class Bot(API):
         self.logger.info("bot.start: Going to loop through %s operations and execute them !", len(operations))
 
         for operation in operations:
+            self.currentOperation=operation['configName']
 
             if 'like_own_followers' == operation['configName']:
                 if likesAmount < 1:
@@ -549,7 +548,7 @@ class Bot(API):
                 self.logger.info("like_own_followers: End operation: %s, expected: %s, performed: %s" % (
                     'like_own_followers', expectedLikes, performedLikes))
 
-                result['no_likes'] = + performedLikes
+                result['no_likes'] = result['no_likes'] + performedLikes
 
             if 'like_timeline' == operation['configName']:
                 # maybe this check can be set globally for all likes operation type
@@ -567,7 +566,7 @@ class Bot(API):
                 self.logger.info(
                     "like_timeline: End operation: %s, expected: %s, performed: %s" % ('like_timeline', expectedLikes, performedLikes))
 
-                result['no_likes'] = + performedLikes
+                result['no_likes'] = result['no_likes'] + performedLikes
 
             if 'like_posts_by_hashtag' == operation['configName']:
                 if likesAmount < 1:
@@ -604,7 +603,7 @@ class Bot(API):
                     iteration += 1
                 self.logger.info("like_posts_by_hashtag: End bot operation %s ", "like_posts_by_hashtag")
 
-                result['no_likes'] = + performedLikes
+                result['no_likes'] = result['no_likes'] + performedLikes
 
             if 'like_other_users_followers' == operation['configName']:
                 if likesAmount < 1:
@@ -642,7 +641,7 @@ class Bot(API):
                     iteration += 1
                 self.logger.info("like_other_users_followers: End bot operation %s ")
 
-                result['no_likes'] = + performedLikes
+                result['no_likes'] = result['no_likes'] + performedLikes
 
             if 'like_posts_by_location' == operation['configName']:
                 if likesAmount < 1:
@@ -680,7 +679,7 @@ class Bot(API):
                     iteration += 1
                 self.logger.info("like_posts_by_location: End bot operation %s ", "like_posts_by_location")
 
-                result['no_likes'] = + performedLikes
+                result['no_likes'] = result['no_likes'] + performedLikes
 
             if 'follow_users_by_hashtag' == operation['configName']:
                 if followAmount < 1:
@@ -719,7 +718,7 @@ class Bot(API):
                     iteration += 1
                 self.logger.info("follow_users_by_hashtag: End bot operation %s ", "follow_users_by_hashtag")
 
-                result['no_follows'] = + performedFollow
+                result['no_follows'] =result['no_follows'] + performedFollow
 
             if 'follow_users_by_location' == operation['configName']:
                 if followAmount < 1:
@@ -758,7 +757,7 @@ class Bot(API):
                     iteration += 1
                 self.logger.info("follow_users_by_location: End bot operation %s ", "follow_users_by_location")
 
-                result['no_follows'] = + performedFollow
+                result['no_follows'] = result['no_follows'] + performedFollow
 
             if 'follow_other_users_followers' == operation['configName']:
                 if followAmount < 1:
@@ -798,7 +797,7 @@ class Bot(API):
                     iteration += 1
                 self.logger.info("follow_other_users_followers: End bot operation %s ", "follow_other_users_followers")
 
-                result['no_follows'] = + performedFollow
+                result['no_follows'] = result['no_follows'] + performedFollow
 
             if 'unfollow' == operation['configName']:
 
@@ -815,6 +814,6 @@ class Bot(API):
 
                 self.logger.info("unfollow: End operation: %s, expected: %s, actual: %s" % ('unfollow', expectedFollow, performedFollow))
 
-                result['no_follows'] = + performedFollow
+                result['no_follows'] = result['no_follows'] + performedFollow
 
         return result

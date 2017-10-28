@@ -33,6 +33,7 @@ from .api_profile import setNameAndPhone
 
 from .prepare import get_credentials
 from .prepare import delete_credentials
+from .api_db import  insert
 
 # The urllib library was split into other modules from Python 2 to Python 3
 if sys.version_info.major == 3:
@@ -158,11 +159,13 @@ class API(object):
             self.LastJson = json.loads(response.text)
             return True
         else:
+            details = None
             self.logger.info("Request error url: %s: ", config.API_URL + endpoint)
 
             if response.status_code != 404:
                 self.logger.warning("HTTP ERROR: STATUS %s , BODY: %s " % (str(response.status_code), response.text))
             else:
+                response.text="Page not found !"
                 self.logger.warning("HTTP ERROR: STATUS %s" % (str(response.status_code)))
 
 
@@ -171,6 +174,7 @@ class API(object):
                 if 'spam' in response:
                     sleep_minutes = 10
                     self.logger.warning("BOT IS BLOCKED, going to sleep %s minutes" % sleep_minutes)
+                    details="spam"
                     time.sleep(sleep_minutes * 60)
                 else:
                     sleep_minutes=1
@@ -178,9 +182,15 @@ class API(object):
 
             elif response.status_code == 429:
                 sleep_minutes = 5
+                details="That means 'too many requests"
                 self.logger.warning("That means 'too many requests'. "
                                     "I'll go to sleep for %d minutes." % sleep_minutes)
                 time.sleep(sleep_minutes * 60)
+
+            currentOperation = self.currentOperation if hasattr(self, "currentOperation") else None
+
+            insert("insert into instagram_log (id_user,log,operation,request,http_code,details) values (%s,%s,%s,%s,%s,%s)",
+                   self.web_application_id_user, response.text, currentOperation, config.API_URL + endpoint,str(response.status_code),details)
 
             # for debugging
             try:
