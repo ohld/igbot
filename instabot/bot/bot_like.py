@@ -224,11 +224,11 @@ def like_other_users_followers(self, userObject, amount):
 
     followers = api_db.select(query, userObject['username'], sqlLimitFromWhere, batchSize)
 
-    self.logger.info('like_other_users_followers: Received from database %s followers of user: %s' % (len(followers),userObject['user']))
+    self.logger.info('like_other_users_followers: Received from database %s followers of user: %s' % (len(followers),userObject['username']))
   
 
     if len(followers) == 0:
-        self.logger.info("like_other_users_followers: No followers received for user: %s ! SKIPPING" % userObject['user'])
+        self.logger.info("like_other_users_followers: No followers received for user: %s ! SKIPPING" % userObject['username'])
         return 0
 
     iteration = 0
