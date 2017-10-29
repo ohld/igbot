@@ -7,9 +7,9 @@ import json
 def getConnection():
 
     db = MySQLdb.connect(host="localhost",  # your host, usually localhost
-                         user="root",  # your username
-                         passwd="password",  # your password
-                         db="instaboost")
+                         user="angie_app",  # your username
+                         passwd="angiePasswordDB",  # your password
+                         db="angie_app")
     db.set_character_set('utf8mb4')
     dbc = db.cursor()
     dbc.execute('SET NAMES utf8mb4;')
