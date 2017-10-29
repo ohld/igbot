@@ -170,8 +170,8 @@ class API(object):
 
 
             if response.status_code == 400:
-                response = json.loads(response.text)
-                if 'spam' in response:
+                responseObject = json.loads(response.text)
+                if 'spam' in responseObject:
                     sleep_minutes = 10
                     self.logger.warning("BOT IS BLOCKED, going to sleep %s minutes" % sleep_minutes)
                     details="spam"
