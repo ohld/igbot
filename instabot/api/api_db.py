@@ -9,7 +9,7 @@ def getConnection():
     db = MySQLdb.connect(host="localhost",  # your host, usually localhost
                          user="angie_app",  # your username
                          passwd="angiePasswordDB",  # your password
-                         db="angie_app")
+                         db="instaboost")
     db.set_character_set('utf8mb4')
     dbc = db.cursor()
     dbc.execute('SET NAMES utf8mb4;')
@@ -80,7 +80,23 @@ def insertUserFollower(*args):
 
   id = insert(query,*args)
   return id
-    
 
-
-
+def getBotIp(id_user):
+ 
+  #get the ips ordered by how many time they are currently in use
+  query="
+  select id_ip_bot, 0 as total
+  from ip_bot
+  where id_ip_bot not in  (select id_ip_bot from campaign)
+  UNION
+  select campaign.id_ip_bot,count(*) as total from campaign 
+  where id_ip_bot is not null
+  group by id_ip_bot having count(*)<3
+  order by total asc"
+  
+  result = fetchOne(query)
+  
+  
+  
+  
+  

@@ -171,6 +171,9 @@ class Bot(API):
         return next((p.version for p in pkg_resources.working_set if p.project_name.lower() == 'instabot'), "No match")
 
     def logout(self):
+        
+        #release ip
+        api_db.insert("update campaign set id_ip_bot=null where id_campaign=%s",self.id_campaign)
         if self.id_campaign != False:
             save_checkpoint(self)
 
@@ -189,7 +192,8 @@ class Bot(API):
 
     def prepare(self):
         storage = load_checkpoint(self)
-
+        
+        self.bot_ip=api_db.getBotIp(self.web_application_id_user)
         if storage is not None:
             self.total_liked, self.total_unliked, self.total_followed, self.total_unfollowed, self.total_commented, self.total_blocked, self.total_unblocked, self.total_requests, self.start_time, self.total_archived, self.total_unarchived = storage
         if not self.whitelist:

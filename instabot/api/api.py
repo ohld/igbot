@@ -189,7 +189,7 @@ class API(object):
 
             currentOperation = self.currentOperation if hasattr(self, "currentOperation") else None
 
-            insert("insert into instagram_log (id_user,log,operation,request,http_code,details) values (%s,%s,%s,%s,%s,%s)",
+            insert("insert into instagram_log (id_user,log,operation,request,http_status,details) values (%s,%s,%s,%s,%s,%s)",
                    self.web_application_id_user, response.text, currentOperation, config.API_URL + endpoint,str(response.status_code),details)
 
             # for debugging
