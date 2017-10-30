@@ -41,11 +41,13 @@ try:
         follow_delay=40,  # default 30,
         unfollow_delay=40,  # default 30,
         comment_delay=60,  # default 60
+        multiple_ip=True
     )
 
     campaign = api_db.fetchOne("select username,password from campaign where id_campaign=%s", args.id_campaign)
     bot.login(username=campaign['username'], password=campaign['password'])
-
+    bot.check_ip()
+    exit()
     totalExpectedLikesAmount = bot.getLikeAmount(args.id_campaign)
     totalExpectedFollowAmount = bot.getFollowAmount(args.id_campaign)
 
