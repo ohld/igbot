@@ -18,12 +18,12 @@ class SourceAddressAdapter(HTTPAdapter):
 def prepare_sessions(ip):
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     s = requests.session()
-    s.mount("http://", SourceAddressAdapter((str(ip), 80)))
-    s.mount("https://", SourceAddressAdapter((str(ip), 80)))
+    s.mount("http://", SourceAddressAdapter((str(ip), 0)))
+    s.mount("https://", SourceAddressAdapter((str(ip),0)))
     return s 
 
 def test(s): 
-    print(s.get("http://www.whatismyip.com/"))
+    print(s.get("http://bot.whatismyipaddress.com/").text())
 
 
 
