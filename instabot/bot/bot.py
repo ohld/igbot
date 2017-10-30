@@ -7,6 +7,7 @@ from ..api import API
 from ..api import api_db
 from random import randint
 
+
 from .bot_get import get_media_owner, get_your_medias, get_user_medias
 from .bot_get import get_timeline_medias, get_hashtag_medias, get_user_info, get_location_medias
 from .bot_get import get_geotag_medias, get_timeline_users, get_hashtag_users
@@ -60,6 +61,7 @@ class Bot(API):
                  blacklist=False,
                  comments_file=False,
                  proxy=None,
+                 multiple_ip=None,
                  max_likes_per_day=1000,
                  max_unlikes_per_day=1000,
                  max_follows_per_day=350,
@@ -141,6 +143,7 @@ class Bot(API):
 
         # proxy
         self.proxy = proxy
+        self.multiple_ip = multiple_ip
         self.bot_ip = None
 
         # white and blacklists
@@ -193,9 +196,6 @@ class Bot(API):
 
     def prepare(self):
         storage = load_checkpoint(self)
-        
-        self.bot_ip=api_db.getBotIp(self, self.web_application_id_user, self.id_campaign)
-        time.sleep(1 * 60)
         if storage is not None:
             self.total_liked, self.total_unliked, self.total_followed, self.total_unfollowed, self.total_commented, self.total_blocked, self.total_unblocked, self.total_requests, self.start_time, self.total_archived, self.total_unarchived = storage
         if not self.whitelist:
