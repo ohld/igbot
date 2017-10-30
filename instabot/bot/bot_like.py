@@ -5,8 +5,6 @@ from ..api import api_db
 from random import randint
 import time
 
-datetime.datetime.now()
-
 #todo ignore if own media
 def like(self, media_id):
     if limits.check_if_bot_can_like(self):
