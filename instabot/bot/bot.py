@@ -168,7 +168,7 @@ class Bot(API):
         self.web_application_id_user = api_db.getUserId(self.id_campaign)
 
     def check_ip(self):
-        print(self.session.get('http://bot.whatismyipaddress.com/').text())
+        print(self.session.get('http://bot.whatismyipaddress.com/').text)
 
     def version(self):
         try:
