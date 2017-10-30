@@ -4,7 +4,8 @@ from . import delay
 from ..api import api_db
 from random import randint
 import time
-import json
+
+datetime.datetime.now()
 
 #todo ignore if own media
 def like(self, media_id):
@@ -36,9 +37,6 @@ def like_medias(self, medias, bot_operation=None, bot_operation_value=None):
                                    media['code'], bot_operation, bot_operation_value, self.id_log)
             this_session_total_liked = this_session_total_liked + 1
         else:
-            # delay.error_delay(self)
-            # self.logger.info("ERROR: GOING TO BREAK ! COULD NOT LIKE A POST WITH ID: %s", media['pk'])
-            # break
             self.logger.info("like_medias: ERROR: COULD NOT LIKE POST WITH ID: %s . GOING TO CONTINUE...", media['pk'])
 
     self.logger.info("like_medias: DONE: Total liked in this session %d medias." % this_session_total_liked)

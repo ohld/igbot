@@ -50,7 +50,7 @@ from .bot_support import add_whitelist, add_blacklist
 from .bot_stats import save_user_stats
 
 from .bot_util import getBotOperations, getFollowAmount, getLikeAmount
-
+import time
 
 class Bot(API):
     def __init__(self,
@@ -141,6 +141,7 @@ class Bot(API):
 
         # proxy
         self.proxy = proxy
+        self.bot_ip = None
 
         # white and blacklists
         self.whitelist = []
@@ -178,7 +179,7 @@ class Bot(API):
             save_checkpoint(self)
 
         super(self.__class__, self).logout()
-        self.logger.info("Bot stopped. "
+        self.logger.info("bot: Bot stopped. "
                          "Worked: %s" % (datetime.datetime.now() - self.start_time))
         self.print_counters()
 
@@ -193,7 +194,8 @@ class Bot(API):
     def prepare(self):
         storage = load_checkpoint(self)
         
-        self.bot_ip=api_db.getBotIp(self.web_application_id_user)
+        self.bot_ip=api_db.getBotIp(self, self.web_application_id_user, self.id_campaign)
+        time.sleep(1 * 60)
         if storage is not None:
             self.total_liked, self.total_unliked, self.total_followed, self.total_unfollowed, self.total_commented, self.total_blocked, self.total_unblocked, self.total_requests, self.start_time, self.total_archived, self.total_unarchived = storage
         if not self.whitelist:
