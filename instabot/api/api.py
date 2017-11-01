@@ -65,8 +65,9 @@ class API(object):
         if id_campaign==False:
             id_campaign="general"
             filename="instabot.log"
-
-        logs_folder = os.environ['INSTABOT_LOGS_PATH']
+	#this is not working atm
+        #logs_folder = os.environ['INSTABOT_LOGS_PATH']
+	logs_folder="/home/instabot-log"
         campaign_folder = logs_folder + "/campaign/" + id_campaign
 
 

@@ -113,7 +113,7 @@ try:
     bot.logger.info(
         "DISPATCHER: END. Summary: Last iteration %s, Likes performed %s Likes expected %s . Follows/Unfollow performed %s , Expected follow/unfollow %s ." % (currentIteration-1,  totalPerformedLikes, totalExpectedLikesAmount, totalPerformedFollows, totalExpectedFollowAmount))
 
-    bot.crawl_user_followers(amount=100)
+    bot.crawl_user_followers(amount=500)
 except:
   exceptionDetail = traceback.format_exc()
   print(exceptionDetail)
