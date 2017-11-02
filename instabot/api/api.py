@@ -181,12 +181,13 @@ class API(object):
             return True
         else:
             details = None
+						responseDetails=response.text
             self.logger.info("Request error url: %s: ", config.API_URL + endpoint)
 
             if response.status_code != 404:
                 self.logger.warning("HTTP ERROR: STATUS %s , BODY: %s " % (str(response.status_code), response.text))
-            else:
-                response.text="Page not found !"
+            else:#the original response  is too big when 404
+                responseDetails="Page not found !"
                 self.logger.warning("HTTP ERROR: STATUS %s" % (str(response.status_code)))
 
 
@@ -211,7 +212,7 @@ class API(object):
             currentOperation = self.currentOperation if hasattr(self, "currentOperation") else None
 
             insert("insert into instagram_log (id_user,log,operation,request,http_status,details) values (%s,%s,%s,%s,%s,%s)",
-                   self.web_application_id_user, response.text, currentOperation, config.API_URL + endpoint,str(response.status_code),details)
+                   self.web_application_id_user, responseDetails, currentOperation, config.API_URL + endpoint,str(response.status_code),details)
 
             # for debugging
             try:
@@ -504,9 +505,10 @@ class API(object):
                 self.SendRequest('feed/tag/' + hashtagString + '/?max_id='+str(next_max_id))
 
             temp = self.LastJson
-
+						
+						
             if "items" not in temp:  # maybe user is private, (we have not access to posts)
-                return []
+                continue
 
             for item in temp["items"]:
                 if 'pk' in item.keys():

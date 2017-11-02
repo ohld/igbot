@@ -163,12 +163,12 @@ def get_user_info(self, user_id):
 def crawl_other_user_followers(self, userObject, amount=100):
    
     if userObject['next_max_id']=='-1':
-      self.logger.info("Next max id is -1, meaning that we have the entire list of followers for user: %s . SKIPPING" , userObject['username'])
+      self.logger.info("crawl_other_user_followers:Next max id is -1, meaning that we have the entire list of followers for user: %s . SKIPPING" , userObject['username'])
       return False
     
     user_id = self.get_userid_from_username(username=userObject['username'])
     
-    self.logger.info('Getting some followers from instagram')
+    self.logger.info('crawl_other_user_followers: Getting some followers from instagram')
     
     instagramFollowersResult = self.getUserFollowers(user_id, amount=amount, next_max_id = userObject['next_max_id'])
 
@@ -185,7 +185,7 @@ def crawl_other_user_followers(self, userObject, amount=100):
     else:
       next_id=instagramFollowersResult['next_max_id']
         
-    self.logger.info('Going to update the next_max_id with: %s ',next_id)
+    self.logger.info('crawl_other_user_followers: Going to update the next_max_id with: %s ',next_id)
     api_db.insert("update instagram_users set next_max_id=%s where id=%s",next_id,userObject['id'])
       
    
