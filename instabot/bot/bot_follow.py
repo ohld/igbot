@@ -2,6 +2,7 @@ from tqdm import tqdm
 
 from . import limits
 from . import delay
+from . import console_logger
 
 
 def follow(self, user_id):
@@ -12,12 +13,11 @@ def follow(self, user_id):
     if limits.check_if_bot_can_follow(self):
         delay.follow_delay(self)
         if super(self.__class__, self).follow(user_id):
-            print('\n\033[92m ===> FOLLOWED <==== user_id: %s \033[0m' % (
-                user_id))  # Log to console
+            console_logger.print(self.verbosity, '\n\033[92m ===> FOLLOWED <==== user_id: %s \033[0m')
             self.total_followed += 1
             # Log to console
-            print(
-                '\n\033[92m Writing user_id to file : followed.txt ... \033[0m')
+            console_logger.print(self.verbosity, '\n\033[92m Writing user_id to file : followed.txt ... \033[0m')
+
             with open('followed.txt', 'a') as file:  # Appending user_id to the followed.txt
                 # Appending user_id to the followed.txt
                 file.write(str(user_id) + "\n")

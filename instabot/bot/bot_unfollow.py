@@ -2,20 +2,22 @@ from tqdm import tqdm
 
 from . import limits
 from . import delay
+from . import console_logger
 
 
 def unfollow(self, user_id):
     user_id = self.convert_to_user_id(user_id)
     user_info = self.get_user_info(user_id)
-    print('\n===> Going to UN-Follow user_id: %s , user_name: %s' %
-          (user_id, user_info["username"]))
+    console_logger.print(self.verbosity, '\n===> Going to UN-Follow user_id: %s , user_name: %s'
+                         % (user_id, user_info["username"]))
+
     if self.check_user(user_id, unfollowing=True):
         return True  # whitelisted user
     if limits.check_if_bot_can_unfollow(self):
         delay.unfollow_delay(self)
         if super(self.__class__, self).unfollow(user_id):
-            print('\033[93m===> UN-FOLLOWED , user_id: %s , user_name: %s \033[0m\n' %
-                  (user_id, user_info["username"]))
+            console_logger.print(self.verbosity, '\033[93m===> UN-FOLLOWED , user_id: %s , user_name: %s \033[0m\n' % (
+                user_id, user_info["username"]))
             self.total_unfollowed += 1
             return True
     else:
@@ -44,14 +46,14 @@ def unfollow_users(self, user_ids):
 def unfollow_non_followers(self, n_to_unfollows=None):
     self.logger.info("Unfollowing non-followers")
     self.update_unfollow_file()
-    print("\n\033[91m ===> Start Unfollowing Non_Followers List <===\033[0m")
+    console_logger.print(self.verbosity, "\n\033[91m ===> Start Unfollowing Non_Followers List <===\033[0m")
+
     unfollow_file = "unfollow.txt"
     with open(unfollow_file) as unfollow_data:
         new_unfollow_list = list(line.strip() for line in unfollow_data)
     for user in tqdm(new_unfollow_list[:n_to_unfollows]):  # select only first n_to_unfollows users to unfollow
         self.unfollow(user)
-    print(
-        "\n\033[91m ===> Unfollow Non_followers , Task Done <===\033[0m")
+    console_logger.print(self.verbosity, "\n\033[91m ===> Unfollow Non_followers , Task Done <===\033[0m")
 
 
 def unfollow_everyone(self):
@@ -61,7 +63,8 @@ def unfollow_everyone(self):
 
 def update_unfollow_file(self):  # Update unfollow.txt
     self.logger.info("Updating unfollow.txt ...")
-    print("\n\033[92m Calculating Non Followers List  \033[0m")
+    console_logger.print(self.verbosity, "\n\033[92m Calculating Non Followers List  \033[0m")
+
     followings = self.get_user_following(self.user_id)  # getting following
     followers = self.get_user_followers(self.user_id)  # getting followers
     friends_file = self.read_list_from_file(
@@ -77,8 +80,9 @@ def update_unfollow_file(self):  # Update unfollow.txt
     new_unfollow_list = []
     new_unfollow_list += [x for x in unfollow_file if x in unfollow_list]
     new_unfollow_list += [x for x in unfollow_list if x not in unfollow_file]
-    print("\n Writing to unfollow.txt")
+
+    console_logger.print(self.verbosity, "\n Writing to unfollow.txt")
     with open('unfollow.txt', 'w') as out:
         for line in new_unfollow_list:
             out.write(str(line) + "\n")
-    print("\n Updating unfollow.txt , Task Done")
+    console_logger.print(self.verbosity, "\n Updating unfollow.txt , Task Done")

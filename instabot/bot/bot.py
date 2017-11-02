@@ -49,7 +49,6 @@ from .bot_stats import save_user_stats
 
 
 class Bot(API):
-
     def __init__(self,
                  whitelist=False,
                  blacklist=False,
@@ -79,7 +78,9 @@ class Bot(API):
                  comment_delay=60,
                  block_delay=30,
                  unblock_delay=30,
-                 stop_words=['shop', 'store', 'free']):
+                 stop_words=['shop', 'store', 'free'],
+                 verbosity=True,
+                 ):
         super(Bot, self).__init__()
 
         self.total_liked = 0
@@ -146,6 +147,8 @@ class Bot(API):
         self.blacklist = []
         if blacklist:
             self.blacklist = read_list_from_file(blacklist)
+
+        self.verbosity = verbosity
 
         # comment file
         self.comments = []
