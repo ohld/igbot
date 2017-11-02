@@ -152,9 +152,8 @@ def check_user(self, user_id, filter_closed_acc=False, unfollowing=False):
 
     if self.verbosity:
         if self.verbosity:
-            print('\n USER_NAME: %s , FOLLOWER: %s , FOLLOWING: %s ' % (user_info[
-                                                                            "username"], user_info["follower_count"],
-                                                                        user_info["following_count"]))
+            print('\n USER_NAME: %s , FOLLOWER: %s , '
+                  'FOLLOWING: %s ' % (user_info["username"], user_info["follower_count"], user_info["following_count"]))
 
     if filter_closed_acc and "is_private" in user_info:
         if user_info["is_private"]:

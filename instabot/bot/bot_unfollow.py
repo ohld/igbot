@@ -17,7 +17,7 @@ def unfollow(self, user_id):
         if super(self.__class__, self).unfollow(user_id):
             if self.verbosity:
                 print('\033[93m===> UN-FOLLOWED , user_id: %s , user_name: %s \033[0m\n' % (
-                user_id, user_info["username"]))
+                    user_id, user_info["username"]))
             self.total_unfollowed += 1
             return True
     else:
