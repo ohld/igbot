@@ -180,10 +180,10 @@ class API(object):
             self.LastJson = json.loads(response.text)
             return True
         else:
-            details = None
-						responseDetails=response.text
+            details = None	
+	    responseDetails = response.text
             self.logger.info("Request error url: %s: ", config.API_URL + endpoint)
-
+						
             if response.status_code != 404:
                 self.logger.warning("HTTP ERROR: STATUS %s , BODY: %s " % (str(response.status_code), response.text))
             else:#the original response  is too big when 404
@@ -204,7 +204,7 @@ class API(object):
 
             elif response.status_code == 429:
                 sleep_minutes = 5
-                details="That means 'too many requests"
+                details="That means too many requests"
                 self.logger.warning("That means 'too many requests'. "
                                     "I'll go to sleep for %d minutes." % sleep_minutes)
                 time.sleep(sleep_minutes * 60)
