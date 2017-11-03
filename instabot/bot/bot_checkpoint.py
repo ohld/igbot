@@ -48,7 +48,7 @@ class Checkpoint(object):
 def save_checkpoint(self):
     cp = Checkpoint(self)
     
-    logs_folder = os.environ['INSTABOT_LOGS_PATH']
+    logs_folder = "/home/instabot-log"
     campaign_folder = logs_folder + "/campaign/" + self.id_campaign+"/"
     log_path = campaign_folder + CHECKPOINT_PATH;
         
