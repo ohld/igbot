@@ -185,10 +185,22 @@ class Bot(API):
             self.total_liked, self.total_unliked, self.total_followed, self.total_unfollowed, self.total_commented, self.total_blocked, self.total_unblocked, self.total_requests, self.start_time, self.total_archived, self.total_unarchived = storage
         if not self.whitelist:
             self.whitelist = check_whitelists(self)
-        self.whitelist = list(
-            filter(None, map(self.convert_to_user_id, self.whitelist)))
+        self.whitelist = self.convert_whitelist(self.whitelist)
         self.blacklist = list(
             filter(None, map(self.convert_to_user_id, self.blacklist)))
+
+    def convert_whitelist(self, usernames):
+        """
+        Will convert every username in the whitelist to the user id.
+        """
+        ret = []
+        for u in usernames:
+            uid = self.convert_to_user_id(u)
+            if uid and uid not in ret:
+                ret.append(uid)
+            else:
+                print("WARNING: Whitelisted user '%s' not found" % u)
+        return ret
 
     def print_counters(self):
         if self.total_liked:
