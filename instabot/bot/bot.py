@@ -180,12 +180,13 @@ class Bot(API):
     def logout(self):
         
         #release ip
+        self.logger.info("logout: Going to release the ip")
         api_db.insert("update campaign set id_ip_bot=null where id_campaign=%s",self.id_campaign)
         if self.id_campaign != False:
             save_checkpoint(self)
 
         super(self.__class__, self).logout()
-        self.logger.info("bot: Bot stopped. "
+        self.logger.info("logout: Bot stopped. "
                          "Worked: %s" % (datetime.datetime.now() - self.start_time))
         self.print_counters()
 
@@ -201,12 +202,6 @@ class Bot(API):
         storage = load_checkpoint(self)
         if storage is not None:
             self.total_liked, self.total_unliked, self.total_followed, self.total_unfollowed, self.total_commented, self.total_blocked, self.total_unblocked, self.total_requests, self.start_time, self.total_archived, self.total_unarchived = storage
-        if not self.whitelist:
-            self.whitelist = check_whitelists(self)
-        self.whitelist = list(
-            filter(None, map(self.convert_to_user_id, self.whitelist)))
-        self.blacklist = list(
-            filter(None, map(self.convert_to_user_id, self.blacklist)))
 
     def print_counters(self):
         if self.total_liked:

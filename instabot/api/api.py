@@ -180,15 +180,17 @@ class API(object):
             self.LastJson = json.loads(response.text)
             return True
         else:
-            details = None	
-	    responseDetails = response.text
+            details = None
+            responseInfo = response.text
             self.logger.info("Request error url: %s: ", config.API_URL + endpoint)
 						
             if response.status_code != 404:
                 self.logger.warning("HTTP ERROR: STATUS %s , BODY: %s " % (str(response.status_code), response.text))
             else:#the original response  is too big when 404
-                responseDetails="Page not found !"
-                self.logger.warning("HTTP ERROR: STATUS %s" % (str(response.status_code)))
+                responseInfo="Page not found!"
+                self.logger.warning("HTTP ERROR: STATUS %s, going to sleep 1 minute !" % (str(response.status_code)))
+                sleep_minutes=0
+                time.sleep(5)
 
 
             if response.status_code == 400:
@@ -201,6 +203,7 @@ class API(object):
                 else:
                     sleep_minutes=1
                     self.logger.warning("Request return 400 error. Going to sleep %s minutes" % sleep_minutes)
+                    time.sleep(sleep_minutes * 60)
 
             elif response.status_code == 429:
                 sleep_minutes = 5
@@ -212,7 +215,7 @@ class API(object):
             currentOperation = self.currentOperation if hasattr(self, "currentOperation") else None
 
             insert("insert into instagram_log (id_user,log,operation,request,http_status,details) values (%s,%s,%s,%s,%s,%s)",
-                   self.web_application_id_user, responseDetails, currentOperation, config.API_URL + endpoint,str(response.status_code),details)
+                   self.web_application_id_user, responseInfo, currentOperation, config.API_URL + endpoint,str(response.status_code),details)
 
             # for debugging
             try:
@@ -506,9 +509,10 @@ class API(object):
 
             temp = self.LastJson
 						
-						
-            if "items" not in temp:  # maybe user is private, (we have not access to posts)
-                continue
+			#the result is damaged
+            if "items" not in temp:
+                self.logger.info("Total Received %s items with hashtag %s" % (len(feed), hashtagString))
+                return feed
 
             for item in temp["items"]:
                 if 'pk' in item.keys():
@@ -545,8 +549,11 @@ class API(object):
                 self.SendRequest('feed/location/' + str(locationId) + '/?max_id=' + str(next_max_id))
 
             temp = self.LastJson
+
+            #the result is damaged
             if "items" not in temp: #if no items
-                return []
+                self.logger.info("Retrieved %s medias from location %s" % (len(feed), locationId))
+                return feed
 
             for item in temp["items"]:
                 feed.append(item)
@@ -698,6 +705,14 @@ class API(object):
               self.SendRequest('friendships/' + str(usernameId) + '/followers/?max_id=' + str(next_max_id))
           
             temp = self.LastJson
+
+            # the result is damaged
+            if "users" not in temp:  # if no items
+                self.logger.info("End of the line: Total received %s followers of user %s" % (len(followers), usernameId))
+                result['followers'] = followers
+                result['next_max_id'] = None
+                result['previous_next_max_id'] = previous_next_max_id
+                return result
 
             for item in temp["users"]:
                 followers.append(item)

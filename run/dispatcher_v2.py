@@ -40,7 +40,6 @@ try:
         unlike_delay=15,  # default 1-
         follow_delay=40,  # default 30,
         unfollow_delay=40,  # default 30,
-        comment_delay=60,  # default 60
         multiple_ip=True
     )
 
@@ -116,7 +115,6 @@ try:
     bot.crawl_user_followers(amount=500)
 except:
   exceptionDetail = traceback.format_exc()
-  print(exceptionDetail)
   bot.logger.info("FATAL ERROR !")
   bot.logger.info(exceptionDetail)
 

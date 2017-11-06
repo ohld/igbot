@@ -81,7 +81,7 @@ def get_user_likers(self, user_id, media_count=10):
 def get_hashtag_medias(self, hashtag, filtration=True, amount=50):
     medias = self.getHashtagFeed(hashtagString=hashtag, amount=amount)
     if not medias:
-        self.logger.warning("Error while getting hashtag feed for %s." % hashtag)
+        self.logger.warning("get_hashtag_medias: Empty result for: %s." % hashtag)
         return []
 
     return self.filter_medias(medias, filtration)
@@ -90,7 +90,7 @@ def get_hashtag_medias(self, hashtag, filtration=True, amount=50):
 def get_location_medias(self, id_location, filtration=True, amount=None):
     medias = self.getLocationFeed(id_location, amount)
     if not medias:
-        self.logger.warning("Error while getting location feed.")
+        self.logger.warning("get_location_medias: Empty result for %s" % id_location)
         return []
 
     return self.filter_medias(medias, filtration)
