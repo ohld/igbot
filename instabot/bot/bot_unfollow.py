@@ -37,7 +37,7 @@ def unfollowBotCreatedFollowings(self, amount):
             totalUnfollow = totalUnfollow + 1
         else:
             self.logger.info("unfollowBotCreatedFollowings: Error: could not follow %s. Going to disable this follower! ", f['instagram_id_user'])
-            api_db.insert("update bot_action set bot_operation_reverted=%s where id=%s", lastBotAction, f['id'])
+            api_db.insert("update bot_action set bot_operation_reverted=%s where id=%s", None, f['id'])
         if totalUnfollow > amount:
             break
 
