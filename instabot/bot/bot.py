@@ -174,10 +174,12 @@ class Bot(API):
     def login(self, **args):
         if self.proxy:
             args['proxy'] = self.proxy
-        super(Bot, self).login(**args)
+        if super(Bot, self).login(**args) is False:
+            return False
         self.prepare()
         signal.signal(signal.SIGTERM, self.logout)
         atexit.register(self.logout)
+        return True
 
     def prepare(self):
         storage = load_checkpoint(self)
