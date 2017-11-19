@@ -50,7 +50,8 @@ from .bot_support import add_whitelist, add_blacklist
 
 from .bot_stats import save_user_stats
 
-from .bot_util import getBotOperations, getFollowAmount, getLikeAmount
+from .bot_util import getBotOperations
+from .bot_action_handler import  getLikeAmount,getFollowAmount
 import time
 
 class Bot(API):

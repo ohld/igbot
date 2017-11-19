@@ -15,7 +15,6 @@ sys.stdout = codecs.getwriter('utf8')(sys.stdout)
 sys.path.append(os.path.join(sys.path[0], '../'))
 
 
-
 parser = argparse.ArgumentParser(add_help=True)
 parser.add_argument('-id_campaign', type=str, help="id_campaign")
 parser.add_argument('-id_log', type=str, help="id_log")
@@ -43,6 +42,9 @@ try:
         multiple_ip=True
     )
 
+    bot.getLikeAmount(args.id_campaign)
+    print("DONE")
+    exit()
     campaign = api_db.fetchOne("select username,password from campaign where id_campaign=%s", args.id_campaign)
     bot.login(username=campaign['username'], password=campaign['password'])
 
