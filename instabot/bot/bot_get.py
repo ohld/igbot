@@ -172,19 +172,15 @@ def get_media_likers(self, media_id):
 
 
 def get_media_comments(self, media_id, only_text=False):
-    self.getMediaComments(media_id)
-    if 'comments' not in self.LastJson:
-        return []
+    comments = self.getMediaComments(media_id)
     if only_text:
-        return [str(item["text"]) for item in self.LastJson['comments']]
-    return self.LastJson['comments']
+        return [str(item["text"]) for item in comments]
+    return comments
 
 
 def get_media_commenters(self, media_id):
-    self.getMediaComments(media_id)
-    if 'comments' not in self.LastJson:
-        return []
-    return [str(item["user"]["pk"]) for item in self.LastJson['comments']]
+    comments = self.getMediaComments(media_id)
+    return [str(item["user"]["pk"]) for item in comments]
 
 
 def get_comment(self):
