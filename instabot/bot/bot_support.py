@@ -61,3 +61,8 @@ def add_blacklist(self, file_path):
     file_contents = read_list_from_file(file_path)
     self.blacklist = [self.convert_to_user_id(item) for item in file_contents]
     return not not self.blacklist
+
+
+def console_print(verbosity, text):
+    if verbosity:
+        print(text)
