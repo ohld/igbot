@@ -42,7 +42,7 @@ try:
 
   
     campaign = api_db.fetchOne("select username,password,timestamp from campaign where id_campaign=%s", args.id_campaign)
-    #bot.login(username=campaign['username'], password=campaign['password'])
+    bot.login(username=campaign['username'], password=campaign['password'])
 
     calculatedAmount = bot.getAmountDistribution(args.id_campaign)
     totalExpectedLikesAmount = bot.getLikeAmount(args.id_campaign,calculatedAmount)
