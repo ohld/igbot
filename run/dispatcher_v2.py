@@ -17,13 +17,11 @@ sys.path.append(os.path.join(sys.path[0], '../'))
 
 parser = argparse.ArgumentParser(add_help=True)
 parser.add_argument('-id_campaign', type=str, help="id_campaign")
-parser.add_argument('-id_log', type=str, help="id_log")
 args = parser.parse_args()
 
 try:
     bot = Bot(
         id_campaign=args.id_campaign,
-        id_log=args.id_log,
         max_likes_per_day=3100,  # default 1000
         max_unlikes_per_day=500,  # default 1000
         max_follows_per_day=800,  # default 350
@@ -42,16 +40,16 @@ try:
         multiple_ip=True
     )
 
-    bot.getLikeAmount(args.id_campaign)
-    print("DONE")
-    exit()
-    campaign = api_db.fetchOne("select username,password from campaign where id_campaign=%s", args.id_campaign)
-    bot.login(username=campaign['username'], password=campaign['password'])
+  
+    campaign = api_db.fetchOne("select username,password,timestamp from campaign where id_campaign=%s", args.id_campaign)
+    #bot.login(username=campaign['username'], password=campaign['password'])
 
+    calculatedAmount = bot.getAmountDistribution(args.id_campaign)
+    totalExpectedLikesAmount = bot.getLikeAmount(args.id_campaign,calculatedAmount)
+    totalExpectedFollowAmount = bot.getFollowAmount(args.id_campaign,calculatedAmount)
 
-    totalExpectedLikesAmount = bot.getLikeAmount(args.id_campaign)
-    totalExpectedFollowAmount = bot.getFollowAmount(args.id_campaign)
-
+    bot.logger.info("dispatcher: Initial calculated Amount(SOD): %s, totalExpectedLike:%s, totalExpectedFollow: %s" % (calculatedAmount,totalExpectedLikesAmount,totalExpectedFollowAmount) )
+    
     #todo assume we trigger this operation 10 times/day
     numberOfIterations = 10
     currentIteration = 1
@@ -117,6 +115,7 @@ try:
     bot.crawl_user_followers(amount=500)
 except:
   exceptionDetail = traceback.format_exc()
+  print(exceptionDetail)
   bot.logger.info("FATAL ERROR !")
   bot.logger.info(exceptionDetail)
 

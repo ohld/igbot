@@ -63,23 +63,23 @@ def insert(query, *args):
 def insertBotAction(*args):
     query = "insert into bot_action (id_campaign, id_user, instagram_id_user, " \
             "full_name, username, user_image, post_id, post_image, " \
-            "post_link,bot_operation,bot_operation_value,id_log) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+            "post_link,bot_operation,bot_operation_value,id_log,timestamp) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,now())"
 
     id = insert(query, *args)
     return id
 
 
 def insertOwnFollower(*args):
-    query = "insert into own_followers (id_user,instagram_id_user,full_name,username,user_image,is_verified) " \
-            " VALUES (%s,%s,%s,%s,%s,%s) ON DUPLICATE KEY UPDATE instagram_id_user=instagram_id_user"
+    query = "insert into own_followers (id_user,instagram_id_user,full_name,username,user_image,is_verified,timestamp) " \
+            " VALUES (%s,%s,%s,%s,%s,%s,now()) ON DUPLICATE KEY UPDATE instagram_id_user=instagram_id_user"
 
     id = insert(query, *args)
     return id
 
 
 def insertUserFollower(*args):
-    query = "insert into instagram_user_followers (fk,instagram_id_user,full_name,username,user_image,is_verified) " \
-            " VALUES (%s,%s,%s,%s,%s,%s) ON DUPLICATE KEY UPDATE instagram_id_user=instagram_id_user"
+    query = "insert into instagram_user_followers (fk,instagram_id_user,full_name,username,user_image,is_verified,timestamp) " \
+            " VALUES (%s,%s,%s,%s,%s,%s,now()) ON DUPLICATE KEY UPDATE instagram_id_user=instagram_id_user"
 
     id = insert(query, *args)
     return id
