@@ -49,6 +49,29 @@ def comment_hashtag(self, hashtag, amount=None):
     return self.comment_medias(medias[:amount])
 
 
+def like_and_comment_medias(self, medias):
+    broken_items = []
+    self.logger.info("Going to like and comment %d medias." % (len(medias)))
+    for media in tqdm(medias):
+        if not self.is_commented(media):
+            text = self.get_comment()
+            self.like(media)
+            self.logger.info("Liked and commented with text: %s" % text)
+            if not self.comment(media, text):
+                delay.comment_delay(self)
+                broken_items = medias[medias.index(media):]
+                break
+    self.logger.info("DONE: Total commented on %d medias. " %
+                     self.total_commented)
+    return broken_items
+
+
+def like_and_comment_hashtag(self, hashtag, amount=None):
+    self.logger.info("Going to comment medias by %s hashtag" % hashtag)
+    medias = self.get_hashtag_medias(hashtag)
+    return self.like_and_comment_medias(medias[:amount])
+
+
 def comment_user(self, user_id, amount=None):
     """ Comments last user_id's medias """
     if not self.check_user(user_id, filter_closed_acc=True):
