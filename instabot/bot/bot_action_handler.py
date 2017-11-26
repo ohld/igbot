@@ -65,8 +65,10 @@ def resumeOperation(self, id_campaign):
   resumeResult = api_db.fetchOne("SELECT * FROM campaign_log WHERE DATE(`timestamp`) = CURDATE() and id_campaign=%s",id_campaign)
   
   if resumeResult is None:
+    self.logger.info("resumeOperation: Could not resume, going to start from scratch !")
     return None
-  
+
+  self.logger.info("resumeOperation: Checkpoint was found, id: ",resumeResult['id_log'])
   result = {}
   self.id_log = resumeResult['id_log']
   result['like_amount']=resumeResult['expected_like_amount']
