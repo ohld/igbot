@@ -9,19 +9,21 @@ from instabot.api import api_db
 import math
 from datetime import datetime
 
-
 stdout = sys.stdout
 sys.stdout = codecs.getwriter('utf8')(sys.stdout)
 sys.path.append(os.path.join(sys.path[0], '../'))
 
 
 parser = argparse.ArgumentParser(add_help=True)
-parser.add_argument('-id_campaign', type=str, help="id_campaign")
+parser.add_argument('-angie_campaign', type=str, help="angie_campaign")
 args = parser.parse_args()
+
+if args.angie_campaign is None:
+    exit("dispatcher: Campaign id it not specified !")
 
 try:
     bot = Bot(
-        id_campaign=args.id_campaign,
+        id_campaign=args.angie_campaign,
         max_likes_per_day=3100,  # default 1000
         max_unlikes_per_day=500,  # default 1000
         max_follows_per_day=800,  # default 350
@@ -41,16 +43,17 @@ try:
     )
 
   
-    campaign = api_db.fetchOne("select username,password,timestamp from campaign where id_campaign=%s", args.id_campaign)
+    campaign = api_db.fetchOne("select username,password,timestamp,id_campaign from campaign where id_campaign=%s", args.angie_campaign)
+    bot.canBotStart(args.angie_campaign)
     bot.login(username=campaign['username'], password=campaign['password'])
 
-    calculatedAmount = bot.getAmountDistribution(args.id_campaign)
-    totalExpectedLikesAmount = bot.getLikeAmount(args.id_campaign,calculatedAmount)
-    totalExpectedFollowAmount = bot.getFollowAmount(args.id_campaign,calculatedAmount)
+
+    calculatedAmount = bot.getAmountDistribution(args.angie_campaign)
+    totalExpectedLikesAmount = bot.getLikeAmount(args.angie_campaign,calculatedAmount)
+    totalExpectedFollowAmount = bot.getFollowAmount(args.angie_campaign,calculatedAmount)
 
     bot.logger.info("dispatcher: Initial calculated Amount(SOD): %s, totalExpectedLike:%s, totalExpectedFollow: %s" % (calculatedAmount,totalExpectedLikesAmount,totalExpectedFollowAmount) )
     
-    #todo assume we trigger this operation 10 times/day
     numberOfIterations = 10
     currentIteration = 1
 
@@ -68,6 +71,12 @@ try:
 
     # if we still have some likes or follow to perform
     while (totalPerformedLikes < totalExpectedLikesAmount or totalPerformedFollows < totalExpectedFollowAmount) and currentIteration < securityBreak and startingDate<=datetime.now().date():
+        bot.logger.info("Testing date time: startingDate %s, currentDate: %s" % (startingDate, datetime.now().date()))
+        if startingDate<datetime.now().date():
+            bot.logger.info("Starting date is less then currentDate. The iteration should BRAKE now !")
+        else:
+            bot.logger.info("Starting date is NOT less then currentDate. The iteration should continue")
+
         #if no more likes needed to perform
         if totalExpectedLikesAmount<=totalPerformedLikes:
             currentIterationLikesAmount=0
@@ -84,7 +93,7 @@ try:
             currentIteration, currentIterationLikesAmount, currentIterationFollowAmount))
 
         result = bot.start(likesAmount=currentIterationLikesAmount, followAmount=currentIterationFollowAmount,
-                           operations=bot.getBotOperations(args.id_campaign))
+                           operations=bot.getBotOperations(args.angie_campaign))
 
         totalPerformedLikes = totalPerformedLikes+ result['no_likes']
         totalPerformedFollows= totalPerformedFollows+ result['no_follows']

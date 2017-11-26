@@ -97,6 +97,7 @@ class API(object):
         self.uuid = self.generateUUID(True)
 
     def login(self, username=None, password=None, force=False, proxy=None):
+        self.logger.info("Trying to login user %s with custom IP: %s" % (username, self.multiple_ip))
         if password is None:
             username, password = get_credentials(username=username)
 
@@ -114,15 +115,13 @@ class API(object):
                     'https': 'http://' + self.proxy,
                 }
                 self.session.proxies.update(proxies)
-            if self.multiple_ip is not None:
+            if self.multiple_ip is not None and self.multiple_ip is not False:
                 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
                 self.bot_ip =  getBotIp(self, self.web_application_id_user, self.id_campaign)
                 self.session.mount("http://", SourceAddressAdapter((str(self.bot_ip), 0)))
                 self.session.mount("https://", SourceAddressAdapter((str(self.bot_ip), 0)))
 
-            if (
-                    self.SendRequest('si/fetch_headers/?challenge_type=signup&guid=' + self.generateUUID(False),
-                                     None, True)):
+            if (self.SendRequest('si/fetch_headers/?challenge_type=signup&guid=' + self.generateUUID(False),None, True)):
 
                 data = {'phone_id': self.generateUUID(True),
                         '_csrftoken': self.LastResponse.cookies['csrftoken'],
@@ -143,7 +142,19 @@ class API(object):
                 else:
                     self.logger.info("Login or password is incorrect.")
                     delete_credentials()
-                    exit()
+                    return False
+            else:
+                self.logger.info("Could not login user %s, going to exit !", username)
+                return False
+
+    def loadJson(self, value):
+        try:
+            r = json.loads(value)
+            #self.logger.info("loadJson: Successfully loaded json !")
+            return r
+        except:
+            self.logger.info("loadJson: Could not load json %s",value)
+            return {}
 
     def logout(self):
         if not self.isLoggedIn:
@@ -177,7 +188,7 @@ class API(object):
 
         if response.status_code == 200:
             self.LastResponse = response
-            self.LastJson = json.loads(response.text)
+            self.LastJson = self.loadJson(response.text)
             return True
         else:
             details = None
@@ -189,12 +200,12 @@ class API(object):
             else:#the original response  is too big when 404
                 responseInfo="Page not found!"
                 self.logger.warning("HTTP ERROR: STATUS %s, going to sleep 1 minute !" % (str(response.status_code)))
-                sleep_minutes=0
-                time.sleep(5)
+                sleep_minutes=1
+                time.sleep(sleep_minutes * 60)
 
 
             if response.status_code == 400:
-                responseObject = json.loads(response.text)
+                responseObject = self.loadJson(response.text)
                 if 'spam' in responseObject:
                     sleep_minutes = 10
                     self.logger.warning("BOT IS BLOCKED, going to sleep %s minutes" % sleep_minutes)
@@ -203,7 +214,9 @@ class API(object):
                 else:
                     sleep_minutes=1
                     self.logger.warning("Request return 400 error. Going to sleep %s minutes" % sleep_minutes)
-                    time.sleep(sleep_minutes * 60)
+                    #don t sleep on login fail
+                    if login==False:
+                        time.sleep(sleep_minutes * 60)
 
             elif response.status_code == 429:
                 sleep_minutes = 5
@@ -214,13 +227,13 @@ class API(object):
 
             currentOperation = self.currentOperation if hasattr(self, "currentOperation") else None
 
-            insert("insert into instagram_log (id_user,log,operation,request,http_status,details) values (%s,%s,%s,%s,%s,%s)",
+            insert("insert into instagram_log (id_user,log,operation,request,http_status,details,timestamp) values (%s,%s,%s,%s,%s,%s,now())",
                    self.web_application_id_user, responseInfo, currentOperation, config.API_URL + endpoint,str(response.status_code),details)
 
             # for debugging
             try:
                 self.LastResponse = response
-                self.LastJson = json.loads(response.text)
+                self.LastJson = self.loadJson(response.text)
             except:
                 pass
             return False

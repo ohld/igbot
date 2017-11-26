@@ -2,6 +2,7 @@ import datetime
 import atexit
 import signal
 import math
+import os
 
 from ..api import API
 from ..api import api_db
@@ -192,7 +193,9 @@ class Bot(API):
     def login(self, **args):
         if self.proxy:
             args['proxy'] = self.proxy
-        super(self.__class__, self).login(**args)
+        status = super(self.__class__, self).login(**args)
+        if status==False:
+            exit("Could not login to instagram !")
         self.prepare()
         signal.signal(signal.SIGTERM, self.logout)
         atexit.register(self.logout)
@@ -524,8 +527,21 @@ class Bot(API):
     
     def getAmountDistribution(self,id_campaign):
       return getAmountDistribution(self,id_campaign)
-      
-     
+
+    #this function check if another bot instance for same campaign is running
+    def canBotStart(self, id_campaign):
+        self.logger.info("canBotStart: check if another bot instance is running for campaign %s",id_campaign)
+        processname = 'angie_campaign='+id_campaign
+        tmp = os.popen("ps -Af").read()
+        proccount = tmp.count(processname)
+
+        if proccount > 1:
+            self.logger.info("canBotStart: ERROR: another bot instance is running for campaign %s", id_campaign)
+            exit("canBotStart: ERROR: another bot instance is running for this campaign")
+
+        self.logger.info("canBotStart: All Good, no other bot instance is running for this campaign")
+        return True
+
 
 
     def start(self, likesAmount, followAmount, operations):

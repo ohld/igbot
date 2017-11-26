@@ -68,6 +68,7 @@ def resumeOperation(self, id_campaign):
     return None
   
   result = {}
+  self.id_log = resumeResult['id_log']
   result['like_amount']=resumeResult['expected_like_amount']
   result['follow_amount']=resumeResult['expected_follow_amount']
   
