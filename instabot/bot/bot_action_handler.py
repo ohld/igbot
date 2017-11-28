@@ -68,7 +68,7 @@ def resumeOperation(self, id_campaign):
     self.logger.info("resumeOperation: Could not resume, going to start from scratch !")
     return None
 
-  self.logger.info("resumeOperation: Checkpoint was found, id: ",resumeResult['id_log'])
+  self.logger.info("resumeOperation: Checkpoint was found, id: %s ",resumeResult['id_log'])
   result = {}
   self.id_log = resumeResult['id_log']
   result['like_amount']=resumeResult['expected_like_amount']
@@ -82,7 +82,7 @@ def getAmountDistribution(self, id_campaign):
     resume = resumeOperation(self,id_campaign)
     
     if resume is not None:
-      self.logger.info("getAmountDistribution: going to resume %s",resume)
+      self.logger.info("getAmountDistribution: going to resume this amount: %s",resume)
       return resume
     
     categories = api_db.select("select * from action_amount_distribution")
@@ -167,24 +167,11 @@ def getLikeAmount(self,id_campaign, calculatedAmount):
     self.logger.info("getLikeAmount: Campaign id: %s did not set any like operations ! Going to perform 0 likes !", id_campaign)
     return 0
   
-  
   self.logger.info("getLikeAmount: Campaign id %s wants to perform %s amount of likes" % (id_campaign,likesAmount))
-  
-  currentDate=str(datetime.date.today())
-  likesPerformed=api_db.fetchOne('SELECT count(*) as no_op FROM bot_action where bot_operation like %s and date(timestamp)=%s and id_user=%s', "like"+"%", currentDate, self.web_application_id_user)
-  
-  if likesPerformed['no_op'] >0:
-    self.logger.info("getLikeAmount: Campaign id %s has  already performed %s likes. Going to perform %s amount of likes" % (id_campaign, likesPerformed['no_op'], likesAmount-likesPerformed['no_op']))
-  
-  likesAmount = likesAmount - likesPerformed['no_op']
-  
-  #safe check
-  if likesAmount < 0:
-    likesAmount=0
-    
+      
   return likesAmount
 
-
+  
   
 # there is one strange thing about the follow amount:
 # if the user has selected only the unfollow operation, the total follow/unfollow amount should be devided by 2
@@ -199,28 +186,29 @@ def getFollowAmount(self,id_campaign, calculatedAmount):
     self.logger.info("getFollowAmount: Campaign id: %s did not set any follow/unfollow operations ! Going to perform 0 follow/unfollow !", id_campaign)
     return 0
   
-  
   self.logger.info("getFollowAmount: Campaign id %s wants to perform %s amount of follow/unfollow" % (id_campaign,followAmount))
+    
+  return followAmount
+
+def getLikesPerformed(self, dateParam):
+  likesPerformed=api_db.fetchOne('SELECT count(*) as no_op FROM bot_action where bot_operation like %s and date(timestamp)=%s and id_user=%s', "like"+"%", str(dateParam), self.web_application_id_user)
   
-  currentDate=str(datetime.date.today())
+  if likesPerformed['no_op'] >0:
+    self.logger.info("getLikesPerformed: Campaign id %s has  ALREADY performed %s likes. in day %s" % (self.id_campaign, likesPerformed['no_op'], dateParam))
+  else:
+    self.logger.info("getLikesPerformed: 0 likes PREVIOUSLY performed for campaign id  %s, in day %s" % (self.id_campaign,dateParam))
   
+  return likesPerformed['no_op']
+
+
+def getFollowPerformed(self,dateParam):
+    
   #follows peformed during this day
-  followsPerformed=api_db.fetchOne("SELECT count(*) as no_op FROM `bot_action` where (bot_operation like %s or bot_operation like %s) and date(timestamp)=%s and id_user=%s", "follow_"+"%","unfollow"+"%", currentDate, self.web_application_id_user)
+  followsPerformed=api_db.fetchOne("SELECT count(*) as no_op FROM `bot_action` where (bot_operation like %s or bot_operation like %s) and date(timestamp)=%s and id_user=%s", "follow_"+"%","unfollow"+"%", str(dateParam), self.web_application_id_user)
   
   if followsPerformed['no_op'] >0:
-    self.logger.info("getFollowAmount: Campaign id %s has already performed %s follows operations. Going to perform %s amount of follows" % (id_campaign, followsPerformed['no_op'], followAmount-followsPerformed['no_op']))  
+    self.logger.info("getFollowAmount: Campaign id %s has ALREADY performed %s follow/unfollow, in day %s ." % (self.id_campaign, followsPerformed['no_op'],dateParam))  
+  else:
+    self.logger.info("getLikesPerformed: 0 follow ALREADY performed for campaign %s, in day %s" % (self.id_campaign,dateParam))
   
-  followAmount = followAmount - followsPerformed['no_op']
-  
-  #safe check
-  if followAmount < 0:
-    followAmount=0
-    
-  #check if the user has selected only unfollow operation
-  if hasFollowOperation['rows']==1 and followAmount>0:
-    hasOnlyUnfollowSelected = api_db.fetchOne("select count(*) as rows from campaign_config where id_campaign=%s and configName=%s and enabled=1", id_campaign,"unfollow")
-    if hasOnlyUnfollowSelected['rows']==1:
-      self.logger.info("getFollowAmount: User has selected only unfollow operation. Initial amount of %s will be divided by 2: %s " % (followAmount, followAmount/2))
-      followAmount=followAmount/2
-  
-  return followAmount
+  return followsPerformed['no_op']

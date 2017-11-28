@@ -52,7 +52,7 @@ from .bot_support import add_whitelist, add_blacklist
 from .bot_stats import save_user_stats
 
 from .bot_util import getBotOperations
-from .bot_action_handler import  getLikeAmount,getFollowAmount,getAmountDistribution
+from .bot_action_handler import  getLikeAmount,getFollowAmount,getAmountDistribution, getLikesPerformed, getFollowPerformed
 import time
 
 class Bot(API):
@@ -524,6 +524,12 @@ class Bot(API):
       
     def getFollowAmount(self, id_campaign,calculatedAmount):
       return getFollowAmount(self, id_campaign,calculatedAmount)
+    
+    def getLikesPerformed(self, dateParam):
+      return getLikesPerformed(self, dateParam)
+    
+    def getFollowPerformed(self, dateParam):
+      return getFollowPerformed(self, dateParam)
     
     def getAmountDistribution(self,id_campaign):
       return getAmountDistribution(self,id_campaign)
