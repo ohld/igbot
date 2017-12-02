@@ -19,7 +19,7 @@ if not args.u or not args.p or not args.location:
     exit(0)
 
 from instabot import Bot
-bot = Bot(id_campaign=False, id_log=False)
+bot = Bot(id_campaign=False)
 bot.login(username=args.u,password=args.p)
 result = bot.searchLocation(query=args.location)
 
