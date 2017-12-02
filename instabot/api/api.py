@@ -65,9 +65,9 @@ class API(object):
         if id_campaign==False:
             id_campaign="general"
             filename="instabot.log"
-	#this is not working atm
+	    #this is not working atm
         #logs_folder = os.environ['INSTABOT_LOGS_PATH']
-	logs_folder="/home/instabot-log"
+        logs_folder = "/home/instabot-log"
         campaign_folder = logs_folder + "/campaign/" + id_campaign
 
 
@@ -178,10 +178,10 @@ class API(object):
             self.total_requests += 1
             if post is not None:  # POST
                 response = self.session.post(
-                    config.API_URL + endpoint, data=post)
+                    config.API_URL + endpoint, data=post, verify=True)
             else:  # GET
                 response = self.session.get(
-                    config.API_URL + endpoint)
+                    config.API_URL + endpoint,verify=True)
         except Exception as e:
             self.logger.warning(str(e))
             return False

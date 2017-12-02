@@ -39,7 +39,7 @@ try:
         unlike_delay=15,  # default 1-
         follow_delay=40,  # default 30,
         unfollow_delay=40,  # default 30,
-        multiple_ip=True
+        multiple_ip=False
     )
 
   
