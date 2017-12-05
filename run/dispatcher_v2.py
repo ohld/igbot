@@ -52,7 +52,9 @@ try:
     totalExpectedLikesAmount = int(bot.getLikeAmount(args.angie_campaign,calculatedAmount))
     totalExpectedFollowAmount = int(bot.getFollowAmount(args.angie_campaign,calculatedAmount))
     
-    likeForLikeAmount = 400
+    usersLikeForLike = api_db.fetchOne('select count(*) as total_users,users.email from users join user_subscription on (users.id_user = user_subscription.id_user)  join campaign on (users.id_user = campaign.id_user) where (user_subscription.end_date>now() or user_subscription.end_date is null)   and campaign.id_campaign!=%s group by users.email order by users.id_user', args.angie_campaign)
+    bot.logger.info("dispatcher_v2: Found %s  likeForLike users", usersLikeForLike['total_users'])
+    likeForLikeAmount = usersLikeForLike['total_users']
     standardOperationLikeAmount = totalExpectedLikesAmount - likeForLikeAmount
     
     bot.logger.info("dispatcher: Initial calculated Amount(SOD): %s, totalExpectedLike:%s, totalExpectedFollow: %s" % (calculatedAmount,totalExpectedLikesAmount,totalExpectedFollowAmount) )
