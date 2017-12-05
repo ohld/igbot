@@ -59,7 +59,14 @@ def insert(query, *args):
     db.close()
     return id
 
-
+def updateCampaignChekpoint(key, value, id_campaign):
+  query='INSERT INTO campaign_checkpoint (id_campaign, _key, value) VALUES(%s, %s, %s) ON DUPLICATE KEY UPDATE  value=%s';
+  
+  id = insert(query, id_campaign, key, value, value)
+  
+  return id
+  
+  
 def insertBotAction(*args):
     query = "insert into bot_action (id_campaign, id_user, instagram_id_user, " \
             "full_name, username, user_image, post_id, post_image, " \

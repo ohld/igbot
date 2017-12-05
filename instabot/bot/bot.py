@@ -549,14 +549,63 @@ class Bot(API):
         return True
 
 
-
-    def start(self, likesAmount, followAmount, operations):
+    def getUsersForLikeForLike(self, id_campaign,likesAmount):
+      
+      sqlLastUserProcessed = "SELECT * FROM `campaign_checkpoint` WHERE   date(timestamp) = CURDATE() and id_campaign=%s and _key='like_for_like_user_id'"
+      lastUserProcessed = api_db.fetchOne(sqlLastUserProcessed,id_campaign)
+      
+      
+      #start from beginning
+      if not lastUserProcessed:
+        lastUserProcessedId = 0
+      else:
+        lastUserProcessedId = lastUserProcessed['value']
+        
+      self.logger.info("getAmountLikeForLike: Last user processed is: %s ",lastUserProcessedId)
+      
+      usersToProcess = "select DISTINCT users.email,users.id_user, campaign.username as instagram_username from users join user_subscription on (users.id_user = user_subscription.id_user)  join campaign on (users.id_user = campaign.id_user) where (user_subscription.end_date>now() or user_subscription.end_date is null) and users.id_user>%s  and campaign.id_campaign!=%s order by users.id_user asc limit %s";
+      
+      result = api_db.select(usersToProcess,lastUserProcessedId,id_campaign,likesAmount)
+      
+      self.logger.info("getAmountLikeForLike: Found: users: %s", len(result))
+      
+      return result;
+      
+      
+    def startLikeForLike(self, likesAmount):
+      self.logger.info("bot.startLikeForLike: Started likeForLike opration. Likes to perform %s", likesAmount)
+      totalLiked=0
+      
+      result=self.getUsersForLikeForLike(self.id_campaign,likesAmount)
+      
+      self.logger.info("bot.startLikeForLike: Received %s users to process", len(result))
+      
+      if len(result)==0:
+        self.logger.info("bot.startLikeForLike. NOTHING TO LIKE")
+        return 0
+      
+      for user in result:
+        user['instagram_id_user']=self.get_userid_from_username(user['instagram_username'])
+        user['full_name']=user['instagram_username']
+        totalLiked = totalLiked + self.like_user(userObject=user, bot_operation="like_for_like", bot_operation_value=user['instagram_username'],amount=1)
+        
+      self.logger.info("bot.startLikeForLike: END. Last user processed: %s, id_user: %s" % (user['instagram_username'], user['id_user']))
+      
+      #update in database the user id
+      api_db.updateCampaignChekpoint('like_for_like_user_id',user['id_user'],self.id_campaign)
+      
+      self.logger.info("bot.startLikeForLike: END updated checkpoint for campaign: %s with last user: %s" % (self.id_campaign, user['id_user']))
+      self.logger.info("bot.startLikeForLike: END. Total liked %s users from %s users" % (totalLiked, likesAmount))
+      
+      return totalLiked
+      
+    def startStandardOperation(self, likesAmount, followAmount, operations):
 
         result = {}
         result['no_likes'] = 0
         result['no_follows'] = 0
 
-        self.logger.info("bot.start: Going to loop through %s operations and execute them !", len(operations))
+        self.logger.info("bot.startStandardOperation: Started standard operation. Likes to perform: %s, follow to perform %s, operations %s!" % (likesAmount, followAmount, len(operations)))
 
         for operation in operations:
             self.currentOperation=operation['configName']
@@ -843,5 +892,6 @@ class Bot(API):
                 self.logger.info("unfollow: End operation: %s, expected: %s, actual: %s" % ('unfollow', expectedFollow, performedFollow))
 
                 result['no_follows'] = result['no_follows'] + performedFollow
-
+        
+        self.logger.info("bot.startStandardOperation. END operation. performed likes %s, follow/unfollow %s . Expected like %s, follow %s" % (result['no_likes'],result['no_follows'], likesAmount, followAmount))
         return result
