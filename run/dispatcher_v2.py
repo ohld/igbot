@@ -78,11 +78,12 @@ try:
         #if no more likes needed to perform
         if totalExpectedLikesAmount<=totalPerformedLikes:
             currentIterationStandardLikesAmount=0
+            currentIterationLikeForLikeAmount=0
         else:
             currentIterationStandardLikesAmount = int(math.ceil(math.ceil(standardOperationLikeAmount) / math.ceil(numberOfIterations)))
             currentIterationLikeForLikeAmount = int(math.ceil(math.ceil(likeForLikeAmount) / math.ceil(numberOfIterations/2)))
-            currentIterationTotalExpectedLikeAmount = currentIterationStandardLikesAmount + currentIterationLikeForLikeAmount
             
+        currentIterationTotalExpectedLikeAmount = currentIterationStandardLikesAmount + currentIterationLikeForLikeAmount
 
         #if no more follows are needed
         if totalExpectedFollowAmount<=totalPerformedFollows:

@@ -121,13 +121,13 @@ def follow_other_users_followers(self, userObject, amount):
     bot_operation = 'follow_other_users_followers'
     return self.follow_users(filteredFollowers, amount, bot_operation, userObject['username'])
 
-#the remove already followed users and other filters should be done before this function.
+#todo remove already followed users and other filters should be done before this function.
 def follow_users(self, users, amount, bot_operation, bot_operation_value):
     broken_items = []
 
     self.logger.info("Going to follow %s users" % amount)
 
-    users = removeAlreadyFollowedUsers(users)
+    users = removeAlreadyFollowedUsers(users,self)
 
     self.logger.info("After removing already followed users, %s users left to follow." % len(users))
 
@@ -155,11 +155,19 @@ def follow_users(self, users, amount, bot_operation, bot_operation_value):
     return totalFollowed
 
 
-def removeAlreadyFollowedUsers(users):
+def removeAlreadyFollowedUsers(users, bot):
     filteredList = []
     for u in users:
+        
+      result = api_db.fetchOne("select count(*) as total from bot_action where id_campaign=%s and instagram_id_user=%s and bot_operation like %s",bot.id_campaign,u['instagram_id_user'],"follow_%")
+      
+      if result['total']>0:
+        bot.logger.warning("removeAlreadyFollowedUsers: The user %s has been already followed in the past! SKIP IT !", u['username'])
+      else:
+        #bot.logger.info("removeAlreadyFollowedUsers: OK. The user %s was not followed before !", u['username'])
         if not u['friendship_status']['following']:
             filteredList.append(u)
+    
     return filteredList
 
 
