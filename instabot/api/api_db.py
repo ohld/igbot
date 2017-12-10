@@ -60,7 +60,7 @@ def insert(query, *args):
     return id
 
 def updateCampaignChekpoint(key, value, id_campaign):
-  query='INSERT INTO campaign_checkpoint (id_campaign, _key, value, timestamp) VALUES(%s, %s, %s, now()) ON DUPLICATE KEY UPDATE  value=%s'
+  query='INSERT INTO campaign_checkpoint (id_campaign, _key, value, timestamp) VALUES(%s, %s, %s, CURDATE()) ON DUPLICATE KEY UPDATE  value=%s'
   
   id = insert(query, id_campaign, key, value, value)
   
