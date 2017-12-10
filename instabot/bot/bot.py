@@ -194,11 +194,12 @@ class Bot(API):
         if self.proxy:
             args['proxy'] = self.proxy
         status = super(self.__class__, self).login(**args)
-        if status==False:
-            exit("Could not login to instagram !")
+        #if status==False:
+        #    exit("Could not login to instagram !")
         self.prepare()
         signal.signal(signal.SIGTERM, self.logout)
         atexit.register(self.logout)
+        return status
 
     def prepare(self):
         storage = load_checkpoint(self)

@@ -19,8 +19,10 @@ if not args.u or not args.p or not args.location:
     exit(0)
 
 from instabot import Bot
-bot = Bot(id_campaign=False)
-bot.login(username=args.u,password=args.p)
+bot = Bot(id_campaign=False,multiple_ip=None)
+status  = bot.login(username=args.u,password=args.p)
+if status!=1:
+  exit("Could not login into account. Status error:" + str(status))
 result = bot.searchLocation(query=args.location)
 
 parsedResult=[]
