@@ -564,17 +564,17 @@ class Bot(API):
         
       self.logger.info("getAmountLikeForLike: Last user processed is: %s ",lastUserProcessedId)
       
-      usersToProcess = "select DISTINCT users.email,users.id_user, campaign.username as instagram_username from users join user_subscription on (users.id_user = user_subscription.id_user)  join campaign on (users.id_user = campaign.id_user) where (user_subscription.end_date>now() or user_subscription.end_date is null) and users.id_user>%s  and campaign.id_campaign!=%s order by users.id_user asc limit %s";
+      usersToProcess = "select DISTINCT users.email,users.id_user, campaign.username as instagram_username from users join user_subscription on (users.id_user = user_subscription.id_user)  join campaign on (users.id_user = campaign.id_user) where (user_subscription.end_date>now() or user_subscription.end_date is null) and users.id_user>%s  and campaign.id_campaign!=%s order by users.id_user asc limit %s"
       
       result = api_db.select(usersToProcess,lastUserProcessedId,id_campaign,likesAmount)
       
       self.logger.info("getAmountLikeForLike: Found: users: %s", len(result))
       
-      return result;
+      return result
       
       
     def startLikeForLike(self, likesAmount):
-      self.logger.info("bot.startLikeForLike: Started likeForLike opration. Likes to perform %s", likesAmount)
+      self.logger.info("bot.startLikeForLike: Started likeForLike operation. Likes to perform %s", likesAmount)
       totalLiked=0
       
       result=self.getUsersForLikeForLike(self.id_campaign,likesAmount)

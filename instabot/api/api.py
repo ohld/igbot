@@ -144,7 +144,7 @@ class API(object):
                     delete_credentials()
                     return False
             else:
-                self.logger.info("Could not login user %s, going to exit !", username)
+                self.logger.info("Could not login user %% !", username)
                 return False
 
     def loadJson(self, value):

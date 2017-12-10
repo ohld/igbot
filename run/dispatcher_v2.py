@@ -45,15 +45,17 @@ try:
   
     campaign = api_db.fetchOne("select username,password,timestamp,id_campaign from campaign where id_campaign=%s", args.angie_campaign)
     bot.canBotStart(args.angie_campaign)
-    bot.login(username=campaign['username'], password=campaign['password'])
-
+    status = bot.login(username=campaign['username'], password=campaign['password'])
+    if status!=True:
+        bot.logger.info("dispatcher: Could not login, going to exit !")
+        exit()
 
     calculatedAmount = bot.getAmountDistribution(args.angie_campaign)
     totalExpectedLikesAmount = int(bot.getLikeAmount(args.angie_campaign,calculatedAmount))
     totalExpectedFollowAmount = int(bot.getFollowAmount(args.angie_campaign,calculatedAmount))
-    
-    usersLikeForLike = api_db.fetchOne('select count(*) as total_users,users.email from users join user_subscription on (users.id_user = user_subscription.id_user)  join campaign on (users.id_user = campaign.id_user) where (user_subscription.end_date>now() or user_subscription.end_date is null)   and campaign.id_campaign!=%s group by users.email order by users.id_user', args.angie_campaign)
-    bot.logger.info("dispatcher_v2: Found %s  likeForLike users", usersLikeForLike['total_users'])
+
+    usersLikeForLike = api_db.fetchOne('select count(*) as total_users from users join user_subscription on (users.id_user = user_subscription.id_user)  join campaign on (users.id_user = campaign.id_user) where (user_subscription.end_date>now() or user_subscription.end_date is null)   and campaign.id_campaign!=%s order by users.id_user',args.angie_campaign)
+    bot.logger.info("dispatcher_v2: Total number of likeForLike users: %s", usersLikeForLike['total_users'])
     likeForLikeAmount = usersLikeForLike['total_users']
     standardOperationLikeAmount = totalExpectedLikesAmount - likeForLikeAmount
     
@@ -91,7 +93,7 @@ try:
         else:
             currentIterationFollowAmount = int(math.ceil(math.ceil(totalExpectedFollowAmount) / math.ceil(numberOfIterations)))
 
-        bot.logger.info("DISPATCHER: Started iteration no %s. Going to perform in this ITERATION: %s likes , %s follow/unfollow. Total to perform %s likes, %s follow/unfollow. Already performed %s likes, %s follow/unfollow" % (
+        bot.logger.info("DISPATCHER: STARTED ITERATION no %s. Going to perform in this ITERATION: %s likes , %s follow/unfollow. Total to perform %s likes, %s follow/unfollow. Already performed %s likes, %s follow/unfollow" % (
             currentIteration, currentIterationTotalExpectedLikeAmount, currentIterationFollowAmount, totalExpectedLikesAmount, totalExpectedFollowAmount, totalPerformedLikes, totalPerformedFollows))
         
         

@@ -164,8 +164,10 @@ def getLikeAmount(self,id_campaign, calculatedAmount):
 
   hasLikesOperation= api_db.fetchOne("select count(*) as rows from campaign_config where id_campaign=%s and configName like %s and enabled=1",id_campaign, "like_"+"%")
   if hasLikesOperation['rows']==0:
-    self.logger.info("getLikeAmount: Campaign id: %s did not set any like operations ! Going to perform 0 likes !", id_campaign)
-    return 0
+    usersLikeForLike = api_db.fetchOne('select count(*) as total_users from users join user_subscription on (users.id_user = user_subscription.id_user)  join campaign on (users.id_user = campaign.id_user) where (user_subscription.end_date>now() or user_subscription.end_date is null)   and campaign.id_campaign!=%s order by users.id_user',id_campaign)
+    self.logger.info("getLikeAmount: Total number of likeForLike users: %s", usersLikeForLike['total_users'])
+    self.logger.info("getLikeAmount: Campaign id: %s did not set any like operations ! Going to perform only %s likeForLike:!" % (id_campaign, usersLikeForLike['total_users']))
+    return usersLikeForLike['total_users']
   
   self.logger.info("getLikeAmount: Campaign id %s wants to perform %s amount of likes" % (id_campaign,likesAmount))
       
