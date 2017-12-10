@@ -88,7 +88,7 @@ class API(object):
             '%(asctime)s - %(levelname)s - %(message)s')
         ch.setFormatter(formatter)
         #dirty hack -> disable the output to console
-        if id_campaign!="generalx":
+        if id_campaign!="general":
             self.logger.addHandler(ch)
 
     def setUser(self, username, password):
@@ -140,7 +140,7 @@ class API(object):
                     self.logger.info("Login success as %s!" % self.username)
                     return True
                 else:
-                    self.logger.info("Login or password is incorrect.")
+                    self.logger.info("Incorrect credentials or instagram verification required !")
                     delete_credentials()
                     return False
             else:
