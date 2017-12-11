@@ -596,7 +596,7 @@ class Bot(API):
       api_db.updateCampaignChekpoint('like_for_like_user_id',user['id_user'],self.id_campaign)
       
       self.logger.info("bot.startLikeForLike: END updated checkpoint for campaign: %s with last user: %s" % (self.id_campaign, user['id_user']))
-      self.logger.info("bot.startLikeForLike: END. Total liked %s users from %s users" % (totalLiked, likesAmount))
+      self.logger.info("bot.startLikeForLike: END. Total liked %s users from a total of %s users" % (totalLiked, likesAmount))
       
       return totalLiked
       

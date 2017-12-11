@@ -29,7 +29,7 @@ def getInitialActionAmount(self, id_campaign):
     result['maximumActionAmount'] = result['maximumLikeAmount'] + result['maximumFollowAmount']
 
     
-    self.logger.info("getInitialActionAmount: %s", result)
+    self.logger.info("getInitialActionAmount: Default bot configuration is:", result)
     
     #check maturity of account
     accountIsFullyFunctionalAfter=90
@@ -44,7 +44,7 @@ def getInitialActionAmount(self, id_campaign):
       return result
     
     #check maturity if the account
-    self.logger.info("getInitialActionAmount: Going to apply percentage on Account type: %s", campaign)
+    self.logger.info("getInitialActionAmount: Going to calculated action number based on account type: month_start: %s, month_end:%s, percentage: %s" % (campaign['month_start'],campaign['month_end'], campaign['percentage_amount']))
     
     
     result['maximumLikeAmount']= int(round(result['maximumLikeAmount'] * campaign['percentage_amount'] / 100))
@@ -122,7 +122,7 @@ def getAmountDistribution(self, id_campaign):
                 " order by date(timestamp) desc) my_table"
 
         result = api_db.fetchOne(query, id_campaign)
-        self.logger.info("getAmountDistribution: %s",query)
+        #self.logger.info("getAmountDistribution: %s",query)
         self.logger.info("getAmountDistribution: Selected category: %s, iteration %s, daysForThisCategory: %s, usedDays: %s" % (
         categories[selectedCategoryIndex], iteration, daysForThisCategory, result['total']))
         
@@ -133,7 +133,7 @@ def getAmountDistribution(self, id_campaign):
         iteration = iteration + 1
         del categories[selectedCategoryIndex]
        
-    self.logger.info("getAmountDistribution: Choosed %s category",foundRightCategory)
+    self.logger.info("getAmountDistribution: Choosed category: %s ",foundRightCategory)
     
     result={}
     
@@ -154,6 +154,7 @@ def getAmountDistribution(self, id_campaign):
     
     id = api_db.insert("insert into campaign_log (`id_campaign`, `name`, `expected_like_amount`, `expected_follow_amount`, `id_amount_distribution`, `timestamp`) values (%s,%s,%s,%s,%s,now())",id_campaign,'LOG_CAMPAIGN_START',result['like_amount'],result['follow_amount'],foundRightCategory['id_amount_distribution'])
     self.id_log=id
+    self.logger.info("getAmountDistribution: Final action amount: %s",result)
     self.logger.info("getAmountDistribution: ID_LOG: %s",id)
     
     return result
@@ -164,6 +165,7 @@ def getLikeAmount(self,id_campaign, calculatedAmount):
 
   hasLikesOperation= api_db.fetchOne("select count(*) as rows from campaign_config where id_campaign=%s and configName like %s and enabled=1",id_campaign, "like_"+"%")
   if hasLikesOperation['rows']==0:
+    #todo exclude bot account
     usersLikeForLike = api_db.fetchOne('select count(*) as total_users from users join user_subscription on (users.id_user = user_subscription.id_user)  join campaign on (users.id_user = campaign.id_user) where (user_subscription.end_date>now() or user_subscription.end_date is null)   and campaign.id_campaign!=%s order by users.id_user',id_campaign)
     self.logger.info("getLikeAmount: Total number of likeForLike users: %s", usersLikeForLike['total_users'])
     self.logger.info("getLikeAmount: Campaign id: %s did not set any like operations ! Going to perform only %s likeForLike:!" % (id_campaign, usersLikeForLike['total_users']))
