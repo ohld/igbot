@@ -63,6 +63,7 @@ class Bot(API):
                  comments_file=False,
                  proxy=None,
                  multiple_ip=None,
+                 is_bot_account =False,
                  max_likes_per_day=1000,
                  max_unlikes_per_day=1000,
                  max_follows_per_day=350,
@@ -145,6 +146,7 @@ class Bot(API):
         # proxy
         self.proxy = proxy
         self.multiple_ip = multiple_ip
+        self.is_bot_account = is_bot_account
         self.bot_ip = None
 
         # white and blacklists
@@ -589,11 +591,11 @@ class Bot(API):
         user['instagram_id_user']=self.get_userid_from_username(user['instagram_username'])
         user['full_name']=user['instagram_username']
         totalLiked = totalLiked + self.like_user(userObject=user, bot_operation="like_for_like", bot_operation_value=user['instagram_username'],amount=1)
+        #update in database the user id
+        api_db.updateCampaignChekpoint('like_for_like_user_id',user['id_user'],self.id_campaign)
+        
         
       self.logger.info("bot.startLikeForLike: END. Last user processed: %s, id_user: %s" % (user['instagram_username'], user['id_user']))
-      
-      #update in database the user id
-      api_db.updateCampaignChekpoint('like_for_like_user_id',user['id_user'],self.id_campaign)
       
       self.logger.info("bot.startLikeForLike: END updated checkpoint for campaign: %s with last user: %s" % (self.id_campaign, user['id_user']))
       self.logger.info("bot.startLikeForLike: END. Total liked %s users from a total of %s users" % (totalLiked, likesAmount))

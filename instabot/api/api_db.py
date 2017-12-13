@@ -92,22 +92,26 @@ def insertUserFollower(*args):
     return id
 
 
-def getBotIp(bot, id_user, id_campaign):
+def getBotIp(bot, id_user, id_campaign, is_bot_account):
     # get the ips ordered by how many time they are currently in use
     query = " select ip_bot.id_ip_bot,total,ip_bot.ip from ( " \
-            " select id_ip_bot, 0 as total from ip_bot " \
-            " where id_ip_bot not in  (select id_ip_bot from campaign where id_ip_bot is not null) " \
-            " UNION " \
-            " select campaign.id_ip_bot,count(*) as total from campaign" \
-            " where id_ip_bot is not null" \
-            " group by id_ip_bot " \
-            " having count(*)<5 " \
-            " order by total asc ) tbl" \
-            " join ip_bot on (tbl.id_ip_bot=ip_bot.id_ip_bot) " \
-            " order by total asc " \
-            " limit 1;"
+             " select id_ip_bot, 0 as total from ip_bot " \
+             " where id_ip_bot not in  (select id_ip_bot from campaign where id_ip_bot is not null) " \
+    		     " and ip_bot.id_ip_type=%s " \
+             " UNION " \
+             " select campaign.id_ip_bot,count(*) as total from campaign join ip_bot ip_bot_2 on (campaign.id_ip_bot = ip_bot_2.id_ip_bot) where campaign.id_ip_bot is not null and ip_bot_2.id_ip_type=%s group by id_ip_bot  having count(*)<5  order by total asc ) tbl join ip_bot on (tbl.id_ip_bot=ip_bot.id_ip_bot)  where ip_bot.id_ip_type=%s order by total asc limit 1"
 
-    result = fetchOne(query)
+    userIpType =1
+    botIpType =2
+    
+    if is_bot_account==True:
+      bot.logger.warning("getBotIp: Getting ip of type BOT user %s", id_user)
+      ipType = botIpType
+    else: 
+      bot.logger.warning("getBotIp: Getting ip of type USER user %s", id_user)
+      ipType = userIpType
+      
+    result = fetchOne(query, ipType,ipType,ipType)
 
     if result is None:
         bot.logger.warning("getBotIp: Could not find an ip for user %s", id_user)

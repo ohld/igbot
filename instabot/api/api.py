@@ -97,7 +97,7 @@ class API(object):
         self.uuid = self.generateUUID(True)
 
     def login(self, username=None, password=None, force=False, proxy=None):
-        self.logger.info("Trying to login user %s with custom IP: %s" % (username, self.multiple_ip))
+        self.logger.info("Trying to login user %s with custom IP: %s, is bot account %s" % (username, self.multiple_ip, self.is_bot_account))
         if password is None:
             username, password = get_credentials(username=username)
 
@@ -117,7 +117,7 @@ class API(object):
                 self.session.proxies.update(proxies)
             if self.multiple_ip is not None and self.multiple_ip is not False:
                 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-                self.bot_ip =  getBotIp(self, self.web_application_id_user, self.id_campaign)
+                self.bot_ip =  getBotIp(self, self.web_application_id_user, self.id_campaign, self.is_bot_account)
                 self.session.mount("http://", SourceAddressAdapter((str(self.bot_ip), 0)))
                 self.session.mount("https://", SourceAddressAdapter((str(self.bot_ip), 0)))
 

@@ -81,7 +81,7 @@ def getAmountDistribution(self, id_campaign):
   
     resume = resumeOperation(self,id_campaign)
     
-    if resume is not None:
+    if resume is not None and resume['like_amount'] is not None and resume['follow_amount'] is not None:
       self.logger.info("getAmountDistribution: going to resume this amount: %s",resume)
       return resume
     
@@ -166,7 +166,7 @@ def getLikeAmount(self,id_campaign, calculatedAmount):
   hasLikesOperation= api_db.fetchOne("select count(*) as rows from campaign_config where id_campaign=%s and configName like %s and enabled=1",id_campaign, "like_"+"%")
   if hasLikesOperation['rows']==0:
     #todo exclude bot account
-    usersLikeForLike = api_db.fetchOne('select count(*) as total_users from users join user_subscription on (users.id_user = user_subscription.id_user)  join campaign on (users.id_user = campaign.id_user) where (user_subscription.end_date>now() or user_subscription.end_date is null)   and campaign.id_campaign!=%s order by users.id_user',id_campaign)
+    usersLikeForLike = api_db.fetchOne('select count(*) as total_users  from users join user_subscription on (users.id_user = user_subscription.id_user)  join campaign on (users.id_user = campaign.id_user) join user_rol on (users.id_user=user_rol.id_user) where (user_subscription.end_date>now() or user_subscription.end_date is null)   and campaign.id_campaign!=%s and user_rol.rol_id=1 order by users.id_user',id_campaign)
     self.logger.info("getLikeAmount: Total number of likeForLike users: %s", usersLikeForLike['total_users'])
     self.logger.info("getLikeAmount: Campaign id: %s did not set any like operations ! Going to perform only %s likeForLike:!" % (id_campaign, usersLikeForLike['total_users']))
     return usersLikeForLike['total_users']
