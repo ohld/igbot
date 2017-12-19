@@ -118,7 +118,7 @@ def getBotIp(bot, id_user, id_campaign, is_bot_account):
         exit()
 
     if result['total'] > 2:
-        bot.logger.warning("getBotIp: Error: %s is used % times." % (result['ip'], result['total']))
+        bot.logger.warning("getBotIp: Error: %s is used %s times." % (result['ip'], result['total']))
 
 
 
