@@ -540,7 +540,7 @@ class Bot(API):
     #this function check if another bot instance for same campaign is running
     def canBotStart(self, id_campaign):
         self.logger.info("canBotStart: check if another bot instance is running for campaign %s",id_campaign)
-        processname = 'angie_campaign='+id_campaign
+        processname = 'angie_idc'+id_campaign+' '
         tmp = os.popen("ps -Af").read()
         proccount = tmp.count(processname)
 
