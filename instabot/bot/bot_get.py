@@ -217,3 +217,11 @@ def convert_to_user_id(self, smth):
         delay.very_small_delay(self)
     # if type is not str than it is int so user_id passed
     return smth
+
+def get_user_friendship(self, user_id):
+    user_id = self.convert_to_user_id(user_id)
+    self.userFriendship(user_id)
+ #   if 'user' not in self.LastJson:
+ #       return False
+    return self.LastJson 
+    

@@ -11,6 +11,7 @@ from .bot_get import get_media_commenters, get_userid_from_username, get_usernam
 from .bot_get import get_user_followers, get_user_following, get_media_likers, get_popular_medias
 from .bot_get import get_media_comments, get_geotag_users, get_locations_from_coordinates, convert_to_user_id
 from .bot_get import get_comment, get_media_info, get_user_likers, get_archived_medias, get_total_user_medias
+from .bot_get import get_user_friendship
 
 from .bot_like import like, like_medias, like_timeline, like_user, like_users
 from .bot_like import like_hashtag, like_geotag, like_followers, like_following
@@ -252,6 +253,10 @@ class Bot(API):
 
     def get_total_user_medias(self, user_id):
         return get_total_user_medias(self, user_id)
+
+    def get_user_friendship(self, user_id):
+        return get_user_friendship(self, user_id)
+    
 
     def get_hashtag_medias(self, hashtag, filtration=True):
         return get_hashtag_medias(self, hashtag, filtration)
