@@ -2,22 +2,20 @@ from tqdm import tqdm
 
 from . import limits
 from . import delay
-
+from .bot_support import console_print
 
 def follow(self, user_id):
     user_id = self.convert_to_user_id(user_id)
-    print('\n ===> Going to Follow user_id: %s ' % (user_id))  # Log to console
+    console_print(self.verbosity, '\n ===> Going to Follow user_id: %s ' % (user_id))  # Log to console
     if not self.check_user(user_id):
         return True
     if limits.check_if_bot_can_follow(self):
         delay.follow_delay(self)
         if super(self.__class__, self).follow(user_id):
-            print('\n\033[92m ===> FOLLOWED <==== user_id: %s \033[0m' % (
-                user_id))  # Log to console
+            console_print(self.verbosity, '\n\033[92m ===> FOLLOWED <==== user_id: %s \033[0m' % user_id)
             self.total_followed += 1
             # Log to console
-            print(
-                '\n\033[92m Writing user_id to file : followed.txt ... \033[0m')
+            console_print(self.verbosity, '\n\033[92m Writing user_id to file : followed.txt ... \033[0m')
             with open('followed.txt', 'a') as file:  # Appending user_id to the followed.txt
                 # Appending user_id to the followed.txt
                 file.write(str(user_id) + "\n")
@@ -37,11 +35,11 @@ def follow_users(self, user_ids):
         "followed.txt")   # Read followed.txt file
     skipped_list = self.read_list_from_file(
         "skipped.txt")  # Read skipped.txt file
-    print('\n\033[92m Going to follow %s user_ids ...\033[0m' %
-          len(user_ids))  # Log to console
+    console_print(self.verbosity, '\n\033[92m Going to follow %s user_ids ...\033[0m' %
+                  len(user_ids))  # Log to console
     # remove skipped and followed list from user_ids
     user_ids = list((set(user_ids) - set(followed_list)) - set(skipped_list))
-    print('\n\033[92m After filtering followedlist.txt and skippedlist.txt, [ %s ] user_ids left to follow. \033[0m' % len(
+        console_print(self.verbosity, '\n\033[92m After filtering followedlist.txt and skippedlist.txt, [ %s ] user_ids left to follow. \033[0m' % len(
         user_ids))  # Log to console
     for user_id in tqdm(user_ids, desc='Processed users'):
         if not self.follow(user_id):
