@@ -4,6 +4,7 @@ from . import limits
 from . import delay
 from .bot_support import console_print
 
+
 def follow(self, user_id):
     user_id = self.convert_to_user_id(user_id)
     console_print(self.verbosity, '\n ===> Going to Follow user_id: %s ' % (user_id))  # Log to console
@@ -16,6 +17,7 @@ def follow(self, user_id):
             self.total_followed += 1
             # Log to console
             console_print(self.verbosity, '\n\033[92m Writing user_id to file : followed.txt ... \033[0m')
+
             with open('followed.txt', 'a') as file:  # Appending user_id to the followed.txt
                 # Appending user_id to the followed.txt
                 file.write(str(user_id) + "\n")
@@ -39,7 +41,7 @@ def follow_users(self, user_ids):
                   len(user_ids))  # Log to console
     # remove skipped and followed list from user_ids
     user_ids = list((set(user_ids) - set(followed_list)) - set(skipped_list))
-        console_print(self.verbosity, '\n\033[92m After filtering followedlist.txt and skippedlist.txt, [ %s ] user_ids left to follow. \033[0m' % len(
+    console_print(self.verbosity, '\n\033[92m After filtering followedlist.txt and skippedlist.txt, [ %s ] user_ids left to follow. \033[0m' % len(
         user_ids))  # Log to console
     for user_id in tqdm(user_ids, desc='Processed users'):
         if not self.follow(user_id):
