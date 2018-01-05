@@ -51,11 +51,11 @@ def follow_users(self, user_ids):
 
             # other unhandled error except 400(block to follow) and 429(many request error) like 500 error
         elif self.LastResponse.status_code != 400 and self.LastResponse.status_code != 429:
-                try_number=3
+                try_number = 3
                 i = 0
                 error_pass = False
-                for i in range(0,try_number):
-                    delay_time=60
+                for i in range(0, try_number):
+                    delay_time = 60
                     delay.delay_in_seconds(self, delay_time)
                     error_pass = self.follow(user_id)
                     if error_pass:
