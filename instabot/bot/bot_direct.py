@@ -11,11 +11,14 @@ def send_message(self, text, user_ids, thread_id=None):
     :param thread_id: thread_id
     """
     user_ids = _get_user_ids(self, user_ids)
-    if not isinstance(text, str) and type(user_ids) not in (list, str):
+    if not isinstance(text, str) and isinstance(user_ids, (list, str)):
         self.logger.error('Text must be an string, user_ids must be an list or string')
         return False
     delay.small_delay(self)
-    if super(self.__class__, self).sendDirectItem('message', user_ids, text=text, thread=thread_id):
+    urls = self.extract_urls(text)
+    item_type = 'links' if urls else 'message'
+    if super(self.__class__, self).sendDirectItem(item_type, user_ids, text=text,
+                                                  thread=thread_id, urls=urls):
         # ToDo: need to add counter
         return True
     self.logger.info("Message to {user_ids} wasn't sended".format(user_ids=user_ids))

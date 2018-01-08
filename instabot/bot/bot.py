@@ -43,7 +43,7 @@ from .bot_filter import filter_medias, check_media, filter_users, check_user
 from .bot_filter import check_not_bot
 
 from .bot_support import check_if_file_exists, read_list_from_file, check_whitelists
-from .bot_support import add_whitelist, add_blacklist
+from .bot_support import add_whitelist, add_blacklist, extract_urls
 
 from .bot_stats import save_user_stats
 
@@ -512,6 +512,9 @@ class Bot(API):
 
     def check_if_file_exists(self, file_path):
         return check_if_file_exists(file_path)
+
+    def extract_urls(self, text):
+        return extract_urls(text)
 
     def read_list_from_file(self, file_path):
         return read_list_from_file(file_path)
