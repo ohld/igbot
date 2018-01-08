@@ -5,28 +5,32 @@
 
 from ..api import api_db
 import datetime
+import json
 from random import randint
 import calendar
 
 
-#todo apply rules regarding account maturity
 def getInitialActionAmount(self, id_campaign):
     result={}
+    result['calculatedAmount']={}
+    result['initialAmount']={}
+    result['accountMaturity']={}
+    result['accountMaturity']['reachedMaturity']=False
     
     maximumLikeAmountResult = api_db.fetchOne("select * from bot_config where `key`='maximum_like_amount'")
-    result['maximumLikeAmount']=int(maximumLikeAmountResult['value'])
+    result['initialAmount']['maximumLikeAmount']=int(maximumLikeAmountResult['value'])
 
     maximumFollowAmountResult = api_db.fetchOne("select * from bot_config where `key`='maximum_follow_amount'")
-    result['maximumFollowAmount'] = int(maximumFollowAmountResult['value'])
+    result['initialAmount']['maximumFollowAmount'] = int(maximumFollowAmountResult['value'])
 
     minimumLikeAmountResult = api_db.fetchOne("select * from bot_config where `key`='minimum_like_amount'")
-    result['minimumLikeAmount'] = int(minimumLikeAmountResult['value'])
+    result['initialAmount']['minimumLikeAmount'] = int(minimumLikeAmountResult['value'])
 
     minimumFollowAmountResult = api_db.fetchOne("select * from bot_config where `key`='minimum_follow_amount'")
-    result['minimumFollowAmount'] = int(minimumFollowAmountResult['value'])
+    result['initialAmount']['minimumFollowAmount'] = int(minimumFollowAmountResult['value'])
 
-    result['minimumActionAmount'] = result['minimumLikeAmount'] +result['minimumFollowAmount']
-    result['maximumActionAmount'] = result['maximumLikeAmount'] + result['maximumFollowAmount']
+    result['initialAmount']['minimumActionAmount'] = result['initialAmount']['minimumLikeAmount'] +result['initialAmount']['minimumFollowAmount']
+    result['initialAmount']['maximumActionAmount'] = result['initialAmount']['maximumLikeAmount'] + result['initialAmount']['maximumFollowAmount']
 
     
     self.logger.info("getInitialActionAmount: Default bot configuration is:", result)
@@ -40,20 +44,22 @@ def getInitialActionAmount(self, id_campaign):
     delta = d1 - d0
     
     if delta.days>=accountIsFullyFunctionalAfter:
-      self.logger.info("getInitialActionAmount: Account is fullyFunctional ! %s days passed since signup. Minimum is %s" % (delta.days, accountIsFullyFunctionalAfter))
-      return result
+        result['calculatedAmount']=result['initialAmount']
+        result['accountMaturity']['reachedMaturity']=True
+        self.logger.info("getInitialActionAmount: Account is fullyFunctional ! %s days passed since signup. Minimum is %s" % (delta.days, accountIsFullyFunctionalAfter))
+        return result
     
     #check maturity if the account
     self.logger.info("getInitialActionAmount: Going to calculated action number based on account type: month_start: %s, month_end:%s, percentage: %s" % (campaign['month_start'],campaign['month_end'], campaign['percentage_amount']))
-    
-    
-    result['maximumLikeAmount']= int(round(result['maximumLikeAmount'] * campaign['percentage_amount'] / 100))
-    result['maximumFollowAmount']= int(round(result['maximumFollowAmount'] * campaign['percentage_amount'] / 100))
-    result['minimumLikeAmount']= int(round(result['minimumLikeAmount'] * campaign['percentage_amount'] / 100))
-    result['maximumActionAmount']= int(round(result['maximumActionAmount'] * campaign['percentage_amount'] / 100))
-    
-    result['minimumActionAmount'] = result['minimumLikeAmount'] +result['minimumFollowAmount']
-    result['maximumActionAmount'] = result['maximumLikeAmount'] + result['maximumFollowAmount']
+
+    result['accountMaturity']['usage_percentage'] = campaign['percentage_amount']
+    result['calculatedAmount']['maximumLikeAmount']= int(round(result['initialAmount']['maximumLikeAmount'] * campaign['percentage_amount'] / 100))
+    result['calculatedAmount']['maximumFollowAmount']= int(round(result['initialAmount']['maximumFollowAmount'] * campaign['percentage_amount'] / 100))
+    result['calculatedAmount']['minimumLikeAmount']= int(round(result['initialAmount']['minimumLikeAmount'] * campaign['percentage_amount'] / 100))
+    result['calculatedAmount']['minimumFollowAmount']= int(round(result['initialAmount']['minimumFollowAmount'] * campaign['percentage_amount'] / 100))
+
+    result['calculatedAmount']['minimumActionAmount'] = result['calculatedAmount']['minimumLikeAmount'] +result['calculatedAmount']['minimumFollowAmount']
+    result['calculatedAmount']['maximumActionAmount'] = result['calculatedAmount']['maximumLikeAmount'] + result['calculatedAmount']['maximumFollowAmount']
     
     self.logger.info("getInitialActionAmount: After applying %s percentage, the result is: %s" % (campaign['percentage_amount'], result))
     return result
@@ -94,8 +100,8 @@ def getAmountDistribution(self, id_campaign):
     now = datetime.datetime.now()
     currentMonthNumberOfDays =  calendar.monthrange(now.year, now.month)[1]
 
-    initialActionAmount = getInitialActionAmount(self, id_campaign)
-     
+    initialActionAmountResult = getInitialActionAmount(self, id_campaign)
+
     #maybe this while can be extracted separately
     while foundRightCategory==False and iteration<securityBreak and len(categories)>0:
         selectedCategoryIndex = randint(0, len(categories) - 1)
@@ -107,13 +113,13 @@ def getAmountDistribution(self, id_campaign):
 
         amountToPerform = None
         if categories[selectedCategoryIndex]['type'] == "minimum":
-          amountToPerform = "<="+str(initialActionAmount['minimumActionAmount'])
+          amountToPerform = "<="+str(initialActionAmountResult['calculatedAmount']['minimumActionAmount'])
           
         elif categories[selectedCategoryIndex]['type'] == "maximum":
-          amountToPerform = ">="+str(initialActionAmount['maximumActionAmount'])
+          amountToPerform = ">="+str(initialActionAmountResult['calculatedAmount']['maximumActionAmount'])
           
         elif categories[selectedCategoryIndex]['type'] == "between":
-          amountToPerform = "between "+str(initialActionAmount['minimumActionAmount']) + " and "+str(initialActionAmount['maximumActionAmount'])
+          amountToPerform = "between "+str(initialActionAmountResult['calculatedAmount']['minimumActionAmount']) + " and "+str(initialActionAmountResult['calculatedAmount']['maximumActionAmount'])
           
         query = " select count(*) as total from  (select count(*) as total, date(timestamp) from bot_action " \
                 " WHERE MONTH(timestamp) = MONTH(CURRENT_DATE()) " \
@@ -125,7 +131,8 @@ def getAmountDistribution(self, id_campaign):
         #self.logger.info("getAmountDistribution: %s",query)
         self.logger.info("getAmountDistribution: Selected category: %s, iteration %s, daysForThisCategory: %s, usedDays: %s" % (
         categories[selectedCategoryIndex], iteration, daysForThisCategory, result['total']))
-        
+
+        usedDaysForThisCategory = result['total']
         if result['total']<daysForThisCategory:
           foundRightCategory = categories[selectedCategoryIndex]
           break
@@ -138,25 +145,36 @@ def getAmountDistribution(self, id_campaign):
     result={}
     
     if foundRightCategory['type'] == "minimum":
-      result['like_amount'] = initialActionAmount['minimumLikeAmount']
-      result['follow_amount'] = initialActionAmount['minimumFollowAmount']
+      result['like_amount'] = initialActionAmountResult['calculatedAmount']['minimumLikeAmount']
+      result['follow_amount'] = initialActionAmountResult['calculatedAmount']['minimumFollowAmount']
           
     elif foundRightCategory['type'] == "maximum":
-      result['like_amount'] = initialActionAmount['maximumLikeAmount']
-      result['follow_amount'] = initialActionAmount['maximumFollowAmount']
+      result['like_amount'] = initialActionAmountResult['calculatedAmount']['maximumLikeAmount']
+      result['follow_amount'] = initialActionAmountResult['calculatedAmount']['maximumFollowAmount']
           
     else:
       #between
-      result['like_amount'] = randint(initialActionAmount['minimumLikeAmount']+1, initialActionAmount['maximumLikeAmount']-1)
-      result['follow_amount'] = randint(initialActionAmount['minimumFollowAmount']+1, initialActionAmount['maximumFollowAmount']-1)
+      result['like_amount'] = randint(initialActionAmountResult['calculatedAmount']['minimumLikeAmount']+1, initialActionAmountResult['calculatedAmount']['maximumLikeAmount']-1)
+      result['follow_amount'] = randint(initialActionAmountResult['calculatedAmount']['minimumFollowAmount']+1, initialActionAmountResult['calculatedAmount']['maximumFollowAmount']-1)
     
     #create the log in database
-    
-    id = api_db.insert("insert into campaign_log (`id_campaign`, `name`, `expected_like_amount`, `expected_follow_amount`, `id_amount_distribution`, `timestamp`) values (%s,%s,%s,%s,%s,now())",id_campaign,'LOG_CAMPAIGN_START',result['like_amount'],result['follow_amount'],foundRightCategory['id_amount_distribution'])
+    log={}
+    log['amount_selected_category'] = {}
+    log['amount_selected_category']['category']=foundRightCategory
+    log['amount_selected_category']['daysAllocatedForThisCategory'] = daysForThisCategory
+    log['amount_selected_category']['usedDaysForThisCategory'] = usedDaysForThisCategory
+    log['amount_selected_category']['currentMonthNumberOfDays'] = currentMonthNumberOfDays
+    log['expected_amount']=result
+    log['initial_action_amount']=initialActionAmountResult
+
+
+    logJson = json.dumps(log)
+
+    id = api_db.insert("insert into campaign_log (`id_campaign`,`details`, `name`, `expected_like_amount`, `expected_follow_amount`, `id_amount_distribution`, `timestamp`) values (%s,%s,%s,%s,%s,%s,now())",id_campaign,logJson,'LOG_CAMPAIGN_START',result['like_amount'],result['follow_amount'],foundRightCategory['id_amount_distribution'])
     self.id_log=id
     self.logger.info("getAmountDistribution: Final action amount: %s",result)
     self.logger.info("getAmountDistribution: ID_LOG: %s",id)
-    
+
     return result
 
 

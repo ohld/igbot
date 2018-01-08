@@ -39,7 +39,7 @@ try:
         unlike_delay=15,  # default 1-
         follow_delay=40,  # default 30,
         unfollow_delay=40,  # default 30,
-        multiple_ip=True
+        multiple_ip=False
     )
 
   
@@ -51,6 +51,7 @@ try:
         exit()
 
     calculatedAmount = bot.getAmountDistribution(args.angie_campaign)
+
     totalExpectedLikesAmount = int(bot.getLikeAmount(args.angie_campaign,calculatedAmount))
     totalExpectedFollowAmount = int(bot.getFollowAmount(args.angie_campaign,calculatedAmount))
 
