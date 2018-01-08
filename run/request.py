@@ -23,10 +23,10 @@ def prepare_sessions(ip):
     return s 
 
 def test(s): 
-    print(s.get("http://bot.whatismyipaddress.com/").text())
+    print(s.get("http://bot.whatismyipaddress.com/").text)
 
 
 
 
-s = prepare_sessions('188.25.160.76')
+s = prepare_sessions('89.32.124.125')
 test(s)
