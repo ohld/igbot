@@ -53,7 +53,6 @@ from .bot_stats import save_user_stats
 
 from .bot_util import getBotOperations
 from .bot_action_handler import  getLikeAmount,getFollowAmount,getAmountDistribution, getLikesPerformed, getFollowPerformed
-import time
 
 class Bot(API):
     def __init__(self,

@@ -15,6 +15,7 @@ sys.path.append(os.path.join(sys.path[0], '../'))
 parser = argparse.ArgumentParser(add_help=True)
 parser.add_argument('-u', type=str, help="instagram username")
 parser.add_argument('-p', type=str, help="instagram password")
+parser.add_argument('-id', type=str, help="instagram password")
 args = parser.parse_args()
 
 if args.u is None:
@@ -24,7 +25,13 @@ if args.u is None:
 try:
     bot = Bot(id_campaign=False,multiple_ip=False)
     bot.login(username=args.u, password=args.p)
-    username = bot.get_user_info('53463941')
+    username = bot.getUsernameInfo(args.id)
+    bot.logger.info("Checking relation with %s",username)
+
+    friendShip = bot.userFriendship(args.id)
+
+    bot.logger.info("I am following %s:%s" % (args.id,bot.LastJson['following']))
+
 
 
 
