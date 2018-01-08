@@ -99,7 +99,7 @@ def getBotIp(bot, id_user, id_campaign, is_bot_account):
              " where id_ip_bot not in  (select id_ip_bot from campaign where id_ip_bot is not null) " \
     		     " and ip_bot.id_ip_type=%s " \
              " UNION " \
-             " select campaign.id_ip_bot,count(*) as total from campaign join ip_bot ip_bot_2 on (campaign.id_ip_bot = ip_bot_2.id_ip_bot) where campaign.id_ip_bot is not null and ip_bot_2.id_ip_type=%s group by id_ip_bot  having count(*)<5  order by total asc ) tbl join ip_bot on (tbl.id_ip_bot=ip_bot.id_ip_bot)  where ip_bot.id_ip_type=%s order by total asc limit 1"
+             " select campaign.id_ip_bot,count(*) as total from campaign join ip_bot ip_bot_2 on (campaign.id_ip_bot = ip_bot_2.id_ip_bot) where campaign.id_ip_bot is not null and ip_bot_2.id_ip_type=%s group by id_ip_bot  having count(*)<5  order by total asc ) tbl join ip_bot on (tbl.id_ip_bot=ip_bot.id_ip_bot)  where ip_bot.id_ip_type=%s order by total asc,rand() limit 1"
 
     userIpType =1
     botIpType =2
