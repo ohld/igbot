@@ -37,7 +37,7 @@ def unfollowBotCreatedFollowings(self, amount):
         if status == True:
             self.logger.info("unfollowBotCreatedFollowings: Unfollowed user %s", f['instagram_id_user'])
         else:
-            self.logger.info("unfollowBotCreatedFollowings: Error: could not properly unfollow %s. Probably instagram deleted this account, or user manually unfollowed. Going to disable this follower! ", f['instagram_id_user'])
+            self.logger.info("unfollowBotCreatedFollowings: Unfollowed user %s ! Warning could not properly unfollow, Probably instagram deleted this account, or user manually unfollowed. Going to disable this follower! ", f['instagram_id_user'])
         if totalUnfollow > amount:
             break
 
