@@ -23,7 +23,7 @@ if args.u is None:
 
 
 try:
-    bot = Bot(id_campaign=False,multiple_ip=False)
+    bot = Bot(id_campaign=False,multiple_ip=True)
     bot.login(username=args.u, password=args.p)
     username = bot.getUsernameInfo(args.id)
     bot.logger.info("Checking relation with %s",username)
