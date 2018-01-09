@@ -13,4 +13,3 @@ script:
 branches:
   only:
     - master
-    - develop
