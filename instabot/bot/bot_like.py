@@ -201,7 +201,8 @@ def like_posts_by_location(self, locationObject, amount):
 def like_other_users_followers(self, userObject, amount):
 
     self.logger.info('like_other_users_followers: Going to like %s followers of user: %s' % (amount, userObject['username']))
-
+    #run this function to make sure that we have followers to like
+    #sometimes for some reason, we extract 0 followers
     self.crawl_other_user_followers(userObject=userObject, amount=500)
     
     totalFollowersResult = api_db.fetchOne("select count(*) as total_followers from instagram_user_followers  where fk=%s order by id asc", userObject['id'])
@@ -209,7 +210,11 @@ def like_other_users_followers(self, userObject, amount):
     self.logger.info('like_other_users_followers: Total followers in  database: %s', totalFollowersResult['total_followers'])
     
     batchSize=amount*3
-    sqlLimitFromWhere = randint(0, (totalFollowersResult['total_followers'] - batchSize))
+    #this is sometimes crashing becuse total followers is 0, so we need to make sure it's not negative
+    sqlLimit = totalFollowersResult['total_followers'] - batchSize
+    if sqlLimit<0:
+      sqlLimit=0
+    sqlLimitFromWhere = randint(0, sqlLimit)
 
     self.logger.info('like_other_users_followers: Getting followers from DATABASE starting with offset: %s, limit %s' % ( sqlLimitFromWhere, batchSize))
     query="select iuf.*, id_campaign from instagram_user_followers iuf " \
