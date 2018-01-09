@@ -26,18 +26,18 @@ def unfollowBotCreatedFollowings(self, amount):
     totalUnfollow = 0
     for f in followings:
         status = unfollow(self, f['instagram_id_user'])
-        if status == True:
-
-            lastBotAction = api_db.insertBotAction(self.id_campaign, self.web_application_id_user,
+        lastBotAction = api_db.insertBotAction(self.id_campaign, self.web_application_id_user,
                                                    f['instagram_id_user'], f['full_name'], f['username'],
                                                    f['user_image'], f['post_id'], f['post_image'],
                                                    f['post_link'], 'unfollow_bot_created_followings', None, self.id_log)
 
-            api_db.insert("update bot_action set bot_operation_reverted=%s where id=%s", lastBotAction, f['id'])
-            totalUnfollow = totalUnfollow + 1
+        api_db.insert("update bot_action set bot_operation_reverted=%s where id=%s", lastBotAction, f['id'])
+        totalUnfollow = totalUnfollow + 1
+        
+        if status == True:
+            self.logger.info("unfollowBotCreatedFollowings: Unfollowed user %s", f['instagram_id_user'])
         else:
-            self.logger.info("unfollowBotCreatedFollowings: Error: could not follow %s. Going to disable this follower! ", f['instagram_id_user'])
-            api_db.insert("update bot_action set bot_operation_reverted=%s where id=%s", None, f['id'])
+            self.logger.info("unfollowBotCreatedFollowings: Error: could not properly unfollow %s. Probably instagram deleted this account, or user manually unfollowed. Going to disable this follower! ", f['instagram_id_user'])
         if totalUnfollow > amount:
             break
 
