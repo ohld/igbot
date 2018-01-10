@@ -63,7 +63,7 @@ class API(object):
         filename = time.strftime("%d.%m.%Y") + ".log"
 
         if id_campaign==False:
-            id_campaign="genxeral"
+            id_campaign="general"
             filename="instabot.log"
 	    #this is not working atm
         #logs_folder = os.environ['INSTABOT_LOGS_PATH']
