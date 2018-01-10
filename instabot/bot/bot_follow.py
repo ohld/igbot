@@ -165,8 +165,10 @@ def removeAlreadyFollowedUsers(users, bot):
         bot.logger.warning("removeAlreadyFollowedUsers: The user %s has been already followed in the past! SKIP IT !", u['username'])
       else:
         #bot.logger.info("removeAlreadyFollowedUsers: OK. The user %s was not followed before !", u['username'])
-        if not u['friendship_status']['following']:
-            filteredList.append(u)
+        
+        if 'friendship_status' in u:
+          if not u['friendship_status']['following']:
+              filteredList.append(u)
     
     return filteredList
 
