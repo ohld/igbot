@@ -35,6 +35,7 @@ Code:
 from instabot import Bot
 
 bot = Bot()
+bot.login(username="user", password="pass")
 followers = bot.get_user_followers(bot.user_id)
 ```
 
