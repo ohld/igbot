@@ -5,3 +5,5 @@ pep8
 pyflakes
 schedule
 pysocks
+pytest
+responses

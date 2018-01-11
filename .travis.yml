@@ -7,8 +7,8 @@ install:
   - pip install -r requirements.txt
 
 script:
- - pyflakes instabot
- - pep8 --ignore=E223,E501 instabot
+ - pyflakes instabot tests
+ - pep8 --ignore=E223,E501 instabot tests
 
 branches:
   only:
