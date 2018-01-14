@@ -58,10 +58,6 @@ def error_delay(bot):
     time.sleep(10)
 
 
-def delay_in_seconds(bot, delay_time=60):
-    time.sleep(delay_time)
-
-
 def small_delay(bot):
     time.sleep(add_dispersion(3))
 
