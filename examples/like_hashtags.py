@@ -5,15 +5,13 @@
         Like last images with hashtag.
 """
 
-import sys
-import os
-import time
-import random
-from tqdm import tqdm
 import argparse
+import os
+import sys
+
+from instabot import Bot
 
 sys.path.append(os.path.join(sys.path[0], '../'))
-from instabot import Bot
 
 parser = argparse.ArgumentParser(add_help=True)
 parser.add_argument('-u', type=str, help="username")
@@ -25,6 +23,6 @@ args = parser.parse_args()
 bot = Bot()
 bot.login(username=args.u, password=args.p,
           proxy=args.proxy)
-          
+
 for hashtag in args.hashtags:
     bot.like_hashtag(hashtag)

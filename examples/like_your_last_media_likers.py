@@ -4,15 +4,15 @@
         Like likers of last medias from your timeline feed.
 """
 
-import sys
-import os
-import time
-import random
-from tqdm import tqdm
 import argparse
+import os
+import sys
+
+from tqdm import tqdm
+
+from instabot import Bot
 
 sys.path.append(os.path.join(sys.path[0], '../'))
-from instabot import Bot
 
 
 def like_media_likers(bot, media, nlikes=3):

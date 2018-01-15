@@ -5,15 +5,17 @@
         Like and follow you last media likers.
 """
 
-import sys
-import os
-import time
-import random
 import argparse
+import os
+import random
+import sys
+import time
+
 from tqdm import tqdm
 
-sys.path.append(os.path.join(sys.path[0], '../'))
 from instabot import Bot
+
+sys.path.append(os.path.join(sys.path[0], '../'))
 
 
 def like_and_follow(bot, user_id, nlikes=3):

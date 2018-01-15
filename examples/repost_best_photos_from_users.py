@@ -7,14 +7,16 @@
     The file should contain one username per line!
 """
 
-import sys
-from tqdm import tqdm
-import os
 import argparse
+import os
+import sys
 
-sys.path.append(os.path.join(sys.path[0], '../'))
+from tqdm import tqdm
+
 from instabot import Bot
 from instabot.bot.bot_support import read_list_from_file
+
+sys.path.append(os.path.join(sys.path[0], '../'))
 
 USERNAME_DATABASE = 'username_database.txt'
 POSTED_MEDIAS = 'posted_medias.txt'

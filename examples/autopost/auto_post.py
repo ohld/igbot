@@ -1,7 +1,6 @@
 import time
 import sys
 import os
-import yaml
 import glob
 
 sys.path.append(os.path.join(sys.path[0], '../../'))
@@ -37,7 +36,7 @@ while True:
                 # snd msg
                 break
 
-            if not pic in posted_pic_list:
+            if pic not in posted_pic_list:
                 posted_pic_list.append(pic)
                 with open('pics.txt', 'a') as f:
                     f.write(pic + "\n")

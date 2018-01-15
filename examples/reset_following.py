@@ -5,11 +5,12 @@ Use this before you start boting.
 You can then reset the users you follow to what you had before botting.
 
 """
-import sys
 import os
+import sys
+
+from instabot import Bot
 
 sys.path.append(os.path.join(sys.path[0], '../'))
-from instabot import Bot
 
 
 # class of all the tasks

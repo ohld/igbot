@@ -1,31 +1,33 @@
-import time
+import getpass
+import os
 import random
 import sys
-import os
-import getpass
+import time
+
 from tqdm import tqdm
 
-sys.path.append(os.path.join(sys.path[0], '../'))
 from instabot import Bot
+
+sys.path.append(os.path.join(sys.path[0], '../'))
 
 # initial
 
 
 def initial_checker():
     try:
-        fh = open(hashtag_file, 'r')
-        fh = open(users_file, 'r')
-        fh = open(whitelist, 'r')
-        fh = open(blacklist, 'r')
-        fh = open(comment, 'r')
-        fh = open(setting, 'r')
+        open(hashtag_file, 'r')
+        open(users_file, 'r')
+        open(whitelist, 'r')
+        open(blacklist, 'r')
+        open(comment, 'r')
+        open(setting, 'r')
     except BaseException:
-        fh = open(hashtag_file, 'w')
-        fh = open(users_file, 'w')
-        fh = open(whitelist, 'w')
-        fh = open(blacklist, 'w')
-        fh = open(comment, 'w')
-        fh = open(setting, 'w')
+        open(hashtag_file, 'w')
+        open(users_file, 'w')
+        open(whitelist, 'w')
+        open(blacklist, 'w')
+        open(comment, 'w')
+        open(setting, 'w')
         print("""
         Welcome to instabot, it seems this is the first time you've used this bot.
         Before starting, let's setup the basics.
@@ -556,11 +558,11 @@ def menu_setting():
             print(
                 "Whis will clear all database except your user accounts and paramater settings")
             time.sleep(5)
-            fh = open(hashtag_file, 'w')
-            fh = open(users_file, 'w')
-            fh = open(whitelist, 'w')
-            fh = open(blacklist, 'w')
-            fh = open(comment, 'w')
+            open(hashtag_file, 'w')
+            open(users_file, 'w')
+            open(whitelist, 'w')
+            open(blacklist, 'w')
+            open(comment, 'w')
             print("Done, you can add new one!")
         elif ans == "9":
             menu()
@@ -570,8 +572,10 @@ def menu_setting():
 
 
 # for input compability
-if hasattr(__builtins__, 'raw_input'):
+try:
     input = raw_input
+except NameError:
+    pass
 
 # files location
 hashtag_file = "hashtagsdb.txt"

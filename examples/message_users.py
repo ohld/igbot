@@ -8,20 +8,22 @@
 
 """
 
-import sys
-import os
 import csv
+import os
+import sys
 import time
+
 from tqdm import tqdm
 
-sys.path.append(os.path.join(sys.path[0], '../'))
 from instabot import Bot
 
-instaUsers = ["R1B4Z01D","KoanMedia"];
-directMessage = ["Thanks for the example."];
+sys.path.append(os.path.join(sys.path[0], '../'))
+
+instaUsers = ["R1B4Z01D", "KoanMedia"]
+directMessage = ["Thanks for the example."]
 
 messagesToSend = 100
-banDelay = (86400/messagesToSend)
+banDelay = (86400 / messagesToSend)
 
 print("Which type of delivery method? (Type number)")
 print("%d: %s" % (0, "Messages From CSV File."))
