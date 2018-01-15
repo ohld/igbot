@@ -50,9 +50,8 @@ def follow_users(self, user_ids):
                 broken_items.append(user_id)
 
             # other unhandled error except 400(block to follow) and 429(many request error) like 500 error
-            elif self.LastResponse.status_code != 400 and self.LastResponse.status_code != 429:
+            elif self.LastResponse.status_code not in (400, 429):
                 try_number = 3
-                i = 0
                 error_pass = False
                 for i in range(try_number):
                     delay_time = 60
