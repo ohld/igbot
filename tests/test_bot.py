@@ -2,8 +2,12 @@ import json
 from unittest.mock import Mock
 
 import requests
+import responses
 
 from instabot import Bot
+from instabot.api.config import API_URL
+
+DEFAULT_RESPONSE = {'status': 'ok'}
 
 
 class TestBot:
@@ -44,3 +48,14 @@ class TestBot:
 
         assert self.BOT.username == self.USERNAME
         assert self.BOT.user_id == self.USER_ID
+        assert self.BOT.isLoggedIn
+
+    @responses.activate
+    def test_logout(self, monkeypatch):
+        self.test_login(monkeypatch)
+        responses.add(responses.GET, "{API_URL}accounts/logout/".format(
+            API_URL=API_URL), json=DEFAULT_RESPONSE, status=200)
+
+        self.BOT.logout()
+
+        assert not self.BOT.isLoggedIn
