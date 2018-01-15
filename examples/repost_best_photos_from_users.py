@@ -13,10 +13,9 @@ import sys
 
 from tqdm import tqdm
 
+sys.path.append(os.path.join(sys.path[0], '../'))
 from instabot import Bot
 from instabot.bot.bot_support import read_list_from_file
-
-sys.path.append(os.path.join(sys.path[0], '../'))
 
 USERNAME_DATABASE = 'username_database.txt'
 POSTED_MEDIAS = 'posted_medias.txt'

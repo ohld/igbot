@@ -13,11 +13,11 @@ import sys
 
 from tqdm import tqdm
 
-from instabot import Bot
-
 stdout = sys.stdout
 sys.stdout = codecs.getwriter('utf8')(sys.stdout)
+
 sys.path.append(os.path.join(sys.path[0], '../'))
+from instabot import Bot
 
 
 try:

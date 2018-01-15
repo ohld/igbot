@@ -15,9 +15,8 @@ import time
 
 from tqdm import tqdm
 
-from instabot import Bot
-
 sys.path.append(os.path.join(sys.path[0], '../'))
+from instabot import Bot
 
 instaUsers = ["R1B4Z01D", "KoanMedia"]
 directMessage = ["Thanks for the example."]

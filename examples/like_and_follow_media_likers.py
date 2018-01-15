@@ -13,9 +13,8 @@ import time
 
 from tqdm import tqdm
 
-from instabot import Bot
-
 sys.path.append(os.path.join(sys.path[0], '../'))
+from instabot import Bot
 
 
 def like_and_follow(bot, user_id, nlikes=3):

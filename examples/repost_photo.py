@@ -8,10 +8,9 @@
 import os
 import sys
 
+sys.path.append(os.path.join(sys.path[0], '../'))
 from instabot import Bot
 from instabot.bot.bot_support import read_list_from_file
-
-sys.path.append(os.path.join(sys.path[0], '../'))
 
 
 def exists_in_posted_medias(new_media_id, path='posted_medias.txt'):

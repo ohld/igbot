@@ -11,9 +11,8 @@ import sys
 
 from tqdm import tqdm
 
-from instabot import Bot
-
 sys.path.append(os.path.join(sys.path[0], '../'))
+from instabot import Bot
 
 
 def archive_medias(bot, medias):
