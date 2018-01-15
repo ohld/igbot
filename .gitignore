@@ -103,6 +103,12 @@ bot_cp_*
 # JetBrains IDE
 .idea
 
+# nohup
+nohup.out
+
+# VS Code
+.vscode
+
 # Settings files
-examples/*.txt
+*.txt
 *.checkpoint
