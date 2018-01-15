@@ -13,7 +13,7 @@ def get_media_owner(self, media_id):
     self.mediaInfo(media_id)
     try:
         return str(self.LastJson["items"][0]["user"]["pk"])
-    except:
+    except Exception:
         return False
 
 

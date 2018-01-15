@@ -61,6 +61,6 @@ def load_checkpoint(self):
             return cp.dump()
         else:
             os.remove(CHECKPOINT_PATH % self.username)
-    except:
+    except Exception:
         pass
     return None
