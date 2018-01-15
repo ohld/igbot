@@ -10,7 +10,7 @@ posted_pic_list = []
 try:
     with open('pics.txt', 'r') as f:
         posted_pic_list = f.read().splitlines()
-except:
+except Exception:
     posted_pic_list = []
 
 timeout = 24 * 60 * 60  # pics will be posted every 24 hours

@@ -25,7 +25,7 @@ posted_pic_list = []
 try:
     with open(config.POSTED_PICS_FILE, 'r') as f:
         posted_pic_list = f.read().splitlines()
-except:
+except Exception:
     posted_pic_list = []
 
 # Get the filenames of the photos in the path ->
@@ -135,6 +135,7 @@ def job10():  # put non followers on blacklist
 def run_threaded(job_fn):
     job_thread = threading.Thread(target=job_fn)
     job_thread.start()
+
 
 schedule.every(1).hour.do(run_threaded, stats)              # get stats
 schedule.every(8).hours.do(run_threaded, job1)              # like hashtag

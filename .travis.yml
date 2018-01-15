@@ -10,8 +10,8 @@ install:
 
 script:
  - pyflakes instabot tests examples
- - pep8 --ignore=E223,E501 instabot tests
- - pep8 --ignore=E223,E402,E501 examples
+ - pycodestyle --ignore=E223,E501 instabot tests
+ - pycodestyle --ignore=E223,E402,E501 examples
  - py.test
 
 branches:
