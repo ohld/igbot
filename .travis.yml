@@ -9,7 +9,7 @@ install:
   - pip install -r requirements.txt
 
 script:
- - pyflakes instabot tests
+ - pyflakes instabot tests examples
  - pep8 --ignore=E223,E501 instabot tests
  - pep8 --ignore=E223,E402,E501 examples
  - py.test
