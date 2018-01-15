@@ -27,7 +27,7 @@ def send_message(self, text, user_ids, thread_id=None):
 
 def send_messages(self, text, user_ids):
     broken_items = []
-    if len(user_ids) == 0:
+    if not user_ids:
         self.logger.info("User must be at least one.")
         return broken_items
     self.logger.info("Going to send %d messages." % (len(user_ids)))
@@ -48,7 +48,7 @@ def send_media(self, media_id, user_ids, text='', thread_id=None):
     :param thread_id: thread_id
     """
     user_ids = _get_user_ids(self, user_ids)
-    if not isinstance(text, str) and type(user_ids) not in (list, str):
+    if not isinstance(text, str) and not isinstance(user_ids, (list, str)):
         self.logger.error('Text must be an string, user_ids must be an list or string')
         return False
     media = self.get_media_info(media_id)
@@ -64,7 +64,7 @@ def send_media(self, media_id, user_ids, text='', thread_id=None):
 
 def send_medias(self, media_id, user_ids, text):
     broken_items = []
-    if len(user_ids) == 0:
+    if not user_ids:
         self.logger.info("User must be at least one.")
         return broken_items
     self.logger.info("Going to send %d messages." % (len(user_ids)))
@@ -85,7 +85,7 @@ def send_hashtag(self, hashtag, user_ids, text='', thread_id=None):
     :param thread_id: thread_id
     """
     user_ids = _get_user_ids(self, user_ids)
-    if not isinstance(text, str) and type(user_ids) not in (list, str):
+    if not isinstance(text, str) and not isinstance(user_ids, (list, str)):
         self.logger.error('Text must be an string, user_ids must be an list or string')
         return False
     delay.small_delay(self)
@@ -107,7 +107,7 @@ def send_profile(self, profile_user_id, user_ids, text='', thread_id=None):
     """
     profile_id = self.convert_to_user_id(profile_user_id)
     user_ids = _get_user_ids(self, user_ids)
-    if not isinstance(text, str) and type(user_ids) not in (list, str):
+    if not isinstance(text, str) and not isinstance(user_ids, (list, str)):
         self.logger.error('Text must be an string, user_ids must be an list or string')
         return False
     delay.small_delay(self)
@@ -127,7 +127,7 @@ def send_like(self, user_ids, thread_id=None):
     :param thread_id: thread_id
     """
     user_ids = _get_user_ids(self, user_ids)
-    if type(user_ids) not in (list, str):
+    if not isinstance(user_ids, (list, str)):
         self.logger.error('Text must be an string, user_ids must be an list or string')
         return False
     delay.small_delay(self)

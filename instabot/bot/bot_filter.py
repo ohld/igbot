@@ -74,18 +74,17 @@ def _filter_medias_nlikes(media_items, max_likes_to_like):
 
 def _get_media_ids(media_items):
     result = []
-    for m in media_items:
-        if 'pk' in m.keys():
-            result.append(m['pk'])
+    for media in media_items:
+        if 'pk' in media.keys():
+            result.append(media['pk'])
     return result
 
 
 def check_media(self, media_id):
     self.mediaInfo(media_id)
-    if len(self.filter_medias(self.LastJson["items"])):
+    if self.filter_medias(self.LastJson["items"]):
         return check_user(self, self.get_media_owner(media_id))
-    else:
-        return False
+    return False
 
 
 # filter users
@@ -230,8 +229,8 @@ def check_user(self, user_id, filter_closed_acc=False, unfollowing=False):
 
 
 def check_not_bot(self, user_id):
-    delay.small_delay(self)
     """ Filter bot from real users. """
+    delay.small_delay(self)
     user_id = self.convert_to_user_id(user_id)
     if not user_id:
         return False

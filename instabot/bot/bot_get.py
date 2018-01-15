@@ -109,7 +109,6 @@ def get_media_info(self, media_id):
 
 
 def get_timeline_users(self):
-    # TODO: returns list userids who just posted on your timeline feed
     if not self.getTimelineFeed():
         self.logger.warning("Error while getting timeline feed.")
         return []
@@ -184,7 +183,7 @@ def get_media_commenters(self, media_id):
 
 
 def get_comment(self):
-    if len(self.comments):
+    if self.comments:
         return random.choice(self.comments).strip()
     return "wow"
 

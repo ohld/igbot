@@ -16,7 +16,7 @@ def like(self, media_id):
 
 def like_medias(self, medias):
     broken_items = []
-    if len(medias) == 0:
+    if not medias:
         self.logger.info("Nothing to like.")
         return broken_items
     self.logger.info("Going to like %d medias." % (len(medias)))

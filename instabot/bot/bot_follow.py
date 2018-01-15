@@ -53,7 +53,7 @@ def follow_users(self, user_ids):
             elif self.LastResponse.status_code not in (400, 429):
                 try_number = 3
                 error_pass = False
-                for i in range(try_number):
+                for _ in range(try_number):
                     delay_time = 60
                     delay.delay_in_seconds(self, delay_time)
                     error_pass = self.follow(user_id)

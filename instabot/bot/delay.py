@@ -14,7 +14,7 @@ def add_dispersion(delay_value):
 def sleep_if_need(last_action, target_delay):
     now = time.time()
     elapsed_time = now - last_action
-    if (elapsed_time < target_delay):
+    if elapsed_time < target_delay:
         remains_to_wait = target_delay - elapsed_time
         time.sleep(add_dispersion(remains_to_wait))
 

@@ -15,7 +15,7 @@ def delete_media(self, media_id):
 
 def delete_medias(self, medias):
     broken_items = []
-    if len(medias) == 0:
+    if not medias:
         self.logger.info("Nothing to delete.")
         return broken_items
     self.logger.info("Going to delete %d medias." % (len(medias)))

@@ -17,7 +17,7 @@ def archive(self, media_id, undo=False):
 
 def archive_medias(self, medias):
     broken_items = []
-    if len(medias) == 0:
+    if not medias:
         self.logger.info("Nothing to archive.")
         return broken_items
     self.logger.info("Going to archive %d medias." % (len(medias)))
@@ -32,7 +32,7 @@ def archive_medias(self, medias):
 
 def unarchive_medias(self, medias):
     broken_items = []
-    if len(medias) == 0:
+    if not medias:
         self.logger.info("Nothing to unarchive.")
         return broken_items
     self.logger.info("Going to unarchive %d medias." % (len(medias)))

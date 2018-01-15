@@ -78,7 +78,7 @@ class Bot(API):
                  comment_delay=60,
                  block_delay=30,
                  unblock_delay=30,
-                 stop_words=['shop', 'store', 'free'],
+                 stop_words=('shop', 'store', 'free'),
                  verbosity=True,
                  ):
         super(Bot, self).__init__()
@@ -168,7 +168,7 @@ class Bot(API):
         save_checkpoint(self)
         super(Bot, self).logout()
         self.logger.info("Bot stopped. "
-                         "Worked: %s" % (datetime.datetime.now() - self.start_time))
+                         "Worked: %s", datetime.datetime.now() - self.start_time)
         self.print_counters()
 
     def login(self, **args):
@@ -206,24 +206,24 @@ class Bot(API):
 
     def print_counters(self):
         if self.total_liked:
-            self.logger.info("Total liked: %d" % self.total_liked)
+            self.logger.info("Total liked: %d", self.total_liked)
         if self.total_unliked:
-            self.logger.info("Total unliked: %d" % self.total_unliked)
+            self.logger.info("Total unliked: %d", self.total_unliked)
         if self.total_followed:
-            self.logger.info("Total followed: %d" % self.total_followed)
+            self.logger.info("Total followed: %d", self.total_followed)
         if self.total_unfollowed:
-            self.logger.info("Total unfollowed: %d" % self.total_unfollowed)
+            self.logger.info("Total unfollowed: %d", self.total_unfollowed)
         if self.total_commented:
-            self.logger.info("Total commented: %d" % self.total_commented)
+            self.logger.info("Total commented: %d", self.total_commented)
         if self.total_blocked:
-            self.logger.info("Total blocked: %d" % self.total_blocked)
+            self.logger.info("Total blocked: %d", self.total_blocked)
         if self.total_unblocked:
-            self.logger.info("Total unblocked: %d" % self.total_unblocked)
+            self.logger.info("Total unblocked: %d", self.total_unblocked)
         if self.total_archived:
-            self.logger.info("Total archived: %d" % self.total_archived)
+            self.logger.info("Total archived: %d", self.total_archived)
         if self.total_unarchived:
-            self.logger.info("Total unarchived: %d" % self.total_unarchived)
-        self.logger.info("Total requests: %d" % self.total_requests)
+            self.logger.info("Total unarchived: %d", self.total_unarchived)
+        self.logger.info("Total requests: %d", self.total_requests)
 
     # getters
 
