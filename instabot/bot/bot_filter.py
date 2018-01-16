@@ -26,6 +26,7 @@ def skippedlist_adder(self, user_id):
 # filtering medias
 
 # this is used to remove medias already liked  and to remove medias which have more likes then max_likes_to_like parameter
+#TODO remove self medias
 def filter_medias(self, media_items, filtration=True, quiet=False, is_comment=False):
     if filtration:
         if not quiet:
