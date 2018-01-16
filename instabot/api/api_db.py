@@ -17,10 +17,10 @@ def getConnection():
     return db
 
 
-def getUserId(campaignId):
+def getCampaign(campaignId):
     if campaignId != False:
-        row = fetchOne("select id_user from campaign where id_campaign=%s", campaignId)
-        return row['id_user']
+        row = fetchOne("select username,id_user,id_campaign,timestamp,id_account_type from campaign where id_campaign=%s", campaignId)
+        return row
     else:
         return None
 

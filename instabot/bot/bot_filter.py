@@ -26,27 +26,30 @@ def skippedlist_adder(self, user_id):
 # filtering medias
 
 # this is used to remove medias already liked  and to remove medias which have more likes then max_likes_to_like parameter
-#TODO remove self medias
 def filter_medias(self, media_items, filtration=True, quiet=False, is_comment=False):
-    if filtration:
-        if not quiet:
-            self.logger.info("Received %d medias." % len(media_items))
-        if not is_comment:
-            media_items = _filter_medias_not_liked(media_items)
-            if self.max_likes_to_like:
-                media_items = _filter_medias_nlikes(
-                    media_items, self.max_likes_to_like)
-        else:
-            media_items = _filter_medias_not_commented(self, media_items)
-        if not quiet:
-            self.logger.info("After filtration %d medias left." % len(media_items))
+    self.logger.info("filter_medias: Received %d medias." % len(media_items))
 
-    # TODO fix this for all calls
-    # return _get_media_ids(media_items)
+    media_items = _filter_medias_not_liked(self,media_items)
+    media_items= _filter_own_medias(self,media_items)
+    if self.max_likes_to_like:
+        media_items = _filter_medias_nlikes(media_items, self.max_likes_to_like)
+
+    self.logger.info("filter_medias: After filtration %d medias left." % len(media_items))
+
     return media_items
 
+def _filter_own_medias(self,media_items):
+    self.logger.info("_filter_own_medias: removing own posts...")
+    not_own_medias = []
+    for media in media_items:
+        if media['user']['username']!=self.campaignObject['username']:
+            not_own_medias.append(media)
+        else:
+            self.logger.info("_filter_own_medias: found own posts, going to skip it...")
+    return not_own_medias
 
-def _filter_medias_not_liked(media_items):
+def _filter_medias_not_liked(self,media_items):
+    self.logger.info("_filter_medias_not_liked: removing already liked posts...")
     not_liked_medias = []
     for media in media_items:
         if 'has_liked' in media.keys():
@@ -119,7 +122,7 @@ def filter_users(self, user_id_list):
 def check_user(self, user, filter_closed_acc=False):
     user_id = user['instagram_id_user']
 
-    #self.logger.info("Going to check user %s id: %s if worth liking/following", user['full_name'], user_id)
+    # self.logger.info("Going to check user %s id: %s if worth liking/following", user['full_name'], user_id)
 
     # delay.small_delay(self)
 
@@ -132,15 +135,15 @@ def check_user(self, user, filter_closed_acc=False):
         self.logger.info('Error: Could not retrieve user info , Skipping')
         return False
 
-    #self.logger.info('USER_NAME: %s , FOLLOWER: %s , FOLLOWING: %s  MEDIA %s' % (user_info[
+    # self.logger.info('USER_NAME: %s , FOLLOWER: %s , FOLLOWING: %s  MEDIA %s' % (user_info[
     #                                                                        "username"], user_info["follower_count"],
     #                                                                    user_info["following_count"], user_info['media_count']))
 
-    #print('\n USER_NAME: %s , FOLLOWER: %s , FOLLOWING: %s ' % (user_info[
+    # print('\n USER_NAME: %s , FOLLOWER: %s , FOLLOWING: %s ' % (user_info[
     #                                                                "username"], user_info["follower_count"],
     #                                                            user_info["following_count"]))  # Log to Console
 
-    #skip private user
+    # skip private user
     if "is_private" in user_info:
         if user_info["is_private"]:
             self.logger.info('USER IS PRIVATE')
@@ -148,23 +151,29 @@ def check_user(self, user, filter_closed_acc=False):
 
     if "follower_count" in user_info:
         if user_info["follower_count"] < self.min_followers_to_follow:
-            self.logger.info('SKIPPING: user_info["follower_count"] < self.min_followers_to_follow , Skipping %s vs %s' % (user_info["follower_count"], self.min_followers_to_follow))
+            self.logger.info(
+                'SKIPPING: user_info["follower_count"] < self.min_followers_to_follow , Skipping %s vs %s' % (
+                user_info["follower_count"], self.min_followers_to_follow))
             return False
 
     if "following_count" in user_info:
         if user_info["following_count"] < self.min_following_to_follow:
-            self.logger.info('\n\033[91m SKIPPING: user_info["following_count"] < self.min_following_to_follow , Skipping %s vs %s \033[0m' % (user_info['following_count'], self.min_following_to_follow))
+            self.logger.info(
+                '\n\033[91m SKIPPING: user_info["following_count"] < self.min_following_to_follow , Skipping %s vs %s \033[0m' % (
+                user_info['following_count'], self.min_following_to_follow))
             return False
 
     if 'media_count' in user_info:
         if user_info["media_count"] < self.min_media_count_to_follow:
             # Log to Console
-            self.logger.info('SKIPPING: user_info["media_count"] < self.min_media_count_to_follow , BOT or InActive , Skipping %s vs %s' % (user_info['media_count'], self.min_media_count_to_follow))
+            self.logger.info(
+                'SKIPPING: user_info["media_count"] < self.min_media_count_to_follow , BOT or InActive , Skipping %s vs %s' % (
+                user_info['media_count'], self.min_media_count_to_follow))
             return False  # bot or inactive user
 
-    #if search_stop_words_in_user(self, user_info):
-        # Log to Console
-    #    self.logger.info('\n\033[91m search_stop_words_in_user , Skipping \033[0m')
+            # if search_stop_words_in_user(self, user_info):
+            # Log to Console
+    # self.logger.info('\n\033[91m search_stop_words_in_user , Skipping \033[0m')
     #    return False
 
     return True

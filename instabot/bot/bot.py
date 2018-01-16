@@ -165,8 +165,8 @@ class Bot(API):
 
         # campaign
         self.id_campaign = id_campaign
-
-        self.web_application_id_user = api_db.getUserId(self.id_campaign)
+        self.campaignObject = api_db.getCampaign(self.id_campaign)
+        self.web_application_id_user = self.campaignObject['id_user']
 
     def check_ip(self):
         print(self.session.get('http://bot.whatismyipaddress.com/').text)
