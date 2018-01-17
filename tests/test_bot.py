@@ -47,7 +47,7 @@ class TestBot:
         monkeypatch.setattr(requests.Session, 'get', mockreturn)
         monkeypatch.setattr(requests.Session, 'post', mockreturn_login)
 
-        self.BOT.login(username=self.USERNAME, password=self.PASSWORD)
+        assert self.BOT.login(username=self.USERNAME, password=self.PASSWORD)
 
         assert self.BOT.username == self.USERNAME
         assert self.BOT.user_id == self.USER_ID
@@ -63,6 +63,13 @@ class TestBot:
 
         assert not self.BOT.isLoggedIn
 
+    def test_generate_uuid(self):
+        from uuid import UUID
+        generated_uuid = self.BOT.generateUUID(True)
+
+        assert isinstance(UUID(generated_uuid), UUID)
+        assert UUID(generated_uuid).hex == generated_uuid.replace('-', '')
+
     def test_set_user(self):
         test_username = "abcdef"
         test_password = "passwordabc"
@@ -70,3 +77,4 @@ class TestBot:
 
         assert self.BOT.username == test_username
         assert self.BOT.password == test_password
+        assert hasattr(self.BOT, "uuid")
