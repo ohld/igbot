@@ -62,3 +62,11 @@ class TestBot:
         self.BOT.logout()
 
         assert not self.BOT.isLoggedIn
+
+    def test_set_user(self):
+        test_username = "abcdef"
+        test_password = "passwordabc"
+        self.BOT.setUser(test_username, test_password)
+
+        assert self.BOT.username == test_username
+        assert self.BOT.password == test_password
