@@ -163,10 +163,16 @@ class Bot(API):
 
         self.logger.info('Instabot Started')
 
-        # campaign
+        #todo-> when starting the bot without a campaign(eg. searchByLocation) the below data is undefined and sometomes might cause issues
+        #todo-> improve the functionality to have a separate handler for the actions that do not require an campaign
+        
         self.id_campaign = id_campaign
         self.campaignObject = api_db.getCampaign(self.id_campaign)
-        self.web_application_id_user = self.campaignObject['id_user']
+        if self.campaignObject!=None:
+          self.web_application_id_user = self.campaignObject['id_user']
+        else:
+          self.web_application_id_user=None
+          
 
     def check_ip(self):
         print(self.session.get('http://bot.whatismyipaddress.com/').text)
