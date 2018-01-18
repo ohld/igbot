@@ -97,7 +97,7 @@ class API(object):
         self.uuid = self.generateUUID(True)
 
     def login(self, username=None, password=None, force=False, proxy=None):
-        self.logger.info("Trying to login user %s with custom IP: %s, is bot account %s" % (username, self.multiple_ip, self.is_bot_account))
+        self.logger.info("login: Trying to login user %s with custom IP: %s, is bot account %s" % (username, self.multiple_ip, self.is_bot_account))
         if password is None:
             username, password = get_credentials(username=username)
 
@@ -137,14 +137,14 @@ class API(object):
                     self.rank_token = "%s_%s" % (self.user_id, self.uuid)
                     self.token = self.LastResponse.cookies["csrftoken"]
 
-                    self.logger.info("Login success as %s!" % self.username)
+                    self.logger.info("login: Login success as %s!" % self.username)
                     return True
                 else:
-                    self.logger.info("Incorrect credentials or instagram verification required !")
+                    self.logger.info("login: Incorrect credentials or instagram verification required !")
                     delete_credentials()
                     return False
             else:
-                self.logger.info("Could not login user %% !", username)
+                self.logger.info("login: Could not login user %% !", username)
                 return False
 
     def loadJson(self, value):
@@ -193,24 +193,29 @@ class API(object):
         else:
             details = None
             responseInfo = response.text
-            self.logger.info("Request error url: %s: ", config.API_URL + endpoint)
+            self.logger.info("sendRequest: Request error url: %s: ", config.API_URL + endpoint)
 						
-            if response.status_code != 404:
-                self.logger.warning("HTTP ERROR: STATUS %s , BODY: %s " % (str(response.status_code), response.text))
-            else:#the original response  is too big when 404
-                responseInfo="Page not found!"
-                self.logger.warning("HTTP ERROR: STATUS %s, going to sleep 1 minute !" % (str(response.status_code)))
-                sleep_minutes=1
+            if response.status_code == 404:
+                responseInfo = "Page not found!"
+                self.logger.warning("sendRequest: HTTP ERROR: STATUS %s, going to sleep 1 minute !" % (str(response.status_code)))
+                sleep_minutes = 1
                 time.sleep(sleep_minutes * 60)
+            else:
+                self.logger.warning("sendRequest: HTTP ERROR: STATUS %s , BODY: %s " % (str(response.status_code), response.text))
 
 
             if response.status_code == 400:
                 responseObject = self.loadJson(response.text)
                 if 'spam' in responseObject:
                     sleep_minutes = 10
-                    self.logger.warning("BOT IS BLOCKED, going to sleep %s minutes" % sleep_minutes)
+                    self.logger.warning("sendRequest: BOT IS BLOCKED, going to sleep %s minutes" % sleep_minutes)
                     details="spam"
                     time.sleep(sleep_minutes * 60)
+                if 'error_type' in responseObject:
+                    if responseObject['error_type']=='checkpoint_challenge_required':
+                        self.logger.warning("sendRequest: Instagram requries phone verification")
+                        self.notifyUserToVerifyInstagramAccount()
+                        raise Exception("sendRequest: Instagram requires phone verification")
                 else:
                     sleep_minutes=1
                     self.logger.warning("Request return 400 error. Going to sleep %s minutes" % sleep_minutes)
@@ -255,6 +260,10 @@ class API(object):
     def autoCompleteUserList(self):
         return self.SendRequest('friendships/autocomplete_user_list/')
 
+    def notifyUserToVerifyInstagramAccount(self):
+        self.logger.info("notifyUserToVerifyInstagramAccount: Going to send mail to user id: %s to enable instagram ccount",self.web_application_id_user)
+        self.session.get("https://rest.angie.one/email/verifyInstagramAccount?id="+str(self.web_application_id_user))
+        self.logger.info("notifyUserToVerifyInstagramAccount: done sending email")
 
 
     def getTimelineFeed(self, amount=20):

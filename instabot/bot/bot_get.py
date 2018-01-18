@@ -210,7 +210,7 @@ def crawl_user_followers(self, amount):
 
     if len(result['followers']) == 0:
         self.logger.info("crawl_user_followers:No followers received for user: %s ! SKIPPING" % self.user_id)
-        exit(0)
+        return False
 
     for follower in result['followers']:
         api_db.insertOwnFollower(webApplicationUser['id_user'], follower['pk'], follower['full_name'],
