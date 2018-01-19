@@ -24,10 +24,10 @@ if args.u is None:
 try:
     bot = Bot(id_campaign=False,multiple_ip=True)
     status=bot.login(username=args.u, password=args.p)
-    print(bot.LastResponse.text)
 except:
-    exceptionDetail = traceback.format_exc()
-    print(exceptionDetail)
+  plm=0
+finally:
+  print(bot.LastResponse.text)
 
 
 

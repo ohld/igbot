@@ -49,6 +49,9 @@ try:
     if status!=True:
         bot.logger.info("dispatcher: Could not login, going to exit !")
         exit()
+    
+    print(bot.LastResponse.text)    
+    exit()
 
     calculatedAmount = bot.getAmountDistribution(args.angie_campaign)
 

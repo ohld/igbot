@@ -191,6 +191,7 @@ class API(object):
             self.LastJson = self.loadJson(response.text)
             return True
         else:
+						self.LastResponse=response
             details = None
             responseInfo = response.text
             self.logger.info("sendRequest: Request error url: %s: ", config.API_URL + endpoint)
@@ -233,10 +234,7 @@ class API(object):
             currentOperation = self.currentOperation if hasattr(self, "currentOperation") else None
 						
             insert("insert into instagram_log (id_user,log,operation,request,http_status,details,timestamp) values (%s,%s,%s,%s,%s,%s,now())",
-                   self.web_application_id_user, responseInfo, currentOperation, config.API_URL + endpoint,str(response.status_code),details)
-						
-            self.LastResponse=response
-						
+                   self.web_application_id_user, responseInfo, currentOperation, config.API_URL + endpoint,str(response.status_code),details)						
 
             # for debugging
             #try:
