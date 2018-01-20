@@ -213,6 +213,7 @@ class API(object):
                     details="spam"
                     time.sleep(sleep_minutes * 60)
                 if 'error_type' in responseObject:
+                    #todo throw if invalid password
                     if responseObject['error_type']=='checkpoint_challenge_required':
                         self.logger.warning("sendRequest: Instagram requries phone verification")
                         self.notifyUserToVerifyInstagramAccount()
