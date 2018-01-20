@@ -191,7 +191,7 @@ class API(object):
             self.LastJson = self.loadJson(response.text)
             return True
         else:
-						self.LastResponse=response
+            self.LastResponse = response
             details = None
             responseInfo = response.text
             self.logger.info("sendRequest: Request error url: %s: ", config.API_URL + endpoint)
