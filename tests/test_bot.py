@@ -1,11 +1,13 @@
 import json
 try:
-    from unittest.mock import Mock
+    from unittest.mock import Mock, patch
 except ImportError:
-    from mock import Mock
+    from mock import Mock, patch
 
 import requests
 import responses
+
+from .test_variables import TEST_PHOTO_ITEM
 
 from instabot import Bot
 from instabot.api.config import API_URL
@@ -20,8 +22,17 @@ class TestBot:
         self.PASSWORD = 'test_password'
         self.FULLNAME = 'test_full_name'
         self.BOT = Bot()
+        self.prepare_bot(self.BOT)
 
-    def test_login(self, monkeypatch):
+    def prepare_bot(self, bot):
+        bot.isLoggedIn = True
+        bot.user_id = self.USER_ID
+        bot.token = 'abcdef123456'
+        bot.session = requests.Session()
+        bot.setUser(self.USERNAME, self.PASSWORD)
+
+    def test_login(self):
+        self.BOT = Bot()
 
         def mockreturn(*args, **kwargs):
             r = Mock()
@@ -44,21 +55,20 @@ class TestBot:
             })
             return r
 
-        monkeypatch.setattr(requests.Session, 'get', mockreturn)
-        monkeypatch.setattr(requests.Session, 'post', mockreturn_login)
+        with patch('requests.Session') as Session:
+            instance = Session.return_value
+            instance.get.return_value = mockreturn()
+            instance.post.return_value = mockreturn_login()
 
-        assert self.BOT.login(username=self.USERNAME, password=self.PASSWORD)
+            assert self.BOT.login(username=self.USERNAME, password=self.PASSWORD)
 
         assert self.BOT.username == self.USERNAME
         assert self.BOT.user_id == self.USER_ID
         assert self.BOT.isLoggedIn
+        assert self.BOT.uuid
+        assert self.BOT.token
 
-    @responses.activate
-    def test_logout(self, monkeypatch):
-        self.test_login(monkeypatch)
-        responses.add(responses.GET, "{API_URL}accounts/logout/".format(
-            API_URL=API_URL), json=DEFAULT_RESPONSE, status=200)
-
+    def test_logout(self):
         self.BOT.logout()
 
         assert not self.BOT.isLoggedIn
@@ -78,3 +88,21 @@ class TestBot:
         assert self.BOT.username == test_username
         assert self.BOT.password == test_password
         assert hasattr(self.BOT, "uuid")
+
+    @responses.activate
+    def test_get_media_owner(self):
+        media_id = 1234
+
+        responses.add(
+            responses.POST, "{API_URL}media/{media_id}/info/".format(API_URL=API_URL, media_id=media_id),
+            json={
+                "auto_load_more_enabled": True,
+                "num_results": 1,
+                "status": "ok",
+                "more_available": False,
+                "items": [TEST_PHOTO_ITEM]
+            }, status=200)
+
+        owner = self.BOT.get_media_owner(media_id)
+
+        assert owner == str(TEST_PHOTO_ITEM["user"]["pk"])

@@ -13,7 +13,8 @@ def get_media_owner(self, media_id):
     self.mediaInfo(media_id)
     try:
         return str(self.LastJson["items"][0]["user"]["pk"])
-    except Exception:
+    except Exception as ex:
+        self.logger.error("Error: get_media_owner(%s)\n%s", media_id, ex)
         return False
 
 
