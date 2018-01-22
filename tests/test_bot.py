@@ -86,3 +86,16 @@ class TestBotAPI(TestBot):
         assert self.BOT.username == test_username
         assert self.BOT.password == test_password
         assert hasattr(self.BOT, "uuid")
+
+    def test_reset_counters(self):
+        from instabot.bot.limits import reset_counters
+        counters = ['total_liked', 'total_unliked', 'total_followed',
+                    'total_unfollowed', 'total_commented', 'total_blocked', 'total_unblocked']
+        for counter in counters:
+            setattr(self.BOT, counter, 1)
+            assert getattr(self.BOT, counter) is 1
+
+        reset_counters(self.BOT)
+
+        for counter in counters:
+            assert getattr(self.BOT, counter) is 0
