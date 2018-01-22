@@ -1,3 +1,5 @@
+DEFAULT_RESPONSE = {'status': 'ok'}
+
 TEST_PHOTO_ITEM = {
     'taken_at': 1281669687,
     'pk': 1234,
