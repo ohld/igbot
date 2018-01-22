@@ -1,4 +1,4 @@
-tqdm==4.8.4
+tqdm==4.19.5
 requests==2.11.1
 requests-toolbelt==0.7.0
 pycodestyle
