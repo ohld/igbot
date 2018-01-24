@@ -17,3 +17,4 @@ script:
 branches:
   only:
     - master
+cache: pip
