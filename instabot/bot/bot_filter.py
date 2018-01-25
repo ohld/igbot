@@ -54,7 +54,7 @@ def _filter_medias_not_liked(media_items):
 def _filter_medias_not_commented(self, media_items):
     not_commented_medias = []
     for media in media_items:
-        if media['comment_count'] > 0:
+        if media.get('comment_count', 0) > 0 and media.get('comments'):
             my_comments = [comment for comment in media['comments']
                            if comment['user_id'] == self.user_id]
             if my_comments:
