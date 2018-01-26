@@ -1,5 +1,29 @@
 DEFAULT_RESPONSE = {'status': 'ok'}
 
+TEST_USER_ITEM = {
+    "pk": 1234543212321,
+    "username": "test_username",
+    "full_name": "Test Username",
+    "is_private": False,
+    "profile_pic_url": "https://scontent-arn2-1.cdninstagram.com/vp/6f3e8913b4e9c3153bc15669c47c9519/5AE4F003/t51.2885-19/s150x150/21827786_319483561795594_805639369123123123_n.jpg",
+    "profile_pic_id": "120334920291626198135_614512764",
+    "friendship_status": {
+                "following": True,
+                "is_private": False,
+                "incoming_request": False,
+                "outgoing_request": False,
+                "is_bestie": False
+    },
+    "is_verified": False,
+    "has_anonymous_profile_picture": False,
+    "follower_count": 470,
+    "byline": "470 followers",
+    "social_context": "Following",
+    "search_social_context": "Following",
+    "mutual_followers_count": 0.0,
+    "unseen_count": 0
+}
+
 TEST_PHOTO_ITEM = {
     'taken_at': 1281669687,
     'pk': 1234,

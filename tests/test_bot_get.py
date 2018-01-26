@@ -1,9 +1,9 @@
 import responses
 
-from instabot.api.config import API_URL
-from .test_bot import TestBot
+from instabot.api.config import API_URL, SIG_KEY_VERSION
 
-from .test_variables import TEST_PHOTO_ITEM
+from .test_bot import TestBot
+from .test_variables import TEST_PHOTO_ITEM, TEST_USER_ITEM
 
 
 class TestBotGet(TestBot):
@@ -105,4 +105,25 @@ class TestBotGet(TestBot):
         medias = self.BOT.get_archived_medias(as_dict=True)
 
         assert medias == response_data['items']
+        assert len(medias) == results
+
+    @responses.activate
+    def test_search_users(self):
+        results = 5
+        query = "test"
+        my_test_user_item = TEST_USER_ITEM
+        response_data = {
+            "has_more": True,
+            "num_results": results,
+            "rank_token": self.BOT.rank_token,
+            "status": "ok",
+            "users": [my_test_user_item for _ in range(results)]
+        }
+        responses.add(
+            responses.GET, '{API_URL}users/search/?ig_sig_key_version={SIG_KEY}&is_typeahead=true&query={query}&rank_token={rank_token}'.format(
+                API_URL=API_URL, rank_token=self.BOT.rank_token, query=query, SIG_KEY=SIG_KEY_VERSION), json=response_data, status=200)
+
+        medias = self.BOT.search_users(query)
+
+        assert medias == [str(my_test_user_item["pk"]) for _ in range(results)]
         assert len(medias) == results
