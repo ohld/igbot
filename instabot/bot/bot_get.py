@@ -183,6 +183,14 @@ def get_media_commenters(self, media_id):
     return [str(item["user"]["pk"]) for item in comments]
 
 
+def search_users(self, query):
+    self.searchUsers(query)
+    if "users" not in self.LastJson:
+        self.logger.info("Users with %s not found." % query)
+        return []
+    return [str(user['pk']) for user in self.LastJson['users']]
+
+
 def get_comment(self):
     if self.comments:
         return random.choice(self.comments).strip()
