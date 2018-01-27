@@ -22,7 +22,11 @@ def download_photo(self, media_id, path='photos/', filename=None, description=Fa
         caption = media['caption']['text']
         with open('{path}{0}_{1}.txt'.format(media['user']['username'], media_id, path=path), encoding='utf8', mode='w') as file_descriptor:
             file_descriptor.write(caption)
-    photo = super(self.__class__, self).downloadPhoto(media_id, filename, False, path)
+    try:
+        photo = super(self.__class__, self).downloadPhoto(media_id, filename, False, path)
+    except Exception:
+        photo = False
+
     if photo:
         return photo
     self.logger.info("Media with %s is not %s ." % (media_id, 'downloaded'))
