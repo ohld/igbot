@@ -35,7 +35,7 @@ try:
         min_following_to_follow=10,  # default 10
         max_following_to_followers_ratio=4,  # default 2
         min_media_count_to_follow=20,  # default 3
-        like_delay=20,  # default 10,
+        like_delay=30,  # default 10,
         unlike_delay=15,  # default 1-
         follow_delay=40,  # default 30,
         unfollow_delay=40,  # default 30,
@@ -50,8 +50,8 @@ try:
         bot.logger.info("dispatcher: Could not login, going to exit !")
         exit()
     
-    print(bot.LastResponse.text)    
-    exit()
+        
+    
 
     calculatedAmount = bot.getAmountDistribution(args.angie_campaign)
 
