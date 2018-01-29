@@ -1,6 +1,9 @@
 # File with login and password
 secret.txt
 
+# Mac OS X stuff
+.DS_Store
+
 # Files with downloaded data
 *.tsv
 
