@@ -35,7 +35,8 @@ try:
         min_following_to_follow=10,  # default 10
         max_following_to_followers_ratio=4,  # default 2
         min_media_count_to_follow=20,  # default 3
-        like_delay=30,  # default 10,
+        like_delay=35,  # default 10,
+        like_delay_if_bot_blocked=70,
         unlike_delay=15,  # default 1-
         follow_delay=40,  # default 30,
         unfollow_delay=40,  # default 30,
@@ -57,6 +58,9 @@ try:
 
     totalExpectedLikesAmount = int(bot.getLikeAmount(args.angie_campaign,calculatedAmount))
     totalExpectedFollowAmount = int(bot.getFollowAmount(args.angie_campaign,calculatedAmount))
+
+    bot.like_delay = bot.get_like_delay(totalExpectedLikesAmount)
+    bot.follow_delay = bot.get_follow_delay(totalExpectedFollowAmount)
 
     usersLikeForLike = api_db.fetchOne('select count(*) as total_users from users join user_subscription on (users.id_user = user_subscription.id_user)  join campaign on (users.id_user = campaign.id_user) where (user_subscription.end_date>now() or user_subscription.end_date is null)   and campaign.id_campaign!=%s order by users.id_user',args.angie_campaign)
     bot.logger.info("dispatcher_v2: Total number of likeForLike users: %s", usersLikeForLike['total_users'])

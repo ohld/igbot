@@ -209,7 +209,9 @@ class API(object):
                 responseObject = self.loadJson(response.text)
                 if 'spam' in responseObject:
                     sleep_minutes = 10
-                    self.logger.warning("sendRequest: BOT IS BLOCKED, going to sleep %s minutes" % sleep_minutes)
+                    self.like_delay = self.like_delay_if_bot_blocked
+                    self.logger.warning("sendRequest: BOT IS BLOCKED, going to sleep %s minutes. The like delay was increased to %s seconds" % (sleep_minutes,self.like_delay))
+
                     details="spam"
                     time.sleep(sleep_minutes * 60)
                 if 'error_type' in responseObject:
@@ -228,8 +230,9 @@ class API(object):
             elif response.status_code == 429:
                 sleep_minutes = 5
                 details="That means too many requests"
+                self.like_delay = self.like_delay_if_bot_blocked
                 self.logger.warning("That means 'too many requests'. "
-                                    "I'll go to sleep for %d minutes." % sleep_minutes)
+                                    "I'll go to sleep for %d minutes. Like delay increased to %s" % (sleep_minutes, self.like_delay))
                 time.sleep(sleep_minutes * 60)
 
             currentOperation = self.currentOperation if hasattr(self, "currentOperation") else None

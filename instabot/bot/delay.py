@@ -5,7 +5,7 @@
 import time
 import random
 import logging
-
+from random import randint
 
 def add_dispersion(delay_value):
     return delay_value * 3 / 4 + delay_value * random.random() / 2
@@ -22,10 +22,15 @@ def sleep_if_need(last_action, target_delay):
         logger.info("Sleep %s seconds" % sleep_time)
         time.sleep(sleep_time)
 
-
+#remove the original implementation just to make sure the boot sleeps
 def like_delay(bot):
-    sleep_if_need(bot.last_like, bot.like_delay)
+    #sleep_if_need(bot.last_like, bot.like_delay)
     bot.last_like = time.time()
+
+    logger = logging.getLogger('[instabot]')
+    sleep_time = randint(bot.like_delay-10, bot.like_delay)
+    logger.info("like_delay: Sleeping %s seconds, Max delay is: %s" % (sleep_time,bot.like_delay))
+    time.sleep(sleep_time)
 
 
 def unlike_delay(bot):

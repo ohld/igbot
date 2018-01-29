@@ -51,7 +51,7 @@ from .bot_support import add_whitelist, add_blacklist
 
 from .bot_stats import save_user_stats
 
-from .bot_util import getBotOperations
+from .bot_util import getBotOperations, get_follow_delay,get_like_delay
 from .bot_action_handler import  getLikeAmount,getFollowAmount,getAmountDistribution, getLikesPerformed, getFollowPerformed
 
 class Bot(API):
@@ -81,6 +81,7 @@ class Bot(API):
                  min_media_count_to_follow=20,
                  max_following_to_block=2000,
                  like_delay=15,
+                 like_delay_if_bot_blocked=40,
                  unlike_delay=10,
                  follow_delay=30,
                  unfollow_delay=30,
@@ -135,6 +136,7 @@ class Bot(API):
 
         # delays
         self.like_delay = like_delay
+        self.like_delay_if_bot_blocked = like_delay_if_bot_blocked
         self.unlike_delay = unlike_delay
         self.follow_delay = follow_delay
         self.unfollow_delay = unfollow_delay
@@ -185,7 +187,7 @@ class Bot(API):
         return next((p.version for p in pkg_resources.working_set if p.project_name.lower() == 'instabot'), "No match")
 
     def logout(self):
-        
+
         #release ip
         self.logger.info("logout: Going to release the ip")
         api_db.insert("update campaign set id_ip_bot=null where id_campaign=%s",self.id_campaign)
@@ -523,6 +525,12 @@ class Bot(API):
 
     def save_user_stats(self, username, path=""):
         return save_user_stats(self, username, path=path)
+
+    def get_follow_delay(self, followAmount):
+        return get_follow_delay(self, followAmount)
+
+    def get_like_delay(self, likeAmount):
+        return get_like_delay(self, likeAmount)
 
     def getBotOperations(self, id_campaign):
         return getBotOperations(self, id_campaign)

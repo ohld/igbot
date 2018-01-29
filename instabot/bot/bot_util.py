@@ -5,7 +5,7 @@
 
 from ..api import api_db
 import math
-import datetime
+from datetime import *
 
 def getBotOperations(self, id_campaign):
 
@@ -80,3 +80,38 @@ def getBotOperations(self, id_campaign):
 
 
     return operations
+
+def how_many_seconds_until_midnight():
+    tomorrow = date.today() + timedelta(1)
+    midnight = datetime.combine(tomorrow, time())
+    now = datetime.now()
+    return (midnight - now).seconds
+
+def get_like_delay(self,likeAmount):
+    if likeAmount==0:
+        return self.like_delay
+
+    secondsUntilMidnight = how_many_seconds_until_midnight()
+    likeDelay = secondsUntilMidnight/likeAmount
+    if likeDelay<self.like_delay:
+        self.logger.info("get_like_delay: Calculated like delay is less than the original one... reseting to %s", self.like_delay)
+        return self.like_delay
+    else:
+        self.like_delay = likeDelay
+        self.logger.info("get_like_delay: seconds until midnight:%s, like amount: %s, delay: %s" % (secondsUntilMidnight, likeAmount, likeDelay))
+        return likeDelay
+
+def get_follow_delay(self,followAmount):
+    if followAmount==0:
+        return self.follow_delay
+    secondsUntilMidnight = how_many_seconds_until_midnight()
+    followDelay = secondsUntilMidnight/followAmount
+    if followDelay<self.follow_delay:
+        self.logger.info("get_follow_delay: Calculated follow delay is less than the original one... reseting to %s", self.follow_delay)
+        return self.follow_delay
+    else:
+        self.follow_delay = followDelay
+        self.logger.info("get_follow_delay: seconds until midnight:%s, follow amount: %s, delay: %s" % (secondsUntilMidnight, followAmount, followDelay))
+        return followDelay
+
+
