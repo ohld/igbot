@@ -523,8 +523,10 @@ class API(object):
         return self.getUserFeed(self.user_id, maxid, minTimestamp)
 
     def getHashtagFeed(self, hashtagString, amount=50):
-        self.logger.info("Trying to get %s medias with hashtag %s" % (amount, hashtagString))
+        if hashtagString[:1] == "#":
+            hashtagString = hashtagString[1:]
 
+        self.logger.info("Trying to get %s medias with hashtag %s" % (amount, hashtagString))
         feed = []
         next_max_id = None
         securityBreak = 0
