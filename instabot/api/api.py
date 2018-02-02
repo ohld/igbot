@@ -220,6 +220,17 @@ class API(object):
                         self.logger.warning("sendRequest: Instagram requries phone verification")
                         self.notifyUserToVerifyInstagramAccount()
                         raise Exception("sendRequest: Instagram requires phone verification")
+			
+		    if responseObject['error_type']=='invalid_user':
+                        self.logger.warning("sendRequest: Invalid instagram user")
+                        self.notifyUserInvalidCredentials()
+                        raise Exception("sendRequest: Invalid instagram username")
+			
+		    if responseObject['error_type']=='bad_password':
+                        self.logger.warning("sendRequest: Invalid instagram password")
+                        self.notifyUserInvalidCredentials()
+                        raise Exception("sendRequest: Invalid instagram password")
+			
                 else:
                     sleep_minutes=1
                     self.logger.warning("Request return 400 error. Going to sleep %s minutes" % sleep_minutes)
