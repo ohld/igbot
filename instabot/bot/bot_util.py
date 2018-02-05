@@ -97,6 +97,9 @@ def get_like_delay(self,likeAmount):
         self.logger.info("get_like_delay: Calculated like delay is less than the original one... reseting to %s", self.like_delay)
         return self.like_delay
     else:
+        if likeDelay>100:
+            self.logger.info("get_like_delay: like delay is %s, bigger than max limit 100, going to set it to 100 seconds")
+            likeDelay=100
         self.like_delay = likeDelay
         self.logger.info("get_like_delay: seconds until midnight:%s, like amount: %s, delay: %s" % (secondsUntilMidnight, likeAmount, likeDelay))
         return likeDelay
