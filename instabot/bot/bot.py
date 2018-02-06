@@ -43,7 +43,7 @@ from .bot_filter import filter_medias, check_media, filter_users, check_user
 from .bot_filter import check_not_bot
 
 from .bot_support import check_if_file_exists, read_list_from_file, check_whitelists
-from .bot_support import add_whitelist, add_blacklist, extract_urls
+from .bot_support import add_whitelist, add_blacklist, extract_urls, console_print
 
 from .bot_stats import save_user_stats
 
@@ -527,6 +527,9 @@ class Bot(API):
 
     def add_blacklist(self, file_path):
         return add_blacklist(self, file_path)
+
+    def console_print(self, text):
+        return console_print(self, text)
 
     # stats
 

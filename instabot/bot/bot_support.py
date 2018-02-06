@@ -64,8 +64,8 @@ def add_blacklist(self, file_path):
     return self.blacklist
 
 
-def console_print(verbosity, text):
-    if verbosity:
+def console_print(self, text):
+    if self.verbosity:
         print(text)
 
 
