@@ -62,9 +62,9 @@ try:
     bot.like_delay = bot.get_like_delay(totalExpectedLikesAmount)
     bot.follow_delay = bot.get_follow_delay(totalExpectedFollowAmount)
 
-    usersLikeForLike = api_db.fetchOne('select count(*) as total_users from users join user_subscription on (users.id_user = user_subscription.id_user)  join campaign on (users.id_user = campaign.id_user) where (user_subscription.end_date>now() or user_subscription.end_date is null)   and campaign.id_campaign!=%s order by users.id_user',args.angie_campaign)
-    bot.logger.info("dispatcher_v2: Total number of likeForLike users: %s", usersLikeForLike['total_users'])
-    likeForLikeAmount = usersLikeForLike['total_users']
+    #usersLikeForLike = api_db.fetchOne('select count(*) as total_users from users join user_subscription on (users.id_user = user_subscription.id_user)  join campaign on (users.id_user = campaign.id_user) where (user_subscription.end_date>now() or user_subscription.end_date is null)   and campaign.id_campaign!=%s order by users.id_user',args.angie_campaign)
+    #bot.logger.info("dispatcher_v2: Total number of likeForLike users: %s", usersLikeForLike['total_users'])
+    likeForLikeAmount = 0
     standardOperationLikeAmount = totalExpectedLikesAmount - likeForLikeAmount
     
     bot.logger.info("dispatcher: Initial calculated Amount(SOD): %s, totalExpectedLike:%s, totalExpectedFollow: %s" % (calculatedAmount,totalExpectedLikesAmount,totalExpectedFollowAmount) )
@@ -106,7 +106,7 @@ try:
         
         
         #like for like operation
-        likeForLikeResult = bot.startLikeForLike(likesAmount=currentIterationLikeForLikeAmount)
+        likeForLikeResult = 0
         if likeForLikeResult<currentIterationLikeForLikeAmount:
           currentIterationStandardLikesAmount = currentIterationStandardLikesAmount + (currentIterationLikeForLikeAmount - likeForLikeResult)
         currentIterationPerformedLikes = currentIterationPerformedLikes + likeForLikeResult
