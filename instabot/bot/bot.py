@@ -189,8 +189,8 @@ class Bot(API):
     def logout(self):
 
         #release ip
-        self.logger.info("logout: Going to release the ip")
-        api_db.insert("update campaign set id_ip_bot=null where id_campaign=%s",self.id_campaign)
+        #self.logger.info("logout: Going to release the ip")
+        #api_db.insert("update campaign set id_ip_bot=null where id_campaign=%s",self.id_campaign)
         if self.id_campaign != False:
             save_checkpoint(self)
 
