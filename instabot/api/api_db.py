@@ -93,12 +93,13 @@ def insertUserFollower(*args):
 
 
 def getBotIp(bot, id_user, id_campaign, is_bot_account):
+
     # get the ips ordered by how many time they are currently in use
     query = "select ip from  campaign left join ip_bot on campaign.id_ip_bot=ip_bot.id_ip_bot where id_campaign=%s"
 
     result = fetchOne(query, id_campaign)
 
-    if result is None:
+    if result is None or result['ip'] is None:
         bot.logger.warning("getBotIp: Could not find an ip for user %s", id_user)
         exit()
 
