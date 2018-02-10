@@ -94,35 +94,13 @@ def insertUserFollower(*args):
 
 def getBotIp(bot, id_user, id_campaign, is_bot_account):
     # get the ips ordered by how many time they are currently in use
-    query = " select ip_bot.id_ip_bot,total,ip_bot.ip from ( " \
-             " select id_ip_bot, 0 as total from ip_bot " \
-             " where id_ip_bot not in  (select id_ip_bot from campaign where id_ip_bot is not null) " \
-    		     " and ip_bot.id_ip_type=%s " \
-             " UNION " \
-             " select campaign.id_ip_bot,count(*) as total from campaign join ip_bot ip_bot_2 on (campaign.id_ip_bot = ip_bot_2.id_ip_bot) where campaign.id_ip_bot is not null and ip_bot_2.id_ip_type=%s group by id_ip_bot  having count(*)<5  order by total asc ) tbl join ip_bot on (tbl.id_ip_bot=ip_bot.id_ip_bot)  where ip_bot.id_ip_type=%s order by total asc,rand() limit 1"
+    query = "select ip from  campaign left join ip_bot on campaign.id_ip_bot=ip_bot.id_ip_bot where id_campaign=%s"
 
-    userIpType =1
-    botIpType =2
-    
-    if is_bot_account==True:
-      bot.logger.warning("getBotIp: Getting ip of type BOT user %s", id_user)
-      ipType = botIpType
-    else: 
-      bot.logger.warning("getBotIp: Getting ip of type USER user %s", id_user)
-      ipType = userIpType
-      
-    result = fetchOne(query, ipType,ipType,ipType)
+    result = fetchOne(query, id_campaign)
 
     if result is None:
         bot.logger.warning("getBotIp: Could not find an ip for user %s", id_user)
         exit()
 
-    if result['total'] > 2:
-        bot.logger.warning("getBotIp: Error: %s is used %s times." % (result['ip'], result['total']))
-
-
-
     bot.logger.info("User %s, received ip: %s" % (id_user, result['ip']))
-    insert('update campaign set id_ip_bot=%s where id_campaign=%s', result['id_ip_bot'], id_campaign)
-
     return result['ip']
