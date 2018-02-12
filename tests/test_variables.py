@@ -1,5 +1,52 @@
 DEFAULT_RESPONSE = {'status': 'ok'}
 
+TEST_CAPTION_ITEM = {
+    "bit_flags": 0,
+    "content_type": "comment",
+    "created_at": 1494733796,
+    "created_at_utc": 1494733796,
+    "did_report_as_spam": False,
+    "pk": 17856098620165444,
+    "status": "Active",
+    "text": "Old Harry Rocks, Dorset, UK\n\n#oldharryrocks #dorset #uk #rocks #clouds #water #photoshoot #nature #amazing #beautifulsky #sky #landscape #nice #beautiful #awesome #landscapes #l4l #f4f",
+    "type": 1,
+    "user": {
+            "full_name": "The best earth places",
+            "is_private": False,
+            "is_verified": False,
+            "pk": 182696006,
+            "profile_pic_id": "1477989239094674784_182696006",
+            "profile_pic_url": "https://scontent-arn2-1.cdninstagram.com/vp/703a0877fc8653d8b1ec17d57cf0aed6/5B2669EF/t51.2885-19/s150x150/17332952_229750480834181_3303899473574363136_a.jpg",
+            "username": "best.earth.places"
+    },
+    "user_id": 182696006
+}
+
+TEST_COMMENT_ITEM = {
+    "bit_flags": 0,
+    "comment_like_count": 1,
+    "content_type": "comment",
+    "created_at": 1494751960,
+    "created_at_utc": 1494751960,
+    "did_report_as_spam": False,
+    "has_liked_comment": True,
+    "inline_composer_display_condition": "never",
+    "pk": 17856583722163490,
+    "status": "Active",
+    "text": "Wow awesome take!",
+    "type": 0,
+    "user": {
+        "full_name": "Jon",
+        "is_private": False,
+        "is_verified": False,
+        "pk": 4236956175,
+        "profile_pic_id": "1699734799357160789_42369123453",
+        "profile_pic_url": "https://scontent-arn2-1.cdninstagram.com/vp/cf320d98994fasdasdas5fa53c698996bfa/5B0AD6BE/t51.2885-19/s150x150/26398129_141825939841889_6195199731287719936_n.jpg",
+        "username": "test_user_name"
+    },
+    "user_id": 4236736455
+}
+
 TEST_USER_ITEM = {
     "pk": 1234543212321,
     "username": "test_username",

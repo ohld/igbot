@@ -3,7 +3,8 @@ import responses
 from instabot.api.config import API_URL, SIG_KEY_VERSION
 
 from .test_bot import TestBot
-from .test_variables import TEST_PHOTO_ITEM, TEST_USER_ITEM
+from .test_variables import (TEST_CAPTION_ITEM, TEST_COMMENT_ITEM,
+                             TEST_PHOTO_ITEM, TEST_USER_ITEM)
 
 
 class TestBotGet(TestBot):
@@ -127,3 +128,27 @@ class TestBotGet(TestBot):
 
         assert medias == [str(my_test_user_item["pk"]) for _ in range(results)]
         assert len(medias) == results
+
+    @responses.activate
+    def test_get_comments(self):
+        results = 5
+        response_data = {
+            "caption": TEST_CAPTION_ITEM,
+            "caption_is_edited": False,
+            "comment_count": 4,
+            "comment_likes_enabled": True,
+            "comments": [TEST_COMMENT_ITEM for _ in range(results)],
+            "has_more_comments": False,
+            "has_more_headload_comments": False,
+            "media_header_display": "none",
+            "preview_comments": [],
+            "status": "ok"
+        }
+        media_id = 1234567890
+        responses.add(
+            responses.GET, '{API_URL}media/{media_id}/comments/?'.format(
+                API_URL=API_URL, media_id=media_id), json=response_data, status=200)
+
+        comments = self.BOT.get_media_comments(media_id)
+        assert comments == response_data['comments']
+        assert len(comments) == results
