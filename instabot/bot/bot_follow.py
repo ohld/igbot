@@ -63,11 +63,6 @@ def follow_users(self, user_ids):
                     broken_items = broken_items + user_ids[user_ids.index(user_id):]
                     break
 
-        else:
-            delay.error_delay(self)
-            broken_items = broken_items + user_ids[user_ids.index(user_id):]
-            break
-
     self.logger.info("DONE: Total followed %d users." % self.total_followed)
     return broken_items
 
