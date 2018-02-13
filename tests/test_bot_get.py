@@ -55,6 +55,37 @@ class TestBotGet(TestBot):
         assert len(medias) == results
 
     @responses.activate
+    def test_get_timeline_medias(self):
+        self.BOT.max_likes_to_like = TEST_PHOTO_ITEM['like_count'] + 1
+        results = 8
+        responses.add(
+            responses.GET, "{API_URL}feed/timeline/".format(API_URL=API_URL),
+            json={
+                "auto_load_more_enabled": True,
+                "num_results": results,
+                "is_direct_v2_enabled": True,
+                "status": "ok",
+                "next_max_id": None,
+                "more_available": False,
+                "items": [TEST_PHOTO_ITEM for _ in range(results)]
+            }, status=200)
+        responses.add(
+            responses.GET, "{API_URL}feed/timeline/".format(API_URL=API_URL),
+            json={
+                "status": "ok"
+            }, status=400)
+
+        medias = self.BOT.get_timeline_medias()
+
+        assert medias == [TEST_PHOTO_ITEM["pk"] for _ in range(results)]
+        assert len(medias) == results
+
+        medias = self.BOT.get_timeline_medias()
+
+        assert medias == []
+        assert len(medias) == 0
+
+    @responses.activate
     def test_get_your_medias(self):
         results = 5
         my_test_photo_item = TEST_PHOTO_ITEM.copy()
