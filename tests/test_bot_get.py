@@ -72,7 +72,7 @@ class TestBotGet(TestBot):
         responses.add(
             responses.GET, "{API_URL}feed/timeline/".format(API_URL=API_URL),
             json={
-                "status": "ok"
+                "status": "fail"
             }, status=400)
 
         medias = self.BOT.get_timeline_medias()
@@ -84,6 +84,36 @@ class TestBotGet(TestBot):
 
         assert medias == []
         assert len(medias) == 0
+
+    @responses.activate
+    def test_get_timeline_users(self):
+        results = 8
+        responses.add(
+            responses.GET, "{API_URL}feed/timeline/".format(API_URL=API_URL),
+            json={
+                "auto_load_more_enabled": True,
+                "num_results": results,
+                "is_direct_v2_enabled": True,
+                "status": "ok",
+                "next_max_id": None,
+                "more_available": False,
+                "items": [TEST_PHOTO_ITEM for _ in range(results)]
+            }, status=200)
+        responses.add(
+            responses.GET, "{API_URL}feed/timeline/".format(API_URL=API_URL),
+            json={
+                "status": "fail"
+            }, status=400)
+
+        users = self.BOT.get_timeline_users()
+
+        assert users == [str(TEST_PHOTO_ITEM["user"]["pk"]) for _ in range(results)]
+        assert len(users) == results
+
+        users = self.BOT.get_timeline_users()
+
+        assert users == []
+        assert len(users) == 0
 
     @responses.activate
     def test_get_your_medias(self):
