@@ -192,6 +192,18 @@ class TestBotGet(TestBot):
         assert len(medias) == results
 
     @responses.activate
+    def test_search_users_failed(self):
+        query = "test"
+        response_data = {'status': 'fail'}
+        responses.add(
+            responses.GET, '{API_URL}users/search/?ig_sig_key_version={SIG_KEY}&is_typeahead=true&query={query}&rank_token={rank_token}'.format(
+                API_URL=API_URL, rank_token=self.BOT.rank_token, query=query, SIG_KEY=SIG_KEY_VERSION), json=response_data, status=200)
+
+        medias = self.BOT.search_users(query)
+
+        assert medias == []
+
+    @responses.activate
     def test_get_comments(self):
         results = 5
         response_data = {
@@ -240,6 +252,19 @@ class TestBotGet(TestBot):
         commenters = self.BOT.get_media_commenters(media_id)
         assert commenters == expected_commenters
         assert len(commenters) == results
+
+    @responses.activate
+    def test_get_commenters_failed(self):
+        response_data = {"status": "fail"}
+        media_id = 1234567890
+        responses.add(
+            responses.GET, '{API_URL}media/{media_id}/comments/?'.format(
+                API_URL=API_URL, media_id=media_id), json=response_data, status=200)
+
+        expected_commenters = []
+
+        commenters = self.BOT.get_media_commenters(media_id)
+        assert commenters == expected_commenters
 
     @pytest.mark.parametrize('url_result', [
         ['https://www.instagram.com/p/BfHrDvCDuzC/', 1713527555896569026],
