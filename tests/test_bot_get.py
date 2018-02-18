@@ -249,3 +249,16 @@ class TestBotGet(TestBot):
         media_id = self.BOT.get_media_id_from_link(url_result[0])
 
         assert url_result[1] == media_id
+
+    @pytest.mark.parametrize('comments', [
+        ['comment1', 'comment2', 'comment3'],
+        [],
+        None
+    ])
+    def test_get_comment(self, comments):
+        self.BOT.comments = comments
+
+        if self.BOT.comments:
+            assert self.BOT.get_comment() in self.BOT.comments
+        else:
+            assert self.BOT.get_comment() == 'wow'
