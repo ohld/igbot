@@ -1,4 +1,5 @@
 import responses
+import pytest
 
 from instabot.api.config import API_URL, SIG_KEY_VERSION
 
@@ -239,3 +240,12 @@ class TestBotGet(TestBot):
         commenters = self.BOT.get_media_commenters(media_id)
         assert commenters == expected_commenters
         assert len(commenters) == results
+
+    @pytest.mark.parametrize('url_result', [
+        ['https://www.instagram.com/p/BfHrDvCDuzC/', 1713527555896569026],
+        ['test', False]
+    ])
+    def test_get_media_id_from_link_with_wrong_data(self, url_result):
+        media_id = self.BOT.get_media_id_from_link(url_result[0])
+
+        assert url_result[1] == media_id
