@@ -8,7 +8,6 @@ from ..api import API
 from ..api import api_db
 from random import randint
 
-
 from .bot_get import get_media_owner, get_your_medias, get_user_medias
 from .bot_get import get_timeline_medias, get_hashtag_medias, get_user_info, get_location_medias
 from .bot_get import get_geotag_medias, get_timeline_users, get_hashtag_users
@@ -51,8 +50,10 @@ from .bot_support import add_whitelist, add_blacklist
 
 from .bot_stats import save_user_stats
 
-from .bot_util import getBotOperations, get_follow_delay,get_like_delay
-from .bot_action_handler import  getLikeAmount,getFollowAmount,getAmountDistribution, getLikesPerformed, getFollowPerformed
+from .bot_util import getBotOperations, get_follow_delay, get_like_delay
+from .bot_action_handler import getLikeAmount, getFollowAmount, getAmountDistribution, getLikesPerformed, \
+    getFollowPerformed
+
 
 class Bot(API):
     def __init__(self,
@@ -62,7 +63,8 @@ class Bot(API):
                  comments_file=False,
                  proxy=None,
                  multiple_ip=None,
-                 is_bot_account =False,
+                 hide_output=False,
+                 is_bot_account=False,
                  max_likes_per_day=1000,
                  max_unlikes_per_day=1000,
                  max_follows_per_day=350,
@@ -90,7 +92,6 @@ class Bot(API):
                  unblock_delay=30,
                  stop_words=['sex', 'penis', 'fuck']):
         super(self.__class__, self).__init__()
-        self.initLogging(id_campaign)
 
         self.total_liked = 0
         self.total_unliked = 0
@@ -149,6 +150,7 @@ class Bot(API):
         self.multiple_ip = multiple_ip
         self.is_bot_account = is_bot_account
         self.bot_ip = None
+        self.hide_output = hide_output
 
         # white and blacklists
         self.whitelist = []
@@ -163,18 +165,12 @@ class Bot(API):
         if comments_file:
             self.comments = read_list_from_file(comments_file)
 
+        self.initLogging(id_campaign)
         self.logger.info('Instabot Started')
 
-        #todo-> when starting the bot without a campaign(eg. searchByLocation) the below data is undefined and sometomes might cause issues
-        #todo-> improve the functionality to have a separate handler for the actions that do not require an campaign
-        
         self.id_campaign = id_campaign
         self.campaignObject = api_db.getCampaign(self.id_campaign)
-        if self.campaignObject!=None:
-          self.web_application_id_user = self.campaignObject['id_user']
-        else:
-          self.web_application_id_user=None
-          
+        self.web_application_id_user = self.campaignObject['id_user']
 
     def check_ip(self):
         print(self.session.get('http://bot.whatismyipaddress.com/').text)
@@ -188,9 +184,9 @@ class Bot(API):
 
     def logout(self):
 
-        #release ip
-        #self.logger.info("logout: Going to release the ip")
-        #api_db.insert("update campaign set id_ip_bot=null where id_campaign=%s",self.id_campaign)
+        # release ip
+        # self.logger.info("logout: Going to release the ip")
+        # api_db.insert("update campaign set id_ip_bot=null where id_campaign=%s",self.id_campaign)
         if self.id_campaign != False:
             save_checkpoint(self)
 
@@ -203,7 +199,7 @@ class Bot(API):
         if self.proxy:
             args['proxy'] = self.proxy
         status = super(self.__class__, self).login(**args)
-        #if status==False:
+        # if status==False:
         #    exit("Could not login to instagram !")
         self.prepare()
         signal.signal(signal.SIGTERM, self.logout)
@@ -534,26 +530,26 @@ class Bot(API):
 
     def getBotOperations(self, id_campaign):
         return getBotOperations(self, id_campaign)
-      
-    def getLikeAmount(self, id_campaign,calculatedAmount):
-        return getLikeAmount(self, id_campaign,calculatedAmount)
-      
-    def getFollowAmount(self, id_campaign,calculatedAmount):
-      return getFollowAmount(self, id_campaign,calculatedAmount)
-    
-    def getLikesPerformed(self, dateParam):
-      return getLikesPerformed(self, dateParam)
-    
-    def getFollowPerformed(self, dateParam):
-      return getFollowPerformed(self, dateParam)
-    
-    def getAmountDistribution(self,id_campaign):
-      return getAmountDistribution(self,id_campaign)
 
-    #this function check if another bot instance for same campaign is running
+    def getLikeAmount(self, id_campaign, calculatedAmount):
+        return getLikeAmount(self, id_campaign, calculatedAmount)
+
+    def getFollowAmount(self, id_campaign, calculatedAmount):
+        return getFollowAmount(self, id_campaign, calculatedAmount)
+
+    def getLikesPerformed(self, dateParam):
+        return getLikesPerformed(self, dateParam)
+
+    def getFollowPerformed(self, dateParam):
+        return getFollowPerformed(self, dateParam)
+
+    def getAmountDistribution(self, id_campaign):
+        return getAmountDistribution(self, id_campaign)
+
+    # this function check if another bot instance for same campaign is running
     def canBotStart(self, id_campaign):
-        self.logger.info("canBotStart: check if another bot instance is running for campaign %s",id_campaign)
-        processname = 'angie_idc'+id_campaign+' '
+        self.logger.info("canBotStart: check if another bot instance is running for campaign %s", id_campaign)
+        processname = 'angie_idc' + id_campaign + ' '
         tmp = os.popen("ps -Af").read()
         proccount = tmp.count(processname)
 
@@ -564,67 +560,69 @@ class Bot(API):
         self.logger.info("canBotStart: All Good, no other bot instance is running for this campaign")
         return True
 
+    def getUsersForLikeForLike(self, id_campaign, likesAmount):
 
-    def getUsersForLikeForLike(self, id_campaign,likesAmount):
-      
-      sqlLastUserProcessed = "SELECT * FROM `campaign_checkpoint` WHERE   date(timestamp) = CURDATE() and id_campaign=%s and _key='like_for_like_user_id'"
-      lastUserProcessed = api_db.fetchOne(sqlLastUserProcessed,id_campaign)
-      
-      
-      #start from beginning
-      if not lastUserProcessed:
-        lastUserProcessedId = 0
-      else:
-        lastUserProcessedId = lastUserProcessed['value']
-        
-      self.logger.info("getAmountLikeForLike: Last user processed is: %s ",lastUserProcessedId)
-      
-      usersToProcess = "select DISTINCT users.email,users.id_user, campaign.username as instagram_username from users join user_subscription on (users.id_user = user_subscription.id_user)  join campaign on (users.id_user = campaign.id_user) where (user_subscription.end_date>now() or user_subscription.end_date is null) and users.id_user>%s  and campaign.id_campaign!=%s order by users.id_user asc limit %s"
-      
-      result = api_db.select(usersToProcess,lastUserProcessedId,id_campaign,likesAmount)
-      
-      self.logger.info("getAmountLikeForLike: Found: users: %s", len(result))
-      
-      return result
-      
-      
+        sqlLastUserProcessed = "SELECT * FROM `campaign_checkpoint` WHERE   date(timestamp) = CURDATE() and id_campaign=%s and _key='like_for_like_user_id'"
+        lastUserProcessed = api_db.fetchOne(sqlLastUserProcessed, id_campaign)
+
+        # start from beginning
+        if not lastUserProcessed:
+            lastUserProcessedId = 0
+        else:
+            lastUserProcessedId = lastUserProcessed['value']
+
+        self.logger.info("getAmountLikeForLike: Last user processed is: %s ", lastUserProcessedId)
+
+        usersToProcess = "select DISTINCT users.email,users.id_user, campaign.username as instagram_username from users join user_subscription on (users.id_user = user_subscription.id_user)  join campaign on (users.id_user = campaign.id_user) where (user_subscription.end_date>now() or user_subscription.end_date is null) and users.id_user>%s  and campaign.id_campaign!=%s order by users.id_user asc limit %s"
+
+        result = api_db.select(usersToProcess, lastUserProcessedId, id_campaign, likesAmount)
+
+        self.logger.info("getAmountLikeForLike: Found: users: %s", len(result))
+
+        return result
+
     def startLikeForLike(self, likesAmount):
-      self.logger.info("bot.startLikeForLike: Started likeForLike operation. Likes to perform %s", likesAmount)
-      totalLiked=0
-      
-      result=self.getUsersForLikeForLike(self.id_campaign,likesAmount)
-      
-      self.logger.info("bot.startLikeForLike: Received %s users to process", len(result))
-      
-      if len(result)==0:
-        self.logger.info("bot.startLikeForLike. NOTHING TO LIKE")
-        return 0
-      
-      for user in result:
-        user['instagram_id_user']=self.get_userid_from_username(user['instagram_username'])
-        user['full_name']=user['instagram_username']
-        totalLiked = totalLiked + self.like_user(userObject=user, bot_operation="like_for_like", bot_operation_value=user['instagram_username'],amount=1)
-        #update in database the user id
-        api_db.updateCampaignChekpoint('like_for_like_user_id',user['id_user'],self.id_campaign)
-        
-        
-      self.logger.info("bot.startLikeForLike: END. Last user processed: %s, id_user: %s" % (user['instagram_username'], user['id_user']))
-      
-      self.logger.info("bot.startLikeForLike: END updated checkpoint for campaign: %s with last user: %s" % (self.id_campaign, user['id_user']))
-      self.logger.info("bot.startLikeForLike: END. Total liked %s users from a total of %s users" % (totalLiked, likesAmount))
-      
-      return totalLiked
-      
+        self.logger.info("bot.startLikeForLike: Started likeForLike operation. Likes to perform %s", likesAmount)
+        totalLiked = 0
+
+        result = self.getUsersForLikeForLike(self.id_campaign, likesAmount)
+
+        self.logger.info("bot.startLikeForLike: Received %s users to process", len(result))
+
+        if len(result) == 0:
+            self.logger.info("bot.startLikeForLike. NOTHING TO LIKE")
+            return 0
+
+        for user in result:
+            user['instagram_id_user'] = self.get_userid_from_username(user['instagram_username'])
+            user['full_name'] = user['instagram_username']
+            totalLiked = totalLiked + self.like_user(userObject=user, bot_operation="like_for_like",
+                                                     bot_operation_value=user['instagram_username'], amount=1)
+            # update in database the user id
+            api_db.updateCampaignChekpoint('like_for_like_user_id', user['id_user'], self.id_campaign)
+
+        self.logger.info("bot.startLikeForLike: END. Last user processed: %s, id_user: %s" % (
+        user['instagram_username'], user['id_user']))
+
+        self.logger.info("bot.startLikeForLike: END updated checkpoint for campaign: %s with last user: %s" % (
+        self.id_campaign, user['id_user']))
+        self.logger.info(
+            "bot.startLikeForLike: END. Total liked %s users from a total of %s users" % (totalLiked, likesAmount))
+
+        return totalLiked
+
     def startStandardOperation(self, likesAmount, followAmount, operations):
 
         result = {}
         result['no_likes'] = 0
         result['no_follows'] = 0
 
-        self.logger.info("bot.startStandardOperation: Started standard operation. Likes to perform: %s, follow to perform %s, operations %s!" % (likesAmount, followAmount, len(operations)))
+        self.logger.info(
+            "bot.startStandardOperation: Started standard operation. Likes to perform: %s, follow to perform %s, operations %s!" % (
+            likesAmount, followAmount, len(operations)))
 
         for operation in operations:
-            self.currentOperation=operation['configName']
+            self.currentOperation = operation['configName']
 
             if 'like_own_followers' == operation['configName']:
                 if likesAmount < 1:
@@ -657,7 +655,8 @@ class Bot(API):
                 performedLikes = self.like_timeline(expectedLikes)
 
                 self.logger.info(
-                    "like_timeline: End operation: %s, expected: %s, performed: %s" % ('like_timeline', expectedLikes, performedLikes))
+                    "like_timeline: End operation: %s, expected: %s, performed: %s" % (
+                    'like_timeline', expectedLikes, performedLikes))
 
                 result['no_likes'] = result['no_likes'] + performedLikes
 
@@ -676,7 +675,7 @@ class Bot(API):
                         'like_posts_by_hashtag', operation['percentageAmount'], likesAmount,
                         expectedLikes))
 
-                while iteration < securityBreak and performedLikes< expectedLikes:
+                while iteration < securityBreak and performedLikes < expectedLikes:
                     if len(operation['list']) == 0:
                         self.logger.info(
                             "like_posts_by_hashtag: No hashtag left for operation like_posts_by_hashtag, skipping this operation...")
@@ -685,13 +684,15 @@ class Bot(API):
                     hashtagIndex = randint(0, len(operation['list']) - 1)
                     hashtagObject = operation['list'][hashtagIndex]
 
-                    self.logger.info("like_posts_by_hashtag: Iteration: %s, hashtag: %s, amountToPerform %s, initialAmount: %s ", iteration,
-                                     hashtagObject['hashtag'],expectedLikes - performedLikes,expectedLikes)
-                    performedLikes += self.like_hashtag(hashtagObject['hashtag'],expectedLikes- performedLikes)
+                    self.logger.info(
+                        "like_posts_by_hashtag: Iteration: %s, hashtag: %s, amountToPerform %s, initialAmount: %s ",
+                        iteration,
+                        hashtagObject['hashtag'], expectedLikes - performedLikes, expectedLikes)
+                    performedLikes += self.like_hashtag(hashtagObject['hashtag'], expectedLikes - performedLikes)
 
                     self.logger.info(
                         "like_posts_by_hashtag: End  iteration: %s, hashtag: %s, expected: %s, actual:%s",
-                        iteration, hashtagObject['hashtag'],expectedLikes, performedLikes)
+                        iteration, hashtagObject['hashtag'], expectedLikes, performedLikes)
                     del operation['list'][hashtagIndex]
                     iteration += 1
                 self.logger.info("like_posts_by_hashtag: End bot operation %s ", "like_posts_by_hashtag")
@@ -779,7 +780,8 @@ class Bot(API):
                     self.logger.info("Follows to perform 0, going to skip !")
                     continue
                 performedFollow = 0
-                expectedFollow = int(math.ceil(math.ceil(operation['percentageAmount'] * followAmount) / math.ceil(100)))
+                expectedFollow = int(
+                    math.ceil(math.ceil(operation['percentageAmount'] * followAmount) / math.ceil(100)))
 
                 iteration = 0
                 securityBreak = 30
@@ -811,7 +813,7 @@ class Bot(API):
                     iteration += 1
                 self.logger.info("follow_users_by_hashtag: End bot operation %s ", "follow_users_by_hashtag")
 
-                result['no_follows'] =result['no_follows'] + performedFollow
+                result['no_follows'] = result['no_follows'] + performedFollow
 
             if 'follow_users_by_location' == operation['configName']:
                 if followAmount < 1:
@@ -819,7 +821,8 @@ class Bot(API):
                     continue
 
                 performedFollow = 0
-                expectedFollow = int(math.ceil(math.ceil(operation['percentageAmount'] * followAmount) / math.ceil(100)))
+                expectedFollow = int(
+                    math.ceil(math.ceil(operation['percentageAmount'] * followAmount) / math.ceil(100)))
 
                 iteration = 0
                 securityBreak = 30
@@ -841,7 +844,8 @@ class Bot(API):
                         "follow_users_by_location: Iteration: %s, location: %s, amountToPerform in this iteration:  %s, initialAmount: %s ",
                         iteration, locationObject['location'], expectedFollow - performedFollow, expectedFollow)
 
-                    performedFollow += self.follow_users_by_location(locationObject=locationObject,amount=expectedFollow - performedFollow)
+                    performedFollow += self.follow_users_by_location(locationObject=locationObject,
+                                                                     amount=expectedFollow - performedFollow)
 
                     self.logger.info("%s: iteration: %s, location: %s, expected: %s, actual:%s",
                                      'follow_users_by_location', iteration, locationObject['location'], expectedFollow,
@@ -881,7 +885,8 @@ class Bot(API):
                         "follow_other_users_followers: Iteration: %s, user: %s, amountToPerform in this iteration:  %s, initialAmount: %s ",
                         iteration, userObject['username'], expectedFollow - performedFollow, expectedFollow)
 
-                    performedFollow += self.follow_other_users_followers(userObject=userObject, amount=expectedFollow-performedFollow)
+                    performedFollow += self.follow_other_users_followers(userObject=userObject,
+                                                                         amount=expectedFollow - performedFollow)
 
                     self.logger.info("%s: iteration: %s, user: %s, expected: %s, actual:%s",
                                      'follow_other_users_followers', iteration, userObject['username'], expectedFollow,
@@ -898,16 +903,20 @@ class Bot(API):
                     self.logger.info("unfollow: Unfollow to perform 0, going to skip !")
                     continue
 
-                expectedFollow = int(math.ceil(math.ceil(operation['percentageAmount'] * followAmount) / math.ceil(100)))
+                expectedFollow = int(
+                    math.ceil(math.ceil(operation['percentageAmount'] * followAmount) / math.ceil(100)))
 
                 self.logger.info(
                     "unfollow: Start bot operation: %s, percentage: %s , totalUNFOLLOWToPerform: %s, totalToPerformAfterPecerntageApplied: %s" % (
                         'unfollow', operation['percentageAmount'], followAmount, expectedFollow))
                 performedFollow = self.unfollowBotCreatedFollowings(amount=expectedFollow)
 
-                self.logger.info("unfollow: End operation: %s, expected: %s, actual: %s" % ('unfollow', expectedFollow, performedFollow))
+                self.logger.info("unfollow: End operation: %s, expected: %s, actual: %s" % (
+                'unfollow', expectedFollow, performedFollow))
 
                 result['no_follows'] = result['no_follows'] + performedFollow
-        
-        self.logger.info("bot.startStandardOperation. END operation. performed likes %s, follow/unfollow %s . Expected like %s, follow %s" % (result['no_likes'],result['no_follows'], likesAmount, followAmount))
+
+        self.logger.info(
+            "bot.startStandardOperation. END operation. performed likes %s, follow/unfollow %s . Expected like %s, follow %s" % (
+            result['no_likes'], result['no_follows'], likesAmount, followAmount))
         return result

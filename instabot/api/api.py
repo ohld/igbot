@@ -62,9 +62,6 @@ class API(object):
     def initLogging(self,id_campaign):
         filename = time.strftime("%d.%m.%Y") + ".log"
 
-        if id_campaign==False:
-            id_campaign="general"
-            filename="instabot.log"
 	    #this is not working atm
         #logs_folder = os.environ['INSTABOT_LOGS_PATH']
         logs_folder = "/home/instabot-log"
@@ -87,8 +84,8 @@ class API(object):
         formatter = logging.Formatter(
             '%(asctime)s - %(levelname)s - %(message)s')
         ch.setFormatter(formatter)
-        #dirty hack -> disable the output to console
-        if id_campaign!="general":
+
+        if self.hide_output==False:
             self.logger.addHandler(ch)
 
     def setUser(self, username, password):
@@ -144,7 +141,7 @@ class API(object):
                     delete_credentials()
                     return False
             else:
-                self.logger.info("login: Could not login user %% !", username)
+                self.logger.info("login: Could not login user %s !", username)
                 return False
 
     def loadJson(self, value):
