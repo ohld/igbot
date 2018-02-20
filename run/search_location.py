@@ -26,7 +26,6 @@ if status!=True:
   print(bot.LastResponse.text)
   exit()
 result = bot.searchLocation(query=args.location)
-
 parsedResult=[]
 
 if not result:
