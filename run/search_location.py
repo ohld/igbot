@@ -20,7 +20,10 @@ if not args.u or not args.p or not args.location:
     exit(0)
 
 from instabot import Bot
+
 bot = Bot(id_campaign=args.id_campaign,multiple_ip=True, hide_output=True)
+bot.logger.info("search_location:Going to search the location %s" % (args.location))
+
 status  = bot.login(username=args.u,password=args.p)
 if status!=True:
   print(bot.LastResponse.text)
