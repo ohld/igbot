@@ -16,7 +16,7 @@ parser.add_argument('-location', type=str, help="location")
 parser.add_argument('-id_campaign', type=str, help="campaign")
 args = parser.parse_args()
 
-if not args.u or not args.p or not args.location:
+if not args.location:
     exit(0)
 
 campaign = api_db.fetchOne("select username,password,timestamp,id_campaign from campaign where id_campaign=%s",
