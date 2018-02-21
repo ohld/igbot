@@ -20,7 +20,7 @@ if not args.location:
     exit(0)
 
 campaign = api_db.fetchOne("select username,password,timestamp,id_campaign from campaign where id_campaign=%s",
-                           args.angie_campaign)
+                           args.id_campaign)
 
 bot = Bot(id_campaign=args.id_campaign, multiple_ip=True, hide_output=True)
 bot.logger.info("search_location:Going to search the location %s" % (args.location))
