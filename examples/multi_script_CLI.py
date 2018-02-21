@@ -284,12 +284,15 @@ def menu_follow():
             1.Insert hashtag
             2.Use hashtag database
             """)
+            hashtags = []
             if "1" in sys.stdin.readline():
-                hashtag = input("what?\n").strip()
+                hashtags = input("Insert hashtags separated by spaces\nExample: cat dog\nwhat hashtags?\n").strip().split(' ')
             else:
-                hashtag = random.choice(bot.read_list_from_file(hashtag_file))
-            users = bot.get_hashtag_users(hashtag)
-            bot.follow_users(users)
+                hashtags = bot.read_list_from_file(hashtag_file)
+            for hashtag in hashtags:
+                print("Begin following: " + hashtag)
+                users = bot.get_hashtag_users(hashtag)
+                bot.follow_users(users)
             menu_follow()
 
         elif ans == "2":
