@@ -124,11 +124,11 @@ class API(object):
                     self.logger.info("We are going to use a regular ip %s", self.bot_ip['ip'])
                     self.session.mount("http://", SourceAddressAdapter((str(self.bot_ip['ip']), 0)))
                     self.session.mount("https://", SourceAddressAdapter((str(self.bot_ip['ip']), 0)))
-            self.logger.info("Going to test the proxy")
+            self.logger.info("Going to test the proxy/ip")
 
             response=self.session.get('https://api.ipify.org?format=json')
-            self.logger.info(response.text)
-            exit()
+            self.logger.info("Proxy test respone %s",response.text)
+
             if (
             self.SendRequest('si/fetch_headers/?challenge_type=signup&guid=' + self.generateUUID(False), None, True)):
 

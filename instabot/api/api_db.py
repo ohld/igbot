@@ -94,7 +94,7 @@ def insertUserFollower(*args):
 
 def getBotIp(bot, id_user, id_campaign, is_bot_account):
 
-    query = "select ip from  campaign left join ip_bot on campaign.id_ip_bot=ip_bot.id_ip_bot where id_campaign=%s"
+    query = "select ip,type from  campaign left join ip_bot on campaign.id_ip_bot=ip_bot.id_ip_bot where id_campaign=%s"
 
     result = fetchOne(query, id_campaign)
 
