@@ -33,7 +33,7 @@ from .api_profile import setNameAndPhone
 
 from .prepare import get_credentials
 from .prepare import delete_credentials
-from .api_db import  insert,getBotIp
+from .api_db import insert, getBotIp
 from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.poolmanager import PoolManager
 import socket
@@ -41,6 +41,7 @@ import socket
 # The urllib library was split into other modules from Python 2 to Python 3
 if sys.version_info.major == 3:
     import urllib.parse
+
 
 class SourceAddressAdapter(HTTPAdapter):
     def __init__(self, source_address, **kwargs):
@@ -53,22 +54,22 @@ class SourceAddressAdapter(HTTPAdapter):
                                        block=block,
                                        source_address=self.source_address)
 
+
 class API(object):
     def __init__(self):
         self.isLoggedIn = False
         self.LastResponse = None
         self.total_requests = 0
 
-    def initLogging(self,id_campaign):
+    def initLogging(self, id_campaign):
         filename = time.strftime("%d.%m.%Y") + ".log"
 
-	    #this is not working atm
-        #logs_folder = os.environ['INSTABOT_LOGS_PATH']
+        # this is not working atm
+        # logs_folder = os.environ['INSTABOT_LOGS_PATH']
         logs_folder = "/home/instabot-log"
         campaign_folder = logs_folder + "/campaign/" + id_campaign
 
-
-        log_path = campaign_folder + "/"+filename
+        log_path = campaign_folder + "/" + filename
 
         if not os.path.exists(campaign_folder):
             os.makedirs(campaign_folder)
@@ -85,7 +86,7 @@ class API(object):
             '%(asctime)s - %(levelname)s - %(message)s')
         ch.setFormatter(formatter)
 
-        if self.hide_output==False:
+        if self.hide_output == False:
             self.logger.addHandler(ch)
 
     def setUser(self, username, password):
@@ -94,7 +95,8 @@ class API(object):
         self.uuid = self.generateUUID(True)
 
     def login(self, username=None, password=None, force=False, proxy=None):
-        self.logger.info("login: Trying to login user %s with custom IP: %s, is bot account %s" % (username, self.multiple_ip, self.is_bot_account))
+        self.logger.info("login: Trying to login user %s with custom IP: %s, is bot account %s" % (
+        username, self.multiple_ip, self.is_bot_account))
         if password is None:
             username, password = get_credentials(username=username)
 
@@ -106,19 +108,28 @@ class API(object):
 
         if (not self.isLoggedIn or force):
             self.session = requests.Session()
-            if self.proxy is not None:
-                proxies = {
-                    'http': 'http://' + self.proxy,
-                    'https': 'http://' + self.proxy,
-                }
-                self.session.proxies.update(proxies)
             if self.multiple_ip is not None and self.multiple_ip is not False:
-                sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-                self.bot_ip =  getBotIp(self, self.web_application_id_user, self.id_campaign, self.is_bot_account)
-                self.session.mount("http://", SourceAddressAdapter((str(self.bot_ip), 0)))
-                self.session.mount("https://", SourceAddressAdapter((str(self.bot_ip), 0)))
 
-            if (self.SendRequest('si/fetch_headers/?challenge_type=signup&guid=' + self.generateUUID(False),None, True)):
+                sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                self.bot_ip = getBotIp(self, self.web_application_id_user, self.id_campaign, self.is_bot_account)
+
+                if self.bot_ip['type'] == "proxy":
+                    self.logger.info("login: We are going to use a proxy: %s", self.bot_ip['ip'])
+                    proxies = {
+                        'http': self.bot_ip['ip'],
+                        'https': self.bot_ip['ip']
+                    }
+                    self.session.proxies.update(proxies)
+                else:
+                    self.logger.info("We are going to use a regular ip %s", self.bot_ip['ip'])
+                    self.session.mount("http://", SourceAddressAdapter((str(self.bot_ip['ip']), 0)))
+                    self.session.mount("https://", SourceAddressAdapter((str(self.bot_ip['ip']), 0)))
+            self.logger.info("Going to test the proxy")
+
+            self.SendRequest('https://api.ipify.org?format=json')
+            exit()
+            if (
+            self.SendRequest('si/fetch_headers/?challenge_type=signup&guid=' + self.generateUUID(False), None, True)):
 
                 data = {'phone_id': self.generateUUID(True),
                         '_csrftoken': self.LastResponse.cookies['csrftoken'],
@@ -147,10 +158,10 @@ class API(object):
     def loadJson(self, value):
         try:
             r = json.loads(value)
-            #self.logger.info("loadJson: Successfully loaded json !")
+            # self.logger.info("loadJson: Successfully loaded json !")
             return r
         except:
-            self.logger.info("loadJson: Could not load json %s",value)
+            self.logger.info("loadJson: Could not load json %s", value)
             return {}
 
     def logout(self):
@@ -164,7 +175,7 @@ class API(object):
             self.logger.critical("Not logged in.")
             raise Exception("Not logged in!")
 
-        #self.logger.info("Requesting %s: ",config.API_URL + endpoint)
+        # self.logger.info("Requesting %s: ",config.API_URL + endpoint)
         self.session.headers.update({'Connection': 'close',
                                      'Accept': '*/*',
                                      'Content-type': 'application/x-www-form-urlencoded; charset=UTF-8',
@@ -178,7 +189,7 @@ class API(object):
                     config.API_URL + endpoint, data=post, verify=True)
             else:  # GET
                 response = self.session.get(
-                    config.API_URL + endpoint,verify=True)
+                    config.API_URL + endpoint, verify=True)
         except Exception as e:
             self.logger.warning(str(e))
             return False
@@ -192,69 +203,82 @@ class API(object):
             details = None
             responseInfo = response.text
             self.logger.info("sendRequest: Request error url: %s: ", config.API_URL + endpoint)
-						
+
             if response.status_code == 404:
                 responseInfo = "Page not found!"
-                self.logger.warning("sendRequest: HTTP ERROR: STATUS %s, going to sleep 1 minute !" % (str(response.status_code)))
+                self.logger.warning(
+                    "sendRequest: HTTP ERROR: STATUS %s, going to sleep 1 minute !" % (str(response.status_code)))
                 sleep_minutes = 1
                 time.sleep(sleep_minutes * 60)
             else:
-                self.logger.warning("sendRequest: HTTP ERROR: STATUS %s , BODY: %s " % (str(response.status_code), response.text))
-
+                self.logger.warning(
+                    "sendRequest: HTTP ERROR: STATUS %s , BODY: %s " % (str(response.status_code), response.text))
 
             if response.status_code == 400:
                 responseObject = self.loadJson(response.text)
                 if 'spam' in responseObject:
                     sleep_minutes = 10
                     self.like_delay = self.like_delay_if_bot_blocked
-                    self.logger.warning("sendRequest: BOT IS BLOCKED, going to sleep %s minutes. The like delay was increased to %s seconds" % (sleep_minutes,self.like_delay))
+                    self.logger.warning(
+                        "sendRequest: BOT IS BLOCKED, going to sleep %s minutes. The like delay was increased to %s seconds" % (
+                        sleep_minutes, self.like_delay))
 
-                    details="spam"
+                    details = "spam"
                     time.sleep(sleep_minutes * 60)
                 if 'error_type' in responseObject:
-                    #todo throw if invalid password
-                    if responseObject['error_type']=='checkpoint_challenge_required':
+                    # todo throw if invalid password - code duplication for loggin because of the throw
+                    # todo fix this spagheti code
+                    currentOperation = self.currentOperation if hasattr(self, "currentOperation") else None
+                    insert(
+                        "insert into instagram_log (id_user,log,operation,request,http_status,details,timestamp) values (%s,%s,%s,%s,%s,%s,now())",
+                        self.web_application_id_user, responseInfo, currentOperation, config.API_URL + endpoint,
+                        str(response.status_code), details)
+
+                    if responseObject['error_type'] == 'checkpoint_challenge_required':
                         self.logger.warning("sendRequest: Instagram requries phone verification")
                         self.notifyUserToVerifyInstagramAccount()
                         raise Exception("sendRequest: Instagram requires phone verification")
-			
-		    if responseObject['error_type']=='invalid_user':
+
+                    if responseObject['error_type'] == 'invalid_user':
                         self.logger.warning("sendRequest: Invalid instagram user")
                         self.notifyUserInvalidCredentials()
                         raise Exception("sendRequest: Invalid instagram username")
-			
-		    if responseObject['error_type']=='bad_password':
+
+                    if responseObject['error_type'] == 'bad_password':
                         self.logger.warning("sendRequest: Invalid instagram password")
                         self.notifyUserInvalidCredentials()
                         raise Exception("sendRequest: Invalid instagram password")
-			
+
                 else:
-                    sleep_minutes=1
+                    sleep_minutes = 1
                     self.logger.warning("Request return 400 error. Going to sleep %s minutes" % sleep_minutes)
-                    #don t sleep on login fail
-                    if login==False:
+                    # don t sleep on login fail
+                    if login == False:
                         time.sleep(sleep_minutes * 60)
 
             elif response.status_code == 429:
                 sleep_minutes = 5
-                details="That means too many requests"
+                details = "That means too many requests"
                 self.like_delay = self.like_delay_if_bot_blocked
                 self.logger.warning("That means 'too many requests'. "
-                                    "I'll go to sleep for %d minutes. Like delay increased to %s" % (sleep_minutes, self.like_delay))
+                                    "I'll go to sleep for %d minutes. Like delay increased to %s" % (
+                                    sleep_minutes, self.like_delay))
                 time.sleep(sleep_minutes * 60)
 
             currentOperation = self.currentOperation if hasattr(self, "currentOperation") else None
-						
-            insert("insert into instagram_log (id_user,log,operation,request,http_status,details,timestamp) values (%s,%s,%s,%s,%s,%s,now())",
-                   self.web_application_id_user, responseInfo, currentOperation, config.API_URL + endpoint,str(response.status_code),details)						
+
+            insert(
+                "insert into instagram_log (id_user,log,operation,request,http_status,details,timestamp) values (%s,%s,%s,%s,%s,%s,now())",
+                self.web_application_id_user, responseInfo, currentOperation, config.API_URL + endpoint,
+                str(response.status_code), details)
 
             # for debugging
-            #try:
+            # try:
             #    self.LastResponse = response
             #    self.LastJson = self.loadJson(response.text)
-            #except:
+            # except:
             #    pass
-						#self.LastResponse=response
+            # self.LastResponse=response
             return False
 
     def syncFeatures(self):
@@ -271,24 +295,28 @@ class API(object):
         return self.SendRequest('friendships/autocomplete_user_list/')
 
     def notifyUserToVerifyInstagramAccount(self):
-        self.logger.info("notifyUserToVerifyInstagramAccount: Going to send mail to user id: %s to enable instagram ccount",self.web_application_id_user)
-        self.session.get("https://rest.angie.one/email/verifyInstagramAccount?id="+str(self.web_application_id_user))
+        self.logger.info(
+            "notifyUserToVerifyInstagramAccount: Going to send mail to user id: %s to enable instagram ccount",
+            self.web_application_id_user)
+        self.session.get("https://rest.angie.one/email/verifyInstagramAccount?id=" + str(self.web_application_id_user))
         self.logger.info("notifyUserToVerifyInstagramAccount: done sending email")
-	
-    def notifyUserInvalidCredentials(self):
-        self.logger.info("notifyUserInvalidCredentials: Going to send mail to user id: %s to regarding invalid credentials",self.web_application_id_user)
-        self.session.get("https://rest.angie.one/email/notifyUserInvalidCredentials?id="+str(self.web_application_id_user))
-        self.logger.info("notifyUserInvalidCredentials: done sending email")
 
+    def notifyUserInvalidCredentials(self):
+        self.logger.info(
+            "notifyUserInvalidCredentials: Going to send mail to user id: %s to regarding invalid credentials",
+            self.web_application_id_user)
+        self.session.get(
+            "https://rest.angie.one/email/notifyUserInvalidCredentials?id=" + str(self.web_application_id_user))
+        self.logger.info("notifyUserInvalidCredentials: done sending email")
 
     def getTimelineFeed(self, amount=20):
         self.logger.info("Trying to get %s items from timeline feed" % amount)
 
         user_feed = []
         next_max_id = None
-        securityBreak=0
+        securityBreak = 0
 
-        while len(user_feed) < amount and securityBreak<50:
+        while len(user_feed) < amount and securityBreak < 50:
 
             if not next_max_id:
                 self.SendRequest('feed/timeline/')
@@ -309,13 +337,13 @@ class API(object):
 
             next_max_id = temp["next_max_id"]
 
-            securityBreak = securityBreak+1
-            self.logger.info("Iteration %s ,received %s items, total received %s" % (securityBreak, len(temp['items']), len(user_feed)))
+            securityBreak = securityBreak + 1
+            self.logger.info("Iteration %s ,received %s items, total received %s" % (
+            securityBreak, len(temp['items']), len(user_feed)))
 
             sleep_time = randint(1, 3)
             self.logger.info("Sleeping %s seconds" % sleep_time)
             time.sleep(sleep_time)
-
 
         self.logger.info("Total received %s posts from timeline feed" % len(user_feed))
 
@@ -518,18 +546,18 @@ class API(object):
         query = self.SendRequest(
             'feed/user/' + str(usernameId) + '/?max_id=' + str(maxid) + '&min_timestamp=' + str(minTimestamp) +
             '&rank_token=' + str(self.rank_token) + '&ranked_content=true')
-        
-        items=0
-        
+
+        items = 0
+
         if 'items' in self.LastJson:
-           items=len(self.LastJson['items'])
-        
-        self.logger.info("api: Received %s items from user %s feed" %(items, usernameId))
-        
+            items = len(self.LastJson['items'])
+
+        self.logger.info("api: Received %s items from user %s feed" % (items, usernameId))
+
         sleep_time = randint(1, 3)
         self.logger.info("api: Sleeping %s seconds" % sleep_time)
         time.sleep(sleep_time)
-            
+
         return query
 
     def getSelfUserFeed(self, maxid='', minTimestamp=None):
@@ -544,15 +572,15 @@ class API(object):
         next_max_id = None
         securityBreak = 0
 
-        while len(feed)<amount and securityBreak<50:
+        while len(feed) < amount and securityBreak < 50:
             if not next_max_id:
                 self.SendRequest('feed/tag/' + hashtagString)
             else:
-                self.SendRequest('feed/tag/' + hashtagString + '/?max_id='+str(next_max_id))
+                self.SendRequest('feed/tag/' + hashtagString + '/?max_id=' + str(next_max_id))
 
             temp = self.LastJson
-						
-			#the result is damaged
+
+            # the result is damaged
             if "items" not in temp:
                 self.logger.info("Total Received %s items with hashtag %s" % (len(feed), hashtagString))
                 return feed
@@ -567,24 +595,24 @@ class API(object):
 
             next_max_id = temp["next_max_id"]
 
-            self.logger.info("Iteration %s ,received %s items, total received %s" % (securityBreak, len(temp['items']), len(feed)))
+            self.logger.info(
+                "Iteration %s ,received %s items, total received %s" % (securityBreak, len(temp['items']), len(feed)))
             securityBreak = securityBreak + 1
             sleep_time = randint(1, 3)
             self.logger.info("Sleeping %s seconds" % sleep_time)
             time.sleep(sleep_time)
 
-
-        self.logger.info("Total Received %s items with hashtag %s" % (len(feed),hashtagString))
+        self.logger.info("Total Received %s items with hashtag %s" % (len(feed), hashtagString))
         return feed
 
     def getLocationFeed(self, locationId, amount):
-        self.logger.info("Getting %s medias from location: %s" % (amount,locationId))
+        self.logger.info("Getting %s medias from location: %s" % (amount, locationId))
 
         feed = []
         next_max_id = None
-        security_check=0
+        security_check = 0
 
-        while len(feed)<amount and security_check<100:
+        while len(feed) < amount and security_check < 100:
 
             if not next_max_id:
                 self.SendRequest('feed/location/' + str(locationId))
@@ -593,8 +621,8 @@ class API(object):
 
             temp = self.LastJson
 
-            #the result is damaged
-            if "items" not in temp: #if no items
+            # the result is damaged
+            if "items" not in temp:  # if no items
                 self.logger.info("Retrieved %s medias from location %s" % (len(feed), locationId))
                 return feed
 
@@ -605,20 +633,20 @@ class API(object):
                 next_max_id = temp["next_max_id"]
             else:
                 self.logger.info('Next max id is empty, going to return !')
-                self.logger.info("Retrieved %s medias from location %s" % (len(feed),locationId))
+                self.logger.info("Retrieved %s medias from location %s" % (len(feed), locationId))
                 return feed
 
-            security_check +=1
+            security_check += 1
 
             sleep_time = randint(1, 3)
-            self.logger.info("Iteration %s ,received %s items, total received %s" % (security_check, len(temp['items']), len(feed)))
+            self.logger.info(
+                "Iteration %s ,received %s items, total received %s" % (security_check, len(temp['items']), len(feed)))
 
             self.logger.info("Sleeping %s seconds" % sleep_time)
             time.sleep(sleep_time)
 
-        self.logger.info("Retrieved %s medias from location %s" % (len(feed),locationId))
+        self.logger.info("Retrieved %s medias from location %s" % (len(feed), locationId))
         return feed
-
 
     def getPopularFeed(self):
         popularFeed = self.SendRequest(
@@ -632,7 +660,6 @@ class API(object):
     def getSelfUsersFollowing(self):
         return self.getUserFollowings(self.user_id)
 
- 
     def getSelfUserFollowers(self):
         return self.getUserFollowers(self.user_id)
 
@@ -734,24 +761,25 @@ class API(object):
         return self.SendRequest('feed/liked/?max_id=' + str(maxid))
 
     def getUserFollowers(self, usernameId, amount=50, next_max_id=None):
-        self.logger.info("Trying to get %s followers  of %s This might take a while." % (amount,usernameId))
-        self.logger.info("Next max id is: %s",next_max_id)
+        self.logger.info("Trying to get %s followers  of %s This might take a while." % (amount, usernameId))
+        self.logger.info("Next max id is: %s", next_max_id)
         followers = []
-        securityBreak=0
-        result={}
-        previous_next_max_id=next_max_id
+        securityBreak = 0
+        result = {}
+        previous_next_max_id = next_max_id
         while len(followers) < amount and securityBreak < 100:
-   
-            if next_max_id == '' or next_max_id==None:
-              self.SendRequest('friendships/' + str(usernameId) + '/followers')
+
+            if next_max_id == '' or next_max_id == None:
+                self.SendRequest('friendships/' + str(usernameId) + '/followers')
             else:
-              self.SendRequest('friendships/' + str(usernameId) + '/followers/?max_id=' + str(next_max_id))
-          
+                self.SendRequest('friendships/' + str(usernameId) + '/followers/?max_id=' + str(next_max_id))
+
             temp = self.LastJson
 
             # the result is damaged
             if "users" not in temp:  # if no items
-                self.logger.info("End of the line: Total received %s followers of user %s" % (len(followers), usernameId))
+                self.logger.info(
+                    "End of the line: Total received %s followers of user %s" % (len(followers), usernameId))
                 result['followers'] = followers
                 result['next_max_id'] = None
                 result['previous_next_max_id'] = previous_next_max_id
@@ -761,18 +789,19 @@ class API(object):
                 followers.append(item)
 
             securityBreak = securityBreak + 1
-            self.logger.info("Iteration %s ,received %s items, total received %s followers" % (securityBreak, len(temp['users']), len(followers)))
+            self.logger.info("Iteration %s ,received %s items, total received %s followers" % (
+            securityBreak, len(temp['users']), len(followers)))
 
             if "next_max_id" not in temp:
-                self.logger.info("End of the line: Total received %s followers of user %s" % (len(followers), usernameId))
+                self.logger.info(
+                    "End of the line: Total received %s followers of user %s" % (len(followers), usernameId))
                 result['followers'] = followers
-                result['next_max_id']=None
-                result['previous_next_max_id']=previous_next_max_id
+                result['next_max_id'] = None
+                result['previous_next_max_id'] = previous_next_max_id
                 return result
 
             next_max_id = temp["next_max_id"]
             previous_next_max_id = next_max_id
-
 
             sleep_time = randint(5, 10)
             self.logger.info("Sleeping %s seconds" % sleep_time)
@@ -835,7 +864,7 @@ class API(object):
                 return user_feed
             next_max_id = temp["next_max_id"]
 
-    #this gives all medias posted by the logged user
+    # this gives all medias posted by the logged user
     def getTotalSelfUserFeed(self, minTimestamp=None):
         return self.getTotalUserFeed(self.user_id, minTimestamp)
 

@@ -103,4 +103,4 @@ def getBotIp(bot, id_user, id_campaign, is_bot_account):
         raise Exception("getBotIp: Could not find an ip for user"+str(id_user))
 
     bot.logger.info("User %s, has ip: %s" % (id_user, result['ip']))
-    return result['ip']
+    return result
