@@ -127,6 +127,7 @@ class API(object):
             self.logger.info("Going to test the proxy")
 
             self.SendRequest('https://api.ipify.org?format=json')
+            self.logger.info(self.LastResponse)
             exit()
             if (
             self.SendRequest('si/fetch_headers/?challenge_type=signup&guid=' + self.generateUUID(False), None, True)):
