@@ -83,7 +83,8 @@ class Bot(API):
                  min_media_count_to_follow=20,
                  max_following_to_block=2000,
                  like_delay=15,
-                 like_delay_if_bot_blocked=40,
+                 like_delay_if_bot_blocked=50,
+                 follow_delay_if_bot_blocked=60,
                  unlike_delay=10,
                  follow_delay=30,
                  unfollow_delay=30,
@@ -138,6 +139,7 @@ class Bot(API):
         # delays
         self.like_delay = like_delay
         self.like_delay_if_bot_blocked = like_delay_if_bot_blocked
+        self.follow_delay_if_bot_blocked = follow_delay_if_bot_blocked
         self.unlike_delay = unlike_delay
         self.follow_delay = follow_delay
         self.unfollow_delay = unfollow_delay

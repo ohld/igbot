@@ -218,18 +218,15 @@ class API(object):
             if response.status_code == 400:
                 responseObject = self.loadJson(response.text)
                 if 'spam' in responseObject:
-                    sleep_minutes = 10
+                    sleep_minutes = randint(12, 22)
                     self.like_delay = self.like_delay_if_bot_blocked
+                    self.follow_delay = self.follow_delay_if_bot_blocked
                     self.logger.warning(
-                        "sendRequest: BOT IS BLOCKED, going to sleep %s minutes. The like delay was increased to %s seconds" % (
-                        sleep_minutes, self.like_delay))
+                        "sendRequest: BOT IS BLOCKED, going to sleep %s minutes. The like delay was increased to %s seconds, and follow delay to %s" % (
+                        sleep_minutes, self.like_delay, self.follow_delay))
 
                     details = "spam"
-
-                    
-
                     time.sleep(sleep_minutes * 60)
-
                 if 'error_type' in responseObject:
                     # todo throw if invalid password - code duplication for loggin because of the throw
                     # todo fix this spagheti code
@@ -262,7 +259,7 @@ class API(object):
                         time.sleep(sleep_minutes * 60)
 
             elif response.status_code == 429:
-                sleep_minutes = 5
+                sleep_minutes = randint(6, 8)
                 details = "That means too many requests"
                 self.like_delay = self.like_delay_if_bot_blocked
                 self.logger.warning("That means 'too many requests'. "
