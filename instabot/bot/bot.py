@@ -3,7 +3,7 @@ import atexit
 import signal
 import math
 import os
-
+import time
 from ..api import API
 from ..api import api_db
 from random import randint
@@ -188,7 +188,7 @@ class Bot(API):
 
         if self.isLoggedIn:
             self.logger.info("logout: Going to logout campaign id: %s", self.id_campaign)
-            self.logger.info("logout: Instagram response %s",self.LastResponse)
+
             if self.id_campaign != False:
                 save_checkpoint(self)
 
@@ -556,8 +556,8 @@ class Bot(API):
         processname = 'angie_idc' + id_campaign + ' '
         tmp = os.popen("ps -Af").read()
         proccount = tmp.count(processname)
-
-        if proccount > 1:
+        self.logger.info("canBotStart: Found %s running processes", proccount)
+        if proccount > 2:
             self.logger.info("canBotStart: ERROR: another bot instance is running for campaign %s", id_campaign)
             exit("canBotStart: ERROR: another bot instance is running for this campaign")
 

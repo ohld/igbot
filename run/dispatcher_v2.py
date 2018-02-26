@@ -20,7 +20,7 @@ parser.add_argument('-angie_campaign', type=str, help="angie_campaign")
 args = parser.parse_args()
 
 if args.angie_campaign is None:
-    exit("dispatcher: Campaign id it not specified !")
+    exit("dispatcher: Error: Campaign id it is not specified !")
 
 try:
     bot = Bot(
