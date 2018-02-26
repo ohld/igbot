@@ -42,7 +42,7 @@ for campaign in campaigns:
     logger.info("schedule_bot: Starting bot for campaign %s", campaign)
     processName = "angie_idc" + str(campaign)
     subprocess.Popen(
-        "bash -c \"exec -a " + processName + " /usr/bin/python /home/neo/work/instabot/run/dispatcher_v2.py -angie_campaign=" + str(
+        "bash -c \"exec -a " + processName + " /usr/bin/python /home/instabot/run/dispatcher_v2.py -angie_campaign=" + str(
             campaign) + "\"", stdin=None, stdout=DEVNULL, stderr=DEVNULL, close_fds=True, shell=True)
 
     pause=randint(4,10)
