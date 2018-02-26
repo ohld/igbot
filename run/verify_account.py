@@ -22,7 +22,7 @@ if args.u is None:
 
 result = {}
 try:
-    bot = Bot(id_campaign=args.id_campaign, multiple_ip=True, hide_output=True)
+    bot = Bot(id_campaign=args.id_campaign, multiple_ip=True, hide_output=False)
     bot.logger.info("verify_account:Going to verify the account... username %s, password %s" % (args.u, args.p))
     status = bot.login(username=args.u, password=args.p)
     result["status"] = True

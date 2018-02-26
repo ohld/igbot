@@ -226,15 +226,7 @@ class API(object):
 
                     details = "spam"
 
-                    if responseObject['message'] == "feedback_required":
-                        self.logger.warning("sendRequest: Instagram requries phone verification")
-                        currentOperation = self.currentOperation if hasattr(self, "currentOperation") else None
-                        insert(
-                            "insert into instagram_log (id_user,log,operation,request,http_status,details,timestamp) values (%s,%s,%s,%s,%s,%s,now())",
-                            self.web_application_id_user, responseInfo, currentOperation, config.API_URL + endpoint,
-                            str(response.status_code), details)
-                        self.notifyUserToVerifyInstagramAccount()
-                        raise Exception("sendRequest: Instagram requires phone verification")
+                    
 
                     time.sleep(sleep_minutes * 60)
 
