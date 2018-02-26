@@ -10,24 +10,36 @@ from random import randint
 import calendar
 
 
+#todo cleanup the code
 def getInitialActionAmount(self, id_campaign):
     result={}
     result['calculatedAmount']={}
     result['initialAmount']={}
     result['accountMaturity']={}
     result['accountMaturity']['reachedMaturity']=False
-    
+
     maximumLikeAmountResult = api_db.fetchOne("select * from bot_config where `key`='maximum_like_amount'")
     result['initialAmount']['maximumLikeAmount']=int(maximumLikeAmountResult['value'])
+    if id_campaign == 227:
+        self.logger.info("getInitialActionAmount: This is corina's account, going to perform other values: 1200/700 600/300")
+        result['initialAmount']['maximumLikeAmount'] = 1200
 
     maximumFollowAmountResult = api_db.fetchOne("select * from bot_config where `key`='maximum_follow_amount'")
     result['initialAmount']['maximumFollowAmount'] = int(maximumFollowAmountResult['value'])
+    if id_campaign == 227:
+        result['initialAmount']['maximumFollowAmount'] = 600
 
     minimumLikeAmountResult = api_db.fetchOne("select * from bot_config where `key`='minimum_like_amount'")
     result['initialAmount']['minimumLikeAmount'] = int(minimumLikeAmountResult['value'])
 
+    if id_campaign == 227:
+        result['initialAmount']['minimumLikeAmount'] = 800
+
     minimumFollowAmountResult = api_db.fetchOne("select * from bot_config where `key`='minimum_follow_amount'")
     result['initialAmount']['minimumFollowAmount'] = int(minimumFollowAmountResult['value'])
+
+    if id_campaign == 227:
+        result['initialAmount']['minimumFollowAmount'] = 300
 
     result['initialAmount']['minimumActionAmount'] = result['initialAmount']['minimumLikeAmount'] +result['initialAmount']['minimumFollowAmount']
     result['initialAmount']['maximumActionAmount'] = result['initialAmount']['maximumLikeAmount'] + result['initialAmount']['maximumFollowAmount']
