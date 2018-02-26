@@ -626,7 +626,7 @@ class Bot(API):
         for operation in operations:
             self.currentOperation = operation['configName']
 
-            if 'like_own_followers' == operation['configName']:
+            if 'like_own_followers_disabled' == operation['configName']:
                 if likesAmount < 1:
                     self.logger.info("like_own_followers: Likes to perform 0, going to skip !")
                     continue
@@ -643,7 +643,7 @@ class Bot(API):
 
                 result['no_likes'] = result['no_likes'] + performedLikes
 
-            if 'like_timeline' == operation['configName']:
+            if 'like_timeline_disabled' == operation['configName']:
                 # maybe this check can be set globally for all likes operation type
                 if likesAmount < 1:
                     self.logger.info("like_timeline:Likes to perform 0, going to skip !")
@@ -701,7 +701,7 @@ class Bot(API):
 
                 result['no_likes'] = result['no_likes'] + performedLikes
 
-            if 'like_other_users_followers' == operation['configName']:
+            if 'like_other_users_followers_disabled' == operation['configName']:
                 if likesAmount < 1:
                     self.logger.info("like_other_users_followers: Likes to perform 0, going to skip !")
                     continue
@@ -858,7 +858,7 @@ class Bot(API):
 
                 result['no_follows'] = result['no_follows'] + performedFollow
 
-            if 'follow_other_users_followers' == operation['configName']:
+            if 'follow_other_users_followers_disabled' == operation['configName']:
                 if followAmount < 1:
                     self.logger.info("follow_other_users_followers: Follows to perform 0, going to skip !")
                     continue
