@@ -188,6 +188,7 @@ class Bot(API):
 
         if self.isLoggedIn:
             self.logger.info("logout: Going to logout campaign id: %s", self.id_campaign)
+            self.logger.info("logout: Instagram response %s",self.LastResponse)
             if self.id_campaign != False:
                 save_checkpoint(self)
 
