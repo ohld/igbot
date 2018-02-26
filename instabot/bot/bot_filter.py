@@ -113,7 +113,6 @@ def filter_users(self, user_id_list):
 
 def check_user(self, user_id, filter_closed_acc=False, unfollowing=False):
     if not self.filter_users and not unfollowing:
-        self.console_print('\n\033[91m filter_users is False , Skipping \033[0m')
         return True
 
     delay.small_delay(self)
