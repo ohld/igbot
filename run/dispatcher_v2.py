@@ -151,8 +151,10 @@ try:
         totalExpectedFollowAmount))
 
     bot.crawl_user_followers(amount=500)
+except SystemExit:
+    bot.logger.info("dispatcher_v2: SystemExit: The bot was successfully stopped")
 except:
     exceptionDetail = traceback.format_exc()
-    print(exceptionDetail)
+    #print(exceptionDetail)
     bot.logger.info("FATAL ERROR !")
     bot.logger.info(exceptionDetail)

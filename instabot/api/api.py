@@ -166,15 +166,17 @@ class API(object):
             return {}
 
     def logout(self):
+
         if not self.isLoggedIn:
             return True
         self.isLoggedIn = not self.SendRequest('accounts/logout/')
+        self.logger.info("logout: The bot is logged out !")
         return not self.isLoggedIn
 
     def SendRequest(self, endpoint, post=None, login=False):
         if (not self.isLoggedIn and not login):
-            self.logger.critical("Not logged in.")
-            raise Exception("Not logged in!")
+            self.logger.critical("Not logged in while accessing endpoint %s.",endpoint)
+            return False
 
         # self.logger.info("Requesting %s: ",config.API_URL + endpoint)
         self.session.headers.update({'Connection': 'close',

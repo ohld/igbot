@@ -184,18 +184,18 @@ class Bot(API):
             import pkg_resources
         return next((p.version for p in pkg_resources.working_set if p.project_name.lower() == 'instabot'), "No match")
 
-    def logout(self):
+    def logout(self, *args):
 
-        # release ip
-        # self.logger.info("logout: Going to release the ip")
-        # api_db.insert("update campaign set id_ip_bot=null where id_campaign=%s",self.id_campaign)
-        if self.id_campaign != False:
-            save_checkpoint(self)
+        if self.isLoggedIn:
+            self.logger.info("logout: Going to logout campaign id: %s", self.id_campaign)
+            if self.id_campaign != False:
+                save_checkpoint(self)
 
-        super(self.__class__, self).logout()
-        self.logger.info("logout: Bot stopped. "
-                         "Worked: %s" % (datetime.datetime.now() - self.start_time))
-        self.print_counters()
+            super(self.__class__, self).logout()
+            self.logger.info("logout: Bot stopped. "
+                             "Worked: %s" % (datetime.datetime.now() - self.start_time))
+            self.print_counters()
+            raise SystemExit(0)
 
     def login(self, **args):
         if self.proxy:
@@ -205,6 +205,7 @@ class Bot(API):
         #    exit("Could not login to instagram !")
         self.prepare()
         signal.signal(signal.SIGTERM, self.logout)
+        signal.signal(signal.SIGINT, self.logout)
         atexit.register(self.logout)
         return status
 
@@ -604,10 +605,10 @@ class Bot(API):
             api_db.updateCampaignChekpoint('like_for_like_user_id', user['id_user'], self.id_campaign)
 
         self.logger.info("bot.startLikeForLike: END. Last user processed: %s, id_user: %s" % (
-        user['instagram_username'], user['id_user']))
+            user['instagram_username'], user['id_user']))
 
         self.logger.info("bot.startLikeForLike: END updated checkpoint for campaign: %s with last user: %s" % (
-        self.id_campaign, user['id_user']))
+            self.id_campaign, user['id_user']))
         self.logger.info(
             "bot.startLikeForLike: END. Total liked %s users from a total of %s users" % (totalLiked, likesAmount))
 
@@ -621,7 +622,7 @@ class Bot(API):
 
         self.logger.info(
             "bot.startStandardOperation: Started standard operation. Likes to perform: %s, follow to perform %s, operations %s!" % (
-            likesAmount, followAmount, len(operations)))
+                likesAmount, followAmount, len(operations)))
 
         for operation in operations:
             self.currentOperation = operation['configName']
@@ -658,7 +659,7 @@ class Bot(API):
 
                 self.logger.info(
                     "like_timeline: End operation: %s, expected: %s, performed: %s" % (
-                    'like_timeline', expectedLikes, performedLikes))
+                        'like_timeline', expectedLikes, performedLikes))
 
                 result['no_likes'] = result['no_likes'] + performedLikes
 
@@ -914,11 +915,11 @@ class Bot(API):
                 performedFollow = self.unfollowBotCreatedFollowings(amount=expectedFollow)
 
                 self.logger.info("unfollow: End operation: %s, expected: %s, actual: %s" % (
-                'unfollow', expectedFollow, performedFollow))
+                    'unfollow', expectedFollow, performedFollow))
 
                 result['no_follows'] = result['no_follows'] + performedFollow
 
         self.logger.info(
             "bot.startStandardOperation. END operation. performed likes %s, follow/unfollow %s . Expected like %s, follow %s" % (
-            result['no_likes'], result['no_follows'], likesAmount, followAmount))
+                result['no_likes'], result['no_follows'], likesAmount, followAmount))
         return result
