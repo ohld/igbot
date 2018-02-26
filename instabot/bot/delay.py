@@ -28,7 +28,7 @@ def like_delay(bot):
     bot.last_like = time.time()
 
     logger = logging.getLogger('[instabot]')
-    sleep_time = randint(bot.like_delay-10, bot.like_delay)
+    sleep_time = randint(bot.like_delay-10, bot.like_delay+10)
     logger.info("like_delay: Sleeping %s seconds, Max delay is: %s" % (sleep_time,bot.like_delay))
     time.sleep(sleep_time)
 
@@ -37,7 +37,7 @@ def unlike_delay(bot):
     sleep_if_need(bot.last_unlike, bot.unlike_delay)
     bot.last_unlike = time.time()
 
-
+#todo fix this
 def follow_delay(bot):
     sleep_if_need(bot.last_follow, bot.follow_delay)
     bot.last_follow = time.time()
