@@ -303,14 +303,14 @@ class TestBotGet(TestBot):
         commenters = self.BOT.get_media_commenters(media_id)
         assert commenters == expected_commenters
 
-    @pytest.mark.parametrize('url_result', [
-        ['https://www.instagram.com/p/BfHrDvCDuzC/', 1713527555896569026],
-        ['test', False]
+    @pytest.mark.parametrize('url,result', [
+        ('https://www.instagram.com/p/BfHrDvCDuzC/', 1713527555896569026),
+        ('test', False)
     ])
-    def test_get_media_id_from_link_with_wrong_data(self, url_result):
-        media_id = self.BOT.get_media_id_from_link(url_result[0])
+    def test_get_media_id_from_link_with_wrong_data(self, url, result):
+        media_id = self.BOT.get_media_id_from_link(url)
 
-        assert url_result[1] == media_id
+        assert result == media_id
 
     @pytest.mark.parametrize('comments', [
         ['comment1', 'comment2', 'comment3'],
