@@ -2,10 +2,12 @@
     Support instabot's methods.
 """
 
+from __future__ import unicode_literals
+
+import codecs
+import os
 import re
 import sys
-import os
-import codecs
 
 
 def check_if_file_exists(file_path, quiet=False):

@@ -7,3 +7,4 @@ schedule
 pysocks
 pytest
 responses
+future
