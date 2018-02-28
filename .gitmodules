@@ -1,7 +1,3 @@
-[submodule "instabot/api"]
-	path = instabot/api
-	url = https://github.com/instagrambot/api.git
-	branch = master
 [submodule "docs"]
 	path = docs
 	url = https://github.com/instagrambot/docs
