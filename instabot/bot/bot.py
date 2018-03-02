@@ -513,8 +513,8 @@ class Bot(API):
 
     # support
 
-    def check_if_file_exists(self, file_path):
-        return check_if_file_exists(file_path)
+    def check_if_file_exists(self, file_path, quiet=False):
+        return check_if_file_exists(file_path, quiet)
 
     def extract_urls(self, text):
         return extract_urls(text)
