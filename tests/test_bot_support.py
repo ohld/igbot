@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 
 import os
+import sys
 
 import pytest
 
@@ -33,3 +34,22 @@ class TestBotSupport(TestBot):
 
     def test_check_if_file_exist_fail(self):
         assert not self.BOT.check_if_file_exists('test')
+
+    @pytest.mark.parametrize('verbosity,text,result', [
+        (True, 'test', 'test'),
+        (False, 'test', '')
+    ])
+    def test_console_print(self, verbosity, text, result):
+        self.BOT.verbosity = verbosity
+        try:
+            from io import StringIO
+            saved_stdout = sys.stdout
+            out = StringIO()
+            sys.stdout = out
+
+            self.BOT.console_print(text)
+
+            output = out.getvalue().strip()
+            assert output == result
+        finally:
+            sys.stdout = saved_stdout
