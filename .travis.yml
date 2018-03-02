@@ -14,7 +14,7 @@ script:
  - pyflakes instabot tests examples
  - pycodestyle --ignore=E501 instabot tests
  - pycodestyle --ignore=E402,E501 examples
- - py.test --cov=instabot
+ - py.test --cov=instabot --cov-report=xml
  - codecov
 
 branches:
