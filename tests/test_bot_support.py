@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+import os
+
 import pytest
 
 from .test_bot import TestBot
@@ -20,3 +22,14 @@ class TestBotSupport(TestBot):
     ])
     def test_extract_urls(self, url, result):
         assert self.BOT.extract_urls(url) == result
+
+    def test_check_if_file_exist(self):
+        test_file = open('test', 'w')
+
+        assert self.BOT.check_if_file_exists('test')
+
+        test_file.close()
+        os.remove('test')
+
+    def test_check_if_file_exist_fail(self):
+        assert not self.BOT.check_if_file_exists('test')
