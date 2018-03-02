@@ -10,5 +10,5 @@ setup(
     download_url='https://github.com/instagrambot/instabot/tarball/0.3.5.2',
     keywords=['instagram', 'bot', 'api', 'wrapper'],
     classifiers=[],
-    install_requires=['tqdm', 'requests-toolbelt', 'requests', 'schedule'],
+    install_requires=['tqdm', 'requests-toolbelt', 'requests', 'schedule', 'future'],
 )
