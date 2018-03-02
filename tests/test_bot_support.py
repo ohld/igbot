@@ -42,7 +42,10 @@ class TestBotSupport(TestBot):
     def test_console_print(self, verbosity, text, result):
         self.BOT.verbosity = verbosity
         try:
-            from io import StringIO
+            if sys.version_info > (3,):
+                from io import StringIO
+            else:
+                from StringIO import StringIO
             saved_stdout = sys.stdout
             out = StringIO()
             sys.stdout = out
