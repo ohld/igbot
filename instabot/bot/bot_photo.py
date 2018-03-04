@@ -1,4 +1,6 @@
 import os
+from io import open
+
 from tqdm import tqdm
 
 from . import delay
