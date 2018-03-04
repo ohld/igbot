@@ -1,11 +1,12 @@
-import responses
 import pytest
+import responses
 
 from instabot.api.config import API_URL, SIG_KEY_VERSION
 
 from .test_bot import TestBot
 from .test_variables import (TEST_CAPTION_ITEM, TEST_COMMENT_ITEM,
-                             TEST_PHOTO_ITEM, TEST_USER_ITEM)
+                             TEST_PHOTO_ITEM, TEST_SEARCH_USERNAME_ITEM,
+                             TEST_USER_ITEM)
 
 
 class TestBotGet(TestBot):
@@ -324,3 +325,39 @@ class TestBotGet(TestBot):
             assert self.BOT.get_comment() in self.BOT.comments
         else:
             assert self.BOT.get_comment() == 'wow'
+
+    @responses.activate
+    @pytest.mark.parametrize('username', [
+        '@test', 'test', '1234'
+    ])
+    def test_get_userid_from_username(self, username):
+        response_data = {
+            'status': 'ok',
+            'user': TEST_SEARCH_USERNAME_ITEM
+        }
+        expected_user_id = str(TEST_SEARCH_USERNAME_ITEM['pk'])
+
+        responses.add(
+            responses.GET, '{API_URL}users/{username}/usernameinfo/'.format(
+                API_URL=API_URL, username=username
+            ), status=200, json=response_data)
+
+        result = self.BOT.get_userid_from_username(username)
+
+        assert result == expected_user_id
+
+    @responses.activate
+    @pytest.mark.parametrize('username', [
+        'usernotfound', 'nottexisteduser', '123231231231234'
+    ])
+    def test_get_user_id_from_username_404(self, username):
+        response_data = {
+            'status': 'fail',
+            'message': 'User not found'
+        }
+        responses.add(
+            responses.GET, '{API_URL}users/{username}/usernameinfo/'.format(
+                API_URL=API_URL, username=username
+            ), status=404, json=response_data)
+
+        assert not self.BOT.get_userid_from_username(username)

@@ -71,6 +71,39 @@ TEST_USER_ITEM = {
     "unseen_count": 0
 }
 
+TEST_SEARCH_USERNAME_ITEM = {
+    "biography": "Some biography",
+    "external_url": "",
+    "follower_count": 100,
+    "following_count": 100,
+    "full_name": "Awesome Test User",
+    "has_anonymous_profile_picture": False,
+    "has_chaining": False,
+    "hd_profile_pic_url_info": {
+        "height": 440,
+        "url": "https://scontent-ams3-1.cdninstagram.com/vp/0049430734318b5063c4cb2cee26862d/5B399C46/t51.2485-29/28435967_574234472958498_24213573932476253432_n.jpg",
+        "width": 440
+    },
+    "hd_profile_pic_versions": [
+        {
+            "height": 320,
+            "url": "https://scontent-ams3-1.cdninstagram.com/vp/9a869a4fffb0f65b4d850cae433ab00c/5B3B894C/t55.25585-19/s320x320/28435967_574234472958498_24213573958234234236_n.jpg",
+            "width": 320
+        }
+    ],
+    "is_business": False,
+    "is_favorite": False,
+    "is_private": False,
+    "is_verified": False,
+    "media_count": 100,
+    "pk": 777777777,
+    "profile_pic_id": "1727616424669463993_721567777777",
+    "profile_pic_url": "https://scontent-ams3-1.cdninstagram.com/vp/86a59b5dadc88e6b6a723b73a6ba25a7/5B271FBC/t51.7777-19/s150x150/28435967_574234472958498_24213577777777777_n.jpg",
+    "reel_auto_archive": "unset",
+    "username": "awesome.test.user",
+    "usertags_count": 0
+}
+
 TEST_PHOTO_ITEM = {
     'taken_at': 1281669687,
     'pk': 1234,
