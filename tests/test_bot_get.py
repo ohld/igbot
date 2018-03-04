@@ -361,3 +361,24 @@ class TestBotGet(TestBot):
             ), status=404, json=response_data)
 
         assert not self.BOT.get_userid_from_username(username)
+
+    @responses.activate
+    @pytest.mark.parametrize('username,url,result', [
+        ('@test', 'test', str(TEST_SEARCH_USERNAME_ITEM['pk'])),
+        ('test', 'test', str(TEST_SEARCH_USERNAME_ITEM['pk'])),
+        ('1234', '1234', '1234'),
+        (1234, '1234', '1234')
+    ])
+    def test_convert_to_user_id(self, username, url, result):
+        response_data = {
+            'status': 'ok',
+            'user': TEST_SEARCH_USERNAME_ITEM
+        }
+        responses.add(
+            responses.GET, '{API_URL}users/{username}/usernameinfo/'.format(
+                API_URL=API_URL, username=url
+            ), status=200, json=response_data)
+
+        user_id = self.BOT.convert_to_user_id(username)
+
+        assert result == user_id
