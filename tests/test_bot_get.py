@@ -6,7 +6,7 @@ from instabot.api.config import API_URL, SIG_KEY_VERSION
 from .test_bot import TestBot
 from .test_variables import (TEST_CAPTION_ITEM, TEST_COMMENT_ITEM,
                              TEST_PHOTO_ITEM, TEST_SEARCH_USERNAME_ITEM,
-                             TEST_USER_ITEM)
+                             TEST_USER_ITEM, TEST_USERNAME_INFO_ITEM)
 
 
 class TestBotGet(TestBot):
@@ -325,6 +325,42 @@ class TestBotGet(TestBot):
             assert self.BOT.get_comment() in self.BOT.comments
         else:
             assert self.BOT.get_comment() == 'wow'
+
+    @responses.activate
+    @pytest.mark.parametrize('user_id', [
+        1234, '1234'
+    ])
+    def test_get_username_from_userid(self, user_id):
+        response_data = {
+            'status': 'ok',
+            'user': TEST_USERNAME_INFO_ITEM
+        }
+        expected_user_id = str(TEST_USERNAME_INFO_ITEM['username'])
+
+        responses.add(
+            responses.GET, '{API_URL}users/{user_id}/info/'.format(
+                API_URL=API_URL, user_id=user_id
+            ), status=200, json=response_data)
+
+        result = self.BOT.get_username_from_userid(user_id)
+
+        assert result == expected_user_id
+
+    @responses.activate
+    @pytest.mark.parametrize('user_id', [
+        '123231231231234', 123231231231234
+    ])
+    def test_get_username_from_userid_404(self, user_id):
+        response_data = {
+            'status': 'fail',
+            'message': 'User not found'
+        }
+        responses.add(
+            responses.GET, '{API_URL}users/{user_id}/info/'.format(
+                API_URL=API_URL, user_id=user_id
+            ), status=404, json=response_data)
+
+        assert not self.BOT.get_username_from_userid(user_id)
 
     @responses.activate
     @pytest.mark.parametrize('username', [

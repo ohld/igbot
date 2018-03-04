@@ -71,6 +71,66 @@ TEST_USER_ITEM = {
     "unseen_count": 0
 }
 
+TEST_USERNAME_INFO_ITEM = {
+    "aggregate_promote_engagement": False,
+    "allowed_commenter_type": "any",
+    "auto_expand_chaining": False,
+    "besties_count": 0,
+    "biography": "TEST",
+    "can_be_tagged_as_sponsor": False,
+    "can_boost_post": False,
+    "can_convert_to_business": True,
+    "can_create_sponsor_tags": False,
+    "can_follow_hashtag": False,
+    "can_see_organic_insights": False,
+    "external_url": "",
+    "feed_post_reshare_disabled": False,
+    "follower_count": 100,
+    "following_count": 100,
+    "full_name": "Test user",
+    "has_anonymous_profile_picture": False,
+    "has_chaining": True,
+    "has_highlight_reels": False,
+    "has_profile_video_feed": False,
+    "hd_profile_pic_url_info": {
+        "height": 1080,
+        "url": "https://scontent-ams3-1.cdninstagram.com/vp/b99141f9080640b7bec84e7a67caf69e/5B27B215/t51.7777-19/17332952_229750480834181_377777777357477136_a.jpg",
+        "width": 1080
+    },
+    "hd_profile_pic_versions": [
+        {
+            "height": 320,
+            "url": "https://scontent-ams3-1.cdninstagram.com/vp/d8083f7cb9ec5e0c265ed832867ec62f/5B3C2B1F/t51.7777-19/s320x320/17332952_229750487777777_330377473574363136_a.jpg",
+            "width": 320
+        },
+        {
+            "height": 640,
+            "url": "https://scontent-ams3-1.cdninstagram.com/vp/12596165258c466f05979c1be6e95b07/5B294470/t51.7777-19/s640x640/17332952_229750487777777_330377473574363136_a.jpg",
+            "width": 640
+        }
+    ],
+    "include_direct_blacklist_status": True,
+    "is_business": False,
+    "is_needy": False,
+    "is_private": False,
+    "is_profile_action_needed": False,
+    "is_verified": False,
+    "is_video_creator": False,
+    "media_count": 100,
+    "pk": 7777777777,
+    "profile_pic_id": "14779892390947777777_18277776",
+    "profile_pic_url": "https://scontent-ams3-1.cdninstagram.com/vp/d056984e148d566bbb15f7eaad55304e/5B4DF6EF/t51.7777-19/s150x150/17377752_27777770480834181_3303899473577777736_a.jpg",
+    "recently_bestied_by_count": 0,
+    "reel_auto_archive": "unset",
+    "show_besties_badge": True,
+    "show_business_conversion_icon": False,
+    "show_conversion_edit_entry": True,
+    "show_insights_terms": False,
+    "username": "test_user",
+    "usertag_review_enabled": False,
+    "usertags_count": 16
+}
+
 TEST_SEARCH_USERNAME_ITEM = {
     "biography": "Some biography",
     "external_url": "",
