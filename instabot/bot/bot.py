@@ -63,6 +63,8 @@ class Bot(API):
                  max_unblocks_per_day=100,
                  max_likes_to_like=100,
                  filter_users=True,
+                 filter_business_accounts=True,
+                 filter_verified_accounts=True,
                  max_followers_to_follow=2000,
                  min_followers_to_follow=10,
                  max_following_to_follow=2000,
@@ -105,6 +107,8 @@ class Bot(API):
 
         # limits - follow
         self.filter_users = filter_users
+        self.filter_business_accounts = filter_business_accounts
+        self.filter_verified_accounts = filter_verified_accounts
         self.max_likes_per_day = max_likes_per_day
         self.max_unlikes_per_day = max_unlikes_per_day
         self.max_follows_per_day = max_follows_per_day

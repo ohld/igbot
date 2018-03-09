@@ -153,12 +153,12 @@ def check_user(self, user_id, filter_closed_acc=False, unfollowing=False):
         if user_info["is_private"]:
             self.console_print('\n info : \033[91m is PRIVATE , !!! \033[0m')
             return False
-    if "is_business" in user_info:
+    if "is_business" in user_info and self.filter_business_accounts:
         if user_info["is_business"]:
             self.console_print('\n info : \033[91m is BUSINESS , Skipping \033[0m')
             skippedlist_adder(self, user_id)  # Add user_id to skipped.txt
             return False
-    if "is_verified" in user_info:
+    if "is_verified" in user_info and self.filter_verified_accounts:
         if user_info["is_verified"]:
             self.console_print('\n info : \033[91m is VERIFIED , Skipping \033[0m')
             skippedlist_adder(self, user_id)  # Add user_id to skipped.txt
