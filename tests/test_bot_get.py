@@ -1,7 +1,10 @@
-from unittest.mock import patch
-
 import pytest
 import responses
+
+try:
+    from unittest.mock import patch
+except ImportError:
+    from mock import patch
 
 from instabot.api.config import API_URL, SIG_KEY_VERSION
 
