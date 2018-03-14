@@ -1,3 +1,5 @@
+from unittest.mock import patch
+
 import pytest
 import responses
 
@@ -405,7 +407,8 @@ class TestBotGet(TestBot):
         ('1234', '1234', '1234'),
         (1234, '1234', '1234')
     ])
-    def test_convert_to_user_id(self, username, url, result):
+    @patch('time.sleep', return_value=None)
+    def test_convert_to_user_id(self, patched_time_sleep, username, url, result):
         response_data = {
             'status': 'ok',
             'user': TEST_SEARCH_USERNAME_ITEM

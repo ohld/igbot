@@ -1,3 +1,5 @@
+from unittest.mock import patch
+
 import pytest
 import responses
 
@@ -16,7 +18,8 @@ class TestBotFilter(TestBot):
         (True, True, True, False),
     ])
     @responses.activate
-    def test_check_user(self, filter_users, filter_business_accounts, filter_verified_accounts, expected):
+    @patch('time.sleep', return_value=None)
+    def test_check_user(self, patched_time_sleep, filter_users, filter_business_accounts, filter_verified_accounts, expected):
         self.BOT.filter_users = filter_users
         self.BOT.filter_business_accounts = filter_business_accounts
         self.BOT.filter_verified_accounts = filter_verified_accounts
