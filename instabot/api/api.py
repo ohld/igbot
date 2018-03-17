@@ -52,7 +52,7 @@ class API(object):
         self.total_requests = 0
 
         # handle logging
-        self.logger = logging.getLogger('[instabot]')
+        self.logger = logging.getLogger('[instabot_{}]'.format(id(self)))
 
         fh = logging.FileHandler(filename='instabot.log')
         fh.setLevel(logging.INFO)
