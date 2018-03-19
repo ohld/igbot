@@ -45,5 +45,4 @@ def download_photos(self, medias, path, description=False):
         if not self.download_photo(media, path, description=description):
             delay.error_delay(self)
             broken_items = medias[medias.index(media):]
-            break
     return broken_items
