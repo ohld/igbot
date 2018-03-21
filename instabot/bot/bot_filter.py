@@ -136,8 +136,9 @@ def check_user(self, user_id, filter_closed_acc=False, unfollowing=False):
         self.console_print('\n\033[92m Own following list is empty , downloading ...\033[0m')
         self.following = self.get_user_following(self.user_id)
     if user_id in self.following:
-        # Log to Console
-        self.console_print('\n\033[91m Already following , Skipping \033[0m')
+        if not unfollowing:
+            # Log to Console
+            self.console_print('\n\033[91m Already following , Skipping \033[0m')
         return False
 
     user_info = self.get_user_info(user_id)
