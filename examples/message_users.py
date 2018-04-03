@@ -19,7 +19,7 @@ sys.path.append(os.path.join(sys.path[0], '../'))
 from instabot import Bot
 
 instaUsers = ["R1B4Z01D", "KoanMedia"]
-directMessage = ["Thanks for the example."]
+directMessage = "Thanks for the example."
 
 messagesToSend = 100
 banDelay = (86400 / messagesToSend)
