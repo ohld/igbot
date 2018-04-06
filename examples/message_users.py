@@ -66,7 +66,7 @@ elif deliveryMethod == 4:
     scrape = input("what page likers do you want to message? :")
     with open('scrape.txt', 'w') as file:
         file.write(scrape)
-pages_to_scrape = bot.read_list_from_file("scrape.txt")  #  username to get likers from
+pages_to_scrape = bot.read_list_from_file("scrape.txt")  # usernames to get likers from
 f = open("medialikers.txt", "w")  # stored likers in userids
 for users in pages_to_scrape:
     medias = bot.get_user_medias(users, filtration=False)
