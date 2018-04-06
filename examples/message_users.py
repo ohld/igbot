@@ -1,11 +1,10 @@
- """
+"""
     instabot example
 
     Workflow:
     1) Ask Message type
     2) Load messages CSV (if needed)
     3) Send message to each users
-
 """
 
 import csv
@@ -62,30 +61,30 @@ elif deliveryMethod == 3:
     time.sleep(3)
     exit()
 
-##new method
+# new method
 elif deliveryMethod == 4:
     scrape = input("what page likers do you want to message? :")
     with open('scrape.txt', 'w') as file:
         file.write(scrape)
-pages_to_scrape = bot.read_list_from_file("scrape.txt")##username to get likers from
-f = open("medialikers.txt","w")##stored likers in userids
+pages_to_scrape = bot.read_list_from_file("scrape.txt")  #username to get likers from
+f = open("medialikers.txt", "w")  # stored likers in userids
 for users in pages_to_scrape:
     medias = bot.get_user_medias(users, filtration=False)
     getlikers = bot.get_media_likers(medias[0])
     for likers in getlikers:
             f.write(likers + "\n")
-print("succesfully written latest medialikers of" +str(pages_to_scrape))
+print("succesfully written latest medialikers of" + str(pages_to_scrape))
 f.close()
 
-##convert passed user-ids to usernames for usablility
+# convert passed user-ids to usernames for usablility
 print("Reading from medialikers.txt")
 wusers = bot.read_list_from_file("medialikers.txt")
 with open("usernames.txt", 'w') as f:
     for user_id in wusers:
         username = bot.get_username_from_userid(user_id)
         f.write(username + "\n")
-print("succesfully converted  " +str(wusers))
-##parse usernames into a list
+print("succesfully converted  " + str(wusers))
+# parse usernames into a list
 with open("usernames.txt", encoding="utf-8") as file:
     instaUsers4 = [l.strip() for l in file]
     bot.send_messages(directMessage, instaUsers4)
