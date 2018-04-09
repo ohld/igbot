@@ -118,7 +118,7 @@ class API(object):
                 else:
                     self.logger.info("Login or password is incorrect.")
                     delete_credentials()
-                    exit()
+                    return False
 
     def logout(self):
         if not self.isLoggedIn:
