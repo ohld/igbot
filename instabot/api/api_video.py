@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
-import json
-import time
 import copy
+import json
 import math
-import subprocess
-import re
 import os
+import re
 import shutil
+import subprocess
+import time
 
 from requests_toolbelt import MultipartEncoder
 

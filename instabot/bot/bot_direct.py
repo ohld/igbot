@@ -1,7 +1,6 @@
 from tqdm import tqdm
 
-from . import delay
-from . import limits
+from . import delay, limits
 
 
 def send_message(self, text, user_ids, thread_id=None):

@@ -1,39 +1,24 @@
-import requests
-import json
 import hashlib
 import hmac
+import json
+import logging
+import sys
+import time
 import urllib
 import uuid
-import sys
-import logging
-import time
 from random import randint
+
+import requests
 from tqdm import tqdm
 
 from . import config
-from .api_photo import configurePhoto
-from .api_photo import uploadPhoto
-from .api_photo import downloadPhoto
-from .api_video import downloadVideo
-
-from .api_video import configureVideo
-from .api_video import uploadVideo
-
-from .api_search import fbUserSearch
-from .api_search import searchUsers
-from .api_search import searchUsername
-from .api_search import searchTags
-from .api_search import searchLocation
-
-from .api_profile import removeProfilePicture
-from .api_profile import setPrivateAccount
-from .api_profile import setPublicAccount
-from .api_profile import getProfileData
-from .api_profile import editProfile
-from .api_profile import setNameAndPhone
-
-from .prepare import get_credentials
-from .prepare import delete_credentials
+from .api_photo import configurePhoto, downloadPhoto, uploadPhoto
+from .api_profile import (editProfile, getProfileData, removeProfilePicture,
+                          setNameAndPhone, setPrivateAccount, setPublicAccount)
+from .api_search import (fbUserSearch, searchLocation, searchTags,
+                         searchUsername, searchUsers)
+from .api_video import configureVideo, downloadVideo, uploadVideo
+from .prepare import delete_credentials, get_credentials
 
 try:
     from urllib.parse import urlparse

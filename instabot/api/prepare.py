@@ -1,7 +1,7 @@
 #!/usr/bin/env python
+import getpass
 import os
 import sys
-import getpass
 
 SECRET_FILE = "secret.txt"
 

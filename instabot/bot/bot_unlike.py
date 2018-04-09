@@ -1,7 +1,6 @@
 from tqdm import tqdm
 
-from . import limits
-from . import delay
+from . import delay, limits
 
 
 def unlike(self, media_id):

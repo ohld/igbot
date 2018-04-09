@@ -4,6 +4,7 @@
 """
 
 import random
+
 from tqdm import tqdm
 
 from . import delay

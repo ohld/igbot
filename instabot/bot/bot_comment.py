@@ -11,7 +11,7 @@
 """
 from tqdm import tqdm
 
-from . import limits, delay
+from . import delay, limits
 
 
 def comment(self, media_id, comment_text):

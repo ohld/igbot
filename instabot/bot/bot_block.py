@@ -1,8 +1,8 @@
 import random
+
 from tqdm import tqdm
 
-from . import limits
-from . import delay
+from . import delay, limits
 
 
 def block(self, user_id):

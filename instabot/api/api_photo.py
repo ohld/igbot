@@ -1,9 +1,9 @@
-import struct
 import imghdr
-import time
 import json
-import shutil
 import os
+import shutil
+import struct
+import time
 
 from requests_toolbelt import MultipartEncoder
 

@@ -2,8 +2,8 @@
     Function to calculate delays for like/follow/unfollow etc.
 """
 
-import time
 import random
+import time
 
 
 def add_dispersion(delay_value):
