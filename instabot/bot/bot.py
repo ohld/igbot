@@ -62,6 +62,7 @@ class Bot(API):
                  max_blocks_per_day=100,
                  max_unblocks_per_day=100,
                  max_likes_to_like=100,
+                 max_messages_per_day=300,
                  filter_users=True,
                  filter_business_accounts=True,
                  filter_verified_accounts=True,
@@ -80,6 +81,7 @@ class Bot(API):
                  comment_delay=60,
                  block_delay=30,
                  unblock_delay=30,
+                 message_delay=60,
                  stop_words=('shop', 'store', 'free'),
                  verbosity=True,
                  ):
@@ -94,6 +96,7 @@ class Bot(API):
         self.total_unblocked = 0
         self.total_archived = 0
         self.total_unarchived = 0
+        self.total_sent_messages = 0
         self.start_time = datetime.datetime.now()
 
         # the time.time() of the last action
@@ -104,6 +107,7 @@ class Bot(API):
         self.last_comment = 0
         self.last_block = 0
         self.last_unblock = 0
+        self.last_message = 0
 
         # limits - follow
         self.filter_users = filter_users
@@ -116,6 +120,7 @@ class Bot(API):
         self.max_comments_per_day = max_comments_per_day
         self.max_blocks_per_day = max_blocks_per_day
         self.max_unblocks_per_day = max_unblocks_per_day
+        self.max_messages_per_day = max_messages_per_day
         self.max_likes_to_like = max_likes_to_like
         self.max_followers_to_follow = max_followers_to_follow
         self.min_followers_to_follow = min_followers_to_follow
@@ -137,6 +142,7 @@ class Bot(API):
         self.comment_delay = comment_delay
         self.block_delay = block_delay
         self.unblock_delay = unblock_delay
+        self.message_delay = message_delay
 
         # current following
         self.following = []
@@ -188,7 +194,7 @@ class Bot(API):
     def prepare(self):
         storage = load_checkpoint(self)
         if storage is not None:
-            self.total_liked, self.total_unliked, self.total_followed, self.total_unfollowed, self.total_commented, self.total_blocked, self.total_unblocked, self.total_requests, self.start_time, self.total_archived, self.total_unarchived = storage
+            self.total_liked, self.total_unliked, self.total_followed, self.total_unfollowed, self.total_commented, self.total_blocked, self.total_unblocked, self.total_requests, self.start_time, self.total_archived, self.total_unarchived, self.total_sent_messages = storage
         if not self.whitelist:
             self.whitelist = check_whitelists(self)
         self.whitelist = self.convert_whitelist(self.whitelist)
@@ -227,6 +233,8 @@ class Bot(API):
             self.logger.info("Total archived: %d", self.total_archived)
         if self.total_unarchived:
             self.logger.info("Total unarchived: %d", self.total_unarchived)
+        if self.total_sent_messages:
+            self.logger.info("Total sent messages: %d", self.total_sent_messages)
         self.logger.info("Total requests: %d", self.total_requests)
 
     # getters

@@ -24,6 +24,11 @@ def like_delay(bot):
     bot.last_like = time.time()
 
 
+def message_delay(bot):
+    sleep_if_need(bot.last_message, bot.message_delay)
+    bot.last_message = time.time()
+
+
 def unlike_delay(bot):
     sleep_if_need(bot.last_unlike, bot.unlike_delay)
     bot.last_unlike = time.time()

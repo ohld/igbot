@@ -13,6 +13,7 @@ def reset_counters(bot):
     bot.total_commented = 0
     bot.total_blocked = 0
     bot.total_unblocked = 0
+    bot.total_sent_messages = 0
     bot.start_time = datetime.datetime.now()
 
 
@@ -56,3 +57,8 @@ def check_if_bot_can_block(bot):
 def check_if_bot_can_unblock(bot):
     reset_if_day_passed(bot)
     return bot.max_unblocks_per_day - bot.total_unblocked > 0
+
+
+def check_if_bot_can_send_message(bot):
+    reset_if_day_passed(bot)
+    return bot.max_messages_per_day - bot.total_sent_messages > 0

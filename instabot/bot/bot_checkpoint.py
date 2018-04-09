@@ -31,6 +31,7 @@ class Checkpoint(object):
         self.date = datetime.now()
         self.total_archived = bot.total_archived
         self.total_unarchived = bot.total_unarchived
+        self.total_sent_messages = bot.total_sent_messages
 
     def fill_following(self, bot):
         self.following = [item["pk"] for item in bot.getTotalSelfFollowings()]
@@ -42,7 +43,7 @@ class Checkpoint(object):
         return (self.total_liked, self.total_unliked, self.total_followed,
                 self.total_unfollowed, self.total_commented, self.total_blocked,
                 self.total_unblocked, self.total_requests, self.start_time,
-                self.total_archived, self.total_unarchived)
+                self.total_archived, self.total_unarchived, self.total_sent_messages)
 
 
 def save_checkpoint(self):
