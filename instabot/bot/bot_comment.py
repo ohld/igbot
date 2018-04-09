@@ -45,8 +45,8 @@ def comment_medias(self, medias):
 
 def comment_hashtag(self, hashtag, amount=None):
     self.logger.info("Going to comment medias by %s hashtag" % hashtag)
-    medias = self.get_hashtag_medias(hashtag)
-    return self.comment_medias(medias[:amount])
+    medias = self.get_total_hashtag_medias(hashtag, amount)
+    return self.comment_medias(medias)
 
 
 def comment_user(self, user_id, amount=None):
