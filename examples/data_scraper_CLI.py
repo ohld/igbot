@@ -25,8 +25,8 @@ print("What do you want to scrape? (Type number)")
 print("%d: %s" % (0, "Someone's Followers"))
 print("%d: %s" % (1, "Someones's following"))
 print("%d: %s" % (2, "Likers Of Latest Media Of A Page "))
-##TODO CONVERT BOTH SCRAPPED FOLLOWERS AND FOLLOWING TO USERNAMES
-##TODO GET HASHTAG MEDIAS
+# TODO CONVERT BOTH SCRAPPED FOLLOWERS AND FOLLOWING TO USERNAMES
+# TODO GET HASHTAG MEDIAS
 
 scraperMethod = int(sys.stdin.readline())
 
