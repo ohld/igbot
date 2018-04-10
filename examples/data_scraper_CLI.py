@@ -4,18 +4,13 @@ To scrape/collect users data and store in a texfile
 for use.
 """
 from instabot import Bot
-import getpass
 import os
-import random
 import sys
 import time
-
-from tqdm import tqdm
 
 sys.path.append(os.path.join(sys.path[0], '../'))
 from instabot import Bot
 
-bot = Bot()
 bot.logger.info("INSTABOT DATA SCRAPER")
 time.sleep(2)
 
