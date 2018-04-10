@@ -11,6 +11,7 @@ import time
 sys.path.append(os.path.join(sys.path[0], '../'))
 from instabot import Bot
 
+bot = Bot()
 bot.logger.info("INSTABOT DATA SCRAPER")
 time.sleep(2)
 
