@@ -241,8 +241,12 @@ class API(object):
             '_csrftoken': self.token,
             'media_id': media['id']
         })
-        return self.SendRequest('media/' + str(media['id']) + '/' + str(action) + '/?media_type=' +
-                                str(media['media_type']), self.generateSignature(data))
+        url = 'media/{media_id}/{action}/?media_type={media_type}'.format(
+            media_id=media['id'],
+            action=action,
+            media_type=media['media_type']
+        )
+        return self.SendRequest(url, self.generateSignature(data))
 
     def deleteMedia(self, media):
         data = json.dumps({
@@ -319,8 +323,11 @@ class API(object):
         return inbox
 
     def getUserTags(self, usernameId):
-        tags = self.SendRequest('usertags/' + str(usernameId) +
-                                '/feed/?rank_token=' + str(self.rank_token) + '&ranked_content=true&')
+        url = 'usertags/{username_id}/feed/?rank_token={rank_token}&ranked_content=true&'.format(
+            username_id=usernameId,
+            rank_token=self.rank_token
+        )
+        tags = self.SendRequest(url)
         return tags
 
     def getSelfUserTags(self):
@@ -372,10 +379,13 @@ class API(object):
         return query
 
     def getUserFeed(self, usernameId, maxid='', minTimestamp=None):
-        query = self.SendRequest(
-            'feed/user/' + str(usernameId) + '/?max_id=' + str(maxid) + '&min_timestamp=' + str(minTimestamp) +
-            '&rank_token=' + str(self.rank_token) + '&ranked_content=true')
-        return query
+        url = 'feed/user/{username_id}/?max_id={max_id}&min_timestamp={min_timestamp}&rank_token={rank_token}&ranked_content=true'.format(
+            username_id=usernameId,
+            max_id=maxid,
+            min_timestamp=minTimestamp,
+            rank_token=self.rank_token
+        )
+        return self.SendRequest(url)
 
     def getSelfUserFeed(self, maxid='', minTimestamp=None):
         return self.getUserFeed(self.user_id, maxid, minTimestamp)
@@ -390,12 +400,19 @@ class API(object):
 
     def getPopularFeed(self):
         popularFeed = self.SendRequest(
-            'feed/popular/?people_teaser_supported=1&rank_token=' + str(self.rank_token) + '&ranked_content=true&')
+            'feed/popular/?people_teaser_supported=1&rank_token={rank_token}&ranked_content=true&'.format(
+                rank_token=self.rank_token
+            ))
         return popularFeed
 
     def getUserFollowings(self, usernameId, maxid=''):
-        return self.SendRequest('friendships/' + str(usernameId) + '/following/?max_id=' + str(maxid) +
-                                '&ig_sig_key_version=' + config.SIG_KEY_VERSION + '&rank_token=' + self.rank_token)
+        url = 'friendships/{username_id}/following/?max_id={max_id}&ig_sig_key_version={sig_key}&rank_token={rank_token}'.format(
+            username_id=usernameId,
+            max_id=maxid,
+            sig_key=config.SIG_KEY_VERSION,
+            rank_token=self.rank_token
+        )
+        return self.SendRequest(url)
 
     def getSelfUsersFollowing(self):
         return self.getUserFollowings(self.user_id)
