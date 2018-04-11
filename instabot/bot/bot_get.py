@@ -96,8 +96,17 @@ def get_geotag_medias(self, geotag, filtration=True):
 
 def get_locations_from_coordinates(self, latitude, longitude):
     self.searchLocation(lat=latitude, lng=longitude)
-    return [location for location in self.LastJson["items"] if int(location["location"]["lat"]) == int(latitude) and
-            int(location["location"]["lng"]) == int(longitude)]
+    all_locations = self.LastJson["items"]
+    filtered_locations = []
+
+    for location in all_locations:
+        location_lat = location["location"]["lat"]
+        location_lng = location["location"]["lng"]
+
+        if int(location_lat) == int(latitude) and int(location_lng) == longitude:
+            filtered_locations.append(location)
+
+    return filtered_locations
 
 
 def get_media_info(self, media_id):

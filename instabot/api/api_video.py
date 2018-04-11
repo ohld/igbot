@@ -39,11 +39,11 @@ def getVideoInfo(filename):
                                           stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         for x in terminalResult.stdout.readlines():
             # Duration: 00:00:59.51, start: 0.000000, bitrate: 435 kb/s
-            m = re.search('duration: (\d\d:\d\d:\d\d\.\d\d),', str(x), flags=re.IGNORECASE)
+            m = re.search(r'duration: (\d\d:\d\d:\d\d\.\d\d),', str(x), flags=re.IGNORECASE)
             if m is not None:
                 res['duration'] = m.group(1)
             # Video: h264 (Constrained Baseline) (avc1 / 0x31637661), yuv420p, 480x268
-            m = re.search('video:\s.*\s(\d+)x(\d+)\s', str(x), flags=re.IGNORECASE)
+            m = re.search(r'video:\s.*\s(\d+)x(\d+)\s', str(x), flags=re.IGNORECASE)
             if m is not None:
                 res['width'] = m.group(1)
                 res['height'] = m.group(2)
