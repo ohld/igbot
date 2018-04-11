@@ -2,15 +2,20 @@ from . import config
 
 
 def fbUserSearch(self, query):
-    query = self.SendRequest('fbsearch/topsearch/?context=blended&query=' +
-                             str(query) + '&rank_token=' + str(self.rank_token))
-    return query
+    url = 'fbsearch/topsearch/?context=blended&query={query}&rank_token={rank_token}'.format(
+        query=query,
+        rank_token=self.rank_token
+    )
+    return self.SendRequest(url)
 
 
 def searchUsers(self, query):
-    query = self.SendRequest('users/search/?ig_sig_key_version=' + str(config.SIG_KEY_VERSION) +
-                             '&is_typeahead=true&query=' + str(query) + '&rank_token=' + str(self.rank_token))
-    return query
+    url = 'users/search/?ig_sig_key_version={sig_key}&is_typeahead=true&query={query}&rank_token={rank_token}'.format(
+        sig_key=config.SIG_KEY_VERSION,
+        query=query,
+        rank_token=self.rank_token
+    )
+    return self.SendRequest(url)
 
 
 def searchUsername(self, usernameName):
@@ -19,9 +24,11 @@ def searchUsername(self, usernameName):
 
 
 def searchTags(self, query):
-    query = self.SendRequest('tags/search/?is_typeahead=true&q=' +
-                             str(query) + '&rank_token=' + str(self.rank_token))
-    return query
+    url = 'tags/search/?is_typeahead=true&q={query}&rank_token={rank_token}'.format(
+        query=query,
+        rank_token=self.rank_token
+    )
+    return self.SendRequest(url)
 
 
 def searchLocation(self, query, lat=None, lng=None):
