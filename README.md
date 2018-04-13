@@ -4,6 +4,13 @@ Instagram promotion and SMM scripts.
 Forever free. Written in Python.
 
 ### [Read the Docs](https://instagrambot.github.io/docs/)
+
+### Installation
+Install `instabot` with:
+```
+pip install instabot
+```
+or see [this](https://instagrambot.github.io/docs/en/#installation) for more details.
 ---
 #### [Contribute](https://github.com/instagrambot/docs/blob/master/CONTRIBUTING.md)
 
