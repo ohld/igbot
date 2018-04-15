@@ -4,13 +4,6 @@ Instagram promotion and SMM scripts.
 Forever free. Written in Python.
 
 ### [Read the Docs](https://instagrambot.github.io/docs/)
-
-### Installation
-Install `instabot` with:
-```
-pip install instabot
-```
-or see [this](https://instagrambot.github.io/docs/en/#installation) for more details.
 ---
 #### [Contribute](https://github.com/instagrambot/docs/blob/master/CONTRIBUTING.md)
 
@@ -20,6 +13,15 @@ or see [this](https://instagrambot.github.io/docs/en/#installation) for more det
 [![Build Status](https://travis-ci.org/instagrambot/instabot.svg?branch=master)](https://travis-ci.org/instagrambot/instabot)
 [![codecov](https://codecov.io/gh/instagrambot/instabot/branch/master/graph/badge.svg)](https://codecov.io/gh/instagrambot/instabot)
 <span class="badge-bitcoin"><a href="https://github.com/instagrambot/instabot/blob/master/.github/DONATE_BITCOIN.md" title="Donate once-off to this project using Bitcoin"><img src="https://img.shields.io/badge/bitcoin-donate-yellow.svg" alt="Bitcoin donate button" /></a></span>
+
+---
+### Installation
+Install `instabot` with:
+```
+pip install -U instabot
+```
+#### or see [this](https://instagrambot.github.io/docs/en/#installation) for more details.
+
 
 
 ![Instabot is better than other open-source bots!](https://github.com/instagrambot/docs/blob/master/img/instabot_3_bots.png "Instabot is better than other open-source bots!")
