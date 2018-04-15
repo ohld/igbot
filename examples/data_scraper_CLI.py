@@ -26,28 +26,18 @@ print("%d: %s" % (2, "Likers Of Latest Media Of A Page "))
 scraperMethod = int(sys.stdin.readline())
 
 if scraperMethod == 0:
-    print("IF YOU ARE SCRAPING A LARGE AMOUNT OF FOLLOWERS""\nDONT USE THE ACCOUNT YOU BOT WITH TO SCRAPE DATA""\nSCRAPING LARGE DATA CONSUMES TOO MANY REQUESTS""\nWHICH WOULD BE CONSIDERED AS A SPAM")
-    time.sleep(3)
-    ans = input("Do you want to continue scraping with this account ? yes/no :")
-    ans = ans.lower()
-    no = bot.login()
-    if ans == "no":
-        bot.login()
-
-    if ans == "yes":
-        SOMEONES_FOLLOWERS = input("what user followers do you want to scrape ? : ")  # get the info of user to be scrapped
-        with open('someones_followers_scrape.txt', 'w') as file:
-            file.write(SOMEONES_FOLLOWERS)
-        pages_to_scrape = bot.read_list_from_file("someones_followers_scrape.txt")  # reading passed "someones followers to  scrape"
-        f = open("scrappedFOLLOWERS.txt", "w")  # stored list of "Someone's Followers"
-        for follower in pages_to_scrape:
-            users = bot.get_user_followers(follower,)
-        for userfollowers in users:
-            f.write(userfollowers + "\n")
-        print("\n" + "successfully written Someone's Followers , to textfile scrappedFOLLOWERS.txt")
-        f.close()
-        time.sleep(3)
-        exit()
+	SOMEONES_FOLLOWERS = input("what user followers do you want to scrape ? : ")  # get the info of user to be scrapped
+	with open('someones_followers_scrape.txt', 'w') as file:
+		file.write(SOMEONES_FOLLOWERS)
+	pages_to_scrape = bot.read_list_from_file("someones_followers_scrape.txt")  # reading passed "someones followers to  scrape"
+	f = open("scrappedFOLLOWERS.txt", "w")  # stored list of "Someone's Followers"
+	for follower in pages_to_scrape:
+		users = bot.get_user_followers(follower,)
+	for userfollowers in users:
+		f.write(userfollowers + "\n")
+	print("\n" + "successfully written Scrapped Followers , to textfile scrappedFOLLOWERS.txt")
+	f.close()
+	exit()
 
 
 elif scraperMethod == 1:
@@ -60,9 +50,8 @@ elif scraperMethod == 1:
         users1 = bot.get_user_following(followings)
     for userfollowings in users1:
         f1.write(userfollowings + "\n")
-    print("\n" + "successfully written Someone's Followers , to textfile scrappedFOLLOWINGS.txt")
+    print("\n" + "successfully written Scrapped Following , to textfile scrappedFOLLOWINGS.txt")
     f1.close()
-    time.sleep(3)
     exit()
 
 elif scraperMethod == 2:
@@ -78,7 +67,6 @@ elif scraperMethod == 2:
         users2 = bot.get_media_likers(medias[0],)
     for pagelikers in users2:
         f2.write(pagelikers + "\n")
-    print("\n" + "successfully written likers of a page , to textfile scrappedLIKERS.txt")
+    print("\n" + "successfully written scrapped likers , to textfile scrappedLIKERS.txt")
     f2.close()
-    time.sleep(3)
     exit()
