@@ -146,4 +146,4 @@ def configure_video(self, upload_id, video, thumbnail, caption=''):
         'device': config.DEVICE_SETTINTS,
         'caption': caption,
     })
-    return self.send_request('media/configure/?video=1', self.generate_signature(data))
+    return self.send_request('media/configure/?video=1', data)

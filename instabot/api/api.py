@@ -69,8 +69,8 @@ class API(object):
 
             url = 'si/fetch_headers/?challenge_type=signup&guid={uuid}'
             url = url.format(uuid=self.generate_UUID(False))
-            if self.send_request(url, None, True):
-                data = {
+            if self.send_request(url, login=True):
+                data = json.dumps({
                     'phone_id': self.generate_UUID(True),
                     '_csrftoken': self.last_response.cookies['csrftoken'],
                     'username': self.username,
@@ -78,9 +78,9 @@ class API(object):
                     'device_id': self.device_id,
                     'password': self.password,
                     'login_attempt_count': '0',
-                }
+                })
 
-                if self.send_request('accounts/login/', self.generate_signature(json.dumps(data)), True):
+                if self.send_request('accounts/login/', data, True):
                     self.is_logged_in = True
                     self.user_id = self.last_json["logged_in_user"]["pk"]
                     self.rank_token = "{}_{}".format(self.user_id, self.uuid)
@@ -113,8 +113,7 @@ class API(object):
         try:
             self.total_requests += 1
             if post is not None:  # POST
-                if isinstance(post, dict):
-                    post = self.generate_signature(post)
+                post = self.generate_signature(post)
                 response = self.session.post(
                     config.API_URL + endpoint, data=post)
             else:  # GET

@@ -57,7 +57,7 @@ def configure_photo(self, upload_id, photo, caption=''):
             'source_width': w,
             'source_height': h,
         }})
-    return self.send_request('media/configure/?', self.generate_signature(data))
+    return self.send_request('media/configure/?', data)
 
 
 def upload_photo(self, photo, caption=None, upload_id=None):
