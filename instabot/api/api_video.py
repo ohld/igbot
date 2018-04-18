@@ -124,6 +124,9 @@ def configure_video(self, upload_id, video, thumbnail, caption=''):
     clipInfo = get_video_info(video)
     self.upload_photo(photo=thumbnail, caption=caption, upload_id=upload_id)
     data = json.dumps({
+        '_uuid': self.uuid,
+        '_uid': self.user_id,
+        '_csrftoken': self.token,
         'upload_id': upload_id,
         'source_type': 3,
         'poster_frame_index': 0,
@@ -141,9 +144,6 @@ def configure_video(self, upload_id, video, thumbnail, caption=''):
             'source_height': clipInfo['height'],
         },
         'device': config.DEVICE_SETTINTS,
-        '_csrftoken': self.token,
-        '_uuid': self.uuid,
-        '_uid': self.user_id,
         'caption': caption,
     })
     return self.send_request('media/configure/?video=1', self.generate_signature(data))
