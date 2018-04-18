@@ -118,6 +118,8 @@ class API(object):
         try:
             self.total_requests += 1
             if post is not None:  # POST
+                if isinstance(post, dict):
+                    post = self.generate_signature(post)
                 response = self.session.post(
                     config.API_URL + endpoint, data=post)
             else:  # GET
@@ -163,7 +165,7 @@ class API(object):
     def sync_features(self):
         data = json.dumps({'id': self.user_id, 'experiments': config.EXPERIMENTS})
         data.update(self.default_data)
-        return self.send_request('qe/sync/', self.generate_signature(data))
+        return self.send_request('qe/sync/', data)
 
     def auto_complete_user_list(self):
         return self.send_request('friendships/autocomplete_user_list/')
@@ -181,7 +183,7 @@ class API(object):
             'experiment': 'ig_android_profile_contextual_feed'
         })
         data.update(self.default_data)
-        return self.send_request('qe/expose/', self.generate_signature(data))
+        return self.send_request('qe/expose/', data)
 
     def upload_photo(self, photo, caption=None, upload_id=None):
         return upload_photo(self, photo, caption, upload_id)
@@ -205,18 +207,18 @@ class API(object):
         data = json.dumps({'caption_text': captionText})
         data.update(self.default_data)
         url = 'media/{media_id}/edit_media/'.format(media_id=media_id)
-        return self.send_request(url, self.generate_signature(data))
+        return self.send_request(url, data)
 
     def remove_self_tag(self, media_id):
         data = self.default_data
         url = 'media/{media_id}/remove/'.format(media_id=media_id)
-        return self.send_request(url, self.generate_signature(data))
+        return self.send_request(url, data)
 
     def media_info(self, media_id):
         data = json.dumps({'media_id': media_id})
         data.update(self.default_data)
         url = 'media/{media_id}/info/'.format(media_id=media_id)
-        return self.send_request(url, self.generate_signature(data))
+        return self.send_request(url, data)
 
     def archive_media(self, media, undo=False):
         action = 'only_me' if not undo else 'undo_only_me'
@@ -227,13 +229,13 @@ class API(object):
             action=action,
             media_type=media['media_type']
         )
-        return self.send_request(url, self.generate_signature(data))
+        return self.send_request(url, data)
 
     def delete_media(self, media):
         data = json.dumps({'media_id': media.get('id')})
         data.update(self.default_data)
         url = 'media/{media_id}/delete/'.format(media_id=media.get('id'))
-        return self.send_request(url, self.generate_signature(data))
+        return self.send_request(url, data)
 
     def change_password(self, newPassword):
         data = json.dumps({
@@ -242,7 +244,7 @@ class API(object):
             'new_password2': newPassword
         })
         data.update(self.default_data)
-        return self.send_request('accounts/change_password/', self.generate_signature(data))
+        return self.send_request('accounts/change_password/', data)
 
     def explore(self):
         return self.send_request('discover/explore/')
@@ -251,7 +253,7 @@ class API(object):
         data = json.dumps({'comment_text': comment_text})
         data.update(self.default_data)
         url = 'media/{media_id}/comment/'.format(media_id=media_id)
-        return self.send_request(url, self.generate_signature(data))
+        return self.send_request(url, data)
 
     def delete_comment(self, media_id, comment_id):
         data = json.dumps({
@@ -261,7 +263,7 @@ class API(object):
         })
         url = 'media/{media_id}/comment/{comment_id}/delete/'.format(
             media_id=media_id, comment_id=comment_id)
-        return self.send_request(url, self.generate_signature(data))
+        return self.send_request(url, data)
 
     def remove_profile_picture(self):
         return remove_profile_picture(self)
@@ -404,13 +406,13 @@ class API(object):
         data = json.dumps({'media_id': media_id})
         data.update(self.default_data)
         url = 'media/{media_id}/like/'.format(media_id=media_id)
-        return self.send_request(url, self.generate_signature(data))
+        return self.send_request(url, data)
 
     def unlike(self, media_id):
         data = json.dumps({'media_id': media_id})
         data.update(self.default_data)
         url = 'media/{media_id}/unlike/'.format(media_id=media_id)
-        return self.send_request(url, self.generate_signature(data))
+        return self.send_request(url, data)
 
     def get_media_comements(self, media_id):
         url = 'media/{media_id}/comments/?'.format(media_id=media_id)
@@ -426,31 +428,31 @@ class API(object):
         data = json.dumps({'user_id': user_id})
         data.update(self.default_data)
         url = 'friendships/create/{user_id}/'.format(user_id=user_id)
-        return self.send_request(url, self.generate_signature(data))
+        return self.send_request(url, data)
 
     def unfollow(self, user_id):
         data = json.dumps({'user_id': user_id})
         data.update(self.default_data)
         url = 'friendships/destroy/{user_id}/'.format(user_id=user_id)
-        return self.send_request(url, self.generate_signature(data))
+        return self.send_request(url, data)
 
     def block(self, user_id):
         data = json.dumps({'user_id': user_id})
         data.update(self.default_data)
         url = 'friendships/block/{user_id}/'.format(user_id=user_id)
-        return self.send_request(url, self.generate_signature(data))
+        return self.send_request(url, data)
 
     def unblock(self, user_id):
         data = json.dumps({'user_id': user_id})
         data.update(self.default_data)
         url = 'friendships/unblock/{user_id}/'.format(user_id=user_id)
-        return self.send_request(url, self.generate_signature(data))
+        return self.send_request(url, data)
 
     def user_friendship(self, user_id):
         data = json.dumps({'user_id': user_id})
         data.update(self.default_data)
         url = 'friendships/show/{user_id}/'.format(user_id=user_id)
-        return self.send_request(url, self.generate_signature(data))
+        return self.send_request(url, data)
 
     def _prepare_recipients(self, users, thread_id=None, use_quotes=False):
         if not isinstance(users, list):
@@ -499,7 +501,8 @@ class API(object):
             data['thread_ids'] = recipients.get('thread')
         return self.send_request(url, data)
 
-    def generate_signature(self, data):
+    @staticmethod
+    def generate_signature(data):
         return ('ig_sig_key_version='
                 + config.SIG_KEY_VERSION
                 + '&signed_body='
@@ -507,7 +510,8 @@ class API(object):
                            data.encode('utf-8'),
                            hashlib.sha256).hexdigest() + '.' + quote(data))
 
-    def generate_device_id(self, seed):
+    @staticmethod
+    def generate_device_id(seed):
         volatile_seed = "12345"
         m = hashlib.md5()
         m.update(seed.encode('utf-8') + volatile_seed.encode('utf-8'))
@@ -650,29 +654,29 @@ class API(object):
 
     def remove_profile_picture(self):
         data = self.default_data
-        return self.send_request('accounts/remove_profile_picture/', self.generate_signature(data))
+        return self.send_request('accounts/remove_profile_picture/', data)
 
 
     def set_private_account(self):
         data = self.default_data
-        return self.send_request('accounts/set_private/', self.generate_signature(data))
+        return self.send_request('accounts/set_private/', data)
 
 
     def set_public_account(self):
         data = self.default_data
-        return self.send_request('accounts/set_public/', self.generate_signature(data))
+        return self.send_request('accounts/set_public/', data)
 
 
     def set_name_and_phone(self, name='', phone=''):
         data = json.dumps({'first_name': name, 'phone_number': phone,
         })
         data.update(self.default_data)
-        return self.send_request('accounts/set_phone_and_name/', self.generate_signature(data))
+        return self.send_request('accounts/set_phone_and_name/', data)
 
 
     def get_profile_data(self):
         data = self.default_data
-        return self.send_request('accounts/current_user/?edit=true', self.generate_signature(data))
+        return self.send_request('accounts/current_user/?edit=true', data)
 
 
     def edit_profile(self, url, phone, first_name, biography, email, gender):
@@ -686,4 +690,4 @@ class API(object):
             'gender': gender,
         })
         data.update(self.default_data)
-        return self.send_request('accounts/edit_profile/', self.generate_signature(data))
+        return self.send_request('accounts/edit_profile/', data)
