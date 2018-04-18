@@ -22,8 +22,13 @@ def send_message(self, text, user_ids, thread_id=None):
     delay.message_delay(self)
     urls = self.extract_urls(text)
     item_type = 'links' if urls else 'message'
-    if super(self.__class__, self).send_direct_item(item_type, user_ids, text=text,
-                                                  thread=thread_id, urls=urls):
+    if super(self.__class__, self).send_direct_item(
+        item_type,
+        user_ids,
+        text=text,
+        thread=thread_id,
+        urls=urls
+    ):
         self.total_sent_messages += 1
         return True
 

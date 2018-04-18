@@ -174,7 +174,7 @@ def get_user_following(self, user_id, nfollows=None):
 
 
 def get_media_likers(self, media_id):
-    self.get_media_likers(media_id)
+    super(self.__class__, self).get_media_likers(media_id)
     if "users" not in self.last_json:
         self.logger.info("Media with %s not found." % media_id)
         return []
@@ -182,7 +182,7 @@ def get_media_likers(self, media_id):
 
 
 def get_media_comments(self, media_id, only_text=False):
-    self.get_media_comements(media_id)
+    super(self.__class__, self).get_media_comments(media_id)
     if 'comments' not in self.last_json:
         return []
     if only_text:
@@ -191,14 +191,14 @@ def get_media_comments(self, media_id, only_text=False):
 
 
 def get_media_commenters(self, media_id):
-    self.get_media_comements(media_id)
+    self.get_media_comments(media_id)
     if 'comments' not in self.last_json:
         return []
     return [str(item["user"]["pk"]) for item in self.last_json['comments']]
 
 
 def search_users(self, query):
-    self.search_users(query)
+    super(self.__class__, self).search_users(query)
     if "users" not in self.last_json:
         self.logger.info("Users with %s not found." % query)
         return []
@@ -220,7 +220,7 @@ def get_media_id_from_link(self, link):
 
     alphabet = {
         '-': 62, '1': 53, '0': 52, '3': 55, '2': 54, '5': 57, '4': 56,
-        '7': 59, '6': 58, '9': 61, '8': 60, 'A': 0, 'C': 2, 'B': 1, 
+        '7': 59, '6': 58, '9': 61, '8': 60, 'A': 0, 'C': 2, 'B': 1,
         'E': 4, 'D': 3, 'G': 6, 'F': 5, 'I': 8, 'H': 7, 'K': 10, 'J': 9,
         'M': 12, 'L': 11, 'O': 14, 'N': 13, 'Q': 16, 'P': 15, 'S': 18,
         'R': 17, 'U': 20, 'T': 19, 'W': 22, 'V': 21, 'Y': 24, 'X': 23,

@@ -16,7 +16,6 @@ from .api_video import configure_video, download_video, upload_video
 from .prepare import delete_credentials, get_credentials
 
 
-
 class API(object):
     def __init__(self):
         self.is_logged_in = False
@@ -374,7 +373,7 @@ class API(object):
         url = 'media/{media_id}/unlike/'.format(media_id=media_id)
         return self.send_request(url, data)
 
-    def get_media_comements(self, media_id):
+    def get_media_comments(self, media_id):
         url = 'media/{media_id}/comments/?'.format(media_id=media_id)
         return self.send_request(url)
 
@@ -456,12 +455,14 @@ class API(object):
 
     @staticmethod
     def generate_signature(data):
-        return ('ig_sig_key_version='
-                + config.SIG_KEY_VERSION
-                + '&signed_body='
-                + hmac.new(config.IG_SIG_KEY.encode('utf-8'),
-                           data.encode('utf-8'),
-                           hashlib.sha256).hexdigest() + '.' + urllib.parse.quote(data))
+        return (
+            'ig_sig_key_version='
+            + config.SIG_KEY_VERSION
+            + '&signed_body='
+            + hmac.new(config.IG_SIG_KEY.encode('utf-8'),
+                       data.encode('utf-8'),
+                       hashlib.sha256).hexdigest() + '.' + urllib.parse.quote(data)
+        )
 
     @staticmethod
     def generate_device_id(seed):
@@ -623,14 +624,12 @@ class API(object):
         })
         return self.send_request('accounts/edit_profile/', data)
 
-
     def fb_user_search(self, query):
         url = 'fbsearch/topsearch/?context=blended&query={query}&rank_token={rank_token}'.format(
             query=query,
             rank_token=self.rank_token
         )
         return self.send_request(url)
-
 
     def search_users(self, query):
         url = 'users/search/?ig_sig_key_version={sig_key}&is_typeahead=true&query={query}&rank_token={rank_token}'
@@ -641,11 +640,9 @@ class API(object):
         )
         return self.send_request(url)
 
-
     def search_username(self, username_name):
         url = 'users/{}/usernameinfo/'.format(username_name)
         return self.send_request(url)
-
 
     def search_tags(self, query):
         url = 'tags/search/?is_typeahead=true&q={query}&rank_token={rank_token}'.format(
@@ -653,7 +650,6 @@ class API(object):
             rank_token=self.rank_token
         )
         return self.send_request(url)
-
 
     def search_location(self, query='', lat=None, lng=None):
         url = 'fbsearch/places/?rank_token={rank_token}&query={query}&lat={lat}&lng={lng}'

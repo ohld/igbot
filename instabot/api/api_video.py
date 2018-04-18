@@ -107,7 +107,7 @@ def upload_video(self, video, thumbnail, caption=None, upload_id=None):
                 end = (i + 1) * request_size
             length = last_request_extra if i == 3 else request_size
             content_range = "bytes {start}-{end}/{len_video}".format(
-                start=start, end=end-1, len_video=len(video_data)).encode('utf-8')
+                start=start, end=end - 1, len_video=len(video_data)).encode('utf-8')
 
             self.session.headers.update({'Content-Length': str(end - start), 'Content-Range': content_range, })
             response = self.session.post(upload_url, data=video_data[start:start + length])

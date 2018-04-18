@@ -70,7 +70,10 @@ def add_blacklist(self, file_path):
 
 def console_print(self, text, color=None):
     if self.verbosity:
-        print(colored('\n'+text, color))
+        text = '\n' + text
+        if color is not None:
+            text = colored(text, color)
+        print(text)
 
 
 def extract_urls(text):
