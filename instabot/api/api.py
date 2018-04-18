@@ -501,12 +501,12 @@ class API(object):
         return self.send_request(url, data)
 
     def generate_signature(self, data):
-    return ('ig_sig_key_version='
-            + config.SIG_KEY_VERSION
-            + '&signed_body='
-            + hmac.new(config.IG_SIG_KEY.encode('utf-8'),
-                       data.encode('utf-8'),
-                       hashlib.sha256).hexdigest() + '.' + quote(data))
+        return ('ig_sig_key_version='
+                + config.SIG_KEY_VERSION
+                + '&signed_body='
+                + hmac.new(config.IG_SIG_KEY.encode('utf-8'),
+                           data.encode('utf-8'),
+                           hashlib.sha256).hexdigest() + '.' + quote(data))
 
     def generate_device_id(self, seed):
         volatile_seed = "12345"
