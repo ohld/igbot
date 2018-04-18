@@ -33,20 +33,17 @@ class API(object):
         self.last_response = None
         self.total_requests = 0
 
-        # handle logging
+        # Setup logging
         self.logger = logging.getLogger('[instabot_{}]'.format(id(self)))
 
         fh = logging.FileHandler(filename='instabot.log')
         fh.setLevel(logging.INFO)
-        formatter = logging.Formatter(
-            '%(asctime)s %(message)s')
-        fh.setFormatter(formatter)
+        fh.setFormatter(logging.Formatter('%(asctime)s %(message)s'))
 
         ch = logging.StreamHandler()
         ch.setLevel(logging.DEBUG)
-        formatter = logging.Formatter(
-            '%(asctime)s - %(levelname)s - %(message)s')
-        ch.setFormatter(formatter)
+        ch.setFormatter(logging.Formatter(
+            '%(asctime)s - %(levelname)s - %(message)s'))
 
         self.logger.addHandler(fh)
         self.logger.addHandler(ch)
@@ -55,7 +52,7 @@ class API(object):
     def set_user(self, username, password):
         self.username = username
         self.password = password
-        self.uuid = self.generate_UUID(True)
+        self.uuid = self.generate_UUID(uuid_type=True)
 
     def login(self, username=None, password=None, force=False, proxy=None):
         if password is None:
@@ -77,9 +74,10 @@ class API(object):
                     'https': scheme + self.proxy,
                 }
                 self.session.proxies.update(proxies)
-            if (
-                    self.send_request('si/fetch_headers/?challenge_type=signup&guid=' + self.generate_UUID(False),
-                                     None, True)):
+
+            url = 'si/fetch_headers/?challenge_type=signup&guid={uuid}'
+            url = url.format(uuid=self.generate_UUID(False))
+            if self.send_request(url, None, True):
 
                 data = {'phone_id': self.generate_UUID(True),
                         '_csrftoken': self.last_response.cookies['csrftoken'],
@@ -211,7 +209,8 @@ class API(object):
             '_csrftoken': self.token,
             'caption_text': captionText
         })
-        return self.send_request('media/' + str(media_id) + '/edit_media/', self.generate_signature(data))
+        url = 'media/{media_id}/edit_media/'.format(media_id=media_id)
+        return self.send_request(url, self.generate_signature(data))
 
     def remove_self_tag(self, media_id):
         data = json.dumps({
@@ -219,7 +218,8 @@ class API(object):
             '_uid': self.user_id,
             '_csrftoken': self.token
         })
-        return self.send_request('media/' + str(media_id) + '/remove/', self.generate_signature(data))
+        url = 'media/{media_id}/remove/'.format(media_id=media_id)
+        return self.send_request(url, self.generate_signature(data))
 
     def media_info(self, media_id):
         data = json.dumps({
@@ -228,7 +228,8 @@ class API(object):
             '_csrftoken': self.token,
             'media_id': media_id
         })
-        return self.send_request('media/' + str(media_id) + '/info/', self.generate_signature(data))
+        url = 'media/{media_id}/info/'.format(media_id=media_id)
+        return self.send_request(url, self.generate_signature(data))
 
     def archive_media(self, media, undo=False):
         action = 'only_me' if not undo else 'undo_only_me'
@@ -246,13 +247,15 @@ class API(object):
         return self.send_request(url, self.generate_signature(data))
 
     def delete_media(self, media):
+        media_id = media.get('id')
         data = json.dumps({
             '_uuid': self.uuid,
             '_uid': self.user_id,
             '_csrftoken': self.token,
-            'media_id': media.get('id')
+            'media_id': media_id
         })
-        return self.send_request('media/' + str(media.get('id')) + '/delete/', self.generate_signature(data))
+        url = 'media/{media_id}/delete/'.format(media_id=media_id)
+        return self.send_request(url, self.generate_signature(data))
 
     def change_password(self, newPassword):
         data = json.dumps({
@@ -275,7 +278,8 @@ class API(object):
             '_csrftoken': self.token,
             'comment_text': comment_text
         })
-        return self.send_request('media/' + str(media_id) + '/comment/', self.generate_signature(data))
+        url = 'media/{media_id}/comment/'.format(media_id=media_id)
+        return self.send_request(url, self.generate_signature(data))
 
     def delete_comment(self, media_id, comment_id):
         data = json.dumps({
@@ -283,8 +287,9 @@ class API(object):
             '_uid': self.user_id,
             '_csrftoken': self.token
         })
-        return self.send_request('media/' + str(media_id) + '/comment/' + str(comment_id) + '/delete/',
-                                self.generate_signature(data))
+        url = 'media/{media_id}/comment/{comment_id}/delete/'.format(
+            media_id=media_id, comment_id=comment_id)
+        return self.send_request(url, self.generate_signature(data))
 
     def remove_profile_picture(self):
         return remove_profile_picture(self)
@@ -302,7 +307,8 @@ class API(object):
         return edit_profile(self, url, phone, first_name, biography, email, gender)
 
     def get_username_info(self, username_id):
-        return self.send_request('users/' + str(username_id) + '/info/')
+        url = 'users/{username_id}/info/'.format(username_id=username_id)
+        return self.send_request(url)
 
     def get_self_username_info(self):
         return self.get_username_info(self.user_id)
@@ -320,28 +326,24 @@ class API(object):
         return inbox
 
     def get_user_tags(self, username_id):
-        url = 'usertags/{username_id}/feed/?rank_token={rank_token}&ranked_content=true&'.format(
-            username_id=username_id,
-            rank_token=self.rank_token
-        )
-        tags = self.send_request(url)
-        return tags
+        url = 'usertags/{username_id}/feed/?rank_token={rank_token}&ranked_content=true&'
+        url = url.format(username_id=username_id, rank_token=self.rank_token)
+        return self.send_request(url)
 
     def get_self_user_tags(self):
         return self.get_user_tags(self.user_id)
 
     def tag_feed(self, tag):
-        userFeed = self.send_request(
-            'feed/tag/' + str(tag) + '/?rank_token=' + str(self.rank_token) + '&ranked_content=true&')
-        return userFeed
+        url = 'feed/tag/{tag}/?rank_token={rank_token}&ranked_content=true&'
+        return self.send_request(url.format(tag=tag, rank_token=self.rank_token))
 
     def get_media_likers(self, media_id):
-        likers = self.send_request('media/' + str(media_id) + '/likers/?')
-        return likers
+        url = 'media/{media_id}/likers/?'.format(media_id=media_id)
+        return self.send_request(url)
 
     def get_geo_media(self, username_id):
-        locations = self.send_request('maps/user/' + str(username_id) + '/')
-        return locations
+        url = 'maps/user/{username_id}/'.format(username_id=username_id)
+        return self.send_request(url)
 
     def get_self_geo_media(self):
         return self.get_geo_media(self.user_id)
@@ -362,21 +364,20 @@ class API(object):
         return search_location(self, query, lat, lng)
 
     def sync_from_adress_book(self, contacts):
-        return self.send_request('address_book/link/?include=extra_display_name,thumbnails',
-                                "contacts=" + json.dumps(contacts))
+        url = 'address_book/link/?include=extra_display_name,thumbnails'
+        return self.send_request(url, 'contacts=' + json.dumps(contacts))
 
     def get_timeline(self):
-        query = self.send_request(
-            'feed/timeline/?rank_token=' + str(self.rank_token) + '&ranked_content=true&')
-        return query
+        url = 'feed/timeline/?rank_token={rank_token}&ranked_content=true&'
+        return self.send_request(url.format(rank_token=self.rank_token))
 
     def get_archive_feed(self):
-        query = self.send_request(
-            'feed/only_me_feed/?rank_token=' + str(self.rank_token) + '&ranked_content=true&')
-        return query
+        url = 'feed/only_me_feed/?rank_token={rank_token}&ranked_content=true&'
+        return self.send_request(url.format(rank_token=self.rank_token))
 
     def get_user_feed(self, username_id, maxid='', minTimestamp=None):
-        url = 'feed/user/{username_id}/?max_id={max_id}&min_timestamp={min_timestamp}&rank_token={rank_token}&ranked_content=true'.format(
+        url = 'feed/user/{username_id}/?max_id={max_id}&min_timestamp={min_timestamp}&rank_token={rank_token}&ranked_content=true'
+        url = url.format(
             username_id=username_id,
             max_id=maxid,
             min_timestamp=minTimestamp,
@@ -392,18 +393,21 @@ class API(object):
             maxid) + '&rank_token=' + self.rank_token + '&ranked_content=true&')
 
     def get_location_feed(self, location_id, maxid=''):
-        return self.send_request('feed/location/' + str(location_id) + '/?max_id=' + str(
-            maxid) + '&rank_token=' + self.rank_token + '&ranked_content=true&')
+        url = 'feed/location/{location_id}/?max_id={maxid}&rank_token={rank_token}&ranked_content=true&'
+        url = url.format(
+            location_id=location_id,
+            maxid=maxid,
+            rank_token=self.rank_token
+        )
+        return self.send_request(url)
 
     def get_popular_feed(self):
-        popularFeed = self.send_request(
-            'feed/popular/?people_teaser_supported=1&rank_token={rank_token}&ranked_content=true&'.format(
-                rank_token=self.rank_token
-            ))
-        return popularFeed
+        url = 'feed/popular/?people_teaser_supported=1&rank_token={rank_token}&ranked_content=true&'
+        return self.send_request(url.format(rank_token=self.rank_token))
 
     def get_user_followings(self, username_id, maxid=''):
-        url = 'friendships/{username_id}/following/?max_id={max_id}&ig_sig_key_version={sig_key}&rank_token={rank_token}'.format(
+        url = 'friendships/{username_id}/following/?max_id={max_id}&ig_sig_key_version={sig_key}&rank_token={rank_token}'
+        url = url.format(
             username_id=username_id,
             max_id=maxid,
             sig_key=config.SIG_KEY_VERSION,
@@ -415,12 +419,11 @@ class API(object):
         return self.get_user_followings(self.user_id)
 
     def get_user_followers(self, username_id, maxid=''):
-        if maxid == '':
-            return self.send_request('friendships/' + str(username_id) + '/followers/?rank_token=' + self.rank_token)
-        else:
-            return self.send_request(
-                'friendships/' + str(username_id) + '/followers/?rank_token=' + self.rank_token + '&max_id=' + str(
-                    maxid))
+        url = 'friendships/{username_id}/followers/?rank_token={rank_token}'
+        url = url.format(username_id=username_id, rank_token=self.rank_token)
+        if maxid != '':
+            url += '&max_id={maxid}'.format(maxid=maxid)
+        return self.send_request(url)
 
     def get_self_user_followers(self):
         return self.get_user_followers(self.user_id)
@@ -432,7 +435,8 @@ class API(object):
             '_csrftoken': self.token,
             'media_id': media_id
         })
-        return self.send_request('media/' + str(media_id) + '/like/', self.generate_signature(data))
+        url = 'media/{media_id}/like/'.format(media_id=media_id)
+        return self.send_request(url, self.generate_signature(data))
 
     def unlike(self, media_id):
         data = json.dumps({
@@ -441,10 +445,12 @@ class API(object):
             '_csrftoken': self.token,
             'media_id': media_id
         })
-        return self.send_request('media/' + str(media_id) + '/unlike/', self.generate_signature(data))
+        url = 'media/{media_id}/unlike/'.format(media_id=media_id)
+        return self.send_request(url, self.generate_signature(data))
 
     def get_media_comements(self, media_id):
-        return self.send_request('media/' + str(media_id) + '/comments/?')
+        url = 'media/{media_id}/comments/?'.format(media_id=media_id)
+        return self.send_request(url)
 
     def set_name_and_phone(self, name='', phone=''):
         return set_name_and_phone(self, name, phone)
@@ -459,7 +465,8 @@ class API(object):
             'user_id': user_id,
             '_csrftoken': self.token
         })
-        return self.send_request('friendships/create/' + str(user_id) + '/', self.generate_signature(data))
+        url = 'friendships/create/{user_id}/'.format(user_id=user_id)
+        return self.send_request(url, self.generate_signature(data))
 
     def unfollow(self, user_id):
         data = json.dumps({
@@ -468,7 +475,8 @@ class API(object):
             'user_id': user_id,
             '_csrftoken': self.token
         })
-        return self.send_request('friendships/destroy/' + str(user_id) + '/', self.generate_signature(data))
+        url = 'friendships/destroy/{user_id}/'.format(user_id=user_id)
+        return self.send_request(url, self.generate_signature(data))
 
     def block(self, user_id):
         data = json.dumps({
@@ -477,7 +485,8 @@ class API(object):
             'user_id': user_id,
             '_csrftoken': self.token
         })
-        return self.send_request('friendships/block/' + str(user_id) + '/', self.generate_signature(data))
+        url = 'friendships/block/{user_id}/'.format(user_id=user_id)
+        return self.send_request(url, self.generate_signature(data))
 
     def unblock(self, user_id):
         data = json.dumps({
@@ -486,7 +495,8 @@ class API(object):
             'user_id': user_id,
             '_csrftoken': self.token
         })
-        return self.send_request('friendships/unblock/' + str(user_id) + '/', self.generate_signature(data))
+        url = 'friendships/unblock/{user_id}/'.format(user_id=user_id)
+        return self.send_request(url, self.generate_signature(data))
 
     def user_friendship(self, user_id):
         data = json.dumps({
@@ -495,7 +505,8 @@ class API(object):
             'user_id': user_id,
             '_csrftoken': self.token
         })
-        return self.send_request('friendships/show/' + str(user_id) + '/', self.generate_signature(data))
+        url = 'friendships/show/{user_id}/'.format(user_id=user_id)
+        return self.send_request(url, self.generate_signature(data))
 
     def _prepare_recipients(self, users, thread_id=None, use_quotes=False):
         if not isinstance(users, list):
@@ -547,12 +558,16 @@ class API(object):
 
     def generate_signature(self, data):
         try:
-            parsedData = urllib.parse.quote(data)
+            parsed_data = urllib.parse.quote(data)
         except AttributeError:
-            parsedData = urllib.quote(data)
+            parsed_data = urllib.quote(data)
 
-        return 'ig_sig_key_version=' + config.SIG_KEY_VERSION + '&signed_body=' + hmac.new(
-            config.IG_SIG_KEY.encode('utf-8'), data.encode('utf-8'), hashlib.sha256).hexdigest() + '.' + parsedData
+        return ('ig_sig_key_version='
+                + config.SIG_KEY_VERSION
+                + '&signed_body='
+                + hmac.new(config.IG_SIG_KEY.encode('utf-8'),
+                           data.encode('utf-8'),
+                           hashlib.sha256).hexdigest() + '.' + parsed_data)
 
     def generate_device_id(self, seed):
         volatile_seed = "12345"
@@ -568,7 +583,8 @@ class API(object):
             return generated_uuid.replace('-', '')
 
     def get_liked_media(self, maxid=''):
-        return self.send_request('feed/liked/?max_id=' + str(maxid))
+        url = 'feed/liked/?max_id={maxid}'.format(maxid=maxid)
+        return self.send_request(url)
 
     def get_total_followers(self, username_id, amount=None):
         sleep_track = 0
@@ -581,7 +597,8 @@ class API(object):
             else:
                 total_followers = self.last_json["user"]['follower_count']
             if total_followers > 200000:
-                print("Consider temporarily saving the result of this big operation. This will take a while.\n")
+                print("Consider temporarily saving the result of this big "
+                      "operation. This will take a while.\n")
         else:
             return False
         with tqdm(total=total_followers, desc="Getting followers", leave=False) as pbar:
