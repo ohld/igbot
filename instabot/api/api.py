@@ -21,13 +21,10 @@ from .api_video import configure_video, download_video, upload_video
 from .prepare import delete_credentials, get_credentials
 
 try:
+    import urllib.parse
     from urllib.parse import urlparse
 except ImportError:
     from urlparse import urlparse
-
-# The urllib library was split into other modules from Python 2 to Python 3
-if sys.version_info > (3,):
-    import urllib.parse
 
 
 class API(object):
