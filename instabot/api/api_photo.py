@@ -64,7 +64,8 @@ def upload_photo(self, photo, caption=None, upload_id=None):
     if upload_id is None:
         upload_id = str(int(time.time() * 1000))
     if not compatible_aspect_ratio(get_image_size(photo)):
-        self.logger.info('Not compatible photo aspect ratio')
+        self.logger.info('Photo does not have a compatible'
+                         'photo aspect ratio.')
         return False
     data = {
         'upload_id': upload_id,
