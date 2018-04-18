@@ -155,16 +155,20 @@ class API(object):
             return False
 
     @property
-    def default_data():
+    def default_data(self):
         return {
             '_uuid': self.uuid,
             '_uid': self.user_id,
             '_csrftoken': self.token,
         }
 
-    def sync_features(self):
-        data = json.dumps({'id': self.user_id, 'experiments': config.EXPERIMENTS})
+    def json_data(self, data):
+        """Adds the default_data to data and dumps it to a json."""
         data.update(self.default_data)
+        return json.dumps(data)
+
+    def sync_features(self):
+        data = self.json_data({'id': self.user_id, 'experiments': config.EXPERIMENTS})
         return self.send_request('qe/sync/', data)
 
     def auto_complete_user_list(self):
@@ -178,11 +182,10 @@ class API(object):
         return self.send_request('megaphone/log/')
 
     def expose(self):
-        data = json.dumps({
+        data = self.json_data({
             'id': self.user_id,
             'experiment': 'ig_android_profile_contextual_feed'
         })
-        data.update(self.default_data)
         return self.send_request('qe/expose/', data)
 
     def upload_photo(self, photo, caption=None, upload_id=None):
@@ -204,8 +207,7 @@ class API(object):
         return configure_video(self, upload_id, video, thumbnail, caption)
 
     def edit_media(self, media_id, captionText=''):
-        data = json.dumps({'caption_text': captionText})
-        data.update(self.default_data)
+        data = self.json_data({'caption_text': captionText})
         url = 'media/{media_id}/edit_media/'.format(media_id=media_id)
         return self.send_request(url, data)
 
@@ -215,15 +217,13 @@ class API(object):
         return self.send_request(url, data)
 
     def media_info(self, media_id):
-        data = json.dumps({'media_id': media_id})
-        data.update(self.default_data)
+        data = self.json_data({'media_id': media_id})
         url = 'media/{media_id}/info/'.format(media_id=media_id)
         return self.send_request(url, data)
 
     def archive_media(self, media, undo=False):
         action = 'only_me' if not undo else 'undo_only_me'
-        data = json.dumps({'media_id': media['id']})
-        data.update(self.default_data)
+        data = self.json_data({'media_id': media['id']})
         url = 'media/{media_id}/{action}/?media_type={media_type}'.format(
             media_id=media['id'],
             action=action,
@@ -232,31 +232,28 @@ class API(object):
         return self.send_request(url, data)
 
     def delete_media(self, media):
-        data = json.dumps({'media_id': media.get('id')})
-        data.update(self.default_data)
+        data = self.json_data({'media_id': media.get('id')})
         url = 'media/{media_id}/delete/'.format(media_id=media.get('id'))
         return self.send_request(url, data)
 
     def change_password(self, newPassword):
-        data = json.dumps({
+        data = self.json_data({
             'old_password': self.password,
             'new_password1': newPassword,
             'new_password2': newPassword
         })
-        data.update(self.default_data)
         return self.send_request('accounts/change_password/', data)
 
     def explore(self):
         return self.send_request('discover/explore/')
 
     def comment(self, media_id, comment_text):
-        data = json.dumps({'comment_text': comment_text})
-        data.update(self.default_data)
+        data = self.json_data({'comment_text': comment_text})
         url = 'media/{media_id}/comment/'.format(media_id=media_id)
         return self.send_request(url, data)
 
     def delete_comment(self, media_id, comment_id):
-        data = json.dumps({
+        data = self.json_data({
             '_uuid': self.uuid,
             '_uid': self.user_id,
             '_csrftoken': self.token
@@ -403,14 +400,12 @@ class API(object):
         return self.get_user_followers(self.user_id)
 
     def like(self, media_id):
-        data = json.dumps({'media_id': media_id})
-        data.update(self.default_data)
+        data = self.json_data({'media_id': media_id})
         url = 'media/{media_id}/like/'.format(media_id=media_id)
         return self.send_request(url, data)
 
     def unlike(self, media_id):
-        data = json.dumps({'media_id': media_id})
-        data.update(self.default_data)
+        data = self.json_data({'media_id': media_id})
         url = 'media/{media_id}/unlike/'.format(media_id=media_id)
         return self.send_request(url, data)
 
@@ -425,32 +420,27 @@ class API(object):
         return self.send_request('direct_share/inbox/?')
 
     def follow(self, user_id):
-        data = json.dumps({'user_id': user_id})
-        data.update(self.default_data)
+        data = self.json_data({'user_id': user_id})
         url = 'friendships/create/{user_id}/'.format(user_id=user_id)
         return self.send_request(url, data)
 
     def unfollow(self, user_id):
-        data = json.dumps({'user_id': user_id})
-        data.update(self.default_data)
+        data = self.json_data({'user_id': user_id})
         url = 'friendships/destroy/{user_id}/'.format(user_id=user_id)
         return self.send_request(url, data)
 
     def block(self, user_id):
-        data = json.dumps({'user_id': user_id})
-        data.update(self.default_data)
+        data = self.json_data({'user_id': user_id})
         url = 'friendships/block/{user_id}/'.format(user_id=user_id)
         return self.send_request(url, data)
 
     def unblock(self, user_id):
-        data = json.dumps({'user_id': user_id})
-        data.update(self.default_data)
+        data = self.json_data({'user_id': user_id})
         url = 'friendships/unblock/{user_id}/'.format(user_id=user_id)
         return self.send_request(url, data)
 
     def user_friendship(self, user_id):
-        data = json.dumps({'user_id': user_id})
-        data.update(self.default_data)
+        data = self.json_data({'user_id': user_id})
         url = 'friendships/show/{user_id}/'.format(user_id=user_id)
         return self.send_request(url, data)
 
@@ -468,7 +458,6 @@ class API(object):
             'client_context': self.generate_UUID(True),
             'action': 'send_item'
         }
-        data.update(self.default_data)
 
         url = ''
         if item_type == 'links':
@@ -672,8 +661,7 @@ class API(object):
         return self.send_request('accounts/set_public/', data)
 
     def set_name_and_phone(self, name='', phone=''):
-        data = json.dumps({'first_name': name, 'phone_number': phone})
-        data.update(self.default_data)
+        data = self.json_data({'first_name': name, 'phone_number': phone})
         return self.send_request('accounts/set_phone_and_name/', data)
 
     def get_profile_data(self):
@@ -681,7 +669,7 @@ class API(object):
         return self.send_request('accounts/current_user/?edit=true', data)
 
     def edit_profile(self, url, phone, first_name, biography, email, gender):
-        data = json.dumps({
+        data = self.json_data({
             'external_url': url,
             'phone_number': phone,
             'username': self.username,
@@ -690,5 +678,4 @@ class API(object):
             'email': email,
             'gender': gender,
         })
-        data.update(self.default_data)
         return self.send_request('accounts/edit_profile/', data)
