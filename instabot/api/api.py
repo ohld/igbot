@@ -697,10 +697,9 @@ class API(object):
     def get_total_liked_media(self, scan_rate=1):
         next_id = ''
         liked_items = []
-        for _ in range(0, scan_rate):
-            temp = self.get_liked_media(next_id)
-            temp = self.last_json
-            next_id = temp["next_max_id"]
-            for item in temp["items"]:
-                liked_items.append(item)
+        for _ in range(scan_rate):
+            self.get_liked_media(next_id)
+            last_json = self.last_json
+            next_id = last_json["next_max_id"]
+            liked_items += last_json["items"]
         return liked_items
