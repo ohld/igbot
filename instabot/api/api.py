@@ -157,8 +157,8 @@ class API(object):
         data = json.dumps({
             '_uuid': self.uuid,
             '_uid': self.user_id,
-            'id': self.user_id,
             '_csrftoken': self.token,
+            'id': self.user_id,
             'experiments': config.EXPERIMENTS
         })
         return self.send_request('qe/sync/', self.generate_signature(data))
@@ -177,8 +177,8 @@ class API(object):
         data = json.dumps({
             '_uuid': self.uuid,
             '_uid': self.user_id,
-            'id': self.user_id,
             '_csrftoken': self.token,
+            'id': self.user_id,
             'experiment': 'ig_android_profile_contextual_feed'
         })
         return self.send_request('qe/expose/', self.generate_signature(data))
@@ -215,7 +215,7 @@ class API(object):
         data = json.dumps({
             '_uuid': self.uuid,
             '_uid': self.user_id,
-            '_csrftoken': self.token
+            '_csrftoken': self.token,
         })
         url = 'media/{media_id}/remove/'.format(media_id=media_id)
         return self.send_request(url, self.generate_signature(data))
@@ -461,8 +461,8 @@ class API(object):
         data = json.dumps({
             '_uuid': self.uuid,
             '_uid': self.user_id,
+            '_csrftoken': self.token,
             'user_id': user_id,
-            '_csrftoken': self.token
         })
         url = 'friendships/create/{user_id}/'.format(user_id=user_id)
         return self.send_request(url, self.generate_signature(data))
@@ -471,8 +471,8 @@ class API(object):
         data = json.dumps({
             '_uuid': self.uuid,
             '_uid': self.user_id,
+            '_csrftoken': self.token,
             'user_id': user_id,
-            '_csrftoken': self.token
         })
         url = 'friendships/destroy/{user_id}/'.format(user_id=user_id)
         return self.send_request(url, self.generate_signature(data))
@@ -481,8 +481,8 @@ class API(object):
         data = json.dumps({
             '_uuid': self.uuid,
             '_uid': self.user_id,
+            '_csrftoken': self.token,
             'user_id': user_id,
-            '_csrftoken': self.token
         })
         url = 'friendships/block/{user_id}/'.format(user_id=user_id)
         return self.send_request(url, self.generate_signature(data))
@@ -491,8 +491,8 @@ class API(object):
         data = json.dumps({
             '_uuid': self.uuid,
             '_uid': self.user_id,
+            '_csrftoken': self.token,
             'user_id': user_id,
-            '_csrftoken': self.token
         })
         url = 'friendships/unblock/{user_id}/'.format(user_id=user_id)
         return self.send_request(url, self.generate_signature(data))
@@ -501,8 +501,8 @@ class API(object):
         data = json.dumps({
             '_uuid': self.uuid,
             '_uid': self.user_id,
+            '_csrftoken': self.token,
             'user_id': user_id,
-            '_csrftoken': self.token
         })
         url = 'friendships/show/{user_id}/'.format(user_id=user_id)
         return self.send_request(url, self.generate_signature(data))
