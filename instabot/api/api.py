@@ -21,7 +21,7 @@ from .prepare import delete_credentials, get_credentials
 try:
     from urllib.parse import urlparse, quote
 except ImportError:
-    from urlparse import urlparse, quote
+    from urllib import urlparse, quote
 
 
 class API(object):
