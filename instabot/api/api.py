@@ -88,10 +88,10 @@ class API(object):
                 if self.send_request('accounts/login/', self.generate_signature(json.dumps(data)), True):
                     self.is_logged_in = True
                     self.user_id = self.last_json["logged_in_user"]["pk"]
-                    self.rank_token = "%s_%s" % (self.user_id, self.uuid)
+                    self.rank_token = "{}_{}".format(self.user_id, self.uuid)
                     self.token = self.last_response.cookies["csrftoken"]
 
-                    self.logger.info("Login success as %s!", self.username)
+                    self.logger.info("Logged-in successfully as '{}'!".format(self.username))
                     return True
                 else:
                     self.logger.info("Login or password is incorrect.")
@@ -134,17 +134,20 @@ class API(object):
             self.last_json = json.loads(response.text)
             return True
         else:
-            self.logger.error("Request return %s error!", str(response.status_code))
+            self.logger.error("Request return {} error!".format(response.status_code))
             if response.status_code == 429:
                 sleep_minutes = 5
-                self.logger.warning("That means 'too many requests'. "
-                                    "I'll go to sleep for %d minutes.", sleep_minutes)
+                self.logger.warning(
+                    "That means 'too many requests'. I'll go to sleep"
+                    "for {} minutes.".format(sleep_minutes))
                 time.sleep(sleep_minutes * 60)
             elif response.status_code == 400:
                 response_data = json.loads(response.text)
-                self.logger.info("Instagram error message: %s", response_data.get('message'))
+                msg = "Instagram error message: {}"
+                self.logger.info(msg.format(response_data.get('message')))
                 if response_data.get('error_type'):
-                    self.logger.info('Error type: %s', response_data.get('error_type'))
+                    msg = 'Error type: {}'.format(response_data.get('error_type'))
+                    self.logger.info(msg)
 
             # for debugging
             try:
@@ -262,21 +265,6 @@ class API(object):
             media_id=media_id, comment_id=comment_id)
         return self.send_request(url, data)
 
-    def remove_profile_picture(self):
-        return remove_profile_picture(self)
-
-    def set_private_account(self):
-        return set_private_account(self)
-
-    def set_public_account(self):
-        return set_public_account(self)
-
-    def get_profile_data(self):
-        return get_profile_data(self)
-
-    def edit_profile(self, url, phone, first_name, biography, email, gender):
-        return edit_profile(self, url, phone, first_name, biography, email, gender)
-
     def get_username_info(self, username_id):
         url = 'users/{username_id}/info/'.format(username_id=username_id)
         return self.send_request(url)
@@ -285,16 +273,13 @@ class API(object):
         return self.get_username_info(self.user_id)
 
     def get_recent_activity(self):
-        activity = self.send_request('news/inbox/?')
-        return activity
+        return self.send_request('news/inbox/?')
 
     def get_following_recent_activity(self):
-        activity = self.send_request('news/?')
-        return activity
+        return self.send_request('news/?')
 
     def getv2Inbox(self):
-        inbox = self.send_request('direct_v2/inbox/?')
-        return inbox
+        return self.send_request('direct_v2/inbox/?')
 
     def get_user_tags(self, username_id):
         url = 'usertags/{username_id}/feed/?rank_token={rank_token}&ranked_content=true&'
@@ -413,9 +398,6 @@ class API(object):
         url = 'media/{media_id}/comments/?'.format(media_id=media_id)
         return self.send_request(url)
 
-    def set_name_and_phone(self, name='', phone=''):
-        return set_name_and_phone(self, name, phone)
-
     def get_direct_share(self):
         return self.send_request('direct_share/inbox/?')
 
@@ -444,7 +426,8 @@ class API(object):
         url = 'friendships/show/{user_id}/'.format(user_id=user_id)
         return self.send_request(url, data)
 
-    def _prepare_recipients(self, users, thread_id=None, use_quotes=False):
+    @staticmethod
+    def _prepare_recipients(users, thread_id=None, use_quotes=False):
         if not isinstance(users, list):
             print('Users must be an list')
             return False
@@ -482,7 +465,7 @@ class API(object):
             url = 'direct_v2/threads/broadcast/profile/'
             data['profile_user_id'] = options.get('profile_user_id')
             data['text'] = options.get('text', '')
-        recipients = self._prepare_recipients(users, thread_id=options.get('thread'), use_quotes=False)
+        recipients = self._prepare_recipients(users, options.get('thread'), use_quotes=False)
         if not recipients:
             return False
         data['recipient_users'] = recipients.get('users')
@@ -506,7 +489,8 @@ class API(object):
         m.update(seed.encode('utf-8') + volatile_seed.encode('utf-8'))
         return 'android-' + m.hexdigest()[:16]
 
-    def generate_UUID(self, uuid_type):
+    @staticmethod
+    def generate_UUID(uuid_type):
         generated_uuid = str(uuid.uuid4())
         if uuid_type:
             return generated_uuid
@@ -522,23 +506,26 @@ class API(object):
         followers = []
         next_max_id = ''
         self.get_username_info(username_id)
-        if "user" in self.last_json:
-            if amount:
+        username_info = self.last_json
+        if "user" in username_info:
+            if amount is not None:
                 total_followers = amount
             else:
-                total_followers = self.last_json["user"]['follower_count']
+                total_followers = username_info["user"]['follower_count']
+
             if total_followers > 200000:
                 print("Consider temporarily saving the result of this big "
                       "operation. This will take a while.\n")
         else:
             return False
+
         with tqdm(total=total_followers, desc="Getting followers", leave=False) as pbar:
             while True:
                 self.get_user_followers(username_id, next_max_id)
-                temp = self.last_json
+                user_followers = self.last_json
                 try:
-                    pbar.update(len(temp["users"]))
-                    for item in temp["users"]:
+                    pbar.update(len(user_followers["users"]))
+                    for item in user_followers["users"]:
                         followers.append(item)
                         sleep_track += 1
                         if sleep_track >= 20000:
@@ -547,13 +534,15 @@ class API(object):
                             print(msg.format(sleep_time / 60))
                             time.sleep(sleep_time)
                             sleep_track = 0
-                    if len(temp["users"]) == 0 or len(followers) >= total_followers:
+                    if not user_followers["users"] or len(followers) >= total_followers:
                         return followers[:total_followers]
                 except Exception:
                     return followers[:total_followers]
-                if temp["big_list"] is False:
+
+                if user_followers["big_list"] is False:
                     return followers[:total_followers]
-                next_max_id = temp["next_max_id"]
+
+                next_max_id = user_followers["next_max_id"]
 
     def get_total_followings(self, username_id, amount=None):
         sleep_track = 0
@@ -587,7 +576,7 @@ class API(object):
                             print(msg.format(sleep_time / 60))
                             time.sleep(sleep_time)
                             sleep_track = 0
-                    if users or len(following) >= total_following:
+                    if not users or len(following) >= total_following:
                         return following[:total_following]
                 except Exception:
                     return following[:total_following]
@@ -623,7 +612,7 @@ class API(object):
                     pbar.update(len(items))
                     for item in items:
                         hashtag_feed.append(item)
-                    if items or len(hashtag_feed) >= amount:
+                    if not items or len(hashtag_feed) >= amount:
                         return hashtag_feed[:amount]
                 except Exception:
                     return hashtag_feed[:amount]
