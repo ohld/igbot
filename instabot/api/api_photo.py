@@ -96,6 +96,7 @@ def get_image_size(fname):
         head = fhandle.read(24)
         if len(head) != 24:
             raise RuntimeError("Invalid Header")
+
         if imghdr.what(fname) == 'png':
             check = struct.unpack('>i', head[4:8])[0]
             if check != 0x0d0a1a0a:

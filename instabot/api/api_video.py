@@ -81,10 +81,10 @@ def upload_video(self, video, thumbnail, caption=None, upload_id=None):
         upload_job = body['video_upload_urls'][3]['job']
 
         with open(video, 'rb') as video_bytes:
-            videoData = video_bytes.read()
+            video_data = video_bytes.read()
         # solve issue #85 TypeError: slice indices must be integers or None or have an __index__ method
-        request_size = int(math.floor(len(videoData) / 4))
-        lastRequestExtra = (len(videoData) - (request_size * 3))
+        request_size = int(math.floor(len(video_data) / 4))
+        last_request_extra = len(video_data) - (request_size * 3)
 
         headers = copy.deepcopy(self.session.headers)
         self.session.headers.update({'X-IG-Capabilities': '3Q4=',
@@ -99,18 +99,18 @@ def upload_video(self, video, thumbnail, caption=None, upload_id=None):
                                      'job': upload_job,
                                      'Host': 'upload.instagram.com',
                                      'User-Agent': config.USER_AGENT})
-        for i in range(0, 4):
+        for i in range(4):
             start = i * request_size
             if i == 3:
-                end = i * request_size + lastRequestExtra
+                end = i * request_size + last_request_extra
             else:
                 end = (i + 1) * request_size
-            length = lastRequestExtra if i == 3 else request_size
-            content_range = "bytes {start}-{end}/{lenVideo}".format(start=start, end=(end - 1),
-                                                                    lenVideo=len(videoData)).encode('utf-8')
+            length = last_request_extra if i == 3 else request_size
+            content_range = "bytes {start}-{end}/{len_video}".format(
+                start=start, end=end-1, len_video=len(video_data)).encode('utf-8')
 
             self.session.headers.update({'Content-Length': str(end - start), 'Content-Range': content_range, })
-            response = self.session.post(upload_url, data=videoData[start:start + length])
+            response = self.session.post(upload_url, data=video_data[start:start + length])
         self.session.headers = headers
 
         if response.status_code == 200:
