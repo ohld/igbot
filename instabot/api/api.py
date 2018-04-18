@@ -21,10 +21,9 @@ from .api_video import configure_video, download_video, upload_video
 from .prepare import delete_credentials, get_credentials
 
 try:
-    import urllib.parse
-    from urllib.parse import urlparse
+    from urllib.parse import urlparse, quote
 except ImportError:
-    from urlparse import urlparse
+    from urlparse import urlparse, quote
 
 
 class API(object):
@@ -557,17 +556,12 @@ class API(object):
         return self.send_request(url, data)
 
     def generate_signature(self, data):
-        try:
-            parsed_data = urllib.parse.quote(data)
-        except AttributeError:
-            parsed_data = urllib.quote(data)
-
-        return ('ig_sig_key_version='
-                + config.SIG_KEY_VERSION
-                + '&signed_body='
-                + hmac.new(config.IG_SIG_KEY.encode('utf-8'),
-                           data.encode('utf-8'),
-                           hashlib.sha256).hexdigest() + '.' + parsed_data)
+    return ('ig_sig_key_version='
+            + config.SIG_KEY_VERSION
+            + '&signed_body='
+            + hmac.new(config.IG_SIG_KEY.encode('utf-8'),
+                       data.encode('utf-8'),
+                       hashlib.sha256).hexdigest() + '.' + quote(data))
 
     def generate_device_id(self, seed):
         volatile_seed = "12345"
