@@ -12,8 +12,6 @@ from tqdm import tqdm
 
 from . import config
 from .api_photo import configure_photo, download_photo, upload_photo
-from .api_search import (fb_user_search, search_location, search_tags,
-                         search_username, search_users)
 from .api_video import configure_video, download_video, upload_video
 from .prepare import delete_credentials, get_credentials
 
@@ -89,7 +87,7 @@ class API(object):
                     self.logger.info("Logged-in successfully as '{}'!".format(self.username))
                     return True
                 else:
-                    self.logger.info("Login or password is incorrect.")
+                    self.logger.info("Username or password is incorrect.")
                     delete_credentials()
                     return False
 
@@ -101,15 +99,18 @@ class API(object):
 
     def send_request(self, endpoint, post=None, login=False):
         if (not self.is_logged_in and not login):
-            self.logger.critical("Not logged in.")
-            raise Exception("Not logged in!")
+            msg = "Not logged in!"
+            self.logger.critical(msg)
+            raise Exception(msg)
 
-        self.session.headers.update({'Connection': 'close',
-                                     'Accept': '*/*',
-                                     'Content-type': 'application/x-www-form-urlencoded; charset=UTF-8',
-                                     'Cookie2': '$Version=1',
-                                     'Accept-Language': 'en-US',
-                                     'User-Agent': config.USER_AGENT})
+        self.session.headers.update({
+            'Connection': 'close',
+            'Accept': '*/*',
+            'Content-type': 'application/x-www-form-urlencoded; charset=UTF-8',
+            'Cookie2': '$Version=1',
+            'Accept-Language': 'en-US',
+            'User-Agent': config.USER_AGENT
+        })
         try:
             self.total_requests += 1
             if post is not None:  # POST
@@ -128,7 +129,7 @@ class API(object):
             self.last_json = json.loads(response.text)
             return True
         else:
-            self.logger.error("Request return {} error!".format(response.status_code))
+            self.logger.error("Request returns {} error!".format(response.status_code))
             if response.status_code == 429:
                 sleep_minutes = 5
                 self.logger.warning(
@@ -137,13 +138,13 @@ class API(object):
                 time.sleep(sleep_minutes * 60)
             elif response.status_code == 400:
                 response_data = json.loads(response.text)
-                msg = "Instagram error message: {}"
+                msg = "Instagram's error message: {}"
                 self.logger.info(msg.format(response_data.get('message')))
-                if response_data.get('error_type'):
-                    msg = 'Error type: {}'.format(response_data.get('error_type'))
+                if 'error_type' in response_data:
+                    msg = 'Error type: {}'.format(response_data['error_type'])
                     self.logger.info(msg)
 
-            # for debugging
+            # For debugging
             try:
                 self.last_response = response
                 self.last_json = json.loads(response.text)
@@ -172,7 +173,7 @@ class API(object):
         return self.send_request('friendships/autocomplete_user_list/')
 
     def get_timeline_feed(self):
-        """ Returns 8 medias from timeline feed of logged user """
+        """ Returns 8 medias from timeline feed of logged user."""
         return self.send_request('feed/timeline/')
 
     def get_megaphone_log(self):
@@ -233,11 +234,11 @@ class API(object):
         url = 'media/{media_id}/delete/'.format(media_id=media.get('id'))
         return self.send_request(url, data)
 
-    def change_password(self, newPassword):
+    def change_password(self, new_password):
         data = self.json_data({
             'old_password': self.password,
-            'new_password1': newPassword,
-            'new_password2': newPassword
+            'new_password1': new_password,
+            'new_password2': new_password
         })
         return self.send_request('accounts/change_password/', data)
 
@@ -298,21 +299,6 @@ class API(object):
     def get_self_geo_media(self):
         return self.get_geo_media(self.user_id)
 
-    def fb_user_search(self, query):
-        return fb_user_search(self, query)
-
-    def search_users(self, query):
-        return search_users(self, query)
-
-    def search_username(self, username):
-        return search_username(self, username)
-
-    def search_tags(self, query):
-        return search_tags(self, query)
-
-    def search_location(self, query='', lat=None, lng=None):
-        return search_location(self, query, lat, lng)
-
     def sync_from_adress_book(self, contacts):
         url = 'address_book/link/?include=extra_display_name,thumbnails'
         return self.send_request(url, 'contacts=' + json.dumps(contacts))
@@ -371,7 +357,7 @@ class API(object):
     def get_user_followers(self, username_id, maxid=''):
         url = 'friendships/{username_id}/followers/?rank_token={rank_token}'
         url = url.format(username_id=username_id, rank_token=self.rank_token)
-        if maxid != '':
+        if maxid:
             url += '&max_id={maxid}'.format(maxid=maxid)
         return self.send_request(url)
 
@@ -495,32 +481,37 @@ class API(object):
         url = 'feed/liked/?max_id={maxid}'.format(maxid=maxid)
         return self.send_request(url)
 
-    def get_total_followers(self, username_id, amount=None):
+    def get_total_followers_or_followings(self, username_id, amount=None, which='followers'):
+        if which == 'followers':
+            key = 'follower_count'
+            get = getattr(self, 'get_user_followers')
+        elif which == 'followings':
+            key = 'following_count'
+            get = getattr(self, 'get_user_followings')
+
         sleep_track = 0
-        followers = []
+        result = []
         next_max_id = ''
         self.get_username_info(username_id)
         username_info = self.last_json
         if "user" in username_info:
-            if amount is not None:
-                total_followers = amount
-            else:
-                total_followers = username_info["user"]['follower_count']
+            total = amount if amount is not None else username_info["user"][key]
 
-            if total_followers > 200000:
+            if total > 200000:
                 print("Consider temporarily saving the result of this big "
                       "operation. This will take a while.\n")
         else:
             return False
 
-        with tqdm(total=total_followers, desc="Getting followers", leave=False) as pbar:
+        desc = "Getting {}".format(which)
+        with tqdm(total=total, desc=desc, leave=False) as pbar:
             while True:
-                self.get_user_followers(username_id, next_max_id)
-                user_followers = self.last_json
+                get(username_id, next_max_id)
+                last_json = self.last_json
                 try:
-                    pbar.update(len(user_followers["users"]))
-                    for item in user_followers["users"]:
-                        followers.append(item)
+                    pbar.update(len(last_json["users"]))
+                    for item in last_json["users"]:
+                        result.append(item)
                         sleep_track += 1
                         if sleep_track >= 20000:
                             sleep_time = uniform(120, 180)
@@ -528,70 +519,38 @@ class API(object):
                             print(msg.format(sleep_time / 60))
                             time.sleep(sleep_time)
                             sleep_track = 0
-                    if not user_followers["users"] or len(followers) >= total_followers:
-                        return followers[:total_followers]
+                    if not last_json["users"] or len(result) >= total:
+                        return result[:total]
                 except Exception:
-                    return followers[:total_followers]
+                    return result[:total]
 
-                if user_followers["big_list"] is False:
-                    return followers[:total_followers]
+                if last_json["big_list"] is False:
+                    return result[:total]
 
-                next_max_id = user_followers["next_max_id"]
+                next_max_id = last_json["next_max_id"]
+
+    def get_total_followers(self, username_id, amount=None):
+        return self.get_total_followers_or_followings(
+            username_id, amount, 'followers')
 
     def get_total_followings(self, username_id, amount=None):
-        sleep_track = 0
-        following = []
-        next_max_id = ''
-        self.get_username_info(username_id)
-        if "user" in self.last_json:
-            if amount:
-                total_following = amount
-            else:
-                total_following = self.last_json["user"]['following_count']
-            if total_following > 200000:
-                print("Consider temporarily saving the result of this"
-                      " big operation. This will take a while.\n")
-        else:
-            return False
-
-        with tqdm(total=total_following, desc="Getting following", leave=False) as pbar:
-            while True:
-                self.get_user_followings(username_id, next_max_id)
-                temp = self.last_json
-                users = temp["users"]
-                try:
-                    pbar.update(len(users))
-                    for item in users:
-                        following.append(item)
-                        sleep_track += 1
-                        if sleep_track >= 20000:
-                            sleep_time = uniform(120, 180)
-                            msg = "\nWaiting {:.2f} min. due to too many requests."
-                            print(msg.format(sleep_time / 60))
-                            time.sleep(sleep_time)
-                            sleep_track = 0
-                    if not users or len(following) >= total_following:
-                        return following[:total_following]
-                except Exception:
-                    return following[:total_following]
-                if temp["big_list"] is False:
-                    return following[:total_following]
-                next_max_id = temp["next_max_id"]
+        return self.get_total_followers_or_followings(
+            username_id, amount, 'followings')
 
     def get_total_user_feed(self, username_id, min_timestamp=None):
         user_feed = []
         next_max_id = ''
         while True:
             self.get_user_feed(username_id, next_max_id, min_timestamp)
-            temp = self.last_json
-            if "items" not in temp:
+            user_feed = self.last_json
+            if "items" not in user_feed:
                 # User is private, we have no access to the posts
                 return []
-            for item in temp["items"]:
+            for item in user_feed["items"]:
                 user_feed.append(item)
-            if "more_available" not in temp or temp["more_available"] is False:
+            if not user_feed.get("more_available"):
                 return user_feed
-            next_max_id = temp["next_max_id"]
+            next_max_id = user_feed["next_max_id"]
 
     def get_total_hashtag_feed(self, hashtag_str, amount=100):
         hashtag_feed = []
@@ -662,3 +621,40 @@ class API(object):
             'gender': gender,
         })
         return self.send_request('accounts/edit_profile/', data)
+
+
+    def fb_user_search(self, query):
+        url = 'fbsearch/topsearch/?context=blended&query={query}&rank_token={rank_token}'.format(
+            query=query,
+            rank_token=self.rank_token
+        )
+        return self.send_request(url)
+
+
+    def search_users(self, query):
+        url = 'users/search/?ig_sig_key_version={sig_key}&is_typeahead=true&query={query}&rank_token={rank_token}'
+        url = url.format(
+            sig_key=config.SIG_KEY_VERSION,
+            query=query,
+            rank_token=self.rank_token
+        )
+        return self.send_request(url)
+
+
+    def search_username(self, username_name):
+        url = 'users/{}/usernameinfo/'.format(username_name)
+        return self.send_request(url)
+
+
+    def search_tags(self, query):
+        url = 'tags/search/?is_typeahead=true&q={query}&rank_token={rank_token}'.format(
+            query=query,
+            rank_token=self.rank_token
+        )
+        return self.send_request(url)
+
+
+    def search_location(self, query='', lat=None, lng=None):
+        locationFeed = self.send_request(
+            'fbsearch/places/?rank_token=' + str(self.rank_token) + '&query=' + str(query) + '&lat=' + str(lat) + '&lng=' + str(lng))
+        return locationFeed

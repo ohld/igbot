@@ -3,31 +3,27 @@
 """
 
 from . import delay
+from termcolor import colored
 
 
-# Adding useless users_ids to the skipped_list file: skipped.txt , so
-# InstaBot will not try to follow them again or InstaBot will not like
-# their medias anymore
+# Adding `users_id`s to `skipped.txt`, such that InstaBot will not
+# try to follow them again or InstaBot will not like their media anymore.
 def skippedlist_adder(self, user_id):
-    # user_id = self.convert_to_user_id(user_id)
     skipped = self.read_list_from_file("skipped.txt")
     if user_id not in skipped:
-        with open('skipped.txt', "a") as file:
-            self.console_print('\n\033[93m Add user_id %s to skippedlist : skipped.txt ... \033[0m'
-                               % user_id)
-            # Append user_is to the end of skipped.txt
+        with open('skipped.txt', 'a') as file:
+            msg = 'Adding `user_id` {} to `skipped.txt`.'.format(user_id)
+            self.console_print(colored(msg, 'green'))
             file.write(str(user_id) + "\n")
-            self.console_print('Done adding user_id to skipped.txt')
-    return
+            self.console_print('Done adding `user_id` to skipped.txt')
 
 
-# filtering medias
-
+# Filtering media
 
 def filter_medias(self, media_items, filtration=True, quiet=False, is_comment=False):
     if filtration:
         if not quiet:
-            self.logger.info("Received %d medias." % len(media_items))
+            self.logger.info("Received {} medias.".format(media_items))
         if not is_comment:
             media_items = _filter_medias_not_liked(media_items)
             if self.max_likes_to_like:
@@ -36,17 +32,16 @@ def filter_medias(self, media_items, filtration=True, quiet=False, is_comment=Fa
         else:
             media_items = _filter_medias_not_commented(self, media_items)
         if not quiet:
-            self.logger.info("After filtration %d medias left." %
-                             len(media_items))
+            msg = "After filtration {} medias left."
+            self.logger.info(msg.format(len(media_items)))
     return _get_media_ids(media_items)
 
 
 def _filter_medias_not_liked(media_items):
     not_liked_medias = []
     for media in media_items:
-        if 'has_liked' in media.keys():
-            if not media['has_liked']:
-                not_liked_medias.append(media)
+        if 'has_liked' in media and not media['has_liked']:
+            not_liked_medias.append(media)
     return not_liked_medias
 
 
@@ -65,7 +60,7 @@ def _filter_medias_not_commented(self, media_items):
 def _filter_medias_nlikes(media_items, max_likes_to_like):
     filtered_medias = []
     for media in media_items:
-        if 'like_count' in media.keys():
+        if 'like_count' in media:
             if media['like_count'] < max_likes_to_like:
                 filtered_medias.append(media)
     return filtered_medias
@@ -74,7 +69,7 @@ def _filter_medias_nlikes(media_items, max_likes_to_like):
 def _get_media_ids(media_items):
     result = []
     for media in media_items:
-        if 'pk' in media.keys():
+        if 'pk' in media:
             result.append(media['pk'])
     return result
 
@@ -86,8 +81,7 @@ def check_media(self, media_id):
     return False
 
 
-# filter users
-
+# Filter users
 
 def search_stop_words_in_user(self, user_info):
     text = ''
