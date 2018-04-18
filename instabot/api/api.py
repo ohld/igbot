@@ -75,14 +75,15 @@ class API(object):
             url = 'si/fetch_headers/?challenge_type=signup&guid={uuid}'
             url = url.format(uuid=self.generate_UUID(False))
             if self.send_request(url, None, True):
-
-                data = {'phone_id': self.generate_UUID(True),
-                        '_csrftoken': self.last_response.cookies['csrftoken'],
-                        'username': self.username,
-                        'guid': self.uuid,
-                        'device_id': self.device_id,
-                        'password': self.password,
-                        'login_attempt_count': '0'}
+                data = {
+                    'phone_id': self.generate_UUID(True),
+                    '_csrftoken': self.last_response.cookies['csrftoken'],
+                    'username': self.username,
+                    'guid': self.uuid,
+                    'device_id': self.device_id,
+                    'password': self.password,
+                    'login_attempt_count': '0',
+                }
 
                 if self.send_request('accounts/login/', self.generate_signature(json.dumps(data)), True):
                     self.is_logged_in = True
