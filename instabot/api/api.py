@@ -153,14 +153,17 @@ class API(object):
                 pass
             return False
 
-    def sync_features(self):
-        data = json.dumps({
+    @property
+    def default_data():
+        return {
             '_uuid': self.uuid,
             '_uid': self.user_id,
             '_csrftoken': self.token,
-            'id': self.user_id,
-            'experiments': config.EXPERIMENTS
-        })
+        }
+
+    def sync_features(self):
+        data = json.dumps({'id': self.user_id, 'experiments': config.EXPERIMENTS})
+        data.update(self.default_data)
         return self.send_request('qe/sync/', self.generate_signature(data))
 
     def auto_complete_user_list(self):
@@ -175,12 +178,10 @@ class API(object):
 
     def expose(self):
         data = json.dumps({
-            '_uuid': self.uuid,
-            '_uid': self.user_id,
-            '_csrftoken': self.token,
             'id': self.user_id,
             'experiment': 'ig_android_profile_contextual_feed'
         })
+        data.update(self.default_data)
         return self.send_request('qe/expose/', self.generate_signature(data))
 
     def upload_photo(self, photo, caption=None, upload_id=None):
@@ -202,42 +203,26 @@ class API(object):
         return configure_video(self, upload_id, video, thumbnail, caption)
 
     def edit_media(self, media_id, captionText=''):
-        data = json.dumps({
-            '_uuid': self.uuid,
-            '_uid': self.user_id,
-            '_csrftoken': self.token,
-            'caption_text': captionText
-        })
+        data = json.dumps({'caption_text': captionText})
+        data.update(self.default_data)
         url = 'media/{media_id}/edit_media/'.format(media_id=media_id)
         return self.send_request(url, self.generate_signature(data))
 
     def remove_self_tag(self, media_id):
-        data = json.dumps({
-            '_uuid': self.uuid,
-            '_uid': self.user_id,
-            '_csrftoken': self.token,
-        })
+        data = self.default_data
         url = 'media/{media_id}/remove/'.format(media_id=media_id)
         return self.send_request(url, self.generate_signature(data))
 
     def media_info(self, media_id):
-        data = json.dumps({
-            '_uuid': self.uuid,
-            '_uid': self.user_id,
-            '_csrftoken': self.token,
-            'media_id': media_id
-        })
+        data = json.dumps({'media_id': media_id})
+        data.update(self.default_data)
         url = 'media/{media_id}/info/'.format(media_id=media_id)
         return self.send_request(url, self.generate_signature(data))
 
     def archive_media(self, media, undo=False):
         action = 'only_me' if not undo else 'undo_only_me'
-        data = json.dumps({
-            '_uuid': self.uuid,
-            '_uid': self.user_id,
-            '_csrftoken': self.token,
-            'media_id': media['id']
-        })
+        data = json.dumps({'media_id': media['id']})
+        data.update(self.default_data)
         url = 'media/{media_id}/{action}/?media_type={media_type}'.format(
             media_id=media['id'],
             action=action,
@@ -246,37 +231,26 @@ class API(object):
         return self.send_request(url, self.generate_signature(data))
 
     def delete_media(self, media):
-        media_id = media.get('id')
-        data = json.dumps({
-            '_uuid': self.uuid,
-            '_uid': self.user_id,
-            '_csrftoken': self.token,
-            'media_id': media_id
-        })
-        url = 'media/{media_id}/delete/'.format(media_id=media_id)
+        data = json.dumps({'media_id': media.get('id')})
+        data.update(self.default_data)
+        url = 'media/{media_id}/delete/'.format(media_id=media.get('id'))
         return self.send_request(url, self.generate_signature(data))
 
     def change_password(self, newPassword):
         data = json.dumps({
-            '_uuid': self.uuid,
-            '_uid': self.user_id,
-            '_csrftoken': self.token,
             'old_password': self.password,
             'new_password1': newPassword,
             'new_password2': newPassword
         })
+        data.update(self.default_data)
         return self.send_request('accounts/change_password/', self.generate_signature(data))
 
     def explore(self):
         return self.send_request('discover/explore/')
 
     def comment(self, media_id, comment_text):
-        data = json.dumps({
-            '_uuid': self.uuid,
-            '_uid': self.user_id,
-            '_csrftoken': self.token,
-            'comment_text': comment_text
-        })
+        data = json.dumps({'comment_text': comment_text})
+        data.update(self.default_data)
         url = 'media/{media_id}/comment/'.format(media_id=media_id)
         return self.send_request(url, self.generate_signature(data))
 
@@ -428,22 +402,14 @@ class API(object):
         return self.get_user_followers(self.user_id)
 
     def like(self, media_id):
-        data = json.dumps({
-            '_uuid': self.uuid,
-            '_uid': self.user_id,
-            '_csrftoken': self.token,
-            'media_id': media_id
-        })
+        data = json.dumps({'media_id': media_id})
+        data.update(self.default_data)
         url = 'media/{media_id}/like/'.format(media_id=media_id)
         return self.send_request(url, self.generate_signature(data))
 
     def unlike(self, media_id):
-        data = json.dumps({
-            '_uuid': self.uuid,
-            '_uid': self.user_id,
-            '_csrftoken': self.token,
-            'media_id': media_id
-        })
+        data = json.dumps({'media_id': media_id})
+        data.update(self.default_data)
         url = 'media/{media_id}/unlike/'.format(media_id=media_id)
         return self.send_request(url, self.generate_signature(data))
 
@@ -458,52 +424,32 @@ class API(object):
         return self.send_request('direct_share/inbox/?')
 
     def follow(self, user_id):
-        data = json.dumps({
-            '_uuid': self.uuid,
-            '_uid': self.user_id,
-            '_csrftoken': self.token,
-            'user_id': user_id,
-        })
+        data = json.dumps({'user_id': user_id})
+        data.update(self.default_data)
         url = 'friendships/create/{user_id}/'.format(user_id=user_id)
         return self.send_request(url, self.generate_signature(data))
 
     def unfollow(self, user_id):
-        data = json.dumps({
-            '_uuid': self.uuid,
-            '_uid': self.user_id,
-            '_csrftoken': self.token,
-            'user_id': user_id,
-        })
+        data = json.dumps({'user_id': user_id})
+        data.update(self.default_data)
         url = 'friendships/destroy/{user_id}/'.format(user_id=user_id)
         return self.send_request(url, self.generate_signature(data))
 
     def block(self, user_id):
-        data = json.dumps({
-            '_uuid': self.uuid,
-            '_uid': self.user_id,
-            '_csrftoken': self.token,
-            'user_id': user_id,
-        })
+        data = json.dumps({'user_id': user_id})
+        data.update(self.default_data)
         url = 'friendships/block/{user_id}/'.format(user_id=user_id)
         return self.send_request(url, self.generate_signature(data))
 
     def unblock(self, user_id):
-        data = json.dumps({
-            '_uuid': self.uuid,
-            '_uid': self.user_id,
-            '_csrftoken': self.token,
-            'user_id': user_id,
-        })
+        data = json.dumps({'user_id': user_id})
+        data.update(self.default_data)
         url = 'friendships/unblock/{user_id}/'.format(user_id=user_id)
         return self.send_request(url, self.generate_signature(data))
 
     def user_friendship(self, user_id):
-        data = json.dumps({
-            '_uuid': self.uuid,
-            '_uid': self.user_id,
-            '_csrftoken': self.token,
-            'user_id': user_id,
-        })
+        data = json.dumps({'user_id': user_id})
+        data.update(self.default_data)
         url = 'friendships/show/{user_id}/'.format(user_id=user_id)
         return self.send_request(url, self.generate_signature(data))
 
@@ -518,12 +464,11 @@ class API(object):
 
     def send_direct_item(self, item_type, users, **options):
         data = {
-            '_uuid': self.uuid,
-            '_uid': self.user_id,
-            '_csrftoken': self.token,
             'client_context': self.generate_UUID(True),
             'action': 'send_item'
         }
+        data.update(self.default_data)
+
         url = ''
         if item_type == 'links':
             data['link_text'] = options.get('text')
