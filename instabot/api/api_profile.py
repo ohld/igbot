@@ -1,34 +1,34 @@
 import json
 
 
-def removeProfilePicture(self):
+def remove_profile_picture(self):
     data = json.dumps({
         '_uuid': self.uuid,
         '_uid': self.user_id,
         '_csrftoken': self.token
     })
-    return self.SendRequest('accounts/remove_profile_picture/', self.generateSignature(data))
+    return self.send_request('accounts/remove_profile_picture/', self.generate_signature(data))
 
 
-def setPrivateAccount(self):
+def set_private_account(self):
     data = json.dumps({
         '_uuid': self.uuid,
         '_uid': self.user_id,
         '_csrftoken': self.token
     })
-    return self.SendRequest('accounts/set_private/', self.generateSignature(data))
+    return self.send_request('accounts/set_private/', self.generate_signature(data))
 
 
-def setPublicAccount(self):
+def set_public_account(self):
     data = json.dumps({
         '_uuid': self.uuid,
         '_uid': self.user_id,
         '_csrftoken': self.token
     })
-    return self.SendRequest('accounts/set_public/', self.generateSignature(data))
+    return self.send_request('accounts/set_public/', self.generate_signature(data))
 
 
-def setNameAndPhone(self, name='', phone=''):
+def set_name_and_phone(self, name='', phone=''):
     data = json.dumps({
         '_uuid': self.uuid,
         '_uid': self.user_id,
@@ -36,19 +36,19 @@ def setNameAndPhone(self, name='', phone=''):
         'phone_number': phone,
         '_csrftoken': self.token
     })
-    return self.SendRequest('accounts/set_phone_and_name/', self.generateSignature(data))
+    return self.send_request('accounts/set_phone_and_name/', self.generate_signature(data))
 
 
-def getProfileData(self):
+def get_profile_data(self):
     data = json.dumps({
         '_uuid': self.uuid,
         '_uid': self.user_id,
         '_csrftoken': self.token
     })
-    return self.SendRequest('accounts/current_user/?edit=true', self.generateSignature(data))
+    return self.send_request('accounts/current_user/?edit=true', self.generate_signature(data))
 
 
-def editProfile(self, url, phone, first_name, biography, email, gender):
+def edit_profile(self, url, phone, first_name, biography, email, gender):
     data = json.dumps({
         '_uuid': self.uuid,
         '_uid': self.user_id,
@@ -61,4 +61,4 @@ def editProfile(self, url, phone, first_name, biography, email, gender):
         'email': email,
         'gender': gender,
     })
-    return self.SendRequest('accounts/edit_profile/', self.generateSignature(data))
+    return self.send_request('accounts/edit_profile/', self.generate_signature(data))

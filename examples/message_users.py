@@ -67,7 +67,7 @@ elif deliveryMethod == 4:
     with open('scrape.txt', 'w') as file:
         file.write(scrape)
 pages_to_scrape = bot.read_list_from_file("scrape.txt")  # usernames to get likers from
-f = open("medialikers.txt", "w")  # stored likers in userids
+f = open("medialikers.txt", "w")  # stored likers in user_ids
 for users in pages_to_scrape:
     medias = bot.get_user_medias(users, filtration=False)
     getlikers = bot.get_media_likers(medias[0])
@@ -81,7 +81,7 @@ print("Reading from medialikers.txt")
 wusers = bot.read_list_from_file("medialikers.txt")
 with open("usernames.txt", 'w') as f:
     for user_id in wusers:
-        username = bot.get_username_from_userid(user_id)
+        username = bot.get_username_from_user_id(user_id)
         f.write(username + "\n")
 print("succesfully converted  " + str(wusers))
 # parse usernames into a list

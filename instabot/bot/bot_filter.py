@@ -80,8 +80,8 @@ def _get_media_ids(media_items):
 
 
 def check_media(self, media_id):
-    self.mediaInfo(media_id)
-    if self.filter_medias(self.LastJson["items"]):
+    self.media_info(media_id)
+    if self.filter_medias(self.last_json["items"]):
         return check_user(self, self.get_media_owner(media_id))
     return False
 

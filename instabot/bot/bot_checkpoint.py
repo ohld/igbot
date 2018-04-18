@@ -34,10 +34,10 @@ class Checkpoint(object):
         self.total_sent_messages = bot.total_sent_messages
 
     def fill_following(self, bot):
-        self.following = [item["pk"] for item in bot.getTotalSelfFollowings()]
+        self.following = [item["pk"] for item in bot.get_total_self_followings()]
 
     def fill_followers(self, bot):
-        self.followers = [item["pk"] for item in bot.getTotalSelfFollowers()]
+        self.followers = [item["pk"] for item in bot.get_total_self_followers()]
 
     def dump(self):
         return (self.total_liked, self.total_unliked, self.total_followed,

@@ -86,10 +86,10 @@ def job9():  # Automatically post a pic in 'pics' folder
             caption = get_random(photo_captions)
             full_caption = caption + "\n" + config.FOLLOW_MESSAGE
             bot.logger.info("Uploading pic with caption: " + caption)
-            bot.uploadPhoto(config.PICS_PATH + pic, caption=full_caption)
-            if bot.LastResponse.status_code != 200:
+            bot.upload_photo(config.PICS_PATH + pic, caption=full_caption)
+            if bot.last_response.status_code != 200:
                 bot.logger.error("Something went wrong, read the following ->\n")
-                bot.logger.error(bot.LastResponse)
+                bot.logger.error(bot.last_response)
                 break
 
             if pic not in posted_pic_list:

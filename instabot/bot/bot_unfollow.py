@@ -44,7 +44,7 @@ def unfollow_users(self, user_ids):
 def unfollow_non_followers(self, n_to_unfollows=None):
     self.logger.info("Unfollowing non-followers")
     self.update_unfollow_file()
-    self.console_print("\n\033[91m ===> Start Unfollowing Non_Followers List <===\033[0m")
+    self.console_print("\n\033[91m ===> Start Unfollowing Non_followers List <===\033[0m")
 
     unfollow_file = "unfollow.txt"
     with open(unfollow_file) as unfollow_data:

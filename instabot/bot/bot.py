@@ -25,8 +25,8 @@ from .bot_get import (convert_to_user_id, get_archived_medias, get_comment,
                       get_timeline_users, get_total_hashtag_medias,
                       get_total_user_medias, get_user_followers,
                       get_user_following, get_user_info, get_user_likers,
-                      get_user_medias, get_userid_from_username,
-                      get_username_from_userid, get_your_medias, search_users)
+                      get_user_medias, get_user_id_from_username,
+                      get_username_from_user_id, get_your_medias, search_users)
 from .bot_like import (like, like_followers, like_following, like_geotag,
                        like_hashtag, like_medias, like_timeline, like_user,
                        like_users)
@@ -282,11 +282,11 @@ class Bot(API):
     def get_geotag_users(self, geotag):
         return get_geotag_users(self, geotag)
 
-    def get_userid_from_username(self, username):
-        return get_userid_from_username(self, username)
+    def get_user_id_from_username(self, username):
+        return get_user_id_from_username(self, username)
 
-    def get_username_from_userid(self, userid):
-        return get_username_from_userid(self, userid)
+    def get_username_from_user_id(self, user_id):
+        return get_username_from_user_id(self, user_id)
 
     def get_user_info(self, user_id):
         return get_user_info(self, user_id)

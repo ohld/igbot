@@ -13,10 +13,10 @@ from requests_toolbelt import MultipartEncoder
 from . import config
 
 
-def downloadVideo(self, media_id, filename, media=False, path='videos/'):
+def download_video(self, media_id, filename, media=False, path='videos/'):
     if not media:
-        self.mediaInfo(media_id)
-        media = self.LastJson['items'][0]
+        self.media_info(media_id)
+        media = self.last_json['items'][0]
     filename = '{0}_{1}.mp4'.format(media['user']['username'], media_id) if not filename else '{0}.mp4'.format(filename)
     try:
         clips = media['video_versions']
@@ -32,7 +32,7 @@ def downloadVideo(self, media_id, filename, media=False, path='videos/'):
         return os.path.abspath(path + filename)
 
 
-def getVideoInfo(filename):
+def get_video_info(filename):
     res = {}
     try:
         terminalResult = subprocess.Popen(["ffprobe", filename],
@@ -55,7 +55,7 @@ def getVideoInfo(filename):
     return res
 
 
-def uploadVideo(self, video, thumbnail, caption=None, upload_id=None):
+def upload_video(self, video, thumbnail, caption=None, upload_id=None):
     if upload_id is None:
         upload_id = str(int(time.time() * 1000))
     data = {
@@ -114,15 +114,15 @@ def uploadVideo(self, video, thumbnail, caption=None, upload_id=None):
         self.session.headers = headers
 
         if response.status_code == 200:
-            if self.configureVideo(upload_id, video, thumbnail, caption):
+            if self.configure_video(upload_id, video, thumbnail, caption):
                 self.expose()
                 return True
     return False
 
 
-def configureVideo(self, upload_id, video, thumbnail, caption=''):
-    clipInfo = getVideoInfo(video)
-    self.uploadPhoto(photo=thumbnail, caption=caption, upload_id=upload_id)
+def configure_video(self, upload_id, video, thumbnail, caption=''):
+    clipInfo = get_video_info(video)
+    self.upload_photo(photo=thumbnail, caption=caption, upload_id=upload_id)
     data = json.dumps({
         'upload_id': upload_id,
         'source_type': 3,
@@ -146,4 +146,4 @@ def configureVideo(self, upload_id, video, thumbnail, caption=''):
         '_uid': self.user_id,
         'caption': caption,
     })
-    return self.SendRequest('media/configure/?video=1', self.generateSignature(data))
+    return self.send_request('media/configure/?video=1', self.generate_signature(data))

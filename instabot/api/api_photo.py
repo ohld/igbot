@@ -10,12 +10,12 @@ from requests_toolbelt import MultipartEncoder
 from . import config
 
 
-def downloadPhoto(self, media_id, filename, media=False, path='photos/'):
+def download_photo(self, media_id, filename, media=False, path='photos/'):
     if not media:
-        self.mediaInfo(media_id)
-        if not self.LastJson.get('items'):
+        self.media_info(media_id)
+        if not self.last_json.get('items'):
             return True
-        media = self.LastJson['items'][0]
+        media = self.last_json['items'][0]
     filename = '{0}_{1}.jpg'.format(media['user']['username'], media_id) if not filename else '{0}.jpg'.format(filename)
     if media['media_type'] != 1:
         return True
@@ -30,15 +30,15 @@ def downloadPhoto(self, media_id, filename, media=False, path='photos/'):
         return os.path.abspath(path + filename)
 
 
-def compatibleAspectRatio(size):
+def compatible_aspect_ratio(size):
     min_ratio, max_ratio = 4.0 / 5.0, 90.0 / 47.0
     width, height = size
     this_ratio = 1.0 * width / height
     return min_ratio <= this_ratio <= max_ratio
 
 
-def configurePhoto(self, upload_id, photo, caption=''):
-    (w, h) = getImageSize(photo)
+def configure_photo(self, upload_id, photo, caption=''):
+    (w, h) = get_image_size(photo)
     data = json.dumps({
         '_csrftoken': self.token,
         'media_folder': 'Instagram',
@@ -57,13 +57,13 @@ def configurePhoto(self, upload_id, photo, caption=''):
             'source_width': w,
             'source_height': h,
         }})
-    return self.SendRequest('media/configure/?', self.generateSignature(data))
+    return self.send_request('media/configure/?', self.generate_signature(data))
 
 
-def uploadPhoto(self, photo, caption=None, upload_id=None):
+def upload_photo(self, photo, caption=None, upload_id=None):
     if upload_id is None:
         upload_id = str(int(time.time() * 1000))
-    if not compatibleAspectRatio(getImageSize(photo)):
+    if not compatible_aspect_ratio(get_image_size(photo)):
         self.logger.info('Not compatible photo aspect ratio')
         return False
     data = {
@@ -85,13 +85,13 @@ def uploadPhoto(self, photo, caption=None, upload_id=None):
     response = self.session.post(
         config.API_URL + "upload/photo/", data=m.to_string())
     if response.status_code == 200:
-        if self.configurePhoto(upload_id, photo, caption):
+        if self.configure_photo(upload_id, photo, caption):
             self.expose()
             return True
     return False
 
 
-def getImageSize(fname):
+def get_image_size(fname):
     with open(fname, 'rb') as fhandle:
         head = fhandle.read(24)
         if len(head) != 24:

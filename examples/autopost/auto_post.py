@@ -32,9 +32,9 @@ while True:
             caption = " ".join(caption[1:])
 
             print("upload: " + caption)
-            bot.uploadPhoto(pic, caption=caption)
-            if bot.LastResponse.status_code != 200:
-                print(bot.LastResponse)
+            bot.upload_photo(pic, caption=caption)
+            if bot.last_response.status_code != 200:
+                print(bot.last_response)
                 # snd msg
                 break
 

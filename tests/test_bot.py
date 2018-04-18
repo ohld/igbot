@@ -19,11 +19,11 @@ class TestBot:
         self.prepare_bot(self.BOT)
 
     def prepare_bot(self, bot):
-        bot.isLoggedIn = True
+        bot.is_logged_in = True
         bot.user_id = self.USER_ID
         bot.token = 'abcdef123456'
         bot.session = requests.Session()
-        bot.setUser(self.USERNAME, self.PASSWORD)
+        bot.set_user(self.USERNAME, self.PASSWORD)
         bot.rank_token = '{}_{}'.format(bot.user_id, bot.uuid)
 
 
@@ -62,18 +62,18 @@ class TestBotAPI(TestBot):
 
         assert self.BOT.username == self.USERNAME
         assert self.BOT.user_id == self.USER_ID
-        assert self.BOT.isLoggedIn
+        assert self.BOT.is_logged_in
         assert self.BOT.uuid
         assert self.BOT.token
 
     def test_logout(self):
         self.BOT.logout()
 
-        assert not self.BOT.isLoggedIn
+        assert not self.BOT.is_logged_in
 
     def test_generate_uuid(self):
         from uuid import UUID
-        generated_uuid = self.BOT.generateUUID(True)
+        generated_uuid = self.BOT.generate_UUID(True)
 
         assert isinstance(UUID(generated_uuid), UUID)
         assert UUID(generated_uuid).hex == generated_uuid.replace('-', '')
@@ -81,7 +81,7 @@ class TestBotAPI(TestBot):
     def test_set_user(self):
         test_username = "abcdef"
         test_password = "passwordabc"
-        self.BOT.setUser(test_username, test_password)
+        self.BOT.set_user(test_username, test_password)
 
         assert self.BOT.username == test_username
         assert self.BOT.password == test_password

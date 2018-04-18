@@ -335,7 +335,7 @@ class TestBotGet(TestBot):
     @pytest.mark.parametrize('user_id', [
         1234, '1234'
     ])
-    def test_get_username_from_userid(self, user_id):
+    def test_get_username_from_user_id(self, user_id):
         response_data = {
             'status': 'ok',
             'user': TEST_USERNAME_INFO_ITEM
@@ -347,7 +347,7 @@ class TestBotGet(TestBot):
                 API_URL=API_URL, user_id=user_id
             ), status=200, json=response_data)
 
-        result = self.BOT.get_username_from_userid(user_id)
+        result = self.BOT.get_username_from_user_id(user_id)
 
         assert result == expected_user_id
 
@@ -355,7 +355,7 @@ class TestBotGet(TestBot):
     @pytest.mark.parametrize('user_id', [
         '123231231231234', 123231231231234
     ])
-    def test_get_username_from_userid_404(self, user_id):
+    def test_get_username_from_user_id_404(self, user_id):
         response_data = {
             'status': 'fail',
             'message': 'User not found'
@@ -365,13 +365,13 @@ class TestBotGet(TestBot):
                 API_URL=API_URL, user_id=user_id
             ), status=404, json=response_data)
 
-        assert not self.BOT.get_username_from_userid(user_id)
+        assert not self.BOT.get_username_from_user_id(user_id)
 
     @responses.activate
     @pytest.mark.parametrize('username', [
         '@test', 'test', '1234'
     ])
-    def test_get_userid_from_username(self, username):
+    def test_get_user_id_from_username(self, username):
         response_data = {
             'status': 'ok',
             'user': TEST_SEARCH_USERNAME_ITEM
@@ -383,7 +383,7 @@ class TestBotGet(TestBot):
                 API_URL=API_URL, username=username
             ), status=200, json=response_data)
 
-        result = self.BOT.get_userid_from_username(username)
+        result = self.BOT.get_user_id_from_username(username)
 
         assert result == expected_user_id
 
@@ -401,7 +401,7 @@ class TestBotGet(TestBot):
                 API_URL=API_URL, username=username
             ), status=404, json=response_data)
 
-        assert not self.BOT.get_userid_from_username(username)
+        assert not self.BOT.get_user_id_from_username(username)
 
     @responses.activate
     @pytest.mark.parametrize('username,url,result', [
