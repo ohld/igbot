@@ -13,8 +13,6 @@ from tqdm import tqdm
 
 from . import config
 from .api_photo import configure_photo, download_photo, upload_photo
-from .api_profile import (edit_profile, get_profile_data, remove_profile_picture,
-                          set_name_and_phone, set_private_account, set_public_account)
 from .api_search import (fb_user_search, search_location, search_tags,
                          search_username, search_users)
 from .api_video import configure_video, download_video, upload_video
@@ -648,3 +646,43 @@ class API(object):
             next_id = last_json["next_max_id"]
             liked_items += last_json["items"]
         return liked_items
+
+    def remove_profile_picture(self):
+        data = self.default_data
+        return self.send_request('accounts/remove_profile_picture/', self.generate_signature(data))
+
+
+    def set_private_account(self):
+        data = self.default_data
+        return self.send_request('accounts/set_private/', self.generate_signature(data))
+
+
+    def set_public_account(self):
+        data = self.default_data
+        return self.send_request('accounts/set_public/', self.generate_signature(data))
+
+
+    def set_name_and_phone(self, name='', phone=''):
+        data = json.dumps({'first_name': name, 'phone_number': phone,
+        })
+        data.update(self.default_data)
+        return self.send_request('accounts/set_phone_and_name/', self.generate_signature(data))
+
+
+    def get_profile_data(self):
+        data = self.default_data
+        return self.send_request('accounts/current_user/?edit=true', self.generate_signature(data))
+
+
+    def edit_profile(self, url, phone, first_name, biography, email, gender):
+        data = json.dumps({
+            'external_url': url,
+            'phone_number': phone,
+            'username': self.username,
+            'full_name': first_name,
+            'biography': biography,
+            'email': email,
+            'gender': gender,
+        })
+        data.update(self.default_data)
+        return self.send_request('accounts/edit_profile/', self.generate_signature(data))
