@@ -2,13 +2,12 @@ import hashlib
 import hmac
 import json
 import logging
-import sys
-import time
-import urllib
-import uuid
 from random import uniform
+import time
+import uuid
 
 import requests
+import six.moves.urllib as urllib
 from tqdm import tqdm
 
 from . import config
@@ -18,10 +17,6 @@ from .api_search import (fb_user_search, search_location, search_tags,
 from .api_video import configure_video, download_video, upload_video
 from .prepare import delete_credentials, get_credentials
 
-try:
-    from urllib.parse import urlparse, quote
-except ImportError:
-    from urllib import urlparse, quote
 
 
 class API(object):
@@ -64,7 +59,7 @@ class API(object):
         if (not self.is_logged_in or force):
             self.session = requests.Session()
             if self.proxy is not None:
-                parsed = urlparse(self.proxy)
+                parsed = urllib.parse.urlparse(self.proxy)
                 scheme = 'http://' if not parsed.scheme else ''
                 proxies = {
                     'http': scheme + self.proxy,
@@ -480,7 +475,7 @@ class API(object):
                 + '&signed_body='
                 + hmac.new(config.IG_SIG_KEY.encode('utf-8'),
                            data.encode('utf-8'),
-                           hashlib.sha256).hexdigest() + '.' + quote(data))
+                           hashlib.sha256).hexdigest() + '.' + urllib.parse.quote(data))
 
     @staticmethod
     def generate_device_id(seed):

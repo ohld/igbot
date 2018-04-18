@@ -8,3 +8,4 @@ pysocks
 pytest
 responses
 future
+six
