@@ -9,6 +9,8 @@ import os
 import re
 import sys
 
+from termcolor import colored
+
 
 def check_if_file_exists(file_path, quiet=False):
     if not os.path.exists(file_path):
@@ -66,9 +68,9 @@ def add_blacklist(self, file_path):
     return self.blacklist
 
 
-def console_print(self, text):
+def console_print(self, text, color=None):
     if self.verbosity:
-        print(text)
+        print(colored('\n'+text, color))
 
 
 def extract_urls(text):

@@ -556,7 +556,7 @@ class API(object):
         hashtag_feed = []
         next_max_id = ''
 
-        with tqdm(total=amount, desc="Getting hashtag medias", leave=False) as pbar:
+        with tqdm(total=amount, desc="Getting hashtag media.", leave=False) as pbar:
             while True:
                 self.get_hashtag_feed(hashtag_str, next_max_id)
                 last_json = self.last_json
@@ -655,6 +655,6 @@ class API(object):
 
 
     def search_location(self, query='', lat=None, lng=None):
-        locationFeed = self.send_request(
-            'fbsearch/places/?rank_token=' + str(self.rank_token) + '&query=' + str(query) + '&lat=' + str(lat) + '&lng=' + str(lng))
-        return locationFeed
+        url = 'fbsearch/places/?rank_token={rank_token}&query={query}&lat={lat}&lng={lng}'
+        url = url.format(rank_token=self.rank_token, query=query, lat=lat, lng=lng)
+        return self.send_request(url)

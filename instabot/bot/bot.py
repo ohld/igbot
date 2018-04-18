@@ -533,8 +533,8 @@ class Bot(API):
     def add_blacklist(self, file_path):
         return add_blacklist(self, file_path)
 
-    def console_print(self, text):
-        return console_print(self, text)
+    def console_print(self, text, color=None):
+        return console_print(self, text, color)
 
     # stats
 

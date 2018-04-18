@@ -3,7 +3,6 @@
 """
 
 from . import delay
-from termcolor import colored
 
 
 # Adding `users_id`s to `skipped.txt`, such that InstaBot will not
@@ -13,9 +12,8 @@ def skippedlist_adder(self, user_id):
     if user_id not in skipped:
         with open('skipped.txt', 'a') as file:
             msg = 'Adding `user_id` {} to `skipped.txt`.'.format(user_id)
-            self.console_print(colored(msg, 'green'))
+            self.console_print(msg, 'green')
             file.write(str(user_id) + "\n")
-            self.console_print('Done adding `user_id` to skipped.txt')
 
 
 # Filtering media
@@ -113,103 +111,103 @@ def check_user(self, user_id, filter_closed_acc=False, unfollowing=False):
     user_id = self.convert_to_user_id(user_id)
 
     if not user_id:
-        self.console_print('\n\033[91m not user_id , Skipping \033[0m')
+        self.console_print('not user_id, skipping!', 'red')
         return False
     if self.whitelist and user_id in self.whitelist:
-        self.console_print('\n\033[92m user_id in self.whitelist \033[0m')
+        self.console_print('`user_id` in `self.whitelist`.', 'green')
         return True
     if self.blacklist and user_id in self.blacklist:
-        self.console_print('\n\033[91m user_id in self.blacklist \033[0m')
+        self.console_print('`user_id` in `self.blacklist`.', 'red')
         return False
 
     if user_id == str(self.user_id):
-        self.console_print('\n\033[92m user_id equals bot user_id, Skipping \033[0m')
+        self.console_print("`user_id` equals bot's `user_id`, skipping!", 'green')
         return False
 
     if not self.following:
-        self.console_print('\n\033[92m Own following list is empty , downloading ...\033[0m')
+        self.console_print('Own following list is empty, will download.', 'green')
         self.following = self.get_user_following(self.user_id)
     if user_id in self.following:
         if not unfollowing:
             # Log to Console
-            self.console_print('\n\033[91m Already following , Skipping \033[0m')
+            self.console_print('Already following, skipping!', 'red')
         return False
 
     user_info = self.get_user_info(user_id)
     if not user_info:
-        self.console_print('\n\033[91m not user_info , Skipping \033[0m')
+        self.console_print('not `user_info`, skipping!', 'red')
         return False
 
-    self.console_print('\n USER_NAME: %s , FOLLOWER: %s , '
-                       'FOLLOWING: %s ' % (user_info["username"], user_info["follower_count"],
-                                           user_info["following_count"]))
+    msg = 'USER_NAME: {username}, FOLLOWER: {followers}, FOLLOWING: {following}'
+    follower_count = user_info["follower_count"]
+    following_count = user_info["following_count"]
+    self.console_print(msg.format(
+        username=user_info["username"],
+        followers=follower_count,
+        following=following_count
+    ))
 
     if filter_closed_acc and "is_private" in user_info:
         if user_info["is_private"]:
-            self.console_print('\n info : \033[91m is PRIVATE , !!! \033[0m')
+            self.console_print('info: account is PRIVATE, skipping! ', 'red')
             return False
     if "is_business" in user_info and self.filter_business_accounts:
         if user_info["is_business"]:
-            self.console_print('\n info : \033[91m is BUSINESS , Skipping \033[0m')
-            skippedlist_adder(self, user_id)  # Add user_id to skipped.txt
+            self.console_print('info: is BUSINESS, skipping!', 'red')
+            skippedlist_adder(self, user_id)
             return False
     if "is_verified" in user_info and self.filter_verified_accounts:
         if user_info["is_verified"]:
-            self.console_print('\n info : \033[91m is VERIFIED , Skipping \033[0m')
-            skippedlist_adder(self, user_id)  # Add user_id to skipped.txt
-            return False
-    if "follower_count" in user_info and "following_count" in user_info:
-        if user_info["follower_count"] < self.min_followers_to_follow:
-            self.console_print('\n\033[91m user_info["follower_count"] < self.min_followers_to_'
-                               'follow , Skipping \033[0m')
-            skippedlist_adder(self, user_id)  # Add user_id to skipped.txt
-            return False
-        if user_info["follower_count"] > self.max_followers_to_follow:
-            self.console_print('\n\033[91m user_info["follower_count"] > '
-                               'self.max_followers_to_follow , Skipping \033[0m')
-
-            skippedlist_adder(self, user_id)  # Add user_id to skipped.txt
-            return False
-        if user_info["following_count"] < self.min_following_to_follow:
-            self.console_print('\n\033[91m user_info["following_count"] < '
-                               'self.min_following_to_follow , Skipping \033[0m')
-            skippedlist_adder(self, user_id)  # Add user_id to skipped.txt
-            return False
-        if user_info["following_count"] > self.max_following_to_follow:
-            self.console_print('\n\033[91m user_info["following_count"] > '
-                               'self.max_following_to_follow , Skipping \033[0m')
-            skippedlist_adder(self, user_id)  # Add user_id to skipped.txt
-            return False
-        try:
-            if user_info["follower_count"] / user_info["following_count"] \
-                    > self.max_followers_to_following_ratio:
-                self.console_print('\n\033[91m ["follower_count"] / ["following_count"] > '
-                                   'self.max_followers_to_following_ratio , Skipping \033[0m')
-                skippedlist_adder(self, user_id)  # Add user_id to skipped.txt
-                return False
-            if user_info["following_count"] / user_info["follower_count"] \
-                    > self.max_following_to_followers_ratio:
-
-                self.console_print('\n\033[91m ["following_count"] / ["follower_count"] > '
-                                   'self.max_following_to_followers_ratio , Skipping \033[0m')
-                skippedlist_adder(self, user_id)  # Add user_id to skipped.txt
-                return False
-        except ZeroDivisionError:
-            print('!!! Exxxcept ZeroDivisionError !!! ')
+            self.console_print('info: is VERIFIED, skipping !', 'red')
+            skippedlist_adder(self, user_id)
             return False
 
-    if 'media_count' in user_info:
-        if user_info["media_count"] < self.min_media_count_to_follow:
-            self.console_print('\n\033[91m user_info["media_count"] < self.min_media_count_to_'
-                               'follow , BOT or InActive , Skipping \033[0m')
+    if follower_count < self.min_followers_to_follow:
+        msg = 'follower_count < bot.min_followers_to_follow, skipping!'
+        self.console_print(msg, 'red')
+        skippedlist_adder(self, user_id)
+        return False
+    if follower_count > self.max_followers_to_follow:
+        msg = 'follower_count > bot.max_followers_to_follow, skipping!'
+        self.console_print(msg, 'red')
+        skippedlist_adder(self, user_id)
+        return False
+    if user_info["following_count"] < self.min_following_to_follow:
+        msg = 'following_count < bot.min_following_to_follow, skipping!'
+        self.console_print(msg, 'red')
+        skippedlist_adder(self, user_id)
+        return False
+    if user_info["following_count"] > self.max_following_to_follow:
+        msg = 'following_count > bot.max_following_to_follow, skipping!'
+        self.console_print(msg, 'red')
+        skippedlist_adder(self, user_id)
+        return False
+    try:
+        if follower_count / following_count > self.max_followers_to_following_ratio:
+            msg = 'follower_count / following_count > bot.max_followers_to_following_ratio, skipping!'
+            self.console_print(msg, 'red')
+            skippedlist_adder(self, user_id)
+            return False
+        if following_count / follower_count > self.max_following_to_followers_ratio:
+            msg = 'following_count / follower_count > bot.max_following_to_followers_ratio, skipping!'
+            self.console_print(msg, 'red')
+            skippedlist_adder(self, user_id)
+            return False
+    except ZeroDivisionError:
+        self.console_print('ZeroDivisionError: division by zero', 'red')
+        return False
 
-            skippedlist_adder(self, user_id)  # Add user_id to skipped.txt
-            return False  # bot or inactive user
+    if ('media_count' in user_info and
+        user_info["media_count"] < self.min_media_count_to_follow):
+            msg = 'media_count < bot.min_media_count_to_follow, BOT or INACTIVE, skipping!'
+            self.console_print(msg, 'red')
+            skippedlist_adder(self, user_id)
+            return False
 
     if search_stop_words_in_user(self, user_info):
-        self.console_print(
-            '\n\033[91m search_stop_words_in_user , Skipping \033[0m')
-        skippedlist_adder(self, user_id)  # Add user_id to skipped.txt
+        msg = '`bot.search_stop_words_in_user` found in user, skipping!'
+        self.console_print(msg, 'red')
+        skippedlist_adder(self, user_id)
         return False
 
     return True
@@ -230,17 +228,16 @@ def check_not_bot(self, user_id):
     if not user_info:
         return True  # closed acc
 
-    if "following_count" in user_info:
-        if user_info["following_count"] > self.max_following_to_block:
-            self.console_print('\n\033[91m user_info["following_count"] > '
-                               'self.max_following_to_block , Skipping \033[0m')
-            skippedlist_adder(self, user_id)  # Add user_id to skipped.txt
-            return False  # massfollower
+    if ("following_count" in user_info and
+        user_info["following_count"] > self.max_following_to_block):
+        msg = 'following_count > bot.max_following_to_block, skipping!'
+        self.console_print(msg, 'red')
+        skippedlist_adder(self, user_id)
+        return False  # massfollower
 
     if search_stop_words_in_user(self, user_info):
-        self.console_print(
-            '\n\033[91m search_stop_words_in_user , Skipping \033[0m')
-        skippedlist_adder(self, user_id)  # Add user_id to skipped.txt
+        msg = '`bot.search_stop_words_in_user` found in user, skipping!'
+        skippedlist_adder(self, user_id)
         return False
 
     return True
