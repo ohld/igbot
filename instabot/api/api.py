@@ -6,7 +6,7 @@ import sys
 import time
 import urllib
 import uuid
-from random import randint
+from random import uniform
 
 import requests
 from tqdm import tqdm
@@ -349,18 +349,18 @@ class API(object):
         url = 'feed/only_me_feed/?rank_token={rank_token}&ranked_content=true&'
         return self.send_request(url.format(rank_token=self.rank_token))
 
-    def get_user_feed(self, username_id, maxid='', minTimestamp=None):
+    def get_user_feed(self, username_id, maxid='', min_timestamp=None):
         url = 'feed/user/{username_id}/?max_id={max_id}&min_timestamp={min_timestamp}&rank_token={rank_token}&ranked_content=true'
         url = url.format(
             username_id=username_id,
             max_id=maxid,
-            min_timestamp=minTimestamp,
+            min_timestamp=min_timestamp,
             rank_token=self.rank_token
         )
         return self.send_request(url)
 
-    def get_self_user_feed(self, maxid='', minTimestamp=None):
-        return self.get_user_feed(self.user_id, maxid, minTimestamp)
+    def get_self_user_feed(self, maxid='', min_timestamp=None):
+        return self.get_user_feed(self.user_id, maxid, min_timestamp)
 
     def get_hashtag_feed(self, hashtag_str, maxid=''):
         return self.send_request('feed/tag/' + hashtag_str + '/?max_id=' + str(
@@ -553,8 +553,9 @@ class API(object):
                         followers.append(item)
                         sleep_track += 1
                         if sleep_track >= 20000:
-                            sleep_time = randint(120, 180)
-                            print("\nWaiting %.2f min. due to too many requests." % float(sleep_time / 60))
+                            sleep_time = uniform(120, 180)
+                            msg = "\nWaiting {:.2f} min. due to too many requests."
+                            print(msg.format(sleep_time / 60))
                             time.sleep(sleep_time)
                             sleep_track = 0
                     if len(temp["users"]) == 0 or len(followers) >= total_followers:
@@ -576,24 +577,28 @@ class API(object):
             else:
                 total_following = self.last_json["user"]['following_count']
             if total_following > 200000:
-                print("Consider temporarily saving the result of this big operation. This will take a while.\n")
+                print("Consider temporarily saving the result of this"
+                      " big operation. This will take a while.\n")
         else:
             return False
+
         with tqdm(total=total_following, desc="Getting following", leave=False) as pbar:
             while True:
                 self.get_user_followings(username_id, next_max_id)
                 temp = self.last_json
+                users = temp["users"]
                 try:
-                    pbar.update(len(temp["users"]))
-                    for item in temp["users"]:
+                    pbar.update(len(users))
+                    for item in users:
                         following.append(item)
                         sleep_track += 1
                         if sleep_track >= 20000:
-                            sleep_time = randint(120, 180)
-                            print("\nWaiting %.2f min. due to too many requests." % float(sleep_time / 60))
+                            sleep_time = uniform(120, 180)
+                            msg = "\nWaiting {:.2f} min. due to too many requests."
+                            print(msg.format(sleep_time / 60))
                             time.sleep(sleep_time)
                             sleep_track = 0
-                    if len(temp["users"]) == 0 or len(following) >= total_following:
+                    if users or len(following) >= total_following:
                         return following[:total_following]
                 except Exception:
                     return following[:total_following]
@@ -601,13 +606,14 @@ class API(object):
                     return following[:total_following]
                 next_max_id = temp["next_max_id"]
 
-    def get_total_user_feed(self, username_id, minTimestamp=None):
+    def get_total_user_feed(self, username_id, min_timestamp=None):
         user_feed = []
         next_max_id = ''
-        while 1:
-            self.get_user_feed(username_id, next_max_id, minTimestamp)
+        while True:
+            self.get_user_feed(username_id, next_max_id, min_timestamp)
             temp = self.last_json
-            if "items" not in temp:  # maybe user is private, (we have not access to posts)
+            if "items" not in temp:
+                # User is private, we have no access to the posts
                 return []
             for item in temp["items"]:
                 user_feed.append(item)
@@ -622,16 +628,17 @@ class API(object):
         with tqdm(total=amount, desc="Getting hashtag medias", leave=False) as pbar:
             while True:
                 self.get_hashtag_feed(hashtag_str, next_max_id)
-                temp = self.last_json
+                last_json = self.last_json
+                items = last_json['items']
                 try:
-                    pbar.update(len(temp["items"]))
-                    for item in temp["items"]:
+                    pbar.update(len(items))
+                    for item in items:
                         hashtag_feed.append(item)
-                    if len(temp["items"]) == 0 or len(hashtag_feed) >= amount:
+                    if items or len(hashtag_feed) >= amount:
                         return hashtag_feed[:amount]
                 except Exception:
                     return hashtag_feed[:amount]
-                next_max_id = temp["next_max_id"]
+                next_max_id = last_json["next_max_id"]
 
     def get_total_self_user_feed(self, min_timestamp=None):
         return self.get_total_user_feed(self.user_id, min_timestamp)
@@ -656,28 +663,22 @@ class API(object):
         data = self.default_data
         return self.send_request('accounts/remove_profile_picture/', data)
 
-
     def set_private_account(self):
         data = self.default_data
         return self.send_request('accounts/set_private/', data)
-
 
     def set_public_account(self):
         data = self.default_data
         return self.send_request('accounts/set_public/', data)
 
-
     def set_name_and_phone(self, name='', phone=''):
-        data = json.dumps({'first_name': name, 'phone_number': phone,
-        })
+        data = json.dumps({'first_name': name, 'phone_number': phone})
         data.update(self.default_data)
         return self.send_request('accounts/set_phone_and_name/', data)
-
 
     def get_profile_data(self):
         data = self.default_data
         return self.send_request('accounts/current_user/?edit=true', data)
-
 
     def edit_profile(self, url, phone, first_name, biography, email, gender):
         data = json.dumps({
