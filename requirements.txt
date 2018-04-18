@@ -9,4 +9,4 @@ pytest
 responses
 future
 six
-termcolor
+huepy
