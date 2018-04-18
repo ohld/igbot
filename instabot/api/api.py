@@ -413,7 +413,8 @@ class API(object):
             return False
         result = {'users': '[[{}]]'.format(','.join(users))}
         if thread_id:
-            result['thread'] = '["{}"]'.format(thread_id) if use_quotes else '[{}]'.format(thread_id)
+            template = '["{}"]' if use_quotes else '[{}]'
+            result['thread'] = template.format(thread_id)
         return result
 
     def send_direct_item(self, item_type, users, **options):
