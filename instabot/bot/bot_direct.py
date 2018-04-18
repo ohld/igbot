@@ -70,8 +70,14 @@ def send_media(self, media_id, user_ids, text='', thread_id=None):
     media = media[0] if isinstance(media, list) else media
 
     delay.message_delay(self)
-    if super(self.__class__, self).send_direct_item('media_share', user_ids, text=text, thread=thread_id,
-                                                  media_type=media.get('media_type'), media_id=media.get('id')):
+    if super(self.__class__, self).send_direct_item(
+        'media_share',
+        user_ids,
+        text=text,
+        thread=thread_id,
+        media_type=media.get('media_type'),
+        media_id=media.get('id')
+    ):
         self.total_sent_messages += 1
         return True
 
@@ -111,8 +117,9 @@ def send_hashtag(self, hashtag, user_ids, text='', thread_id=None):
         return False
 
     delay.message_delay(self)
-    if super(self.__class__, self).send_direct_item('hashtag', user_ids, text=text, thread=thread_id,
-                                                  hashtag=hashtag):
+    if super(self.__class__, self).send_direct_item(
+        'hashtag', user_ids, text=text, thread=thread_id, hashtag=hashtag
+    ):
         self.total_sent_messages += 1
         return True
 
@@ -139,8 +146,13 @@ def send_profile(self, profile_user_id, user_ids, text='', thread_id=None):
         return False
 
     delay.message_delay(self)
-    if super(self.__class__, self).send_direct_item('profile', user_ids, text=text, thread=thread_id,
-                                                  profile_user_id=profile_id):
+    if super(self.__class__, self).send_direct_item(
+        'profile',
+        user_ids,
+        text=text,
+        thread=thread_id,
+        profile_user_id=profile_id
+    ):
         self.total_sent_messages += 1
         return True
     self.logger.info("Message to {user_ids} wasn't sent".format(user_ids=user_ids))

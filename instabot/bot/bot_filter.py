@@ -197,12 +197,11 @@ def check_user(self, user_id, filter_closed_acc=False, unfollowing=False):
         self.console_print('ZeroDivisionError: division by zero', 'red')
         return False
 
-    if ('media_count' in user_info
-        and user_info["media_count"] < self.min_media_count_to_follow):
-            msg = 'media_count < bot.min_media_count_to_follow, BOT or INACTIVE, skipping!'
-            self.console_print(msg, 'red')
-            skippedlist_adder(self, user_id)
-            return False
+    if 'media_count' in user_info and user_info["media_count"] < self.min_media_count_to_follow:
+        msg = 'media_count < bot.min_media_count_to_follow, BOT or INACTIVE, skipping!'
+        self.console_print(msg, 'red')
+        skippedlist_adder(self, user_id)
+        return False
 
     if search_stop_words_in_user(self, user_info):
         msg = '`bot.search_stop_words_in_user` found in user, skipping!'
@@ -228,8 +227,7 @@ def check_not_bot(self, user_id):
     if not user_info:
         return True  # closed acc
 
-    if ("following_count" in user_info
-        and user_info["following_count"] > self.max_following_to_block):
+    if "following_count" in user_info and user_info["following_count"] > self.max_following_to_block:
         msg = 'following_count > bot.max_following_to_block, skipping!'
         self.console_print(msg, 'red')
         skippedlist_adder(self, user_id)
