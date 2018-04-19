@@ -634,8 +634,8 @@ class API(object):
         )
         return self.send_request(url)
 
-    def search_username(self, username_name):
-        url = 'users/{}/usernameinfo/'.format(username_name)
+    def search_username(self, username):
+        url = 'users/{username}/usernameinfo/'.format(username=username)
         return self.send_request(url)
 
     def search_tags(self, query):
