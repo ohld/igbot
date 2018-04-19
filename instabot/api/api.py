@@ -537,15 +537,14 @@ class API(object):
         next_max_id = ''
         while True:
             self.get_user_feed(user_id, next_max_id, min_timestamp)
-            user_feed = self.last_json
-            if "items" not in user_feed:
+            last_json = self.last_json
+            if "items" not in last_json:
                 # User is private, we have no access to the posts
                 return []
-            for item in user_feed["items"]:
-                user_feed.append(item)
-            if not user_feed.get("more_available"):
+            user_feed += last_json["items"]
+            if not last_json.get("more_available"):
                 return user_feed
-            next_max_id = user_feed["next_max_id"]
+            next_max_id = last_json["next_max_id"]
 
     def get_total_hashtag_feed(self, hashtag_str, amount=100):
         hashtag_feed = []
@@ -558,8 +557,7 @@ class API(object):
                 items = last_json['items']
                 try:
                     pbar.update(len(items))
-                    for item in items:
-                        hashtag_feed.append(item)
+                    hashtag_feed += items
                     if not items or len(hashtag_feed) >= amount:
                         return hashtag_feed[:amount]
                 except Exception:
