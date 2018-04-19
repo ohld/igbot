@@ -34,11 +34,11 @@ class TestBotGet(TestBot):
                 API_URL=API_URL, media_id=media_id),
             json={"status": "ok"}, status=200)
 
-        owner = self.BOT.get_media_owner(media_id)
+        owner = self.bot.get_media_owner(media_id)
 
         assert owner == str(TEST_PHOTO_ITEM["user"]["pk"])
 
-        owner = self.BOT.get_media_owner(media_id)
+        owner = self.bot.get_media_owner(media_id)
 
         assert owner is False
 
@@ -47,7 +47,7 @@ class TestBotGet(TestBot):
         results = 5
         responses.add(
             responses.GET, "{API_URL}feed/popular/?people_teaser_supported=1&rank_token={rank_token}&ranked_content=true&".format(
-                API_URL=API_URL, rank_token=self.BOT.api.rank_token),
+                API_URL=API_URL, rank_token=self.bot.api.rank_token),
             json={
                 "auto_load_more_enabled": True,
                 "num_results": results,
@@ -56,14 +56,14 @@ class TestBotGet(TestBot):
                 "items": [TEST_PHOTO_ITEM for _ in range(results)]
             }, status=200)
 
-        medias = self.BOT.get_popular_medias()
+        medias = self.bot.get_popular_medias()
 
         assert medias == [str(TEST_PHOTO_ITEM["pk"]) for _ in range(results)]
         assert len(medias) == results
 
     @responses.activate
     def test_get_timeline_medias(self):
-        self.BOT.max_likes_to_like = TEST_PHOTO_ITEM['like_count'] + 1
+        self.bot.max_likes_to_like = TEST_PHOTO_ITEM['like_count'] + 1
         results = 8
         responses.add(
             responses.GET, "{API_URL}feed/timeline/".format(API_URL=API_URL),
@@ -82,12 +82,12 @@ class TestBotGet(TestBot):
                 "status": "fail"
             }, status=400)
 
-        medias = self.BOT.get_timeline_medias()
+        medias = self.bot.get_timeline_medias()
 
         assert medias == [TEST_PHOTO_ITEM["pk"] for _ in range(results)]
         assert len(medias) == results
 
-        medias = self.BOT.get_timeline_medias()
+        medias = self.bot.get_timeline_medias()
 
         assert medias == []
         assert len(medias) == 0
@@ -112,12 +112,12 @@ class TestBotGet(TestBot):
                 "status": "fail"
             }, status=400)
 
-        users = self.BOT.get_timeline_users()
+        users = self.bot.get_timeline_users()
 
         assert users == [str(TEST_PHOTO_ITEM["user"]["pk"]) for _ in range(results)]
         assert len(users) == results
 
-        users = self.BOT.get_timeline_users()
+        users = self.bot.get_timeline_users()
 
         assert users == []
         assert len(users) == 0
@@ -136,15 +136,15 @@ class TestBotGet(TestBot):
         }
         responses.add(
             responses.GET, '{API_URL}feed/user/{user_id}/?max_id=&min_timestamp=&rank_token={rank_token}&ranked_content=true'.format(
-                API_URL=API_URL, user_id=self.BOT.user_id, rank_token=self.BOT.api.rank_token),
+                API_URL=API_URL, user_id=self.bot.user_id, rank_token=self.bot.api.rank_token),
             json=response_data, status=200)
 
-        medias = self.BOT.get_your_medias()
+        medias = self.bot.get_your_medias()
 
         assert medias == [my_test_photo_item["pk"] for _ in range(results)]
         assert len(medias) == results
 
-        medias = self.BOT.get_your_medias(as_dict=True)
+        medias = self.bot.get_your_medias(as_dict=True)
 
         assert medias == response_data['items']
         assert len(medias) == results
@@ -163,15 +163,15 @@ class TestBotGet(TestBot):
         }
         responses.add(
             responses.GET, '{API_URL}feed/only_me_feed/?rank_token={rank_token}&ranked_content=true&'.format(
-                API_URL=API_URL, rank_token=self.BOT.api.rank_token),
+                API_URL=API_URL, rank_token=self.bot.api.rank_token),
             json=response_data, status=200)
 
-        medias = self.BOT.get_archived_medias()
+        medias = self.bot.get_archived_medias()
 
         assert medias == [my_test_photo_item["pk"] for _ in range(results)]
         assert len(medias) == results
 
-        medias = self.BOT.get_archived_medias(as_dict=True)
+        medias = self.bot.get_archived_medias(as_dict=True)
 
         assert medias == response_data['items']
         assert len(medias) == results
@@ -184,15 +184,15 @@ class TestBotGet(TestBot):
         response_data = {
             "has_more": True,
             "num_results": results,
-            "rank_token": self.BOT.api.rank_token,
+            "rank_token": self.bot.api.rank_token,
             "status": "ok",
             "users": [my_test_user_item for _ in range(results)]
         }
         responses.add(
             responses.GET, '{API_URL}users/search/?ig_sig_key_version={SIG_KEY}&is_typeahead=true&query={query}&rank_token={rank_token}'.format(
-                API_URL=API_URL, rank_token=self.BOT.api.rank_token, query=query, SIG_KEY=SIG_KEY_VERSION), json=response_data, status=200)
+                API_URL=API_URL, rank_token=self.bot.api.rank_token, query=query, SIG_KEY=SIG_KEY_VERSION), json=response_data, status=200)
 
-        medias = self.BOT.search_users(query)
+        medias = self.bot.search_users(query)
 
         assert medias == [str(my_test_user_item["pk"]) for _ in range(results)]
         assert len(medias) == results
@@ -203,9 +203,9 @@ class TestBotGet(TestBot):
         response_data = {'status': 'fail'}
         responses.add(
             responses.GET, '{API_URL}users/search/?ig_sig_key_version={SIG_KEY}&is_typeahead=true&query={query}&rank_token={rank_token}'.format(
-                API_URL=API_URL, rank_token=self.BOT.api.rank_token, query=query, SIG_KEY=SIG_KEY_VERSION), json=response_data, status=200)
+                API_URL=API_URL, rank_token=self.bot.api.rank_token, query=query, SIG_KEY=SIG_KEY_VERSION), json=response_data, status=200)
 
-        medias = self.BOT.search_users(query)
+        medias = self.bot.search_users(query)
 
         assert medias == []
 
@@ -229,7 +229,7 @@ class TestBotGet(TestBot):
             responses.GET, '{API_URL}media/{media_id}/comments/?'.format(
                 API_URL=API_URL, media_id=media_id), json=response_data, status=200)
 
-        comments = self.BOT.get_media_comments(media_id)
+        comments = self.bot.get_media_comments(media_id)
         assert comments == response_data['comments']
         assert len(comments) == results
 
@@ -253,7 +253,7 @@ class TestBotGet(TestBot):
             responses.GET, '{API_URL}media/{media_id}/comments/?'.format(
                 API_URL=API_URL, media_id=media_id), json=response_data, status=200)
 
-        comments = self.BOT.get_media_comments(media_id, only_text=True)
+        comments = self.bot.get_media_comments(media_id, only_text=True)
         expected_result = [comment['text'] for comment in response_data['comments']]
 
         assert comments == expected_result
@@ -267,7 +267,7 @@ class TestBotGet(TestBot):
             responses.GET, '{API_URL}media/{media_id}/comments/?'.format(
                 API_URL=API_URL, media_id=media_id), json=response_data, status=200)
 
-        comments = self.BOT.get_media_comments(media_id)
+        comments = self.bot.get_media_comments(media_id)
         assert comments == []
 
     @responses.activate
@@ -292,7 +292,7 @@ class TestBotGet(TestBot):
 
         expected_commenters = [str(TEST_COMMENT_ITEM['user']['pk']) for _ in range(results)]
 
-        commenters = self.BOT.get_media_commenters(media_id)
+        commenters = self.bot.get_media_commenters(media_id)
         assert commenters == expected_commenters
         assert len(commenters) == results
 
@@ -306,7 +306,7 @@ class TestBotGet(TestBot):
 
         expected_commenters = []
 
-        commenters = self.BOT.get_media_commenters(media_id)
+        commenters = self.bot.get_media_commenters(media_id)
         assert commenters == expected_commenters
 
     @pytest.mark.parametrize('url,result', [
@@ -314,7 +314,7 @@ class TestBotGet(TestBot):
         ('test', False)
     ])
     def test_get_media_id_from_link_with_wrong_data(self, url, result):
-        media_id = self.BOT.get_media_id_from_link(url)
+        media_id = self.bot.get_media_id_from_link(url)
 
         assert result == media_id
 
@@ -324,12 +324,12 @@ class TestBotGet(TestBot):
         None
     ])
     def test_get_comment(self, comments):
-        self.BOT.comments = comments
+        self.bot.comments = comments
 
-        if self.BOT.comments:
-            assert self.BOT.get_comment() in self.BOT.comments
+        if self.bot.comments:
+            assert self.bot.get_comment() in self.bot.comments
         else:
-            assert self.BOT.get_comment() == 'wow'
+            assert self.bot.get_comment() == 'wow'
 
     @responses.activate
     @pytest.mark.parametrize('user_id', [
@@ -347,7 +347,7 @@ class TestBotGet(TestBot):
                 API_URL=API_URL, user_id=user_id
             ), status=200, json=response_data)
 
-        result = self.BOT.get_username_from_user_id(user_id)
+        result = self.bot.get_username_from_user_id(user_id)
 
         assert result == expected_user_id
 
@@ -365,7 +365,7 @@ class TestBotGet(TestBot):
                 API_URL=API_URL, user_id=user_id
             ), status=404, json=response_data)
 
-        assert not self.BOT.get_username_from_user_id(user_id)
+        assert not self.bot.get_username_from_user_id(user_id)
 
     @responses.activate
     @pytest.mark.parametrize('username', [
@@ -383,7 +383,7 @@ class TestBotGet(TestBot):
                 API_URL=API_URL, username=username
             ), status=200, json=response_data)
 
-        result = self.BOT.get_user_id_from_username(username)
+        result = self.bot.get_user_id_from_username(username)
 
         assert result == expected_user_id
 
@@ -401,7 +401,7 @@ class TestBotGet(TestBot):
                 API_URL=API_URL, username=username
             ), status=404, json=response_data)
 
-        assert not self.BOT.get_user_id_from_username(username)
+        assert not self.bot.get_user_id_from_username(username)
 
     @responses.activate
     @pytest.mark.parametrize('username,url,result', [
@@ -421,6 +421,6 @@ class TestBotGet(TestBot):
                 API_URL=API_URL, username=url
             ), status=200, json=response_data)
 
-        user_id = self.BOT.convert_to_user_id(username)
+        user_id = self.bot.convert_to_user_id(username)
 
         assert result == user_id

@@ -15,10 +15,10 @@ class TestBot:
         self.USERNAME = 'test_username'
         self.PASSWORD = 'test_password'
         self.FULLNAME = 'test_full_name'
-        self.BOT = Bot()
-        self.prepare_bot(self.BOT)
+        self.bot = Bot()
+        self.prepare_api(self.bot)
 
-    def prepare_bot(self, bot):
+    def prepare_api(self, bot):
         bot.api.is_logged_in = True
         bot.api.user_id = self.USER_ID
         bot.api.token = 'abcdef123456'
@@ -29,7 +29,7 @@ class TestBot:
 
 class TestBotAPI(TestBot):
     def test_login(self):
-        self.BOT = Bot()
+        self.bot = Bot()
 
         def mockreturn(*args, **kwargs):
             r = Mock()
@@ -57,23 +57,23 @@ class TestBotAPI(TestBot):
             instance.get.return_value = mockreturn()
             instance.post.return_value = mockreturn_login()
 
-            assert self.BOT.api.login(username=self.USERNAME,
+            assert self.bot.api.login(username=self.USERNAME,
                                       password=self.PASSWORD)
 
-        assert self.BOT.api.username == self.USERNAME
-        assert self.BOT.user_id == self.USER_ID
-        assert self.BOT.api.is_logged_in
-        assert self.BOT.api.uuid
-        assert self.BOT.api.token
+        assert self.bot.api.username == self.USERNAME
+        assert self.bot.user_id == self.USER_ID
+        assert self.bot.api.is_logged_in
+        assert self.bot.api.uuid
+        assert self.bot.api.token
 
     def test_logout(self):
-        self.BOT.logout()
+        self.bot.logout()
 
-        assert not self.BOT.api.is_logged_in
+        assert not self.bot.api.is_logged_in
 
     def test_generate_uuid(self):
         from uuid import UUID
-        generated_uuid = self.BOT.api.generate_UUID(True)
+        generated_uuid = self.bot.api.generate_UUID(True)
 
         assert isinstance(UUID(generated_uuid), UUID)
         assert UUID(generated_uuid).hex == generated_uuid.replace('-', '')
@@ -81,21 +81,21 @@ class TestBotAPI(TestBot):
     def test_set_user(self):
         test_username = "abcdef"
         test_password = "passwordabc"
-        self.BOT.api.set_user(test_username, test_password)
+        self.bot.api.set_user(test_username, test_password)
 
-        assert self.BOT.api.username == test_username
-        assert self.BOT.api.password == test_password
-        assert hasattr(self.BOT.api, "uuid")
+        assert self.bot.api.username == test_username
+        assert self.bot.api.password == test_password
+        assert hasattr(self.bot.api, "uuid")
 
     def test_reset_counters(self):
         from instabot.bot.limits import reset_counters
         counters = ['total_liked', 'total_unliked', 'total_followed',
                     'total_unfollowed', 'total_commented', 'total_blocked', 'total_unblocked']
         for counter in counters:
-            setattr(self.BOT, counter, 1)
-            assert getattr(self.BOT, counter) is 1
+            setattr(self.bot, counter, 1)
+            assert getattr(self.bot, counter) is 1
 
-        reset_counters(self.BOT)
+        reset_counters(self.bot)
 
         for counter in counters:
-            assert getattr(self.BOT, counter) is 0
+            assert getattr(self.bot, counter) is 0

@@ -22,25 +22,25 @@ class TestBotSupport(TestBot):
         ('hello, google.com/search?q=test and bing.com', ['google.com/search?q=test', 'bing.com']),
     ])
     def test_extract_urls(self, url, result):
-        assert self.BOT.extract_urls(url) == result
+        assert self.bot.extract_urls(url) == result
 
     def test_check_if_file_exist(self):
         test_file = open('test', 'w')
 
-        assert self.BOT.check_if_file_exists('test')
+        assert self.bot.check_if_file_exists('test')
 
         test_file.close()
         os.remove('test')
 
     def test_check_if_file_exist_fail(self):
-        assert not self.BOT.check_if_file_exists('test')
+        assert not self.bot.check_if_file_exists('test')
 
     @pytest.mark.parametrize('verbosity,text,result', [
         (True, 'test', 'test'),
         (False, 'test', '')
     ])
     def test_console_print(self, verbosity, text, result):
-        self.BOT.verbosity = verbosity
+        self.bot.verbosity = verbosity
         try:
             if sys.version_info > (3,):
                 from io import StringIO
@@ -50,7 +50,7 @@ class TestBotSupport(TestBot):
             out = StringIO()
             sys.stdout = out
 
-            self.BOT.console_print(text)
+            self.bot.console_print(text)
 
             output = out.getvalue().strip()
             assert output == result
