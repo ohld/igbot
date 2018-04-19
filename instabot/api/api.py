@@ -454,8 +454,8 @@ class API(object):
     def generate_signature(data):
         body = hmac.new(config.IG_SIG_KEY.encode('utf-8'), data.encode('utf-8'),
                         hashlib.sha256).hexdigest() + '.' + urllib.parse.quote(data)
-        signature = 'ig_sig_key_version={version}&signed_body={body}'
-        return signature.format(version=config.SIG_KEY_VERSION, body=body)
+        signature = 'ig_sig_key_version={sig_key}&signed_body={body}'
+        return signature.format(sig_key=config.SIG_KEY_VERSION, body=body)
 
     @staticmethod
     def generate_device_id(seed):

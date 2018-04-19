@@ -189,8 +189,8 @@ class TestBotGet(TestBot):
             "users": [my_test_user_item for _ in range(results)]
         }
         responses.add(
-            responses.GET, '{API_URL}users/search/?ig_sig_key_version={SIG_KEY}&is_typeahead=true&query={query}&rank_token={rank_token}'.format(
-                API_URL=API_URL, rank_token=self.bot.api.rank_token, query=query, SIG_KEY=SIG_KEY_VERSION), json=response_data, status=200)
+            responses.GET, '{API_URL}users/search/?ig_sig_key_version={sig_key}&is_typeahead=true&query={query}&rank_token={rank_token}'.format(
+                API_URL=API_URL, rank_token=self.bot.api.rank_token, query=query, sig_key=SIG_KEY_VERSION), json=response_data, status=200)
 
         medias = self.bot.search_users(query)
 
@@ -202,8 +202,8 @@ class TestBotGet(TestBot):
         query = "test"
         response_data = {'status': 'fail'}
         responses.add(
-            responses.GET, '{API_URL}users/search/?ig_sig_key_version={SIG_KEY}&is_typeahead=true&query={query}&rank_token={rank_token}'.format(
-                API_URL=API_URL, rank_token=self.bot.api.rank_token, query=query, SIG_KEY=SIG_KEY_VERSION), json=response_data, status=200)
+            responses.GET, '{API_URL}users/search/?ig_sig_key_version={sig_key}&is_typeahead=true&query={query}&rank_token={rank_token}'.format(
+                API_URL=API_URL, rank_token=self.bot.api.rank_token, query=query, sig_key=SIG_KEY_VERSION), json=response_data, status=200)
 
         medias = self.bot.search_users(query)
 
