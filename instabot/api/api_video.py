@@ -123,10 +123,7 @@ def upload_video(self, video, thumbnail, caption=None, upload_id=None):
 def configure_video(self, upload_id, video, thumbnail, caption=''):
     clipInfo = get_video_info(video)
     self.upload_photo(photo=thumbnail, caption=caption, upload_id=upload_id)
-    data = json.dumps({
-        '_uuid': self.uuid,
-        '_uid': self.user_id,
-        '_csrftoken': self.token,
+    data = self.json_data({
         'upload_id': upload_id,
         'source_type': 3,
         'poster_frame_index': 0,

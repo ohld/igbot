@@ -156,8 +156,10 @@ class API(object):
             '_csrftoken': self.token,
         }
 
-    def json_data(self, data):
+    def json_data(self, data=None):
         """Adds the default_data to data and dumps it to a json."""
+        if data is None:
+            data = {}
         data.update(self.default_data)
         return json.dumps(data)
 
@@ -206,7 +208,7 @@ class API(object):
         return self.send_request(url, data)
 
     def remove_self_tag(self, media_id):
-        data = self.default_data
+        data = self.json_data()
         url = 'media/{media_id}/remove/'.format(media_id=media_id)
         return self.send_request(url, data)
 
@@ -247,7 +249,7 @@ class API(object):
         return self.send_request(url, data)
 
     def delete_comment(self, media_id, comment_id):
-        data = self.default_data
+        data = self.json_data()
         url = 'media/{media_id}/comment/{comment_id}/delete/'.format(
             media_id=media_id, comment_id=comment_id)
         return self.send_request(url, data)
@@ -585,15 +587,15 @@ class API(object):
         return liked_items
 
     def remove_profile_picture(self):
-        data = self.default_data
+        data = self.json_data()
         return self.send_request('accounts/remove_profile_picture/', data)
 
     def set_private_account(self):
-        data = self.default_data
+        data = self.json_data()
         return self.send_request('accounts/set_private/', data)
 
     def set_public_account(self):
-        data = self.default_data
+        data = self.json_data()
         return self.send_request('accounts/set_public/', data)
 
     def set_name_and_phone(self, name='', phone=''):
@@ -601,7 +603,7 @@ class API(object):
         return self.send_request('accounts/set_phone_and_name/', data)
 
     def get_profile_data(self):
-        data = self.default_data
+        data = self.json_data()
         return self.send_request('accounts/current_user/?edit=true', data)
 
     def edit_profile(self, url, phone, first_name, biography, email, gender):

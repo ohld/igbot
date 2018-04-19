@@ -39,10 +39,7 @@ def compatible_aspect_ratio(size):
 
 def configure_photo(self, upload_id, photo, caption=''):
     (w, h) = get_image_size(photo)
-    data = json.dumps({
-        '_uuid': self.uuid,
-        '_uid': self.user_id,
-        '_csrftoken': self.token,
+    data = self.json_data({
         'media_folder': 'Instagram',
         'source_type': 4,
         'caption': caption,
