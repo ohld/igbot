@@ -247,11 +247,7 @@ class API(object):
         return self.send_request(url, data)
 
     def delete_comment(self, media_id, comment_id):
-        data = self.json_data({
-            '_uuid': self.uuid,
-            '_uid': self.user_id,
-            '_csrftoken': self.token
-        })
+        data = self.default_data
         url = 'media/{media_id}/comment/{comment_id}/delete/'.format(
             media_id=media_id, comment_id=comment_id)
         return self.send_request(url, data)
@@ -320,9 +316,14 @@ class API(object):
     def get_self_user_feed(self, max_id='', min_timestamp=None):
         return self.get_user_feed(self.user_id, max_id, min_timestamp)
 
-    def get_hashtag_feed(self, hashtag_str, max_id=''):
-        return self.send_request('feed/tag/' + hashtag_str + '/?max_id=' + str(
-            max_id) + '&rank_token=' + self.rank_token + '&ranked_content=true&')
+    def get_hashtag_feed(self, hashtag, max_id=''):
+        url = 'feed/tag/{hashtag}/?max_id={max_id}&rank_token={rank_token}&ranked_content=true&'
+        url = url.format(
+            hashtag=hashtag,
+            max_id=max_id,
+            rank_token=self.rank_token
+        )
+        return self.send_request(url)
 
     def get_location_feed(self, location_id, max_id=''):
         url = 'feed/location/{location_id}/?max_id={max_id}&rank_token={rank_token}&ranked_content=true&'
