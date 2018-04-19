@@ -165,6 +165,14 @@ class Bot(object):
     def user_id(self):
         return self.api.user_id
 
+    @property
+    def username(self):
+        return self.api.username
+
+    @property
+    def password(self):
+        return self.api.password
+
     def version(self):
         try:
             from pip._vendor import pkg_resources

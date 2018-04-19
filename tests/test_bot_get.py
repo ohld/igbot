@@ -136,7 +136,7 @@ class TestBotGet(TestBot):
         }
         responses.add(
             responses.GET, '{API_URL}feed/user/{user_id}/?max_id=&min_timestamp=&rank_token={rank_token}&ranked_content=true'.format(
-                API_URL=API_URL, user_id=self.bot.user_id, rank_token=self.BOT.rank_token),
+                API_URL=API_URL, user_id=self.BOT.user_id, rank_token=self.BOT.rank_token),
             json=response_data, status=200)
 
         medias = self.BOT.get_your_medias()
