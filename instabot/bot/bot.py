@@ -207,8 +207,8 @@ class Bot(object):
         if not self.whitelist:
             self.whitelist = check_whitelists(self)
         self.whitelist = self.convert_whitelist(self.whitelist)
-        self.blacklist = list(
-            filter(None, map(self.convert_to_user_id, self.blacklist)))
+        self.blacklist = [self.convert_to_user_id(u) for u in self.blacklist
+                          if u is not None]
 
     def convert_whitelist(self, usernames):
         """
