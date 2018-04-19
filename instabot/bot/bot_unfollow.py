@@ -49,7 +49,7 @@ def unfollow_non_followers(self, n_to_unfollows=None):
     unfollow_file = "unfollowed.txt"
     with open(unfollow_file) as unfollow_data:
         new_unfollow_list = list(line.strip() for line in unfollow_data)
-    for user in tqdm(new_unfollow_list[:n_to_unfollows]):  # select only first n_to_unfollows users to unfollow
+    for user in tqdm(new_unfollow_list[:n_to_unfollows]):
         self.unfollow(user)
     self.console_print(" ===> Unfollow non-followers done! <===", 'red')
 
@@ -59,12 +59,12 @@ def unfollow_everyone(self):
     self.unfollow_users(self.following)
 
 
-def update_unfollow_file(self):  # Update unfollowed.txt
+def update_unfollow_file(self):
     self.logger.info("Updating `unfollowed.txt`.")
-    self.console_print("Calculating non-followers List", 'green')
+    self.console_print("Calculating non-followers list.", 'green')
 
-    followings = self.get_user_following(self.user_id)  # getting following
-    followers = self.get_user_followers(self.user_id)  # getting followers
+    followings = self.get_user_following(self.user_id)
+    followers = self.get_user_followers(self.user_id)
     friends_file = self.read_list_from_file("friends.txt")  # same whitelist (just user ids)
     nonfollowerslist = list((set(followings) - set(followers)) - set(friends_file))
     followed_list = self.read_list_from_file("followed.txt")
@@ -74,8 +74,8 @@ def update_unfollow_file(self):  # Update unfollowed.txt
     new_unfollow_list = [x for x in unfollow_file if x in unfollow_list]
     new_unfollow_list += [x for x in unfollow_list if x not in unfollow_file]
 
-    self.console_print("Adding to `unfollowed.txt`")
+    self.console_print("Adding to `unfollowed.txt`.")
     with open('unfollowed.txt', 'w') as out:
         for line in new_unfollow_list:
             out.write(str(line) + "\n")
-    self.console_print("Updating unfollowed.txt , Task Done")
+    self.console_print("Updating `unfollowed.txt`, task done.")
