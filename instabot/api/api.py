@@ -493,7 +493,7 @@ class API(object):
         self.get_username_info(username_id)
         username_info = self.last_json
         if "user" in username_info:
-            total = amount if amount is not None else username_info["user"][key]
+            total = amount or username_info["user"][key]
 
             if total > 200000:
                 print("Consider temporarily saving the result of this big "
