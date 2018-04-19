@@ -6,7 +6,7 @@ import os
 import pickle
 from datetime import datetime
 
-CHECKPOINT_PATH = "%s.checkpoint"
+CHECKPOINT_PATH = "{fname}.checkpoint"
 
 
 class Checkpoint(object):
@@ -48,20 +48,21 @@ class Checkpoint(object):
 
 def save_checkpoint(self):
     checkpoint = Checkpoint(self)
-
-    with open(CHECKPOINT_PATH % self.api.username, 'wb') as file_descriptor:
-        pickle.dump(checkpoint, file_descriptor, -1)
+    fname = CHECKPOINT_PATH.format(fname=self.api.username)
+    with open(fname, 'wb') as f:
+        pickle.dump(checkpoint, f, -1)
     return True
 
 
 def load_checkpoint(self):
     try:
-        with open(CHECKPOINT_PATH % self.api.username, 'rb') as file_descriptor:
-            checkpoint = pickle.load(file_descriptor)
+        fname = CHECKPOINT_PATH.format(fname=self.api.username)
+        with open(fname, 'rb') as f:
+            checkpoint = pickle.load(f)
         if isinstance(checkpoint, Checkpoint):
             return checkpoint.dump()
         else:
-            os.remove(CHECKPOINT_PATH % self.api.username)
+            os.remove(fname)
     except Exception:
         pass
     return None
