@@ -619,10 +619,8 @@ class API(object):
         return self.send_request('accounts/edit_profile/', data)
 
     def fb_user_search(self, query):
-        url = 'fbsearch/topsearch/?context=blended&query={query}&rank_token={rank_token}'.format(
-            query=query,
-            rank_token=self.rank_token
-        )
+        url = 'fbsearch/topsearch/?context=blended&query={query}&rank_token={rank_token}'
+        url = url.format(query=query, rank_token=self.rank_token)
         return self.send_request(url)
 
     def search_users(self, query):
