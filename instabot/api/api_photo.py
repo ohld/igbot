@@ -1,5 +1,4 @@
 import imghdr
-import json
 import os
 import shutil
 import struct
