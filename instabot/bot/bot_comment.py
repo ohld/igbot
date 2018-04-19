@@ -77,4 +77,4 @@ def comment_geotag(self, geotag):
 
 
 def is_commented(self, media_id):
-    return self.api.user_id in self.get_media_commenters(media_id)
+    return self.user_id in self.get_media_commenters(media_id)

@@ -14,5 +14,5 @@ from instabot import Bot
 
 bot = Bot()
 bot.login()
-medias = bot.get_total_user_medias(bot.api.user_id)
+medias = bot.get_total_user_medias(bot.user_id)
 bot.download_photos(medias)

@@ -20,11 +20,11 @@ class TestBot:
 
     def prepare_bot(self, bot):
         bot.is_logged_in = True
-        bot.user_id = self.USER_ID
+        bot.api.user_id = self.USER_ID
         bot.token = 'abcdef123456'
         bot.session = requests.Session()
-        bot.set_user(self.USERNAME, self.PASSWORD)
-        bot.rank_token = '{}_{}'.format(bot.user_id, bot.uuid)
+        bot.api.set_user(self.USERNAME, self.PASSWORD)
+        bot.rank_token = '{}_{}'.format(bot.user_id, bot.api.uuid)
 
 
 class TestBotAPI(TestBot):
@@ -57,13 +57,13 @@ class TestBotAPI(TestBot):
             instance.get.return_value = mockreturn()
             instance.post.return_value = mockreturn_login()
 
-            assert self.BOT.login(username=self.USERNAME,
+            assert self.BOT.api.login(username=self.USERNAME,
                                   password=self.PASSWORD)
 
         assert self.BOT.username == self.USERNAME
-        assert self.BOT.user_id == self.USER_ID
+        assert self.bot.user_id == self.USER_ID
         assert self.BOT.is_logged_in
-        assert self.BOT.uuid
+        assert self.bot.api.uuid
         assert self.BOT.token
 
     def test_logout(self):
@@ -81,7 +81,7 @@ class TestBotAPI(TestBot):
     def test_set_user(self):
         test_username = "abcdef"
         test_password = "passwordabc"
-        self.BOT.set_user(test_username, test_password)
+        self.BOT.api.set_user(test_username, test_password)
 
         assert self.BOT.username == test_username
         assert self.BOT.password == test_password

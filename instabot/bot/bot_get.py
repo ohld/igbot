@@ -140,7 +140,7 @@ def get_geotag_users(self, geotag):
 
 
 def get_user_id_from_username(self, username):
-    self.search_username(username)
+    self.api.search_username(username)
     if "user" in self.api.last_json:
         return str(self.api.last_json["user"]["pk"])
     return None  # Not found

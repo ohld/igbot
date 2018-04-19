@@ -36,7 +36,7 @@ if args.message:
 
 # Check on existed file with notified users
 if not bot.check_if_file_exists(NOTIFIED_USERS_PATH):
-    followers = bot.get_user_followers(bot.api.user_id)
+    followers = bot.get_user_followers(bot.user_id)
     followers = map(str, followers)
     followers_string = '\n'.join(followers)
     with open(NOTIFIED_USERS_PATH, 'w') as users_file:
@@ -53,7 +53,7 @@ notified_users = bot.read_list_from_file(NOTIFIED_USERS_PATH)
 print('Read saved list of notified users. Count: {count}'.format(
     count=len(notified_users)
 ))
-all_followers = bot.get_user_followers(bot.api.user_id)
+all_followers = bot.get_user_followers(bot.user_id)
 print('Amount of all followers is {count}'.format(
     count=len(all_followers)
 ))

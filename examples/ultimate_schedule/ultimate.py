@@ -40,7 +40,7 @@ def get_random(from_list):
 
 
 def stats():
-    bot.save_user_stats(bot.api.user_id)
+    bot.save_user_stats(bot.user_id)
 
 
 def job1():
@@ -112,8 +112,8 @@ def job9():  # Automatically post a pic in 'pics' folder
 def job10():  # put non followers on blacklist
     try:
         bot.logger.info("Creating non-followers list")
-        followings = bot.get_user_following(bot.api.user_id)  # getting following
-        followers = bot.get_user_followers(bot.api.user_id)  # getting followers
+        followings = bot.get_user_following(bot.user_id)  # getting following
+        followers = bot.get_user_followers(bot.user_id)  # getting followers
         friends_file = bot.read_list_from_file("friends.txt")  # same whitelist (just user ids)
         nonfollowerslist = list((set(followings) - set(followers)) - set(friends_file))
         with open(config.BLACKLIST_FILE, 'a') as file:  # writing to the blacklist

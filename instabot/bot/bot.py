@@ -161,6 +161,10 @@ class Bot(object):
         self.logger = self.api.logger
         self.logger.info('Instabot Started')
 
+    @property
+    def user_id(self):
+        return self.api.user_id
+
     def version(self):
         try:
             from pip._vendor import pkg_resources
