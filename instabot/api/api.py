@@ -53,16 +53,13 @@ class API(object):
         self.device_id = self.generate_device_id(m.hexdigest())
         self.set_user(username, password)
 
-        if (not self.is_logged_in or force):
+        if not self.is_logged_in or force:
             self.session = requests.Session()
             if self.proxy is not None:
                 parsed = urllib.parse.urlparse(self.proxy)
                 scheme = 'http://' if not parsed.scheme else ''
-                proxies = {
-                    'http': scheme + self.proxy,
-                    'https': scheme + self.proxy,
-                }
-                self.session.proxies.update(proxies)
+                self.session.proxies['http'] = scheme + self.proxy
+                self.session.proxies['https'] = scheme + self.proxy
 
             url = 'si/fetch_headers/?challenge_type=signup&guid={uuid}'
             url = url.format(uuid=self.generate_UUID(False))
