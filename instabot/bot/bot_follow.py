@@ -42,7 +42,7 @@ def follow_users(self, user_ids):
     for user_id in tqdm(user_ids, desc='Processed users'):
         if not self.follow(user_id):
             if self.last_response.status_code == 404:
-                console_print("404 error user {user_id} doesn't exist.", 'red')
+                self.console_print("404 error user {user_id} doesn't exist.", 'red')
                 broken_items.append(user_id)
 
             elif self.last_response.status_code not in (400, 429):

@@ -42,7 +42,7 @@ class Checkpoint(object):
     def dump(self):
         return (self.total_liked, self.total_unliked, self.total_followed,
                 self.total_unfollowed, self.total_commented, self.total_blocked,
-                self.total_unblocked, bot.api.total_requests, self.start_time,
+                self.total_unblocked, self.api.total_requests, self.start_time,
                 self.total_archived, self.total_unarchived, self.total_sent_messages)
 
 

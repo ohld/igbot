@@ -163,14 +163,17 @@ class Bot(object):
 
     @property
     def user_id(self):
+        # For compatibility
         return self.api.user_id
 
     @property
     def username(self):
+        # For compatibility
         return self.api.username
 
     @property
     def password(self):
+        # For compatibility
         return self.api.password
 
     def version(self):
