@@ -31,7 +31,7 @@ def comment_location_feed(new_bot, new_location, amount=0):
     max_id = ''
     with tqdm(total=amount) as pbar:
         while counter < amount:
-            if new_bot.get_location_feed(new_location['location']['pk'], maxid=max_id):
+            if new_bot.get_location_feed(new_location['location']['pk'], max_id=max_id):
                 location_feed = new_bot.last_json
                 for media in new_bot.filter_medias(location_feed["items"][:amount], quiet=True):
                     if bot.comment(media, MESSAGE):

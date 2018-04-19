@@ -307,28 +307,28 @@ class API(object):
         url = 'feed/only_me_feed/?rank_token={rank_token}&ranked_content=true&'
         return self.send_request(url.format(rank_token=self.rank_token))
 
-    def get_user_feed(self, user_id, maxid='', min_timestamp=None):
+    def get_user_feed(self, user_id, max_id='', min_timestamp=None):
         url = 'feed/user/{user_id}/?max_id={max_id}&min_timestamp={min_timestamp}&rank_token={rank_token}&ranked_content=true'
         url = url.format(
             user_id=user_id,
-            max_id=maxid,
+            max_id=max_id,
             min_timestamp=min_timestamp,
             rank_token=self.rank_token
         )
         return self.send_request(url)
 
-    def get_self_user_feed(self, maxid='', min_timestamp=None):
-        return self.get_user_feed(self.user_id, maxid, min_timestamp)
+    def get_self_user_feed(self, max_id='', min_timestamp=None):
+        return self.get_user_feed(self.user_id, max_id, min_timestamp)
 
-    def get_hashtag_feed(self, hashtag_str, maxid=''):
+    def get_hashtag_feed(self, hashtag_str, max_id=''):
         return self.send_request('feed/tag/' + hashtag_str + '/?max_id=' + str(
-            maxid) + '&rank_token=' + self.rank_token + '&ranked_content=true&')
+            max_id) + '&rank_token=' + self.rank_token + '&ranked_content=true&')
 
-    def get_location_feed(self, location_id, maxid=''):
-        url = 'feed/location/{location_id}/?max_id={maxid}&rank_token={rank_token}&ranked_content=true&'
+    def get_location_feed(self, location_id, max_id=''):
+        url = 'feed/location/{location_id}/?max_id={max_id}&rank_token={rank_token}&ranked_content=true&'
         url = url.format(
             location_id=location_id,
-            maxid=maxid,
+            max_id=max_id,
             rank_token=self.rank_token
         )
         return self.send_request(url)
@@ -337,11 +337,11 @@ class API(object):
         url = 'feed/popular/?people_teaser_supported=1&rank_token={rank_token}&ranked_content=true&'
         return self.send_request(url.format(rank_token=self.rank_token))
 
-    def get_user_followings(self, user_id, maxid=''):
+    def get_user_followings(self, user_id, max_id=''):
         url = 'friendships/{user_id}/following/?max_id={max_id}&ig_sig_key_version={sig_key}&rank_token={rank_token}'
         url = url.format(
             user_id=user_id,
-            max_id=maxid,
+            max_id=max_id,
             sig_key=config.SIG_KEY_VERSION,
             rank_token=self.rank_token
         )
@@ -350,11 +350,11 @@ class API(object):
     def get_self_users_following(self):
         return self.get_user_followings(self.user_id)
 
-    def get_user_followers(self, user_id, maxid=''):
+    def get_user_followers(self, user_id, max_id=''):
         url = 'friendships/{user_id}/followers/?rank_token={rank_token}'
         url = url.format(user_id=user_id, rank_token=self.rank_token)
-        if maxid:
-            url += '&max_id={maxid}'.format(maxid=maxid)
+        if max_id:
+            url += '&max_id={max_id}'.format(max_id=max_id)
         return self.send_request(url)
 
     def get_self_user_followers(self):
@@ -472,8 +472,8 @@ class API(object):
         else:
             return generated_uuid.replace('-', '')
 
-    def get_liked_media(self, maxid=''):
-        url = 'feed/liked/?max_id={maxid}'.format(maxid=maxid)
+    def get_liked_media(self, max_id=''):
+        url = 'feed/liked/?max_id={max_id}'.format(max_id=max_id)
         return self.send_request(url)
 
     def get_total_followers_or_followings(self, user_id, amount=None, which='followers'):
