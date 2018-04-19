@@ -11,7 +11,7 @@ from . import delay
 
 
 def get_media_owner(self, media_id):
-    self.media_info(media_id)
+    self.api.media_info(media_id)
     try:
         return str(self.api.last_json["items"][0]["user"]["pk"])
     except Exception as ex:
@@ -20,26 +20,26 @@ def get_media_owner(self, media_id):
 
 
 def get_popular_medias(self):
-    self.get_popular_feed()
+    self.api.get_popular_feed()
     return [str(media['pk']) for media in self.api.last_json['items']]
 
 
 def get_your_medias(self, as_dict=False):
-    self.get_self_user_feed()
+    self.api.get_self_user_feed()
     if as_dict:
         return self.api.last_json["items"]
     return self.filter_medias(self.api.last_json["items"], False)
 
 
 def get_archived_medias(self, as_dict=False):
-    self.get_archive_feed()
+    self.api.get_archive_feed()
     if as_dict:
         return self.api.last_json["items"]
     return self.filter_medias(self.api.last_json["items"], False)
 
 
 def get_timeline_medias(self, filtration=True):
-    if not self.get_timeline_feed():
+    if not self.api.get_timeline_feed():
         self.logger.warning("Error while getting timeline feed.")
         return []
     return self.filter_medias(self.api.last_json["items"], filtration)
@@ -120,7 +120,7 @@ def get_media_info(self, media_id):
 
 
 def get_timeline_users(self):
-    if not self.get_timeline_feed():
+    if not self.api.get_timeline_feed():
         self.logger.warning("Error while getting timeline feed.")
         return []
     return [str(i['user']['pk']) for i in self.api.last_json['items'] if i.get('user')]
@@ -147,7 +147,7 @@ def get_user_id_from_username(self, username):
 
 
 def get_username_from_user_id(self, user_id):
-    self.get_username_info(user_id)
+    self.api.get_username_info(user_id)
     if "user" in self.api.last_json:
         return str(self.api.last_json["user"]["username"])
     return None  # Not found
