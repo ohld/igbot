@@ -13,7 +13,7 @@ def unfollow(self, user_id):
         return True  # whitelisted user
     if limits.check_if_bot_can_unfollow(self):
         delay.unfollow_delay(self)
-        if super(self.__class__, self).unfollow(user_id):
+        if self.api.unfollow(user_id):
             msg = '===> Unfollowed, `user_id`: {}, user_name: {}}'
             self.console_print(msg.format(user_id, username), 'yellow')
             self.total_unfollowed += 1
@@ -55,7 +55,7 @@ def unfollow_non_followers(self, n_to_unfollows=None):
 
 
 def unfollow_everyone(self):
-    self.following = self.get_user_following(self.user_id)
+    self.following = self.get_user_following(self.api.user_id)
     self.unfollow_users(self.following)
 
 
@@ -63,8 +63,8 @@ def update_unfollow_file(self):  # Update unfollowed.txt
     self.logger.info("Updating `unfollowed.txt`.")
     self.console_print("Calculating non-followers List", 'green')
 
-    followings = self.get_user_following(self.user_id)  # getting following
-    followers = self.get_user_followers(self.user_id)  # getting followers
+    followings = self.get_user_following(self.api.user_id)  # getting following
+    followers = self.get_user_followers(self.api.user_id)  # getting followers
     friends_file = self.read_list_from_file("friends.txt")  # same whitelist (just user ids)
     nonfollowerslist = list((set(followings) - set(followers)) - set(friends_file))
     followed_list = self.read_list_from_file("followed.txt")

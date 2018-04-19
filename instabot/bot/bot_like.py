@@ -6,7 +6,7 @@ from . import delay, limits
 def like(self, media_id):
     if limits.check_if_bot_can_like(self):
         delay.like_delay(self)
-        if super(self.__class__, self).like(media_id):
+        if self.api.like(media_id):
             self.total_liked += 1
             return True
     else:

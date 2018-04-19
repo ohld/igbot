@@ -21,5 +21,5 @@ args = parser.parse_args()
 bot = Bot()
 bot.login(username=args.u, password=args.p,
           proxy=args.proxy)
-medias = bot.get_total_user_medias(bot.user_id)
+medias = bot.get_total_user_medias(bot.api.user_id)
 bot.delete_medias(medias)

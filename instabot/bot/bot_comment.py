@@ -19,7 +19,7 @@ def comment(self, media_id, comment_text):
         return True
     if limits.check_if_bot_can_comment(self):
         delay.comment_delay(self)
-        if super(self.__class__, self).comment(media_id, comment_text):
+        if self.api.comment(media_id, comment_text):
             self.total_commented += 1
             return True
     else:
@@ -77,4 +77,4 @@ def comment_geotag(self, geotag):
 
 
 def is_commented(self, media_id):
-    return self.user_id in self.get_media_commenters(media_id)
+    return self.api.user_id in self.get_media_commenters(media_id)

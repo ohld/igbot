@@ -7,7 +7,7 @@ def delete_media(self, media_id):
     delay.small_delay(self)
     media = self.get_media_info(media_id)
     media = media[0] if isinstance(media, list) else media
-    if super(self.__class__, self).delete_media(media):
+    if self.api.delete_media(media):
         return True
     self.logger.info("Media with %s is not %s." % (media.get('id'), 'deleted'))
     return False
@@ -29,7 +29,7 @@ def delete_medias(self, medias):
 
 
 def delete_comment(self, media_id, comment_id):
-    if super(self.__class__, self).delete_comment(media_id, comment_id):
+    if self.api.delete_comment(media_id, comment_id):
         delay.small_delay(self)
         return True
     self.logger.info("Comment with %s in media %s is not deleted." % (comment_id, media_id))

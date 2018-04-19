@@ -8,7 +8,7 @@ from . import delay
 
 def upload_photo(self, photo, caption=None, upload_id=None):
     delay.small_delay(self)
-    if super(self.__class__, self).upload_photo(photo, caption, upload_id):
+    if self.api.upload_photo(photo, caption, upload_id):
         self.logger.info("Photo '%s' is %s ." % (photo, 'uploaded'))
         return True
     self.logger.info("Photo '%s' is not %s ." % (photo, 'uploaded'))
@@ -25,7 +25,7 @@ def download_photo(self, media_id, path='photos/', filename=None, description=Fa
         with open('{path}{0}_{1}.txt'.format(media['user']['username'], media_id, path=path), encoding='utf8', mode='w') as file_descriptor:
             file_descriptor.write(caption)
     try:
-        photo = super(self.__class__, self).download_photo(media_id, filename, False, path)
+        photo = self.api.download_photo(media_id, filename, False, path)
     except Exception:
         photo = False
 

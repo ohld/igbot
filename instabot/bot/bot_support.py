@@ -44,8 +44,8 @@ def check_whitelists(self):
         Check whitelists in folder with script
     """
     default_names = ('whitelist.txt',
-                     'friends_{0}.txt'.format(self.username),
-                     'friends_{0}.txt'.format(self.user_id),
+                     'friends_{0}.txt'.format(self.api.username),
+                     'friends_{0}.txt'.format(self.api.user_id),
                      'friends.txt')
 
     for file_path in default_names:

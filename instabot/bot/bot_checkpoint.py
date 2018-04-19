@@ -49,19 +49,19 @@ class Checkpoint(object):
 def save_checkpoint(self):
     checkpoint = Checkpoint(self)
 
-    with open(CHECKPOINT_PATH % self.username, 'wb') as file_descriptor:
+    with open(CHECKPOINT_PATH % self.api.username, 'wb') as file_descriptor:
         pickle.dump(checkpoint, file_descriptor, -1)
     return True
 
 
 def load_checkpoint(self):
     try:
-        with open(CHECKPOINT_PATH % self.username, 'rb') as file_descriptor:
+        with open(CHECKPOINT_PATH % self.api.username, 'rb') as file_descriptor:
             checkpoint = pickle.load(file_descriptor)
         if isinstance(checkpoint, Checkpoint):
             return checkpoint.dump()
         else:
-            os.remove(CHECKPOINT_PATH % self.username)
+            os.remove(CHECKPOINT_PATH % self.api.username)
     except Exception:
         pass
     return None

@@ -7,7 +7,7 @@ def archive(self, media_id, undo=False):
     delay.small_delay(self)
     media = self.get_media_info(media_id)
     media = media[0] if isinstance(media, list) else media
-    if super(self.__class__, self).archive_media(media, undo):
+    if self.api.archive_media(media, undo):
         self.total_archived += int(not undo)
         self.total_unarchived += int(undo)
         return True

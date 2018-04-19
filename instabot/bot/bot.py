@@ -41,7 +41,7 @@ from .bot_unlike import unlike, unlike_medias, unlike_user
 from .bot_video import upload_video
 
 
-class Bot(API):
+class Bot(object):
     def __init__(self,
                  whitelist=False,
                  blacklist=False,
@@ -78,7 +78,7 @@ class Bot(API):
                  stop_words=('shop', 'store', 'free'),
                  verbosity=True,
                  ):
-        super(Bot, self).__init__()
+        self.api = API()
 
         self.total_liked = 0
         self.total_unliked = 0
@@ -158,6 +158,7 @@ class Bot(API):
         if comments_file:
             self.comments = read_list_from_file(comments_file)
 
+        self.logger = self.api.logger
         self.logger.info('Instabot Started')
 
     def version(self):
@@ -169,7 +170,7 @@ class Bot(API):
 
     def logout(self):
         save_checkpoint(self)
-        super(Bot, self).logout()
+        self.api.logout()
         self.logger.info("Bot stopped. "
                          "Worked: %s", datetime.datetime.now() - self.start_time)
         self.print_counters()
@@ -177,7 +178,7 @@ class Bot(API):
     def login(self, **args):
         if self.proxy:
             args['proxy'] = self.proxy
-        if super(Bot, self).login(**args) is False:
+        if self.api.login(**args) is False:
             return False
         self.prepare()
         signal.signal(signal.SIGTERM, self.logout)
