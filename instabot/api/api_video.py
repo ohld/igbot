@@ -12,7 +12,7 @@ from requests_toolbelt import MultipartEncoder
 from . import config
 
 
-def download_video(self, media_id, filename, media=False, path='videos/'):
+def download_video(self, media_id, filename, media=False, path='videos'):
     if not media:
         self.media_info(media_id)
         media = self.last_json['items'][0]
@@ -21,14 +21,15 @@ def download_video(self, media_id, filename, media=False, path='videos/'):
         clips = media['video_versions']
     except Exception:
         return False
-    if os.path.exists(path + filename):
-        return os.path.abspath(path + filename)
+    fname = os.path.join(path, filename)
+    if os.path.exists(fname):
+        return os.path.abspath(fname)
     response = self.session.get(clips[0]['url'], stream=True)
     if response.status_code == 200:
-        with open(path + filename, 'wb') as f:
+        with open(fname, 'wb') as f:
             response.raw.decode_content = True
             shutil.copyfileobj(response.raw, f)
-        return os.path.abspath(path + filename)
+        return os.path.abspath(fname)
 
 
 def get_video_info(filename):
