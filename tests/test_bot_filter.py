@@ -37,8 +37,8 @@ class TestBotFilter(TestBot):
             'user': TEST_USERNAME_INFO_ITEM
         }
         responses.add(
-            responses.GET, '{API_URL}users/{user_id}/info/'.format(
-                API_URL=API_URL, user_id=user_id
+            responses.GET, '{api_url}users/{user_id}/info/'.format(
+                api_url=API_URL, user_id=user_id
             ), status=200, json=response_data)
 
         result = self.bot.check_user(user_id)
