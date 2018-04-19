@@ -14,7 +14,7 @@ def unfollow(self, user_id):
     if limits.check_if_bot_can_unfollow(self):
         delay.unfollow_delay(self)
         if self.api.unfollow(user_id):
-            msg = '===> Unfollowed, `user_id`: {}, user_name: {}}'
+            msg = '===> Unfollowed, `user_id`: {}, user_name: {}'
             self.console_print(msg.format(user_id, username), 'yellow')
             self.total_unfollowed += 1
             return True
