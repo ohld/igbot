@@ -188,7 +188,7 @@ class Bot(object):
     def prepare(self):
         storage = load_checkpoint(self)
         if storage is not None:
-            self.total_liked, self.total_unliked, self.total_followed, self.total_unfollowed, self.total_commented, self.total_blocked, self.total_unblocked, self.total_requests, self.start_time, self.total_archived, self.total_unarchived, self.total_sent_messages = storage
+            self.total_liked, self.total_unliked, self.total_followed, self.total_unfollowed, self.total_commented, self.total_blocked, self.total_unblocked, self.api.total_requests, self.start_time, self.total_archived, self.total_unarchived, self.total_sent_messages = storage
         if not self.whitelist:
             self.whitelist = check_whitelists(self)
         self.whitelist = self.convert_whitelist(self.whitelist)
@@ -229,7 +229,7 @@ class Bot(object):
             self.logger.info("Total unarchived: %d", self.total_unarchived)
         if self.total_sent_messages:
             self.logger.info("Total sent messages: %d", self.total_sent_messages)
-        self.logger.info("Total requests: %d", self.total_requests)
+        self.logger.info("Total requests: %d", self.api.total_requests)
 
     # getters
 
