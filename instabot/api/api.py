@@ -256,8 +256,8 @@ class API(object):
             media_id=media_id, comment_id=comment_id)
         return self.send_request(url, data)
 
-    def get_username_info(self, username_id):
-        url = 'users/{username_id}/info/'.format(username_id=username_id)
+    def get_username_info(self, user_id):
+        url = 'users/{user_id}/info/'.format(user_id=user_id)
         return self.send_request(url)
 
     def get_self_username_info(self):
@@ -272,9 +272,9 @@ class API(object):
     def getv2Inbox(self):
         return self.send_request('direct_v2/inbox/?')
 
-    def get_user_tags(self, username_id):
-        url = 'usertags/{username_id}/feed/?rank_token={rank_token}&ranked_content=true&'
-        url = url.format(username_id=username_id, rank_token=self.rank_token)
+    def get_user_tags(self, user_id):
+        url = 'usertags/{user_id}/feed/?rank_token={rank_token}&ranked_content=true&'
+        url = url.format(user_id=user_id, rank_token=self.rank_token)
         return self.send_request(url)
 
     def get_self_user_tags(self):
@@ -288,8 +288,8 @@ class API(object):
         url = 'media/{media_id}/likers/?'.format(media_id=media_id)
         return self.send_request(url)
 
-    def get_geo_media(self, username_id):
-        url = 'maps/user/{username_id}/'.format(username_id=username_id)
+    def get_geo_media(self, user_id):
+        url = 'maps/user/{user_id}/'.format(user_id=user_id)
         return self.send_request(url)
 
     def get_self_geo_media(self):
@@ -307,10 +307,10 @@ class API(object):
         url = 'feed/only_me_feed/?rank_token={rank_token}&ranked_content=true&'
         return self.send_request(url.format(rank_token=self.rank_token))
 
-    def get_user_feed(self, username_id, maxid='', min_timestamp=None):
-        url = 'feed/user/{username_id}/?max_id={max_id}&min_timestamp={min_timestamp}&rank_token={rank_token}&ranked_content=true'
+    def get_user_feed(self, user_id, maxid='', min_timestamp=None):
+        url = 'feed/user/{user_id}/?max_id={max_id}&min_timestamp={min_timestamp}&rank_token={rank_token}&ranked_content=true'
         url = url.format(
-            username_id=username_id,
+            user_id=user_id,
             max_id=maxid,
             min_timestamp=min_timestamp,
             rank_token=self.rank_token
@@ -337,10 +337,10 @@ class API(object):
         url = 'feed/popular/?people_teaser_supported=1&rank_token={rank_token}&ranked_content=true&'
         return self.send_request(url.format(rank_token=self.rank_token))
 
-    def get_user_followings(self, username_id, maxid=''):
-        url = 'friendships/{username_id}/following/?max_id={max_id}&ig_sig_key_version={sig_key}&rank_token={rank_token}'
+    def get_user_followings(self, user_id, maxid=''):
+        url = 'friendships/{user_id}/following/?max_id={max_id}&ig_sig_key_version={sig_key}&rank_token={rank_token}'
         url = url.format(
-            username_id=username_id,
+            user_id=user_id,
             max_id=maxid,
             sig_key=config.SIG_KEY_VERSION,
             rank_token=self.rank_token
@@ -350,9 +350,9 @@ class API(object):
     def get_self_users_following(self):
         return self.get_user_followings(self.user_id)
 
-    def get_user_followers(self, username_id, maxid=''):
-        url = 'friendships/{username_id}/followers/?rank_token={rank_token}'
-        url = url.format(username_id=username_id, rank_token=self.rank_token)
+    def get_user_followers(self, user_id, maxid=''):
+        url = 'friendships/{user_id}/followers/?rank_token={rank_token}'
+        url = url.format(user_id=user_id, rank_token=self.rank_token)
         if maxid:
             url += '&max_id={maxid}'.format(maxid=maxid)
         return self.send_request(url)
@@ -476,7 +476,7 @@ class API(object):
         url = 'feed/liked/?max_id={maxid}'.format(maxid=maxid)
         return self.send_request(url)
 
-    def get_total_followers_or_followings(self, username_id, amount=None, which='followers'):
+    def get_total_followers_or_followings(self, user_id, amount=None, which='followers'):
         if which == 'followers':
             key = 'follower_count'
             get = getattr(self, 'get_user_followers')
@@ -487,7 +487,7 @@ class API(object):
         sleep_track = 0
         result = []
         next_max_id = ''
-        self.get_username_info(username_id)
+        self.get_username_info(user_id)
         username_info = self.last_json
         if "user" in username_info:
             total = amount or username_info["user"][key]
@@ -501,7 +501,7 @@ class API(object):
         desc = "Getting {}".format(which)
         with tqdm(total=total, desc=desc, leave=False) as pbar:
             while True:
-                get(username_id, next_max_id)
+                get(user_id, next_max_id)
                 last_json = self.last_json
                 try:
                     pbar.update(len(last_json["users"]))
@@ -524,19 +524,19 @@ class API(object):
 
                 next_max_id = last_json["next_max_id"]
 
-    def get_total_followers(self, username_id, amount=None):
+    def get_total_followers(self, user_id, amount=None):
         return self.get_total_followers_or_followings(
-            username_id, amount, 'followers')
+            user_id, amount, 'followers')
 
-    def get_total_followings(self, username_id, amount=None):
+    def get_total_followings(self, user_id, amount=None):
         return self.get_total_followers_or_followings(
-            username_id, amount, 'followings')
+            user_id, amount, 'followings')
 
-    def get_total_user_feed(self, username_id, min_timestamp=None):
+    def get_total_user_feed(self, user_id, min_timestamp=None):
         user_feed = []
         next_max_id = ''
         while True:
-            self.get_user_feed(username_id, next_max_id, min_timestamp)
+            self.get_user_feed(user_id, next_max_id, min_timestamp)
             user_feed = self.last_json
             if "items" not in user_feed:
                 # User is private, we have no access to the posts
