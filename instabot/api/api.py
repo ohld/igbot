@@ -250,8 +250,8 @@ class API(object):
 
     def delete_comment(self, media_id, comment_id):
         data = self.json_data()
-        url = 'media/{media_id}/comment/{comment_id}/delete/'.format(
-            media_id=media_id, comment_id=comment_id)
+        url = 'media/{media_id}/comment/{comment_id}/delete/'
+        url = url.format(media_id=media_id, comment_id=comment_id)
         return self.send_request(url, data)
 
     def get_username_info(self, user_id):
@@ -639,10 +639,8 @@ class API(object):
         return self.send_request(url)
 
     def search_tags(self, query):
-        url = 'tags/search/?is_typeahead=true&q={query}&rank_token={rank_token}'.format(
-            query=query,
-            rank_token=self.rank_token
-        )
+        url = 'tags/search/?is_typeahead=true&q={query}&rank_token={rank_token}'
+        url = url.format(query=query, rank_token=self.rank_token)
         return self.send_request(url)
 
     def search_location(self, query='', lat=None, lng=None):
