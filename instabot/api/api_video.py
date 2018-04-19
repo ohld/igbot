@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 import copy
 import json
-import math
 import os
 import re
 import shutil
@@ -83,8 +82,8 @@ def upload_video(self, video, thumbnail, caption=None, upload_id=None):
         with open(video, 'rb') as video_bytes:
             video_data = video_bytes.read()
         # solve issue #85 TypeError: slice indices must be integers or None or have an __index__ method
-        request_size = int(math.floor(len(video_data) / 4))
-        last_request_extra = len(video_data) - (request_size * 3)
+        request_size = len(video_data) // 4
+        last_request_extra = len(video_data) - 3 * request_size
 
         headers = copy.deepcopy(self.session.headers)
         self.session.headers.update({'X-IG-Capabilities': '3Q4=',
