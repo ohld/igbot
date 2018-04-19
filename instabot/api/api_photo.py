@@ -10,31 +10,33 @@ from requests_toolbelt import MultipartEncoder
 from . import config
 
 
-def download_photo(self, media_id, filename, media=False, path='photos/'):
+def download_photo(self, media_id, filename, media=False, path='photos'):
     if not media:
         self.media_info(media_id)
         if not self.last_json.get('items'):
             return True
         media = self.last_json['items'][0]
-    filename = '{0}_{1}.jpg'.format(media['user']['username'], media_id) if not filename else '{0}.jpg'.format(filename)
+    filename = ('{0}_{1}.jpg'.format(media['user']['username'], media_id)
+                if not filename else '{0}.jpg'.format(filename))
     if media['media_type'] != 1:
         return True
     images = media['image_versions2']['candidates']
-    if os.path.exists(path + filename):
-        return os.path.abspath(path + filename)
+    fname = os.path.join(path, filename)
+    if os.path.exists(fname):
+        return os.path.abspath(fname)
     response = self.session.get(images[0]['url'], stream=True)
     if response.status_code == 200:
-        with open(path + filename, 'wb') as f:
+        with open(fname, 'wb') as f:
             response.raw.decode_content = True
             shutil.copyfileobj(response.raw, f)
-        return os.path.abspath(path + filename)
+        return os.path.abspath(fname)
 
 
 def compatible_aspect_ratio(size):
     min_ratio, max_ratio = 4.0 / 5.0, 90.0 / 47.0
     width, height = size
-    this_ratio = 1.0 * width / height
-    return min_ratio <= this_ratio <= max_ratio
+    ratio = width / height
+    return min_ratio <= ratio <= max_ratio
 
 
 def configure_photo(self, upload_id, photo, caption=''):
@@ -61,7 +63,7 @@ def upload_photo(self, photo, caption=None, upload_id=None):
     if upload_id is None:
         upload_id = str(int(time.time() * 1000))
     if not compatible_aspect_ratio(get_image_size(photo)):
-        self.logger.info('Photo does not have a compatible'
+        self.logger.info('Photo does not have a compatible '
                          'photo aspect ratio.')
         return False
     data = {
