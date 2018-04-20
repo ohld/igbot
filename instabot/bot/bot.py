@@ -176,6 +176,11 @@ class Bot(object):
         # For compatibility
         return self.api.password
 
+    @property
+    def last_json(self):
+        # For compatibility
+        return self.api.last_json
+
     def version(self):
         try:
             from pip._vendor import pkg_resources
