@@ -161,6 +161,8 @@ class Bot(object):
         self.logger = self.api.logger
         self.logger.info('Instabot Started')
 
+        self._user_infos = {}  # User info cache
+
     @property
     def user_id(self):
         # For compatibility
