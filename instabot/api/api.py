@@ -38,6 +38,8 @@ class API(object):
         self.logger.addHandler(ch)
         self.logger.setLevel(logging.DEBUG)
 
+        self.last_json = None
+
     def set_user(self, username, password):
         self.username = username
         self.password = password
