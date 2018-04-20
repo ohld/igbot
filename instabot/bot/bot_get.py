@@ -127,11 +127,8 @@ def get_timeline_users(self):
 
 
 def get_hashtag_users(self, hashtag):
-    users = []
     self.api.get_hashtag_feed(hashtag)
-    for i in self.api.last_json['items']:
-        users.append(str(i['user']['pk']))
-    return users
+    return [str(i['user']['pk']) for i in self.api.last_json['items']]
 
 
 def get_geotag_users(self, geotag):
