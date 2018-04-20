@@ -482,6 +482,7 @@ def menu_unfollow():
         print("""
         1. Unfollow non followers
         2. Unfollow everyone
+        3. Main menu
         """)
         ans = input("How do you want to unfollow?\n").strip()
 
