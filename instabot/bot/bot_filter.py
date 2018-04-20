@@ -21,7 +21,7 @@ def skippedlist_adder(self, user_id):
 def filter_medias(self, media_items, filtration=True, quiet=False, is_comment=False):
     if filtration:
         if not quiet:
-            self.logger.info("Received {} medias.".format(media_items))
+            self.logger.info("Received {} medias.".format(len(media_items)))
         if not is_comment:
             media_items = _filter_medias_not_liked(media_items)
             if self.max_likes_to_like:
@@ -113,10 +113,10 @@ def check_user(self, user_id, filter_closed_acc=False, unfollowing=False):
     if not user_id:
         self.console_print('not user_id, skipping!', 'red')
         return False
-    if self.whitelist and user_id in self.whitelist:
+    if user_id in self.whitelist:
         self.console_print('`user_id` in `self.whitelist`.', 'green')
         return True
-    if self.blacklist and user_id in self.blacklist:
+    if user_id in self.blacklist:
         self.console_print('`user_id` in `self.blacklist`.', 'red')
         return False
 

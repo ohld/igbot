@@ -239,8 +239,7 @@ def get_media_id_from_link(self, link):
 def convert_to_user_id(self, smth):
     smth = str(smth)
     if not smth.isdigit():
-        if smth[0] == "@":  # cut first @
-            smth = smth[1:]
+        smth = smth.lstrip('@')
         smth = self.get_user_id_from_username(smth)
         delay.very_small_delay(self)
     # if type is not str than it is int so user_id passed
