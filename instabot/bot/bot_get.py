@@ -205,7 +205,7 @@ def search_users(self, query):
 def get_comment(self):
     if self.comments:
         return random.choice(self.comments).strip()
-    return "wow"
+    return "Wow!"
 
 
 def get_media_id_from_link(self, link):
