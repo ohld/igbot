@@ -26,7 +26,7 @@ class TestBotFilter(TestBot):
         self.bot.filter_users = filter_users
         self.bot.filter_business_accounts = filter_business_accounts
         self.bot.filter_verified_accounts = filter_verified_accounts
-        self.bot.following = [1]
+        self.bot._following = [1]
 
         user_id = TEST_USERNAME_INFO_ITEM['pk']
         TEST_USERNAME_INFO_ITEM['is_verified'] = True
