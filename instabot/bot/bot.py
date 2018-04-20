@@ -185,12 +185,14 @@ class Bot(object):
     @property
     def following(self):
         if self._following is not None:
+            self.console_print('`bot.following` is empty, will download.', 'green')
             self._following = self.get_user_following(self.user_id)
         return self._following
 
     @property
     def followers(self):
         if self._followers is not None:
+            self.console_print('`bot.followers` is empty, will download.', 'green')
             self._followers = self.get_user_followers(self.user_id)
         return self._followers
 

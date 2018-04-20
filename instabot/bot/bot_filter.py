@@ -124,8 +124,6 @@ def check_user(self, user_id, filter_closed_acc=False, unfollowing=False):
         self.console_print("`user_id` equals bot's `user_id`, skipping!", 'green')
         return False
 
-    if not self.following:
-        self.console_print('Own following list is empty, will download.', 'green')
     if user_id in self.following:
         if not unfollowing:
             # Log to Console
