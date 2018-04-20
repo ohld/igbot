@@ -56,7 +56,7 @@ def get_user_medias(self, user_id, filtration=True, is_comment=False):
 
 def get_total_user_medias(self, user_id):
     user_id = self.convert_to_user_id(user_id)
-    medias = self.get_total_user_feed(user_id)
+    medias = self.api.get_total_user_feed(user_id)
     if self.api.last_json["status"] == 'fail':
         self.logger.warning("This is a closed account.")
         return []
@@ -77,14 +77,14 @@ def get_user_likers(self, user_id, media_count=10):
 
 
 def get_hashtag_medias(self, hashtag, filtration=True):
-    if not self.get_hashtag_feed(hashtag):
+    if not self.api.get_hashtag_feed(hashtag):
         self.logger.warning("Error while getting hashtag feed.")
         return []
     return self.filter_medias(self.api.last_json["items"], filtration)
 
 
 def get_total_hashtag_medias(self, hashtag, amount=100, filtration=False):
-    medias = self.get_total_hashtag_feed(hashtag, amount)
+    medias = self.api.get_total_hashtag_feed(hashtag, amount)
 
     return self.filter_medias(medias, filtration=filtration)
 
@@ -95,7 +95,7 @@ def get_geotag_medias(self, geotag, filtration=True):
 
 
 def get_locations_from_coordinates(self, latitude, longitude):
-    self.search_location(lat=latitude, lng=longitude)
+    self.api.search_location(lat=latitude, lng=longitude)
     all_locations = self.api.last_json["items"]
     filtered_locations = []
 
@@ -112,7 +112,7 @@ def get_locations_from_coordinates(self, latitude, longitude):
 def get_media_info(self, media_id):
     if isinstance(media_id, dict):
         return media_id
-    self.media_info(media_id)
+    self.api.media_info(media_id)
     if "items" not in self.api.last_json:
         self.logger.info("Media with %s not found." % media_id)
         return []
@@ -128,7 +128,7 @@ def get_timeline_users(self):
 
 def get_hashtag_users(self, hashtag):
     users = []
-    self.get_hashtag_feed(hashtag)
+    self.api.get_hashtag_feed(hashtag)
     for i in self.api.last_json['items']:
         users.append(str(i['user']['pk']))
     return users
