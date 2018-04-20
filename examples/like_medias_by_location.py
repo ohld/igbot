@@ -31,8 +31,8 @@ def like_location_feed(new_bot, new_location, amount=0):
     max_id = ''
     with tqdm(total=amount) as pbar:
         while counter < amount:
-            if new_bot.getLocationFeed(new_location['location']['pk'], maxid=max_id):
-                location_feed = new_bot.LastJson
+            if new_bot.api.get_location_feed(new_location['location']['pk'], max_id=max_id):
+                location_feed = new_bot.api.last_json
                 for media in new_bot.filter_medias(location_feed["items"][:amount], quiet=True):
                     if bot.like(media):
                         counter += 1
@@ -64,8 +64,8 @@ bot.login(username=args.u, password=args.p,
 if args.locations:
     for location in args.locations:
         print(u"Location: {}".format(location))
-        bot.searchLocation(location)
-        finded_location = bot.LastJson['items'][0]
+        bot.api.search_location(location)
+        finded_location = bot.api.last_json['items'][0]
         if finded_location:
             print(u"Found {}".format(finded_location['title']))
 
@@ -76,8 +76,8 @@ if args.locations:
             like_location_feed(bot, finded_location, amount=int(nlikes))
 else:
     location_name = input(u"Write location name:\n").strip()
-    bot.searchLocation(location_name)
-    if not bot.LastJson['items']:
+    bot.api.search_location(location_name)
+    if not bot.api.last_json['items']:
         print(u'Location was not found')
         exit(1)
     if not args.amount:
@@ -86,15 +86,15 @@ else:
         nlikes = args.amount
     ans = True
     while ans:
-        for n, location in enumerate(bot.LastJson["items"], start=1):
+        for n, location in enumerate(bot.api.last_json["items"], start=1):
             print(u'{0}. {1}'.format(n, location['title']))
         print(u'\n0. Exit\n')
-        ans = input(u"What place would you want to choose?\n").strip()
-        if ans == '0':
+        ans = int(input(u"What place would you want to choose?\n").strip())
+        if ans == 0:
             exit(0)
         try:
-            ans = int(ans) - 1
-            if ans in range(len(bot.LastJson["items"])):
-                like_location_feed(bot, bot.LastJson["items"][ans], amount=int(nlikes))
+            ans -= 1
+            if 0 <= ans < len(bot.last_json["items"]):
+                like_location_feed(bot, bot.api.last_json["items"][ans], amount=int(nlikes))
         except ValueError:
             print(u"\n Not valid choice. Try again")

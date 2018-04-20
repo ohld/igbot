@@ -9,6 +9,8 @@ import os
 import re
 import sys
 
+import huepy
+
 
 def check_if_file_exists(file_path, quiet=False):
     if not os.path.exists(file_path):
@@ -42,7 +44,7 @@ def check_whitelists(self):
         Check whitelists in folder with script
     """
     default_names = ('whitelist.txt',
-                     'friends_{0}.txt'.format(self.username),
+                     'friends_{0}.txt'.format(self.api.username),
                      'friends_{0}.txt'.format(self.user_id),
                      'friends.txt')
 
@@ -66,8 +68,11 @@ def add_blacklist(self, file_path):
     return self.blacklist
 
 
-def console_print(self, text):
+def console_print(self, text, color=None):
     if self.verbosity:
+        text = '\n' + text
+        if color is not None:
+            text = getattr(huepy, color)(text)
         print(text)
 
 

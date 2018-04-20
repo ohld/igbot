@@ -8,3 +8,5 @@ pysocks
 pytest
 responses
 future
+six
+huepy

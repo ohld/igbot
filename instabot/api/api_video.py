@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 import copy
 import json
-import math
 import os
 import re
 import shutil
@@ -13,26 +12,27 @@ from requests_toolbelt import MultipartEncoder
 from . import config
 
 
-def downloadVideo(self, media_id, filename, media=False, path='videos/'):
+def download_video(self, media_id, filename, media=False, path='videos'):
     if not media:
-        self.mediaInfo(media_id)
-        media = self.LastJson['items'][0]
+        self.media_info(media_id)
+        media = self.last_json['items'][0]
     filename = '{0}_{1}.mp4'.format(media['user']['username'], media_id) if not filename else '{0}.mp4'.format(filename)
     try:
         clips = media['video_versions']
     except Exception:
         return False
-    if os.path.exists(path + filename):
-        return os.path.abspath(path + filename)
+    fname = os.path.join(path, filename)
+    if os.path.exists(fname):
+        return os.path.abspath(fname)
     response = self.session.get(clips[0]['url'], stream=True)
     if response.status_code == 200:
-        with open(path + filename, 'wb') as f:
+        with open(fname, 'wb') as f:
             response.raw.decode_content = True
             shutil.copyfileobj(response.raw, f)
-        return os.path.abspath(path + filename)
+        return os.path.abspath(fname)
 
 
-def getVideoInfo(filename):
+def get_video_info(filename):
     res = {}
     try:
         terminalResult = subprocess.Popen(["ffprobe", filename],
@@ -55,7 +55,7 @@ def getVideoInfo(filename):
     return res
 
 
-def uploadVideo(self, video, thumbnail, caption=None, upload_id=None):
+def upload_video(self, video, thumbnail, caption=None, upload_id=None):
     if upload_id is None:
         upload_id = str(int(time.time() * 1000))
     data = {
@@ -81,10 +81,10 @@ def uploadVideo(self, video, thumbnail, caption=None, upload_id=None):
         upload_job = body['video_upload_urls'][3]['job']
 
         with open(video, 'rb') as video_bytes:
-            videoData = video_bytes.read()
+            video_data = video_bytes.read()
         # solve issue #85 TypeError: slice indices must be integers or None or have an __index__ method
-        request_size = int(math.floor(len(videoData) / 4))
-        lastRequestExtra = (len(videoData) - (request_size * 3))
+        request_size = len(video_data) // 4
+        last_request_extra = len(video_data) - 3 * request_size
 
         headers = copy.deepcopy(self.session.headers)
         self.session.headers.update({'X-IG-Capabilities': '3Q4=',
@@ -99,31 +99,31 @@ def uploadVideo(self, video, thumbnail, caption=None, upload_id=None):
                                      'job': upload_job,
                                      'Host': 'upload.instagram.com',
                                      'User-Agent': config.USER_AGENT})
-        for i in range(0, 4):
+        for i in range(4):
             start = i * request_size
             if i == 3:
-                end = i * request_size + lastRequestExtra
+                end = i * request_size + last_request_extra
             else:
                 end = (i + 1) * request_size
-            length = lastRequestExtra if i == 3 else request_size
-            content_range = "bytes {start}-{end}/{lenVideo}".format(start=start, end=(end - 1),
-                                                                    lenVideo=len(videoData)).encode('utf-8')
+            length = last_request_extra if i == 3 else request_size
+            content_range = "bytes {start}-{end}/{len_video}".format(
+                start=start, end=end - 1, len_video=len(video_data)).encode('utf-8')
 
             self.session.headers.update({'Content-Length': str(end - start), 'Content-Range': content_range, })
-            response = self.session.post(upload_url, data=videoData[start:start + length])
+            response = self.session.post(upload_url, data=video_data[start:start + length])
         self.session.headers = headers
 
         if response.status_code == 200:
-            if self.configureVideo(upload_id, video, thumbnail, caption):
+            if self.configure_video(upload_id, video, thumbnail, caption):
                 self.expose()
                 return True
     return False
 
 
-def configureVideo(self, upload_id, video, thumbnail, caption=''):
-    clipInfo = getVideoInfo(video)
-    self.uploadPhoto(photo=thumbnail, caption=caption, upload_id=upload_id)
-    data = json.dumps({
+def configure_video(self, upload_id, video, thumbnail, caption=''):
+    clipInfo = get_video_info(video)
+    self.upload_photo(photo=thumbnail, caption=caption, upload_id=upload_id)
+    data = self.json_data({
         'upload_id': upload_id,
         'source_type': 3,
         'poster_frame_index': 0,
@@ -141,9 +141,6 @@ def configureVideo(self, upload_id, video, thumbnail, caption=''):
             'source_height': clipInfo['height'],
         },
         'device': config.DEVICE_SETTINTS,
-        '_csrftoken': self.token,
-        '_uuid': self.uuid,
-        '_uid': self.user_id,
         'caption': caption,
     })
-    return self.SendRequest('media/configure/?video=1', self.generateSignature(data))
+    return self.send_request('media/configure/?video=1', data)

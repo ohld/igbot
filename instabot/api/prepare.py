@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+
 import getpass
 import os
 import sys
@@ -15,7 +16,7 @@ def add_credentials():
 
 
 def get_credentials(username=None):
-    "Returns login and password stored in SECRET_FILE"
+    """Returns login and password stored in `secret.txt`."""
     while not check_secret():
         pass
     while True:
@@ -35,14 +36,14 @@ def get_credentials(username=None):
             if ind == 0:
                 add_credentials()
                 continue
-            if ind == -1:
+            elif ind == -1:
                 delete_credentials()
                 check_secret()
                 continue
-            if ind - 1 in list(range(len(lines))):
+            elif 0 <= ind - 1 < len(lines):
                 return lines[ind - 1]
         except Exception:
-            print("Wrong input. I need the number of account to use.")
+            print("Wrong input, enter the number of the account to use.")
 
 
 def check_secret():
@@ -53,7 +54,7 @@ def check_secret():
                     login, password = f.readline().strip().split(":")
                     if len(login) < 4 or len(password) < 6:
 
-                        print("Data in 'secret.txt' file is invalid. "
+                        print("Data in `secret.txt` file is invalid. "
                               "We will delete it and try again.")
 
                         os.remove(SECRET_FILE)

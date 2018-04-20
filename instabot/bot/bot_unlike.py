@@ -6,7 +6,7 @@ from . import delay, limits
 def unlike(self, media_id):
     if limits.check_if_bot_can_unlike(self):
         delay.unlike_delay(self)
-        if super(self.__class__, self).unlike(media_id):
+        if self.api.unlike(media_id):
             self.total_unliked += 1
             return True
     else:

@@ -11,7 +11,7 @@ def block(self, user_id):
         return True
     if limits.check_if_bot_can_block(self):
         delay.block_delay(self)
-        if super(self.__class__, self).block(user_id):
+        if self.api.block(user_id):
             self.total_blocked += 1
             return True
     else:
@@ -23,7 +23,7 @@ def unblock(self, user_id):
     user_id = self.convert_to_user_id(user_id)
     if limits.check_if_bot_can_unblock(self):
         delay.unblock_delay(self)
-        if super(self.__class__, self).unblock(user_id):
+        if self.api.unblock(user_id):
             self.total_unblocked += 1
             return True
     else:

@@ -19,7 +19,7 @@ def comment(self, media_id, comment_text):
         return True
     if limits.check_if_bot_can_comment(self):
         delay.comment_delay(self)
-        if super(self.__class__, self).comment(media_id, comment_text):
+        if self.api.comment(media_id, comment_text):
             self.total_commented += 1
             return True
     else:

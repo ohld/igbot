@@ -6,7 +6,7 @@ import os
 import pickle
 from datetime import datetime
 
-CHECKPOINT_PATH = "%s.checkpoint"
+CHECKPOINT_PATH = "{fname}.checkpoint"
 
 
 class Checkpoint(object):
@@ -26,7 +26,7 @@ class Checkpoint(object):
         self.total_commented = bot.total_commented
         self.total_blocked = bot.total_blocked
         self.total_unblocked = bot.total_unblocked
-        self.total_requests = bot.total_requests
+        self.total_requests = bot.api.total_requests
         self.start_time = bot.start_time
         self.date = datetime.now()
         self.total_archived = bot.total_archived
@@ -34,34 +34,35 @@ class Checkpoint(object):
         self.total_sent_messages = bot.total_sent_messages
 
     def fill_following(self, bot):
-        self.following = [item["pk"] for item in bot.getTotalSelfFollowings()]
+        self.following = [item["pk"] for item in bot.api.get_total_self_followings()]
 
     def fill_followers(self, bot):
-        self.followers = [item["pk"] for item in bot.getTotalSelfFollowers()]
+        self.followers = [item["pk"] for item in bot.api.get_total_self_followers()]
 
     def dump(self):
         return (self.total_liked, self.total_unliked, self.total_followed,
                 self.total_unfollowed, self.total_commented, self.total_blocked,
-                self.total_unblocked, self.total_requests, self.start_time,
+                self.total_unblocked, self.api.total_requests, self.start_time,
                 self.total_archived, self.total_unarchived, self.total_sent_messages)
 
 
 def save_checkpoint(self):
     checkpoint = Checkpoint(self)
-
-    with open(CHECKPOINT_PATH % self.username, 'wb') as file_descriptor:
-        pickle.dump(checkpoint, file_descriptor, -1)
+    fname = CHECKPOINT_PATH.format(fname=self.api.username)
+    with open(fname, 'wb') as f:
+        pickle.dump(checkpoint, f, -1)
     return True
 
 
 def load_checkpoint(self):
     try:
-        with open(CHECKPOINT_PATH % self.username, 'rb') as file_descriptor:
-            checkpoint = pickle.load(file_descriptor)
+        fname = CHECKPOINT_PATH.format(fname=self.api.username)
+        with open(fname, 'rb') as f:
+            checkpoint = pickle.load(f)
         if isinstance(checkpoint, Checkpoint):
             return checkpoint.dump()
         else:
-            os.remove(CHECKPOINT_PATH % self.username)
+            os.remove(fname)
     except Exception:
         pass
     return None

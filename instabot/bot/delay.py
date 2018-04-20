@@ -7,7 +7,7 @@ import time
 
 
 def add_dispersion(delay_value):
-    return delay_value * 3 / 4 + delay_value * random.random() / 2
+    return delay_value * random.uniform(0.25, 1.25)
 
 
 # this function will sleep only if elapsed time since `last_action` is less than `target_delay`

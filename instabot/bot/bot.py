@@ -25,8 +25,8 @@ from .bot_get import (convert_to_user_id, get_archived_medias, get_comment,
                       get_timeline_users, get_total_hashtag_medias,
                       get_total_user_medias, get_user_followers,
                       get_user_following, get_user_info, get_user_likers,
-                      get_user_medias, get_userid_from_username,
-                      get_username_from_userid, get_your_medias, search_users)
+                      get_user_medias, get_user_id_from_username,
+                      get_username_from_user_id, get_your_medias, search_users)
 from .bot_like import (like, like_followers, like_following, like_geotag,
                        like_hashtag, like_medias, like_timeline, like_user,
                        like_users)
@@ -41,7 +41,7 @@ from .bot_unlike import unlike, unlike_medias, unlike_user
 from .bot_video import upload_video
 
 
-class Bot(API):
+class Bot(object):
     def __init__(self,
                  whitelist=False,
                  blacklist=False,
@@ -78,7 +78,7 @@ class Bot(API):
                  stop_words=('shop', 'store', 'free'),
                  verbosity=True,
                  ):
-        super(Bot, self).__init__()
+        self.api = API()
 
         self.total_liked = 0
         self.total_unliked = 0
@@ -158,7 +158,28 @@ class Bot(API):
         if comments_file:
             self.comments = read_list_from_file(comments_file)
 
+        self.logger = self.api.logger
         self.logger.info('Instabot Started')
+
+    @property
+    def user_id(self):
+        # For compatibility
+        return self.api.user_id
+
+    @property
+    def username(self):
+        # For compatibility
+        return self.api.username
+
+    @property
+    def password(self):
+        # For compatibility
+        return self.api.password
+
+    @property
+    def last_json(self):
+        # For compatibility
+        return self.api.last_json
 
     def version(self):
         try:
@@ -169,7 +190,7 @@ class Bot(API):
 
     def logout(self):
         save_checkpoint(self)
-        super(Bot, self).logout()
+        self.api.logout()
         self.logger.info("Bot stopped. "
                          "Worked: %s", datetime.datetime.now() - self.start_time)
         self.print_counters()
@@ -177,7 +198,7 @@ class Bot(API):
     def login(self, **args):
         if self.proxy:
             args['proxy'] = self.proxy
-        if super(Bot, self).login(**args) is False:
+        if self.api.login(**args) is False:
             return False
         self.prepare()
         signal.signal(signal.SIGTERM, self.logout)
@@ -187,12 +208,12 @@ class Bot(API):
     def prepare(self):
         storage = load_checkpoint(self)
         if storage is not None:
-            self.total_liked, self.total_unliked, self.total_followed, self.total_unfollowed, self.total_commented, self.total_blocked, self.total_unblocked, self.total_requests, self.start_time, self.total_archived, self.total_unarchived, self.total_sent_messages = storage
+            self.total_liked, self.total_unliked, self.total_followed, self.total_unfollowed, self.total_commented, self.total_blocked, self.total_unblocked, self.api.total_requests, self.start_time, self.total_archived, self.total_unarchived, self.total_sent_messages = storage
         if not self.whitelist:
             self.whitelist = check_whitelists(self)
         self.whitelist = self.convert_whitelist(self.whitelist)
-        self.blacklist = list(
-            filter(None, map(self.convert_to_user_id, self.blacklist)))
+        self.blacklist = [self.convert_to_user_id(u) for u in self.blacklist
+                          if u is not None]
 
     def convert_whitelist(self, usernames):
         """
@@ -228,7 +249,7 @@ class Bot(API):
             self.logger.info("Total unarchived: %d", self.total_unarchived)
         if self.total_sent_messages:
             self.logger.info("Total sent messages: %d", self.total_sent_messages)
-        self.logger.info("Total requests: %d", self.total_requests)
+        self.logger.info("Total requests: %d", self.api.total_requests)
 
     # getters
 
@@ -282,11 +303,11 @@ class Bot(API):
     def get_geotag_users(self, geotag):
         return get_geotag_users(self, geotag)
 
-    def get_userid_from_username(self, username):
-        return get_userid_from_username(self, username)
+    def get_user_id_from_username(self, username):
+        return get_user_id_from_username(self, username)
 
-    def get_username_from_userid(self, userid):
-        return get_username_from_userid(self, userid)
+    def get_username_from_user_id(self, user_id):
+        return get_username_from_user_id(self, user_id)
 
     def get_user_info(self, user_id):
         return get_user_info(self, user_id)
@@ -533,8 +554,8 @@ class Bot(API):
     def add_blacklist(self, file_path):
         return add_blacklist(self, file_path)
 
-    def console_print(self, text):
-        return console_print(self, text)
+    def console_print(self, text, color=None):
+        return console_print(self, text, color)
 
     # stats
 
