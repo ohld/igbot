@@ -137,8 +137,9 @@ class Bot(object):
         self.unblock_delay = unblock_delay
         self.message_delay = message_delay
 
-        # current following
-        self.following = []
+        # current following and followers
+        self._following = None
+        self._followers = None
 
         # proxy
         self.proxy = proxy
@@ -181,6 +182,20 @@ class Bot(object):
         # For compatibility
         return self.api.last_json
 
+    @property
+    def following(self):
+        if self._following is None:
+            self.console_print('`bot.following` is empty, will download.', 'green')
+            self._following = self.get_user_following(self.user_id)
+        return self._following
+
+    @property
+    def followers(self):
+        if self._followers is None:
+            self.console_print('`bot.followers` is empty, will download.', 'green')
+            self._followers = self.get_user_followers(self.user_id)
+        return self._followers
+
     def version(self):
         try:
             from pip._vendor import pkg_resources
@@ -208,7 +223,18 @@ class Bot(object):
     def prepare(self):
         storage = load_checkpoint(self)
         if storage is not None:
-            self.total_liked, self.total_unliked, self.total_followed, self.total_unfollowed, self.total_commented, self.total_blocked, self.total_unblocked, self.api.total_requests, self.start_time, self.total_archived, self.total_unarchived, self.total_sent_messages = storage
+            (self.total_liked,
+             self.total_unliked,
+             self.total_followed,
+             self.total_unfollowed,
+             self.total_commented,
+             self.total_blocked,
+             self.total_unblocked,
+             self.api.total_requests,
+             self.start_time,
+             self.total_archived,
+             self.total_unarchived,
+             self.total_sent_messages) = storage
         if not self.whitelist:
             self.whitelist = check_whitelists(self)
         self.whitelist = self.convert_whitelist(self.whitelist)

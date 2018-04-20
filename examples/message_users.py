@@ -54,8 +54,7 @@ elif deliveryMethod == 2:
     time.sleep(3)
     exit()
 elif deliveryMethod == 3:
-    followers = bot.get_user_followers(bot.user_id)
-    for follower in tqdm(followers):
+    for follower in tqdm(bot.followers):
         bot.send_message(directMessage, follower)
     print('Sent An Individual Messages To Your Followers..')
     time.sleep(3)

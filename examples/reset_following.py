@@ -16,7 +16,7 @@ from instabot import Bot
 class Task(object):
     # getting the user to pick what to do
     @staticmethod
-    def start(my_bot):
+    def start(bot):
         answer = input("""
         Please select
         1) Create Friends List
@@ -30,11 +30,11 @@ class Task(object):
         answer = str(answer)
         # make a script
         if answer == '1':
-            Task.one(my_bot)
+            Task.one(bot)
 
             # unfollow your nonfriends
         if answer == '2':
-            Task.two(my_bot)
+            Task.two(bot)
 
             # exit sript
         if answer == '3':
@@ -43,30 +43,29 @@ class Task(object):
             # invalid input
         else:
             print("Type 1,2 or 3.")
-            Task.start(my_bot)
+            Task.start(bot)
 
             # list of followers script
 
     @staticmethod
-    def one(my_bot):
+    def one(bot):
         print("Creating List")
-        friends = my_bot.get_user_following(my_bot.user_id)  # getting following
-        friendslist = list(set(friends))  # listing your fiends
-        with open("friends_{0}.txt".format(my_bot.username), "w") as file:  # writing to the file
-            for user_id in friendslist:
+        friends = bot.following
+        with open("friends_{0}.txt".format(bot.username), "w") as file:  # writing to the file
+            for user_id in friends:
                 file.write(str(user_id) + "\n")
         print("Task Done")
-        Task.start(my_bot)  # go back to the start menu
+        Task.start(bot)  # go back to the start menu
 
         # reset following script
 
     @staticmethod
-    def two(my_bot):
-        friends = my_bot.read_list_from_file("friends_{0}.txt".format(my_bot.username))  # getting the list of friends
-        your_following = bot.get_user_following(my_bot.user_id)  # getting your following
+    def two(bot):
+        friends = bot.read_list_from_file("friends_{0}.txt".format(bot.username))  # getting the list of friends
+        your_following = bot.following
         unfollow = list(set(your_following) - set(friends))  # removing your friends from the list to unfollow
         bot.unfollow_users(unfollow)  # unfollowing people who are not your friends
-        Task.start(my_bot)  # go back to the start menu
+        Task.start(bot)  # go back to the start menu
 
 
 bot = Bot()

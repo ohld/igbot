@@ -55,7 +55,6 @@ def unfollow_non_followers(self, n_to_unfollows=None):
 
 
 def unfollow_everyone(self):
-    self.following = self.get_user_following(self.user_id)
     self.unfollow_users(self.following)
 
 
@@ -63,10 +62,10 @@ def update_unfollow_file(self):
     self.logger.info("Updating `unfollowed.txt`.")
     self.console_print("Calculating non-followers list.", 'green')
 
-    followings = self.get_user_following(self.user_id)
-    followers = self.get_user_followers(self.user_id)
+    followings = self.following
+    followers = self.followers
     friends_file = self.read_list_from_file("friends.txt")  # same whitelist (just user ids)
-    nonfollowerslist = list((set(followings) - set(followers)) - set(friends_file))
+    nonfollowerslist = set(followings) - set(followers) - set(friends_file)
     followed_list = self.read_list_from_file("followed.txt")
     unfollow_list = [x for x in followed_list if x in nonfollowerslist]
     unfollow_list += [x for x in nonfollowerslist if x not in followed_list]

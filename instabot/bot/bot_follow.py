@@ -36,7 +36,7 @@ def follow_users(self, user_ids):
     self.console_print(msg, 'green')
 
     # Remove skipped and followed list from user_ids
-    user_ids = list((set(user_ids) - set(followed)) - set(skipped))
+    user_ids = list(set(user_ids) - set(followed) - set(skipped))
     msg = 'After filtering `followed.txt` and `skipped.txt`, {} user_ids left to follow.'
     self.console_print(msg.format(len(user_ids)), 'green')
     for user_id in tqdm(user_ids, desc='Processed users'):
