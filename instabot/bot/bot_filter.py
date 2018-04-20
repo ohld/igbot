@@ -126,7 +126,6 @@ def check_user(self, user_id, filter_closed_acc=False, unfollowing=False):
 
     if not self.following:
         self.console_print('Own following list is empty, will download.', 'green')
-        self.following = self.get_user_following(self.user_id)
     if user_id in self.following:
         if not unfollowing:
             # Log to Console

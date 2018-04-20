@@ -50,10 +50,9 @@ class Task(object):
     @staticmethod
     def one(my_bot):
         print("Creating List")
-        friends = my_bot.get_user_following(my_bot.user_id)  # getting following
-        friendslist = list(set(friends))  # listing your fiends
+        friends = my_bot.following
         with open("friends_{0}.txt".format(my_bot.username), "w") as file:  # writing to the file
-            for user_id in friendslist:
+            for user_id in friends:
                 file.write(str(user_id) + "\n")
         print("Task Done")
         Task.start(my_bot)  # go back to the start menu
@@ -63,7 +62,7 @@ class Task(object):
     @staticmethod
     def two(my_bot):
         friends = my_bot.read_list_from_file("friends_{0}.txt".format(my_bot.username))  # getting the list of friends
-        your_following = bot.get_user_following(my_bot.user_id)  # getting your following
+        your_following = bot.following
         unfollow = list(set(your_following) - set(friends))  # removing your friends from the list to unfollow
         bot.unfollow_users(unfollow)  # unfollowing people who are not your friends
         Task.start(my_bot)  # go back to the start menu

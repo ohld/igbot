@@ -112,7 +112,7 @@ def job9():  # Automatically post a pic in 'pics' folder
 def job10():  # put non followers on blacklist
     try:
         bot.logger.info("Creating non-followers list")
-        followings = bot.get_user_following(bot.user_id)  # getting following
+        followings = bot.following  # getting following
         followers = bot.get_user_followers(bot.user_id)  # getting followers
         friends_file = bot.read_list_from_file("friends.txt")  # same whitelist (just user ids)
         nonfollowerslist = set(followings) - set(followers) - set(friends_file)

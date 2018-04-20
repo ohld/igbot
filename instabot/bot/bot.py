@@ -138,7 +138,7 @@ class Bot(object):
         self.message_delay = message_delay
 
         # current following
-        self.following = []
+        self._following = None
 
         # proxy
         self.proxy = proxy
@@ -180,6 +180,12 @@ class Bot(object):
     def last_json(self):
         # For compatibility
         return self.api.last_json
+
+    @property
+    def following(self):
+        if self._following is not None:
+            self._following = self.get_user_following(self.user_id)
+        return self._following
 
     def version(self):
         try:
