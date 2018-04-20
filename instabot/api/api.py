@@ -129,7 +129,7 @@ class API(object):
             if response.status_code == 429:
                 sleep_minutes = 5
                 self.logger.warning(
-                    "That means 'too many requests'. I'll go to sleep"
+                    "That means 'too many requests'. I'll go to sleep "
                     "for {} minutes.".format(sleep_minutes))
                 time.sleep(sleep_minutes * 60)
             elif response.status_code == 400:
