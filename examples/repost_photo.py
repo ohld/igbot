@@ -26,18 +26,18 @@ def update_posted_medias(new_media_id, path='posted_medias.txt'):
     return True
 
 
-def repost_photo(my_bot, new_media_id, path='posted_medias.txt'):
+def repost_photo(bot, new_media_id, path='posted_medias.txt'):
     if exists_in_posted_medias(new_media_id, path):
-        my_bot.logger.warning("Media {0} was uploaded earlier".format(new_media_id))
+        bot.logger.warning("Media {0} was uploaded earlier".format(new_media_id))
         return False
-    photo_path = my_bot.download_photo(new_media_id, description=True)
+    photo_path = bot.download_photo(new_media_id, description=True)
     if not photo_path:
         return False
     with open(photo_path[:-3] + 'txt', 'r') as f:
         text = ''.join(f.readlines())
-    if my_bot.upload_photo(photo_path, text):
+    if bot.upload_photo(photo_path, text):
         update_posted_medias(new_media_id, path)
-        my_bot.logger.info('Media_id {0} is saved in {1}'.format(new_media_id, path))
+        bot.logger.info('Media_id {0} is saved in {1}'.format(new_media_id, path))
 
 
 media_id = ''
