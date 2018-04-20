@@ -63,7 +63,7 @@ def update_unfollow_file(self):
     self.console_print("Calculating non-followers list.", 'green')
 
     followings = self.following
-    followers = self.get_user_followers(self.user_id)
+    followers = self.followers
     friends_file = self.read_list_from_file("friends.txt")  # same whitelist (just user ids)
     nonfollowerslist = set(followings) - set(followers) - set(friends_file)
     followed_list = self.read_list_from_file("followed.txt")

@@ -56,7 +56,7 @@ def unblock_users(self, user_ids):
 
 def block_bots(self):
     self.logger.info("Going to block bots.")
-    your_followers = self.get_user_followers(self.user_id)
+    your_followers = self.followers
     your_likers = self.get_user_likers(self.user_id)
     not_likers = list(set(your_followers) - set(your_likers))
     random.shuffle(not_likers)

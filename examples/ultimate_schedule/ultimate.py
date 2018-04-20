@@ -113,7 +113,7 @@ def job10():  # put non followers on blacklist
     try:
         bot.logger.info("Creating non-followers list")
         followings = bot.following  # getting following
-        followers = bot.get_user_followers(bot.user_id)  # getting followers
+        followers = bot.followers  # getting followers
         friends_file = bot.read_list_from_file("friends.txt")  # same whitelist (just user ids)
         nonfollowerslist = set(followings) - set(followers) - set(friends_file)
         with open(config.BLACKLIST_FILE, 'a') as file:  # writing to the blacklist

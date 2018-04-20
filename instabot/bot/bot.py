@@ -137,8 +137,9 @@ class Bot(object):
         self.unblock_delay = unblock_delay
         self.message_delay = message_delay
 
-        # current following
+        # current following and followers
         self._following = None
+        self._followers = None
 
         # proxy
         self.proxy = proxy
@@ -186,6 +187,12 @@ class Bot(object):
         if self._following is not None:
             self._following = self.get_user_following(self.user_id)
         return self._following
+
+    @property
+    def followers(self):
+        if self._followers is not None:
+            self._followers = self.get_user_followers(self.user_id)
+        return self._followers
 
     def version(self):
         try:

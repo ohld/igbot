@@ -361,7 +361,7 @@ class API(object):
         return self.send_request(url)
 
     def get_self_user_followers(self):
-        return self.get_user_followers(self.user_id)
+        return self.followers
 
     def like(self, media_id):
         data = self.json_data({'media_id': media_id})
