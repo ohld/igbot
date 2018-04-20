@@ -89,12 +89,12 @@ else:
         for n, location in enumerate(bot.api.last_json["items"], start=1):
             print(u'{0}. {1}'.format(n, location['title']))
         print(u'\n0. Exit\n')
-        ans = input(u"What place would you want to choose?\n").strip()
-        if ans == '0':
+        ans = int(input(u"What place would you want to choose?\n").strip())
+        if ans == 0:
             exit(0)
         try:
-            ans = int(ans) - 1
-            if ans in range(len(bot.api.last_json["items"])):
+            ans -= 1
+            if 0 <= ans < len(bot.last_json["items"]):
                 like_location_feed(bot, bot.api.last_json["items"][ans], amount=int(nlikes))
         except ValueError:
             print(u"\n Not valid choice. Try again")
