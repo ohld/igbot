@@ -11,7 +11,7 @@ def archive(self, media_id, undo=False):
         self.total_archived += int(not undo)
         self.total_unarchived += int(undo)
         return True
-    self.logger.info("Media id %s is not %s .", media_id, 'unarchived' if undo else 'archived')
+    self.logger.info("Media id %s is not %s.", media_id, 'unarchived' if undo else 'archived')
     return False
 
 
