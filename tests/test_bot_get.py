@@ -329,7 +329,7 @@ class TestBotGet(TestBot):
         if self.bot.comments:
             assert self.bot.get_comment() in self.bot.comments
         else:
-            assert self.bot.get_comment() == 'wow'
+            assert self.bot.get_comment() == 'Wow!'
 
     @responses.activate
     @pytest.mark.parametrize('user_id', [
