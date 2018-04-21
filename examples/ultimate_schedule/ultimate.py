@@ -2,14 +2,13 @@
 
 from glob import glob
 import os
-import random
 import sys
 import threading
 import time
 
 sys.path.append(os.path.join(sys.path[0], '../../'))
 import schedule
-from instabot import Bot
+from instabot import Bot, utils
 
 import config
 
@@ -20,10 +19,10 @@ bot = Bot(comments_file=config.COMMENTS_FILE,
 bot.login()
 bot.logger.info("ULTIMATE script. 24hours save")
 
-random_user_file = instabot.utils.file(config.USERS_FILE)
-random_hashtag_file = instabot.utils.file(config.HASHTAGS_FILE)
-photo_captions_file = instabot.utils.file(config.PHOTO_CAPTIONS_FILE)
-posted_pic_list = instabot.utils.file(config.POSTED_PICS_FILE).list
+random_user_file = utils.file(config.USERS_FILE)
+random_hashtag_file = utils.file(config.HASHTAGS_FILE)
+photo_captions_file = utils.file(config.PHOTO_CAPTIONS_FILE)
+posted_pic_list = utils.file(config.POSTED_PICS_FILE).list
 
 # Get the filenames of the photos in the path ->
 pics = [os.path.basename(x) for x in glob(config.PICS_PATH + "/*.jpg")]
