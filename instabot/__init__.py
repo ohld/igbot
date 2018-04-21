@@ -2,4 +2,4 @@ from .api import API
 from .bot import Bot
 from . import utils
 
-assert API, Bot, utils  # silence pyflakes
+assert all((API, Bot, utils))  # silence pyflakes

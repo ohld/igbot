@@ -1,7 +1,7 @@
 from tqdm import tqdm
 
 from . import delay, limits
-
+from .. import utils
 
 def unfollow(self, user_id):
     user_id = self.convert_to_user_id(user_id)
