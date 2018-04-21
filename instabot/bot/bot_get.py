@@ -147,7 +147,7 @@ def get_user_id_from_username(self, username):
 
 def get_username_from_user_id(self, user_id):
     user_info = self.get_user_info(user_id)
-    if "user" in user_info:
+    if user_info and "user" in user_info:
         return str(user_info["username"])
     return None  # Not found
 

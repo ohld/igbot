@@ -161,7 +161,7 @@ class Bot(object):
         self.logger.info('Instabot Started')
 
         self._user_infos = {}  # User info cache
-        self._username = {}  # `username` to `user_id` mapping
+        self._usernames = {}  # `username` to `user_id` mapping
 
     @property
     def user_id(self):
