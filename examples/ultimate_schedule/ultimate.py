@@ -22,7 +22,7 @@ bot.logger.info("ULTIMATE script. 24hours save")
 
 random_user_file = instabot.utils.file(config.USERS_FILE)
 random_hashtag_file = instabot.utils.file(config.HASHTAGS_FILE)
-photo_captions = instabot.utils.file(config.PHOTO_CAPTIONS_FILE)
+photo_captions_file = instabot.utils.file(config.PHOTO_CAPTIONS_FILE)
 posted_pic_list = instabot.utils.file(config.POSTED_PICS_FILE).list
 
 # Get the filenames of the photos in the path ->
@@ -74,7 +74,7 @@ def job9():  # Automatically post a pic in 'pics' folder
             if pic in posted_pic_list:
                 continue
 
-            caption = photo_captions.random()
+            caption = photo_captions_file.random()
             full_caption = caption + "\n" + config.FOLLOW_MESSAGE
             bot.logger.info("Uploading pic with caption: " + caption)
             bot.upload_photo(config.PICS_PATH + pic, caption=full_caption)
