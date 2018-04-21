@@ -20,11 +20,9 @@ bot = Bot(comments_file=config.COMMENTS_FILE,
 bot.login()
 bot.logger.info("ULTIMATE script. 24hours save")
 
-random_user_file = bot.read_list_from_file(config.USERS_FILE)
-random_hashtag_file = bot.read_list_from_file(config.HASHTAGS_FILE)
-photo_captions = bot.read_list_from_file(config.PHOTO_CAPTIONS_FILE)
-
-# to get pics and autopost it
+random_user_file = instabot.utils.file(config.USERS_FILE)
+random_hashtag_file = instabot.utils.file(config.HASHTAGS_FILE)
+photo_captions = instabot.utils.file(config.PHOTO_CAPTIONS_FILE)
 posted_pic_list = instabot.utils.file(config.POSTED_PICS_FILE).list
 
 # Get the filenames of the photos in the path ->
@@ -32,18 +30,12 @@ pics = [os.path.basename(x) for x in glob(config.PICS_PATH + "/*.jpg")]
 pics = sorted(pics)
 
 
-# Return a random value from a list, used in various jobs below
-def get_random(from_list):
-    _random = random.choice(from_list)
-    return _random
-
-
 def stats():
     bot.save_user_stats(bot.user_id)
 
 
 def job1():
-    bot.like_hashtag(get_random(random_hashtag_file), amount=int(700 / 24))
+    bot.like_hashtag(random_hashtag_file.random(), amount=int(700 / 24))
 
 
 def job2():
@@ -51,11 +43,11 @@ def job2():
 
 
 def job3():
-    bot.like_followers(get_random(random_user_file), nlikes=3)
+    bot.like_followers(random_user_file.random(), nlikes=3)
 
 
 def job4():
-    bot.follow_followers(get_random(random_user_file), nfollows=config.NUMBER_OF_FOLLOWERS_TO_FOLLOW)
+    bot.follow_followers(random_user_file.random(), nfollows=config.NUMBER_OF_FOLLOWERS_TO_FOLLOW)
 
 
 def job5():
@@ -67,11 +59,11 @@ def job6():
 
 
 def job7():
-    bot.follow_users(bot.get_hashtag_users(get_random(random_hashtag_file)))
+    bot.follow_users(bot.get_hashtag_users(random_hashtag_file.random()))
 
 
 def job8():  # Comment posts with an hashtag in HASHTAGS_FILE
-    hashtag = get_random(random_hashtag_file)
+    hashtag = random_hashtag_file.random()
     bot.logger.info("Commenting on hashtag: " + hashtag)
     bot.comment_hashtag(hashtag)
 
@@ -82,7 +74,7 @@ def job9():  # Automatically post a pic in 'pics' folder
             if pic in posted_pic_list:
                 continue
 
-            caption = get_random(photo_captions)
+            caption = photo_captions.random()
             full_caption = caption + "\n" + config.FOLLOW_MESSAGE
             bot.logger.info("Uploading pic with caption: " + caption)
             bot.upload_photo(config.PICS_PATH + pic, caption=full_caption)
