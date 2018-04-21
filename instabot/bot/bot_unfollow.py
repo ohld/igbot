@@ -1,7 +1,7 @@
 from tqdm import tqdm
 
 from . import delay, limits
-from .. import utils
+
 
 def unfollow(self, user_id):
     user_id = self.convert_to_user_id(user_id)
@@ -45,7 +45,6 @@ def unfollow_users(self, user_ids):
 def unfollow_non_followers(self, n_to_unfollows=None):
     self.logger.info("Unfollowing non-followers.")
     self.console_print(" ===> Start unfollowing non-followers <===", 'red')
-    followed = self.followed_file.set
     non_followers = set(self.following) - set(self.followers) - self.friends_file.set
     for user_id in tqdm(non_followers[:n_to_unfollows]):
         self.unfollow(user_id)

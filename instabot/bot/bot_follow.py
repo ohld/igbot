@@ -1,7 +1,6 @@
 from tqdm import tqdm
 
 from . import delay, limits
-from .. import utils
 
 
 def follow(self, user_id):

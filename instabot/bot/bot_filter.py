@@ -3,7 +3,6 @@
 """
 
 from . import delay
-from .. import utils
 
 
 # Adding `users_id`s to `skipped.txt`, such that InstaBot will not

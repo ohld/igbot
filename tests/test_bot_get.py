@@ -329,7 +329,6 @@ class TestBotGet(TestBot):
     ])
     def test_get_comment(self, comments):
         fname = tempfile.mkstemp()[1]  # Temporary file
-        print(fname)
         self.bot.comments_file = utils.file(fname, verbose=True)
         if comments:
             for comment in comments:

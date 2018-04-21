@@ -3,8 +3,6 @@
     passed into e.g. like() or comment() functions.
 """
 
-import random
-
 from tqdm import tqdm
 
 from . import delay
