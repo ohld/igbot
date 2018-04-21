@@ -126,89 +126,47 @@ def username_adder():
                 break
 
 
+def get_adder(name, fname):
+    def _adder():
+        print("Current Database:")
+        print(bot.read_list_from_file(fname))
+        with open(fname, "a") as f:
+            print('Add {} to database'.format(name))
+            while True:
+                print("Enter {}: ".format(name))
+                f.write(str(sys.stdin.readline().strip()) + "\n")
+                print("Do you want to add another {}? (y/n)\n".format(name))
+                if "y" not in sys.stdin.readline():
+                    print('Done adding {}s to database'.format(name))
+                    break
+    return _adder
+
+
 def hashtag_adder():
-    print("Current Database:")
-    print(bot.read_list_from_file(hashtag_file))
-    with open(hashtag_file, "a") as f:
-        print('Add hashtag to database')
-        while True:
-            print("Enter hashtag: ")
-            f.write(str(sys.stdin.readline().strip()) + "\n")
-            print("Do you want to add another hashtag? (y/n)\n")
-            if "y" not in sys.stdin.readline():
-                print('Done adding hashtag to database')
-                break
+    return get_adder('hashtag', fname=hashtag_file)
 
 
 def competitor_adder():
-    print("Current Database:")
-    print(bot.read_list_from_file(users_file))
-    with open(users_file, "a") as f:
-        print('Add username to database')
-        while True:
-            print("Enter username: ")
-            f.write(str(sys.stdin.readline().strip()) + "\n")
-            print("Do you want to add another username? (y/n)\n")
-            if "y" not in sys.stdin.readline():
-                print('done adding username to database')
-                break
+    return get_adder('username', fname=users_file)
 
 
 def blacklist_adder():
-    print("Current Database:")
-    print(bot.read_list_from_file(blacklist))
-    with open(blacklist, "a") as f:
-        print('Add username to blacklist')
-        while True:
-            print("Enter username: ")
-            f.write(str(sys.stdin.readline().strip()) + "\n")
-            print("Do you want to add another username? (y/n)\n")
-            if "y" not in sys.stdin.readline():
-                print('done adding username to blacklist')
-                break
+    return get_adder('username', fname=blacklist)
 
 
 def whitelist_adder():
-    print("Current Database:")
-    print(bot.read_list_from_file(whitelist))
-    with open(whitelist, "a") as f:
-        print('Add username to whitelist')
-        while True:
-            print("Enter username: ")
-            f.write(str(sys.stdin.readline().strip()) + "\n")
-            print("Do you want to add another username? (y/n)\n")
-            if "y" not in sys.stdin.readline():
-                print('done adding username to whitelist')
-                break
+    return get_adder('username', fname=whitelist)
 
 
 def comment_adder():
-    print("Current Database:")
-    print(bot.read_list_from_file(comment))
-    with open(comment, "a") as f:
-        print('Add comment')
-        while True:
-            print("Enter comment: ")
-            f.write(str(sys.stdin.readline().strip()) + "\n")
-            print("Do you want to add another comment? (y/n)\n")
-            if "y" not in sys.stdin.readline():
-                print('done adding comment')
-                break
+    return get_adder('comment', fname=comment)
 
 
 def userlist_maker():
-    with open(userlist, "w") as f:
-        print('Add user to list')
-        while True:
-            print("Enter username: ")
-            f.write(str(sys.stdin.readline().strip()) + "\n")
-            print("Do you want to add another user? (y/n)\n")
-            if "y" not in sys.stdin.readline():
-                print('done make list')
-                break
+    return get_adder('username', userlist)
+
 
 # all menu start here
-
 
 def menu():
     ans = True
