@@ -9,24 +9,19 @@ from tqdm import tqdm
 sys.path.append(os.path.join(sys.path[0], '../'))
 from instabot import Bot
 
+
 # initial
 
-
 def initial_checker():
+    files = [hashtag_file, users_file, whitelist, blacklist, comment, setting]
     try:
-        open(hashtag_file, 'r')
-        open(users_file, 'r')
-        open(whitelist, 'r')
-        open(blacklist, 'r')
-        open(comment, 'r')
-        open(setting, 'r')
+        for f in files:
+            with open(f, 'r') as f:
+                pass
     except BaseException:
-        open(hashtag_file, 'w')
-        open(users_file, 'w')
-        open(whitelist, 'w')
-        open(blacklist, 'w')
-        open(comment, 'w')
-        open(setting, 'w')
+        for f in files:
+            with open(f, 'w') as f:
+                pass
         print("""
         Welcome to instabot, it seems this is the first time you've used this bot.
         Before starting, let's setup the basics.
@@ -42,99 +37,79 @@ def initial_checker():
         os.system('cls')
 
 
-# language checker
-# if 'EN_en' in open(setting).read():
-#    print("oke")
-#    from lang import EN_en
+def read_input(f, msg, n=None):
+    if n is not None:
+        msg += " (enter to use default number: {})".format(n)
+    print(msg)
+    entered = sys.stdin.readline().strip() or str(n)
+    if isinstance(n, int):
+        entered = int(entered)
+    f.write(str(entered) + "\n")
+
 
 # setting function start here
 def setting_input():
+    inputs = [("How many likes do you want to do in a day?", 1000),
+              ("How about unlike? ", 1000),
+              ("How many follows do you want to do in a day? ", 350),
+              ("How about unfollow? ", 350),
+              ("How many comments do you want to do in a day? ", 100),
+              (("Maximal likes in media you will like?\n"
+                "We will skip media that have greater like than this value "), 100),
+              (("Maximal followers of account you want to follow?\n"
+                "We will skip media that have greater followers than this value "), 2000),
+              (("Minimum followers a account should have before we follow?\n"
+                "We will skip media that have lesser followers than this value "), 10),
+              (("Maximum following of account you want to follow?\n"
+                "We will skip media that have a greater following than this value "), 7500),
+              (("Minimum following of account you want to follow?\n"
+                "We will skip media that have lesser following from this value "), 10),
+              ("Maximal followers to following_ratio ", 10),
+              ("Maximal following to followers_ratio ", 2),
+              (("Minimal media the account you will follow have.\n"
+                "We will skip media that have lesser media from this value "), 3),
+              ("Delay from one like to another like you will perform ", 10),
+              ("Delay from one unlike to another unlike you will perform ", 10),
+              ("Delay from one follow to another follow you will perform ", 30),
+              ("Delay from one unfollow to another unfollow you will perform ", 30),
+              ("Delay from one comment to another comment you will perform ", 60),
+              ("Want to use proxy? insert your proxy or leave it blank if no. (just enter", 'None')]
+
     with open(setting, "w") as f:
         while True:
-            print(
-                "How many likes do you want to do in a day? (enter to use default number: 1000)")
-            f.write(str(int(sys.stdin.readline().strip()or "1000")) + "\n")
-            print("How about unlike? (enter to use default number: 1000)")
-            f.write(str(int(sys.stdin.readline().strip()or "1000")) + "\n")
-            print(
-                "How many follows do you want to do in a day? (enter to use default number: 350)")
-            f.write(str(int(sys.stdin.readline().strip()or "350")) + "\n")
-            print("How about unfollow? (enter to use default number: 350)")
-            f.write(str(int(sys.stdin.readline().strip()or "350")) + "\n")
-            print(
-                "How many comments do you want to do in a day? (enter to use default number:100)")
-            f.write(str(int(sys.stdin.readline().strip()or "100")) + "\n")
-            print("Maximal likes in media you will like?")
-            print(
-                "We will skip media that have greater like than this value (enter to use default number: 100)")
-            f.write(str(int(sys.stdin.readline().strip()or "100")) + "\n")
-            print("Maximal followers of account you want to follow?")
-            print("We will skip media that have greater followers than this value (enter to use default number: 2000)")
-            f.write(str(int(sys.stdin.readline().strip()or "2000")) + "\n")
-            print("Minimum followers a account should have before we follow?")
-            print(
-                "We will skip media that have lesser followers than this value (enter to use default number: 10)")
-            f.write(str(int(sys.stdin.readline().strip()or "10")) + "\n")
-            print("Maximum following of account you want to follow?")
-            print("We will skip media that have a greater following than this value (enter to use default number: 7500)")
-            f.write(str(int(sys.stdin.readline().strip()or "7500")) + "\n")
-            print("Minimum following of account you want to follow?")
-            print("We will skip media that have lesser following from this value (enter to use default number: 10)")
-            f.write(str(int(sys.stdin.readline().strip()or "10")) + "\n")
-            print(
-                "Maximal followers to following_ratio (enter to use default number: 10)")
-            f.write(str(int(sys.stdin.readline().strip()or "10")) + "\n")
-            print("Maximal following to followers_ratio (enter to use default number: 2)")
-            f.write(str(int(sys.stdin.readline().strip()or "2")) + "\n")
-            print("Minimal media the account you will follow have.")
-            print(
-                "We will skip media that have lesser media from this value (enter to use default number: 3)")
-            f.write(str(int(sys.stdin.readline().strip()or "3")) + "\n")
-            print(
-                "Delay from one like to another like you will perform (enter to use default number: 10)")
-            f.write(str(int(sys.stdin.readline().strip()or "10")) + "\n")
-            print(
-                "Delay from one unlike to another unlike you will perform (enter to use default number: 10)")
-            f.write(str(int(sys.stdin.readline().strip()or "10")) + "\n")
-            print(
-                "Delay from one follow to another follow you will perform (enter to use default number: 30)")
-            f.write(str(int(sys.stdin.readline().strip()or "30")) + "\n")
-            print(
-                "Delay from one unfollow to another unfollow you will perform (enter to use default number: 30)")
-            f.write(str(int(sys.stdin.readline().strip()or "30")) + "\n")
-            print(
-                "Delay from one comment to another comment you will perform (enter to use default number: 60)")
-            f.write(str(int(sys.stdin.readline().strip()or "60")) + "\n")
-            print(
-                "Want to use proxy? insert your proxy or leave it blank if no. (just enter)")
-            f.write(str(sys.stdin.readline().strip()) or "None" + "\n")
-            print("done with all settings")
+            for msg, n in inputs:
+                read_input(f, msg, n)
             break
+        print("Done with all settings!")
 
 
 def parameter_setting():
-    print("current parameter\n")
-    f = open(setting)
-    data = f.readlines()
-    print("Max likes per day: " + data[0])
-    print("Max unlikes per day: " + data[1])
-    print("Max follows per day: " + data[2])
-    print("Max unfollows per day: " + data[3])
-    print("Max comments per day: " + data[4])
-    print("Max likes to like: " + data[5])
-    print("Max followers to follow: " + data[6])
-    print("Min followers to follow: " + data[7])
-    print("Max following to follow: " + data[8])
-    print("Min following to follow: " + data[9])
-    print("Max followers to following_ratio: " + data[10])
-    print("Max following to followers_ratio: " + data[11])
-    print("Min media_count to follow:" + data[12])
-    print("Like delay: " + data[13])
-    print("Unlike delay: " + data[14])
-    print("Follow delay: " + data[15])
-    print("Unfollow delay: " + data[16])
-    print("Comment delay: " + data[17])
-    print("Proxy: " + data[18])
+    settings = ["Max likes per day: ",
+                "Max unlikes per day: ",
+                "Max follows per day: ",
+                "Max unfollows per day: ",
+                "Max comments per day: ",
+                "Max likes to like: ",
+                "Max followers to follow: ",
+                "Min followers to follow: ",
+                "Max following to follow: ",
+                "Min following to follow: ",
+                "Max followers to following_ratio: ",
+                "Max following to followers_ratio: ",
+                "Min media_count to follow:",
+                "Like delay: ",
+                "Unlike delay: ",
+                "Follow delay: ",
+                "Unfollow delay: ",
+                "Comment delay: ",
+                "Proxy: "]
+
+    with open(setting) as f:
+        data = f.readlines()
+
+    print("Current parameters\n")
+    for s, d in zip(settings, data):
+        print(s + d)
 
 
 def username_adder():
@@ -151,89 +126,47 @@ def username_adder():
                 break
 
 
+def get_adder(name, fname):
+    def _adder():
+        print("Current Database:")
+        print(bot.read_list_from_file(fname))
+        with open(fname, "a") as f:
+            print('Add {} to database'.format(name))
+            while True:
+                print("Enter {}: ".format(name))
+                f.write(str(sys.stdin.readline().strip()) + "\n")
+                print("Do you want to add another {}? (y/n)\n".format(name))
+                if "y" not in sys.stdin.readline():
+                    print('Done adding {}s to database'.format(name))
+                    break
+    return _adder
+
+
 def hashtag_adder():
-    print("Current Database:")
-    print(bot.read_list_from_file(hashtag_file))
-    with open(hashtag_file, "a") as f:
-        print('Add hashtag to database')
-        while True:
-            print("Enter hashtag: ")
-            f.write(str(sys.stdin.readline().strip()) + "\n")
-            print("Do you want to add another hashtag? (y/n)\n")
-            if "y" not in sys.stdin.readline():
-                print('Done adding hashtag to database')
-                break
+    return get_adder('hashtag', fname=hashtag_file)
 
 
 def competitor_adder():
-    print("Current Database:")
-    print(bot.read_list_from_file(users_file))
-    with open(users_file, "a") as f:
-        print('Add username to database')
-        while True:
-            print("Enter username: ")
-            f.write(str(sys.stdin.readline().strip()) + "\n")
-            print("Do you want to add another username? (y/n)\n")
-            if "y" not in sys.stdin.readline():
-                print('done adding username to database')
-                break
+    return get_adder('username', fname=users_file)
 
 
 def blacklist_adder():
-    print("Current Database:")
-    print(bot.read_list_from_file(blacklist))
-    with open(blacklist, "a") as f:
-        print('Add username to blacklist')
-        while True:
-            print("Enter username: ")
-            f.write(str(sys.stdin.readline().strip()) + "\n")
-            print("Do you want to add another username? (y/n)\n")
-            if "y" not in sys.stdin.readline():
-                print('done adding username to blacklist')
-                break
+    return get_adder('username', fname=blacklist)
 
 
 def whitelist_adder():
-    print("Current Database:")
-    print(bot.read_list_from_file(whitelist))
-    with open(whitelist, "a") as f:
-        print('Add username to whitelist')
-        while True:
-            print("Enter username: ")
-            f.write(str(sys.stdin.readline().strip()) + "\n")
-            print("Do you want to add another username? (y/n)\n")
-            if "y" not in sys.stdin.readline():
-                print('done adding username to whitelist')
-                break
+    return get_adder('username', fname=whitelist)
 
 
 def comment_adder():
-    print("Current Database:")
-    print(bot.read_list_from_file(comment))
-    with open(comment, "a") as f:
-        print('Add comment')
-        while True:
-            print("Enter comment: ")
-            f.write(str(sys.stdin.readline().strip()) + "\n")
-            print("Do you want to add another comment? (y/n)\n")
-            if "y" not in sys.stdin.readline():
-                print('done adding comment')
-                break
+    return get_adder('comment', fname=comment)
 
 
 def userlist_maker():
-    with open(userlist, "w") as f:
-        print('Add user to list')
-        while True:
-            print("Enter username: ")
-            f.write(str(sys.stdin.readline().strip()) + "\n")
-            print("Do you want to add another user? (y/n)\n")
-            if "y" not in sys.stdin.readline():
-                print('done make list')
-                break
+    return get_adder('username', userlist)
+
 
 # all menu start here
-
 
 def menu():
     ans = True
