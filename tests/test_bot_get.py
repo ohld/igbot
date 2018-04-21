@@ -390,6 +390,7 @@ class TestBotGet(TestBot):
             ), status=200, json=response_data)
 
         result = self.bot.get_user_id_from_username(username)
+        del self.bot._usernames[username]  # Invalidate cache
 
         assert result == expected_user_id
 
