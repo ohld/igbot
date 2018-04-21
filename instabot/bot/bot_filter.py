@@ -212,9 +212,9 @@ def check_not_bot(self, user_id):
     user_id = self.convert_to_user_id(user_id)
     if not user_id:
         return False
-    if self.whitelist and user_id in self.whitelist:
+    if user_id in self.whitelist:
         return True
-    if self.blacklist and user_id in self.blacklist:
+    if user_id in self.blacklist:
         return False
 
     user_info = self.get_user_info(user_id)

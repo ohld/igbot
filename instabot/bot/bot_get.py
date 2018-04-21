@@ -135,16 +135,20 @@ def get_geotag_users(self, geotag):
 
 
 def get_user_id_from_username(self, username):
-    self.api.search_username(username)
-    if "user" in self.api.last_json:
-        return str(self.api.last_json["user"]["pk"])
-    return None  # Not found
+    if username not in self._usernames:
+        self.api.search_username(username)
+        delay.very_small_delay(self)
+        if "user" in self.api.last_json:
+            self._usernames[username] = str(self.api.last_json["user"]["pk"])
+        else:
+            return None
+    return self._usernames[username]
 
 
 def get_username_from_user_id(self, user_id):
-    self.api.get_username_info(user_id)
-    if "user" in self.api.last_json:
-        return str(self.api.last_json["user"]["username"])
+    user_info = self.get_user_info(user_id)
+    if "user" in user_info:
+        return str(user_info["username"])
     return None  # Not found
 
 
@@ -240,6 +244,5 @@ def convert_to_user_id(self, x):
     if not x.isdigit():
         x = x.lstrip('@')
         x = self.get_user_id_from_username(x)
-        delay.very_small_delay(self)
     # if type is not str than it is int so user_id passed
     return x
