@@ -13,8 +13,7 @@ from instabot import Bot
 
 
 def initial_checker():
-    files = ['hashtag_file', 'users_file', 'whitelist',
-             'blacklist', 'comment', 'setting']
+    files = [hashtag_file, users_file, whitelist, blacklist, comment, setting]
     try:
         for f in files:
             with open(f, 'r') as f:
@@ -37,75 +36,82 @@ def initial_checker():
         time.sleep(5)
         os.system('cls')
 
-def read_input(msg, n):
-    f.write(str(int(sys.stdin.readline().strip() or str(n))) + "\n")
+def read_input(f, msg, n=None):
+    if n is not None:
+        msg += " (enter to use default number: {})".format(n)
+    print(msg)
+    entered = sys.stdin.readline().strip() or str(n)
+    if isinstance(n, int):
+        entered = int(entered)
+    f.write(str(entered) + "\n")
 
 
 # setting function start here
 def setting_input():
+    inputs = [("How many likes do you want to do in a day?", 1000),
+              ("How about unlike? ", 1000),
+              ("How many follows do you want to do in a day? ", 350),
+              ("How about unfollow? ", 350),
+              ("How many comments do you want to do in a day? ", 100),
+              (("Maximal likes in media you will like?\n"
+                "We will skip media that have greater like than this value "), 100),
+              (("Maximal followers of account you want to follow?\n"
+                "We will skip media that have greater followers than this value "), 2000),
+              (("Minimum followers a account should have before we follow?\n"
+                "We will skip media that have lesser followers than this value "), 10),
+              (("Maximum following of account you want to follow?\n"
+                "We will skip media that have a greater following than this value "), 7500),
+              (("Minimum following of account you want to follow?\n"
+                "We will skip media that have lesser following from this value "), 10),
+              ("Maximal followers to following_ratio ", 10),
+              ("Maximal following to followers_ratio ", 2),
+              (("Minimal media the account you will follow have.\n"
+                "We will skip media that have lesser media from this value "), 3),
+              ("Delay from one like to another like you will perform ", 10),
+              ("Delay from one unlike to another unlike you will perform ", 10),
+              ("Delay from one follow to another follow you will perform ", 30),
+              ("Delay from one unfollow to another unfollow you will perform ", 30),
+              ("Delay from one comment to another comment you will perform ", 60),
+              ("Want to use proxy? insert your proxy or leave it blank if no. (just enter", 'None')]
+
     with open(setting, "w") as f:
-        read_input = lambda n: f.write(str(int(sys.stdin.readline().strip() or str(n))) + "\n")
-        print_default = lambda text, n: print(read_input() + " (enter to use default number: {})".format(n))
         while True:
-            read_input("How many likes do you want to do in a day?", n=1000)
-            read_input("How about unlike?)", n=1000)
-            read_input("How many follows do you want to do in a day?)", n=350)
-            read_input("How about unfollow?)", n=350)
-            read_input("How many comments do you want to do in a day?", n=100)
-            msg = ("Maximal likes in media you will like?"
-                   "We will skip media that have greater like than this value)")
-            read_input(msg, n=100)
-            msg = ("Maximal followers of account you want to follow?\n"
-                   "We will skip media that have greater followers than this value)")
-            read_input(msg, n=2000)
-            msg = ("Minimum followers a account should have before we follow?\n"
-                   "We will skip media that have lesser followers than this value)")
-            read_input(msg, n=10)
-            msg = ("Maximum following of account you want to follow?\n"
-                   "We will skip media that have a greater following than this value)")
-            read_input(msg, n=7500)
-            msg = ("Minimum following of account you want to follow?\n"
-                   "We will skip media that have lesser following from this value)")
-            read_input(msg, n=10)
-            read_input("Maximal followers to following_ratio)", n=10)
-            read_input("Maximal following to followers_ratio)", n=2)
-            msg = ("Minimal media the account you will follow have."
-                   "We will skip media that have lesser media from this value)")
-            read_input("Delay from one like to another like you will perform)", n=3)
-            read_input("Delay from one unlike to another unlike you will perform)", n=10)
-            read_input("Delay from one follow to another follow you will perform)", n=10)
-            read_input("Delay from one unfollow to another unfollow you will perform)", n=30)
-            read_input("Delay from one comment to another comment you will perform)", n=30)
-            read_input("Want to use proxy? insert your proxy or leave it blank if no. (just enter)", n=60)
-            read_input(msg, None)
-            msg = "done with all settings"
-            print(msg)
+            for msg, n in inputs:
+                read_input(f, msg, n)
             break
+        print("Done with all settings!")
+
 
 
 def parameter_setting():
-    print("current parameter\n")
-    f = open(setting)
-    data = f.readlines()
-    print("Max likes per day: " + data[0])
-    print("Max unlikes per day: " + data[1])
-    print("Max follows per day: " + data[2])
-    print("Max unfollows per day: " + data[3])
-    print("Max comments per day: " + data[4])
-    print("Max likes to like: " + data[5])
-    print("Max followers to follow: " + data[6])
-    print("Min followers to follow: " + data[7])
-    print("Max following to follow: " + data[8])
-    print("Min following to follow: " + data[9])
-    print("Max followers to following_ratio: " + data[10])
-    print("Max following to followers_ratio: " + data[11])
-    print("Min media_count to follow:" + data[12])
-    print("Like delay: " + data[13])
-    print("Unlike delay: " + data[14])
-    print("Follow delay: " + data[15])
-    print("Unfollow delay: " + data[16])
-    print("Comment delay: " + data[17])
-    print("Proxy: " + data[18])
+    print("Current parameters\n")
+
+    settings = ["Max likes per day: ",
+                "Max unlikes per day: ",
+                "Max follows per day: ",
+                "Max unfollows per day: ",
+                "Max comments per day: ",
+                "Max likes to like: ",
+                "Max followers to follow: ",
+                "Min followers to follow: ",
+                "Max following to follow: ",
+                "Min following to follow: ",
+                "Max followers to following_ratio: ",
+                "Max following to followers_ratio: ",
+                "Min media_count to follow:",
+                "Like delay: ",
+                "Unlike delay: ",
+                "Follow delay: ",
+                "Unfollow delay: ",
+                "Comment delay: ",
+                "Proxy: "]
+    with open(setting) as f:
+        data = f.readlines()
+
+    for s, d in zip(settings, data):
+        print(s + d)
+
+
 
 
 def username_adder():
