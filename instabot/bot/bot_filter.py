@@ -5,12 +5,6 @@
 from . import delay
 
 
-# Adding `users_id`s to `skipped.txt`, such that InstaBot will not
-# try to follow them again or InstaBot will not like their media anymore.
-def skippedlist_adder(self, user_id):
-    self.skipped_file.append(user_id)
-
-
 # Filtering media
 
 def filter_medias(self, media_items, filtration=True, quiet=False, is_comment=False):
