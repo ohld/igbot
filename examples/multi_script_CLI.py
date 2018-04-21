@@ -9,6 +9,7 @@ from tqdm import tqdm
 sys.path.append(os.path.join(sys.path[0], '../'))
 from instabot import Bot
 
+
 # initial
 
 def initial_checker():
@@ -83,8 +84,6 @@ def setting_input():
 
 
 def parameter_setting():
-    print("Current parameters\n")
-
     settings = ["Max likes per day: ",
                 "Max unlikes per day: ",
                 "Max follows per day: ",
@@ -104,9 +103,11 @@ def parameter_setting():
                 "Unfollow delay: ",
                 "Comment delay: ",
                 "Proxy: "]
+
     with open(setting) as f:
         data = f.readlines()
 
+    print("Current parameters\n")
     for s, d in zip(settings, data):
         print(s + d)
 
