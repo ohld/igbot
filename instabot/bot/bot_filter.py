@@ -6,6 +6,7 @@ from . import delay
 
 # Filtering media
 
+
 def filter_medias(self, media_items, filtration=True, quiet=False, is_comment=False):
     if filtration:
         if not quiet:
