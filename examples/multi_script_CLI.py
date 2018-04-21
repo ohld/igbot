@@ -11,7 +11,6 @@ from instabot import Bot
 
 # initial
 
-
 def initial_checker():
     files = [hashtag_file, users_file, whitelist, blacklist, comment, setting]
     try:
@@ -35,6 +34,7 @@ def initial_checker():
         """)
         time.sleep(5)
         os.system('cls')
+
 
 def read_input(f, msg, n=None):
     if n is not None:
@@ -82,7 +82,6 @@ def setting_input():
         print("Done with all settings!")
 
 
-
 def parameter_setting():
     print("Current parameters\n")
 
@@ -110,8 +109,6 @@ def parameter_setting():
 
     for s, d in zip(settings, data):
         print(s + d)
-
-
 
 
 def username_adder():
