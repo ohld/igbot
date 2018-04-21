@@ -2,6 +2,7 @@
 setup.cfg
 setup.py
 instabot/__init__.py
+instabot/utils.py
 instabot/api/__init__.py
 instabot/api/api.py
 instabot/api/api_photo.py

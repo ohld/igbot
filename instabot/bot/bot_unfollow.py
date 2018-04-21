@@ -46,10 +46,9 @@ def unfollow_non_followers(self, n_to_unfollows=None):
     self.update_unfollow_file()
     self.console_print(" ===> Start unfollowing non-followers <===", 'red')
 
-    unfollow_file = "unfollowed.txt"
-    with open(unfollow_file) as unfollow_data:
-        new_unfollow_list = list(line.strip() for line in unfollow_data)
-    for user in tqdm(new_unfollow_list[:n_to_unfollows]):
+    unfollows = utils.file("unfollowed.txt").list
+
+    for user in tqdm(unfollows[:n_to_unfollows]):
         self.unfollow(user)
     self.console_print(" ===> Unfollow non-followers done! <===", 'red')
 
@@ -62,19 +61,15 @@ def update_unfollow_file(self):
     self.logger.info("Updating `unfollowed.txt`.")
     self.console_print("Calculating non-followers list.", 'green')
 
-    followings = self.following
-    followers = self.followers
-    friends_file = self.read_list_from_file("friends.txt")  # same whitelist (just user ids)
-    nonfollowerslist = set(followings) - set(followers) - set(friends_file)
-    followed_list = self.read_list_from_file("followed.txt")
-    unfollow_list = [x for x in followed_list if x in nonfollowerslist]
-    unfollow_list += [x for x in nonfollowerslist if x not in followed_list]
-    unfollow_file = self.read_list_from_file("unfollowed.txt")
-    new_unfollow_list = [x for x in unfollow_file if x in unfollow_list]
-    new_unfollow_list += [x for x in unfollow_list if x not in unfollow_file]
+    followings = set(self.following)
+    followers = set(self.followers)
+    friends = utils.file("friends.txt").set  # same whitelist (just user ids)
+    followed = utils.file("followed.txt").set
+    non_followers = followings - followers - friends
+    unfollow = non_followers & followed
+    unfollow.update(non_followers - followed)
 
-    self.console_print("Adding to `unfollowed.txt`.")
-    with open('unfollowed.txt', 'w') as out:
-        for line in new_unfollow_list:
-            out.write(str(line) + "\n")
-    self.console_print("Updating `unfollowed.txt`, task done.")
+    unfollowed = utils.file("unfollowed.txt")
+    new_unfollow = unfollowed.set & unfollow
+    new_unfollow.update(unfollow - unfollowed.set)
+    unfollowed.save_list(new_unfollow)
