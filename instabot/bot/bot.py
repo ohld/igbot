@@ -185,13 +185,13 @@ class Bot(object):
 
     @property
     def blacklist(self):
-       # For compatibility
+       # This is a fast operation because `get_user_id_from_username` is cached.
        return [self.convert_to_user_id(i) for i in self.blacklist_file.list
                if i is not None]
 
     @property
     def whitelist(self):
-       # For compatibility
+       # This is a fast operation because `get_user_id_from_username` is cached.
        return [self.convert_to_user_id(i) for i in self.whitelist_file.list
                if i is not None]
 
