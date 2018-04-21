@@ -33,8 +33,8 @@ from .bot_like import (like, like_followers, like_following, like_geotag,
                        like_users)
 from .bot_photo import download_photo, download_photos, upload_photo
 from .bot_stats import save_user_stats
-from .bot_support import (check_if_file_exists, check_whitelists, 
-                          console_print, extract_urls, read_list_from_file)
+from .bot_support import (check_if_file_exists, console_print,
+                          extract_urls, read_list_from_file)
 from .bot_unfollow import (unfollow, unfollow_everyone, unfollow_non_followers,
                            unfollow_users)
 from .bot_unlike import unlike, unlike_medias, unlike_user
@@ -43,7 +43,7 @@ from .bot_video import upload_video
 
 class Bot(object):
     def __init__(self,
-                 whitelist_file=None,
+                 whitelist_file='whitelist.txt',
                  blacklist_file='blacklist.txt',
                  comments_file='comments.txt',
                  followed_file='followed.txt',
@@ -152,14 +152,7 @@ class Bot(object):
         self.friends_file = utils.file(friends_file)
         self.comments_file = utils.file(comments_file)
         self.blacklist_file = utils.file(blacklist_file)
-
-        # Needs to be in this way because `check_whitelists`
-        # and `prepare` functions.
-        if whitelist_file:
-            self.whitelist = [self.convert_to_user_id(i)
-                              for i in utils.file(whitelist_file).list]
-        else:
-            self.whitelist = None
+        self.whitelist_file = utils.file(whitelist_file)
 
         self.proxy = proxy
         self.verbosity = verbosity
@@ -193,7 +186,14 @@ class Bot(object):
     @property
     def blacklist(self):
        # For compatibility
-       return [self.convert_to_user_id(i) for i in self.blacklist_file.list]
+       return [self.convert_to_user_id(i) for i in self.blacklist_file.list
+               if i is not None]
+
+    @property
+    def whitelist(self):
+       # For compatibility
+       return [self.convert_to_user_id(i) for i in self.whitelist_file.list
+               if i is not None]
 
     @property
     def following(self):
@@ -248,22 +248,6 @@ class Bot(object):
              self.total_archived,
              self.total_unarchived,
              self.total_sent_messages) = storage
-        if not self.whitelist:
-            self.whitelist = check_whitelists(self)
-        self.whitelist = self.convert_whitelist(self.whitelist)
-
-    def convert_whitelist(self, usernames):
-        """
-        Will convert every username in the whitelist to the user id.
-        """
-        ret = []
-        for u in usernames:
-            uid = self.convert_to_user_id(u)
-            if uid and uid not in ret:
-                ret.append(uid)
-            else:
-                print("WARNING: Whitelisted user '%s' not found" % u)
-        return ret
 
     def print_counters(self):
         if self.total_liked:

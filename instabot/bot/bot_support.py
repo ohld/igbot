@@ -39,23 +39,6 @@ def read_list_from_file(file_path, quiet=False):
         return []
 
 
-def check_whitelists(self):
-    """
-        Check whitelists in folder with script
-    """
-    files = ['whitelist.txt',
-             'friends_{0}.txt'.format(self.api.username),
-             'friends_{0}.txt'.format(self.user_id),
-             'friends.txt']
-
-    for fname in files:
-        whitelist = read_list_from_file(fname, quiet=True)
-        if whitelist:
-            self.logger.info('Found whitelist: {0} ({1} users)'.format(fname, len(whitelist)))
-            return whitelist
-    return []
-
-
 def console_print(self, text, color=None):
     if self.verbosity:
         text = '\n' + text
