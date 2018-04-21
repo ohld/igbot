@@ -13,20 +13,16 @@ from instabot import Bot
 
 
 def initial_checker():
+    files = ['hashtag_file', 'users_file', 'whitelist',
+             'blacklist', 'comment', 'setting']
     try:
-        open(hashtag_file, 'r')
-        open(users_file, 'r')
-        open(whitelist, 'r')
-        open(blacklist, 'r')
-        open(comment, 'r')
-        open(setting, 'r')
+        for f in files:
+            with open(f, 'r') as f:
+                pass
     except BaseException:
-        open(hashtag_file, 'w')
-        open(users_file, 'w')
-        open(whitelist, 'w')
-        open(blacklist, 'w')
-        open(comment, 'w')
-        open(setting, 'w')
+        for f in files:
+            with open(f, 'w') as f:
+                pass
         print("""
         Welcome to instabot, it seems this is the first time you've used this bot.
         Before starting, let's setup the basics.
