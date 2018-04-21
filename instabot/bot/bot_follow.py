@@ -36,8 +36,9 @@ def follow_users(self, user_ids):
 
     # Remove skipped and followed list from user_ids
     user_ids = list(set(user_ids) - followed.set - skipped.set)
-    msg = 'After filtering `followed.txt` and `skipped.txt`, {} user_ids left to follow.'
-    self.console_print(msg.format(len(user_ids)), 'green')
+    msg = 'After filtering `{}` and `{}`, {} user_ids left to follow.'
+    msg = msg.format(followed.fname, skipped.fname, len(user_ids))
+    self.console_print(msg, 'green')
     for user_id in tqdm(user_ids, desc='Processed users'):
         if not self.follow(user_id):
             if self.last_response.status_code == 404:
