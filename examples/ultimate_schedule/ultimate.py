@@ -12,7 +12,10 @@ from instabot import Bot
 
 import config
 
-bot = Bot(comments_file=config.COMMENTS_FILE, blacklist_file=config.BLACKLIST_FILE, whitelist_file=config.WHITELIST_FILE)
+bot = Bot(comments_file=config.COMMENTS_FILE,
+          blacklist_file=config.BLACKLIST_FILE,
+          whitelist_file=config.WHITELIST_FILE,
+          friends_file=config.FRIENDS_FILE)
 bot.login()
 bot.logger.info("ULTIMATE script. 24hours save")
 
@@ -112,19 +115,12 @@ def job9():  # Automatically post a pic in 'pics' folder
 def job10():  # put non followers on blacklist
     try:
         bot.logger.info("Creating non-followers list")
-        followings = bot.following  # getting following
-        followers = bot.followers  # getting followers
-        friends = bot.read_list_from_file("friends.txt")  # same whitelist (just user ids)
-        nonfollowerslist = set(followings) - set(followers) - set(friends)
-        with open(config.BLACKLIST_FILE, 'a') as file:  # writing to the blacklist
-            for user_id in nonfollowerslist:
-                file.write(str(user_id) + "\n")
-        bot.logger.info("Removing duplicates...")
-        lines = open(config.BLACKLIST_FILE, 'r').readlines()
-        lines_set = set(lines)
-        out = open(config.BLACKLIST_FILE, 'w')
-        for line in lines_set:
-            out.write(line)
+        followings = set(bot.following)  # getting following
+        followers = set(bot.followers)  # getting followers
+        friends = bot.friends_file.set  # same whitelist (just user ids)
+        non_followers = followings - followers - friends
+        for user_id in non_followers:
+            bot.blacklist_file.append(user_id, allow_duplicates=False)
         bot.logger.info("Done.")
     except Exception as e:
         bot.logger.error("Couldn't update blacklist")

@@ -47,6 +47,10 @@ class Bot(object):
                  whitelist_file='whitelist.txt',
                  blacklist_file='blacklist.txt',
                  comments_file='comments.txt',
+                 followed_file='followed.txt',
+                 unfollowed_file='unfollowed.txt',
+                 skipped_file='skipped.txt',
+                 friends_file='friends.txt',
                  proxy=None,
                  max_likes_per_day=1000,
                  max_unlikes_per_day=1000,
@@ -143,15 +147,13 @@ class Bot(object):
         self._followers = None
 
         # Database files
-        self.followed_file = utils.file('followed.txt')
-        self.unfollowed_file = utils.file('unfollowed.txt')
-        self.skipped_file = utils.file('skipped.txt')
-        self.friends_file = utils.file('friends.txt')
+        self.followed_file = utils.file(followed_file)
+        self.unfollowed_file = utils.file(unfollowed_file)
+        self.skipped_file = utils.file(skipped_file)
+        self.friends_file = utils.file(friends_file)
         self.comments_file = utils.file(comments_file)
-
-        # Blacklist and whitelist are not modified during runtime
-        self.whitelist = utils.file(whitelist_file).list
-        self.blacklist = utils.file(blacklist_file).list
+        self.blacklist_file = utils.file(blacklist_file)
+        self.whitelist_file = utils.file(whitelist_file)
 
         self.proxy = proxy
         self.verbosity = verbosity
@@ -178,6 +180,16 @@ class Bot(object):
     def last_json(self):
         # For compatibility
         return self.api.last_json
+
+     @property
+     def whitelist(self):
+        # For compatibility
+        return self.whitelist.list
+
+     @property
+     def blacklist(self):
+        # For compatibility
+        return self.blacklist.list
 
     @property
     def following(self):
