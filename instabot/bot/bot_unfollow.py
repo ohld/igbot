@@ -16,6 +16,7 @@ def unfollow(self, user_id):
         if self.api.unfollow(user_id):
             msg = '===> Unfollowed, `user_id`: {}, user_name: {}'
             self.console_print(msg.format(user_id, username), 'yellow')
+            self.unfollowed_file.append(user_id)
             self.total_unfollowed += 1
             return True
     else:
@@ -43,32 +44,13 @@ def unfollow_users(self, user_ids):
 
 def unfollow_non_followers(self, n_to_unfollows=None):
     self.logger.info("Unfollowing non-followers.")
-    self.update_unfollow_file()
     self.console_print(" ===> Start unfollowing non-followers <===", 'red')
-
-    unfollows = self.unfollowed_file.list
-    for user_id in tqdm(unfollows[:n_to_unfollows]):
+    followed = self.followed_file.set
+    non_followers = set(self.following) - set(self.followers) - self.friends_file.set
+    for user_id in tqdm(non_followers[:n_to_unfollows]):
         self.unfollow(user_id)
     self.console_print(" ===> Unfollow non-followers done! <===", 'red')
 
 
 def unfollow_everyone(self):
     self.unfollow_users(self.following)
-
-
-def update_unfollow_file(self):
-    self.logger.info("Updating `unfollowed.txt`.")
-    self.console_print("Calculating non-followers list.", 'green')
-
-    followings = set(self.following)
-    followers = set(self.followers)
-    friends = utils.file("friends.txt").set  # same whitelist (just user ids)
-    followed = self.followed_file.set
-    non_followers = followings - followers - friends
-    unfollow = non_followers & followed
-    unfollow.update(non_followers - followed)
-
-    unfollowed = self.unfollowed_file
-    new_unfollow = unfollowed.set & unfollow
-    new_unfollow.update(unfollow - unfollowed.set)
-    unfollowed.save_list(new_unfollow)

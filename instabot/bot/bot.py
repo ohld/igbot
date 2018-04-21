@@ -37,7 +37,7 @@ from .bot_support import (add_blacklist, add_whitelist, check_if_file_exists,
                           check_whitelists, console_print, extract_urls,
                           read_list_from_file)
 from .bot_unfollow import (unfollow, unfollow_everyone, unfollow_non_followers,
-                           unfollow_users, update_unfollow_file)
+                           unfollow_users)
 from .bot_unlike import unlike, unlike_medias, unlike_user
 from .bot_video import upload_video
 
@@ -146,6 +146,7 @@ class Bot(object):
         self.followed_file = utils.file('followed.txt')
         self.unfollowed_file = utils.file('unfollowed.txt')
         self.skipped_file = utils.file('skipped.txt')
+        self.friends_file = utils.file('friends.txt')
 
         # proxy
         self.proxy = proxy
@@ -460,9 +461,6 @@ class Bot(object):
 
     def unfollow_everyone(self):
         return unfollow_everyone(self)
-
-    def update_unfollow_file(self):
-        return update_unfollow_file(self)
 
     # direct
 
