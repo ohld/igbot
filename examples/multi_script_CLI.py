@@ -37,74 +37,49 @@ def initial_checker():
         time.sleep(5)
         os.system('cls')
 
+def read_input(msg, n):
+    f.write(str(int(sys.stdin.readline().strip() or str(n))) + "\n")
 
-# language checker
-# if 'EN_en' in open(setting).read():
-#    print("oke")
-#    from lang import EN_en
 
 # setting function start here
 def setting_input():
     with open(setting, "w") as f:
+        read_input = lambda n: f.write(str(int(sys.stdin.readline().strip() or str(n))) + "\n")
+        print_default = lambda text, n: print(read_input() + " (enter to use default number: {})".format(n))
         while True:
-            print(
-                "How many likes do you want to do in a day? (enter to use default number: 1000)")
-            f.write(str(int(sys.stdin.readline().strip()or "1000")) + "\n")
-            print("How about unlike? (enter to use default number: 1000)")
-            f.write(str(int(sys.stdin.readline().strip()or "1000")) + "\n")
-            print(
-                "How many follows do you want to do in a day? (enter to use default number: 350)")
-            f.write(str(int(sys.stdin.readline().strip()or "350")) + "\n")
-            print("How about unfollow? (enter to use default number: 350)")
-            f.write(str(int(sys.stdin.readline().strip()or "350")) + "\n")
-            print(
-                "How many comments do you want to do in a day? (enter to use default number:100)")
-            f.write(str(int(sys.stdin.readline().strip()or "100")) + "\n")
-            print("Maximal likes in media you will like?")
-            print(
-                "We will skip media that have greater like than this value (enter to use default number: 100)")
-            f.write(str(int(sys.stdin.readline().strip()or "100")) + "\n")
-            print("Maximal followers of account you want to follow?")
-            print("We will skip media that have greater followers than this value (enter to use default number: 2000)")
-            f.write(str(int(sys.stdin.readline().strip()or "2000")) + "\n")
-            print("Minimum followers a account should have before we follow?")
-            print(
-                "We will skip media that have lesser followers than this value (enter to use default number: 10)")
-            f.write(str(int(sys.stdin.readline().strip()or "10")) + "\n")
-            print("Maximum following of account you want to follow?")
-            print("We will skip media that have a greater following than this value (enter to use default number: 7500)")
-            f.write(str(int(sys.stdin.readline().strip()or "7500")) + "\n")
-            print("Minimum following of account you want to follow?")
-            print("We will skip media that have lesser following from this value (enter to use default number: 10)")
-            f.write(str(int(sys.stdin.readline().strip()or "10")) + "\n")
-            print(
-                "Maximal followers to following_ratio (enter to use default number: 10)")
-            f.write(str(int(sys.stdin.readline().strip()or "10")) + "\n")
-            print("Maximal following to followers_ratio (enter to use default number: 2)")
-            f.write(str(int(sys.stdin.readline().strip()or "2")) + "\n")
-            print("Minimal media the account you will follow have.")
-            print(
-                "We will skip media that have lesser media from this value (enter to use default number: 3)")
-            f.write(str(int(sys.stdin.readline().strip()or "3")) + "\n")
-            print(
-                "Delay from one like to another like you will perform (enter to use default number: 10)")
-            f.write(str(int(sys.stdin.readline().strip()or "10")) + "\n")
-            print(
-                "Delay from one unlike to another unlike you will perform (enter to use default number: 10)")
-            f.write(str(int(sys.stdin.readline().strip()or "10")) + "\n")
-            print(
-                "Delay from one follow to another follow you will perform (enter to use default number: 30)")
-            f.write(str(int(sys.stdin.readline().strip()or "30")) + "\n")
-            print(
-                "Delay from one unfollow to another unfollow you will perform (enter to use default number: 30)")
-            f.write(str(int(sys.stdin.readline().strip()or "30")) + "\n")
-            print(
-                "Delay from one comment to another comment you will perform (enter to use default number: 60)")
-            f.write(str(int(sys.stdin.readline().strip()or "60")) + "\n")
-            print(
-                "Want to use proxy? insert your proxy or leave it blank if no. (just enter)")
-            f.write(str(sys.stdin.readline().strip()) or "None" + "\n")
-            print("done with all settings")
+            read_input("How many likes do you want to do in a day?", n=1000)
+            read_input("How about unlike?)", n=1000)
+            read_input("How many follows do you want to do in a day?)", n=350)
+            read_input("How about unfollow?)", n=350)
+            read_input("How many comments do you want to do in a day?", n=100)
+            msg = ("Maximal likes in media you will like?"
+                   "We will skip media that have greater like than this value)")
+            read_input(msg, n=100)
+            msg = ("Maximal followers of account you want to follow?\n"
+                   "We will skip media that have greater followers than this value)")
+            read_input(msg, n=2000)
+            msg = ("Minimum followers a account should have before we follow?\n"
+                   "We will skip media that have lesser followers than this value)")
+            read_input(msg, n=10)
+            msg = ("Maximum following of account you want to follow?\n"
+                   "We will skip media that have a greater following than this value)")
+            read_input(msg, n=7500)
+            msg = ("Minimum following of account you want to follow?\n"
+                   "We will skip media that have lesser following from this value)")
+            read_input(msg, n=10)
+            read_input("Maximal followers to following_ratio)", n=10)
+            read_input("Maximal following to followers_ratio)", n=2)
+            msg = ("Minimal media the account you will follow have."
+                   "We will skip media that have lesser media from this value)")
+            read_input("Delay from one like to another like you will perform)", n=3)
+            read_input("Delay from one unlike to another unlike you will perform)", n=10)
+            read_input("Delay from one follow to another follow you will perform)", n=10)
+            read_input("Delay from one unfollow to another unfollow you will perform)", n=30)
+            read_input("Delay from one comment to another comment you will perform)", n=30)
+            read_input("Want to use proxy? insert your proxy or leave it blank if no. (just enter)", n=60)
+            read_input(msg, None)
+            msg = "done with all settings"
+            print(msg)
             break
 
 
