@@ -44,9 +44,9 @@ from .bot_video import upload_video
 
 class Bot(object):
     def __init__(self,
-                 whitelist=False,
-                 blacklist=False,
-                 comments_file=False,
+                 whitelist_file='whitelist.txt',
+                 blacklist_file='blacklist.txt',
+                 comments_file='comments.txt',
                  proxy=None,
                  max_likes_per_day=1000,
                  max_unlikes_per_day=1000,
@@ -147,24 +147,14 @@ class Bot(object):
         self.unfollowed_file = utils.file('unfollowed.txt')
         self.skipped_file = utils.file('skipped.txt')
         self.friends_file = utils.file('friends.txt')
+        self.comments_file = utils.file(comments_file)
 
-        # proxy
+        # Blacklist and whitelist are not modified during runtime
+        self.whitelist = utils.file(whitelist_file).list
+        self.blacklist = utils.file(blacklist_file).list
+
         self.proxy = proxy
-
-        # white and blacklists
-        self.whitelist = []
-        if whitelist:
-            self.whitelist = read_list_from_file(whitelist)
-        self.blacklist = []
-        if blacklist:
-            self.blacklist = read_list_from_file(blacklist)
-
         self.verbosity = verbosity
-
-        # comment file
-        self.comments = []
-        if comments_file:
-            self.comments = read_list_from_file(comments_file)
 
         self.logger = self.api.logger
         self.logger.info('Instabot Started')

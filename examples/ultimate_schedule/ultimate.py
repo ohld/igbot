@@ -12,7 +12,7 @@ from instabot import Bot
 
 import config
 
-bot = Bot(comments_file=config.COMMENTS_FILE, blacklist=config.BLACKLIST_FILE, whitelist=config.WHITELIST_FILE)
+bot = Bot(comments_file=config.COMMENTS_FILE, blacklist_file=config.BLACKLIST_FILE, whitelist_file=config.WHITELIST_FILE)
 bot.login()
 bot.logger.info("ULTIMATE script. 24hours save")
 

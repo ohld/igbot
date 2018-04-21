@@ -1,6 +1,8 @@
 
 from collections import OrderedDict
+import random
 from huepy import green, bold, orange
+
 
 class file(object):
     def __init__(self, fname, verbose=True):

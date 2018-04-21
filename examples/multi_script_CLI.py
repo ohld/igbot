@@ -639,8 +639,8 @@ bot = Bot(
     follow_delay=setting_15,
     unfollow_delay=setting_16,
     comment_delay=setting_17,
-    whitelist=whitelist,
-    blacklist=blacklist,
+    whitelist_file=whitelist,
+    blacklist_file=blacklist,
     comments_file=comment,
     stop_words=[
         'order',

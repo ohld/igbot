@@ -203,9 +203,10 @@ def search_users(self, query):
 
 
 def get_comment(self):
-    if self.comments:
-        return random.choice(self.comments).strip()
-    return "Wow!"
+    try:
+        return self.comments_file.random().strip()
+    except IndexError:
+        return "Wow!"
 
 
 def get_media_id_from_link(self, link):
@@ -233,11 +234,11 @@ def get_media_id_from_link(self, link):
     return result
 
 
-def convert_to_user_id(self, smth):
-    smth = str(smth)
-    if not smth.isdigit():
-        smth = smth.lstrip('@')
-        smth = self.get_user_id_from_username(smth)
+def convert_to_user_id(self, x):
+    x = str(x)
+    if not x.isdigit():
+        x = x.lstrip('@')
+        x = self.get_user_id_from_username(x)
         delay.very_small_delay(self)
     # if type is not str than it is int so user_id passed
-    return smth
+    return x

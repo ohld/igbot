@@ -1,3 +1,6 @@
+
+import tempfile
+
 import pytest
 import responses
 
@@ -7,6 +10,7 @@ except ImportError:
     from mock import patch
 
 from instabot.api.config import API_URL, SIG_KEY_VERSION
+from instabot import utils
 
 from .test_bot import TestBot
 from .test_variables import (TEST_CAPTION_ITEM, TEST_COMMENT_ITEM,
@@ -324,10 +328,13 @@ class TestBotGet(TestBot):
         None
     ])
     def test_get_comment(self, comments):
-        self.bot.comments = comments
-
-        if self.bot.comments:
-            assert self.bot.get_comment() in self.bot.comments
+        fname = tempfile.mkstemp()[1]  # Temporary file
+        print(fname)
+        self.bot.comments_file = utils.file(fname, verbose=True)
+        if comments:
+            for comment in comments:
+                self.bot.comments_file.append(comment)
+            assert self.bot.get_comment() in self.bot.comments_file.list
         else:
             assert self.bot.get_comment() == 'Wow!'
 
