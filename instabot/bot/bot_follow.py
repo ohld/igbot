@@ -74,11 +74,11 @@ def follow_followers(self, user_id, nfollows=None):
     if not user_id:
         self.logger.info("User not found.")
         return
-    follower_ids = self.get_user_followers(user_id, nfollows)
-    if not follower_ids:
+    followers = self.get_user_followers(user_id, nfollows)
+    if not followers:
         self.logger.info("{} not found / closed / has no followers.".format(user_id))
     else:
-        self.follow_users(follower_ids[:nfollows])
+        self.follow_users(followers[:nfollows])
 
 
 def follow_following(self, user_id, nfollows=None):
@@ -89,8 +89,8 @@ def follow_following(self, user_id, nfollows=None):
     if not user_id:
         self.logger.info("User not found.")
         return
-    following_ids = self.get_user_following(user_id)
-    if not following_ids:
+    followings = self.get_user_following(user_id)
+    if not followings:
         self.logger.info("{} not found / closed / has no following.".format(user_id))
     else:
-        self.follow_users(following_ids[:nfollows])
+        self.follow_users(followings[:nfollows])
