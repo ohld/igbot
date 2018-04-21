@@ -3,6 +3,7 @@ import datetime
 import signal
 
 from ..api import API
+from .. import utils
 from .bot_archive import archive, archive_medias, unarchive_medias
 from .bot_block import block, block_bots, block_users, unblock, unblock_users
 from .bot_checkpoint import load_checkpoint, save_checkpoint
@@ -140,6 +141,11 @@ class Bot(object):
         # current following and followers
         self._following = None
         self._followers = None
+
+        # Database files
+        self.followed_file = utils.file('followed.txt')
+        self.unfollowed_file = utils.file('unfollowed.txt')
+        self.skipped_file = utils.file('skipped.txt')
 
         # proxy
         self.proxy = proxy

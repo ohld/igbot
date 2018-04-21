@@ -9,7 +9,7 @@ from .. import utils
 # Adding `users_id`s to `skipped.txt`, such that InstaBot will not
 # try to follow them again or InstaBot will not like their media anymore.
 def skippedlist_adder(self, user_id):
-    utils.file("skipped.txt").append(user_id)
+    self.skipped_file.append(user_id)
 
 
 # Filtering media
@@ -140,7 +140,7 @@ def check_user(self, user_id, filter_closed_acc=False, unfollowing=False):
         following=following_count
     ))
 
-    skipped = utils.file("skipped.txt")
+    skipped = self.skipped_file
 
     if filter_closed_acc and "is_private" in user_info:
         if user_info["is_private"]:
@@ -222,7 +222,7 @@ def check_not_bot(self, user_id):
     if not user_info:
         return True  # closed acc
 
-    skipped = utils.file("skipped.txt")
+    skipped = self.skipped_file
     if "following_count" in user_info and user_info["following_count"] > self.max_following_to_block:
         msg = 'following_count > bot.max_following_to_block, skipping!'
         self.console_print(msg, 'red')

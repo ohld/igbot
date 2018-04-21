@@ -16,7 +16,7 @@ def follow(self, user_id):
             msg = '===> FOLLOWED <==== `user_id`: {}.'.format(user_id)
             self.console_print(msg, 'green')
             self.total_followed += 1
-            utils.file('followed.txt').append(user_id)
+            self.followed_file.append(user_id)
             return True
     else:
         self.logger.info("Out of follows for today.")
@@ -30,8 +30,8 @@ def follow_users(self, user_ids):
         return
     msg = "Going to follow {} users.".format(len(user_ids))
     self.logger.info(msg)
-    followed = utils.file("followed.txt")
-    skipped = utils.file("skipped.txt")
+    followed = self.followed_file
+    skipped = self.skipped_file
     self.console_print(msg, 'green')
 
     # Remove skipped and followed list from user_ids
