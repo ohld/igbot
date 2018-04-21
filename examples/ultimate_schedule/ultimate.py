@@ -4,7 +4,7 @@ import time
 import sys
 import os
 import random
-import glob             # ->added to make pics upload -> see job8
+from glob import glob   # ->added to make pics upload -> see job8
 import threading        # ->added to make multithreadening possible -> see fn run_threaded
 
 sys.path.append(os.path.join(sys.path[0], '../../'))
@@ -24,15 +24,10 @@ random_hashtag_file = bot.read_list_from_file(config.HASHTAGS_FILE)
 photo_captions = bot.read_list_from_file(config.PHOTO_CAPTIONS_FILE)
 
 # to get pics and autopost it
-posted_pic_list = []
-try:
-    with open(config.POSTED_PICS_FILE, 'r') as f:
-        posted_pic_list = f.read().splitlines()
-except Exception:
-    posted_pic_list = []
+posted_pic_list = instabot.utils.file(config.POSTED_PICS_FILE).list
 
 # Get the filenames of the photos in the path ->
-pics = [os.path.basename(x) for x in glob.glob(config.PICS_PATH + "/*.jpg")]
+pics = [os.path.basename(x) for x in glob(config.PICS_PATH + "/*.jpg")]
 pics = sorted(pics)
 
 
