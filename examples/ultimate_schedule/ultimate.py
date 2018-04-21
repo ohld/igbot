@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
-import schedule
-import time
-import sys
+
+from glob import glob
 import os
 import random
-from glob import glob   # ->added to make pics upload -> see job8
-import threading        # ->added to make multithreadening possible -> see fn run_threaded
+import sys
+import threading
+import time
 
 sys.path.append(os.path.join(sys.path[0], '../../'))
+import schedule
 from instabot import Bot
 
 import config
