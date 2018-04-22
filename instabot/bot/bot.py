@@ -24,7 +24,7 @@ from .bot_get import (convert_to_user_id, get_archived_medias, get_comment,
                       get_media_id_from_link, get_media_info, get_media_likers,
                       get_media_owner, get_popular_medias, get_timeline_medias,
                       get_timeline_users, get_total_hashtag_medias,
-                      get_total_user_medias, get_user_followers,
+                      get_total_user_medias, get_user_followers, get_messages,
                       get_user_following, get_user_id_from_username,
                       get_user_info, get_user_likers, get_user_medias,
                       get_username_from_user_id, get_your_medias, search_users)
@@ -359,6 +359,9 @@ class Bot(object):
 
     def get_media_id_from_link(self, link):
         return get_media_id_from_link(self, link)
+
+    def get_messages(self):
+        return get_messages(self)
 
     def search_users(self, query):
         return search_users(self, query)
