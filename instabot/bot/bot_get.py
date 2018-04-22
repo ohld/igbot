@@ -239,6 +239,14 @@ def get_media_id_from_link(self, link):
     return result
 
 
+def get_messages(self):
+    if self.api.getv2Inbox():
+        return self.api.last_json
+    else:
+        self.logger.info("Messages were not found, something went wrong.")
+        return None
+
+
 def convert_to_user_id(self, x):
     x = str(x)
     if not x.isdigit():
