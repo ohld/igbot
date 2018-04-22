@@ -259,7 +259,7 @@ class Bot(object):
     def reached_limit(self, key):
         current_date = datetime.datetime.now()
         passed_days = (current_date.date() - self.start_time.date()).days
-        if passed_days > 1:
+        if passed_days > 0:
             self.reset_counters()
         return self.max_per_day[key] - self.total[key] < 0
 

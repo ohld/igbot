@@ -24,7 +24,7 @@ def follow(self, user_id):
 
 def follow_users(self, user_ids):
     broken_items = []
-    if not self.reached_limit('follows'):
+    if self.reached_limit('follows'):
         self.logger.info("Out of follows for today.")
         return
     msg = "Going to follow {} users.".format(len(user_ids))
@@ -66,7 +66,7 @@ def follow_users(self, user_ids):
 
 def follow_followers(self, user_id, nfollows=None):
     self.logger.info("Follow followers of: {}".format(user_id))
-    if not self.reached_limit('follows'):
+    if self.reached_limit('follows'):
         self.logger.info("Out of follows for today.")
         return
     if not user_id:
@@ -81,7 +81,7 @@ def follow_followers(self, user_id, nfollows=None):
 
 def follow_following(self, user_id, nfollows=None):
     self.logger.info("Follow following of: {}".format(user_id))
-    if not self.reached_limit('follows'):
+    if self.reached_limit('follows'):
         self.logger.info("Out of follows for today.")
         return
     if not user_id:

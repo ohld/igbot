@@ -13,7 +13,7 @@ def send_message(self, text, user_ids, thread_id=None):
         self.logger.error('Text must be an string, user_ids must be an list or string')
         return False
 
-    if not self.reached_limit('messages'):
+    if self.reached_limit('messages'):
         self.logger.info("Out of messages for today.")
         return False
 
@@ -60,7 +60,7 @@ def send_media(self, media_id, user_ids, text='', thread_id=None):
     if not isinstance(text, str) and not isinstance(user_ids, (list, str)):
         self.logger.error('Text must be an string, user_ids must be an list or string')
         return False
-    if not self.reached_limit('messages'):
+    if self.reached_limit('messages'):
         self.logger.info("Out of messages for today.")
         return False
 
@@ -110,7 +110,7 @@ def send_hashtag(self, hashtag, user_ids, text='', thread_id=None):
         self.logger.error('Text must be an string, user_ids must be an list or string')
         return False
 
-    if not self.reached_limit('messages'):
+    if self.reached_limit('messages'):
         self.logger.info("Out of messages for today.")
         return False
 
@@ -139,7 +139,7 @@ def send_profile(self, profile_user_id, user_ids, text='', thread_id=None):
         self.logger.error('Text must be an string, user_ids must be an list or string')
         return False
 
-    if not self.reached_limit('messages'):
+    if self.reached_limit('messages'):
         self.logger.info("Out of messages for today.")
         return False
 
@@ -169,7 +169,7 @@ def send_like(self, user_ids, thread_id=None):
         self.logger.error('Text must be an string, user_ids must be an list or string')
         return False
 
-    if not self.reached_limit('messages'):
+    if self.reached_limit('messages'):
         self.logger.info("Out of messages for today.")
         return False
 

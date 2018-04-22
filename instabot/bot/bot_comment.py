@@ -63,7 +63,7 @@ def comment_user(self, user_id, amount=None):
 
 def comment_users(self, user_ids, ncomments=None):
     for user_id in user_ids:
-        if not self.reached_limit('comments'):
+        if self.reached_limit('comments'):
             self.logger.info("Out of comments for today.")
             return
         self.comment_user(user_id, amount=ncomments)
