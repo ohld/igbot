@@ -3,8 +3,6 @@
     passed into e.g. like() or comment() functions.
 """
 
-import random
-
 from tqdm import tqdm
 
 from . import delay
@@ -137,25 +135,32 @@ def get_geotag_users(self, geotag):
 
 
 def get_user_id_from_username(self, username):
-    self.api.search_username(username)
-    if "user" in self.api.last_json:
-        return str(self.api.last_json["user"]["pk"])
-    return None  # Not found
+    if username not in self._usernames:
+        self.api.search_username(username)
+        delay.very_small_delay(self)
+        if "user" in self.api.last_json:
+            self._usernames[username] = str(self.api.last_json["user"]["pk"])
+        else:
+            return None
+    return self._usernames[username]
 
 
 def get_username_from_user_id(self, user_id):
-    self.api.get_username_info(user_id)
-    if "user" in self.api.last_json:
-        return str(self.api.last_json["user"]["username"])
+    user_info = self.get_user_info(user_id)
+    if user_info and "username" in user_info:
+        return str(user_info["username"])
     return None  # Not found
 
 
 def get_user_info(self, user_id):
     user_id = self.convert_to_user_id(user_id)
-    self.api.get_username_info(user_id)
-    if 'user' not in self.api.last_json:
-        return False
-    return self.api.last_json['user']
+    if user_id not in self._user_infos:
+        self.api.get_username_info(user_id)
+        if 'user' not in self.api.last_json:
+            return False
+        user_info = self.api.last_json['user']
+        self._user_infos[user_id] = user_info
+    return self._user_infos[user_id]
 
 
 def get_user_followers(self, user_id, nfollows):
@@ -203,9 +208,10 @@ def search_users(self, query):
 
 
 def get_comment(self):
-    if self.comments:
-        return random.choice(self.comments).strip()
-    return "Wow!"
+    try:
+        return self.comments_file.random().strip()
+    except IndexError:
+        return "Wow!"
 
 
 def get_media_id_from_link(self, link):
@@ -233,11 +239,10 @@ def get_media_id_from_link(self, link):
     return result
 
 
-def convert_to_user_id(self, smth):
-    smth = str(smth)
-    if not smth.isdigit():
-        smth = smth.lstrip('@')
-        smth = self.get_user_id_from_username(smth)
-        delay.very_small_delay(self)
+def convert_to_user_id(self, x):
+    x = str(x)
+    if not x.isdigit():
+        x = x.lstrip('@')
+        x = self.get_user_id_from_username(x)
     # if type is not str than it is int so user_id passed
-    return smth
+    return x

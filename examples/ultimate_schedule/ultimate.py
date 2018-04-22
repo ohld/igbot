@@ -1,42 +1,32 @@
 # -*- coding: utf-8 -*-
-import schedule
-import time
-import sys
+
+from glob import glob
 import os
-import random
-import glob             # ->added to make pics upload -> see job8
-import threading        # ->added to make multithreadening possible -> see fn run_threaded
+import sys
+import threading
+import time
 
 sys.path.append(os.path.join(sys.path[0], '../../'))
-from instabot import Bot
+import schedule
+from instabot import Bot, utils
 
 import config
 
-bot = Bot(comments_file=config.COMMENTS_FILE, blacklist=config.BLACKLIST_FILE, whitelist=config.WHITELIST_FILE)
+bot = Bot(comments_file=config.COMMENTS_FILE,
+          blacklist_file=config.BLACKLIST_FILE,
+          whitelist_file=config.WHITELIST_FILE,
+          friends_file=config.FRIENDS_FILE)
 bot.login()
 bot.logger.info("ULTIMATE script. 24hours save")
 
-random_user_file = bot.read_list_from_file(config.USERS_FILE)
-random_hashtag_file = bot.read_list_from_file(config.HASHTAGS_FILE)
-photo_captions = bot.read_list_from_file(config.PHOTO_CAPTIONS_FILE)
-
-# to get pics and autopost it
-posted_pic_list = []
-try:
-    with open(config.POSTED_PICS_FILE, 'r') as f:
-        posted_pic_list = f.read().splitlines()
-except Exception:
-    posted_pic_list = []
+random_user_file = utils.file(config.USERS_FILE)
+random_hashtag_file = utils.file(config.HASHTAGS_FILE)
+photo_captions_file = utils.file(config.PHOTO_CAPTIONS_FILE)
+posted_pic_list = utils.file(config.POSTED_PICS_FILE).list
 
 # Get the filenames of the photos in the path ->
-pics = [os.path.basename(x) for x in glob.glob(config.PICS_PATH + "/*.jpg")]
+pics = [os.path.basename(x) for x in glob(config.PICS_PATH + "/*.jpg")]
 pics = sorted(pics)
-
-
-# Return a random value from a list, used in various jobs below
-def get_random(from_list):
-    _random = random.choice(from_list)
-    return _random
 
 
 def stats():
@@ -44,7 +34,7 @@ def stats():
 
 
 def job1():
-    bot.like_hashtag(get_random(random_hashtag_file), amount=int(700 / 24))
+    bot.like_hashtag(random_hashtag_file.random(), amount=int(700 / 24))
 
 
 def job2():
@@ -52,11 +42,11 @@ def job2():
 
 
 def job3():
-    bot.like_followers(get_random(random_user_file), nlikes=3)
+    bot.like_followers(random_user_file.random(), nlikes=3)
 
 
 def job4():
-    bot.follow_followers(get_random(random_user_file), nfollows=config.NUMBER_OF_FOLLOWERS_TO_FOLLOW)
+    bot.follow_followers(random_user_file.random(), nfollows=config.NUMBER_OF_FOLLOWERS_TO_FOLLOW)
 
 
 def job5():
@@ -68,11 +58,11 @@ def job6():
 
 
 def job7():
-    bot.follow_users(bot.get_hashtag_users(get_random(random_hashtag_file)))
+    bot.follow_users(bot.get_hashtag_users(random_hashtag_file.random()))
 
 
 def job8():  # Comment posts with an hashtag in HASHTAGS_FILE
-    hashtag = get_random(random_hashtag_file)
+    hashtag = random_hashtag_file.random()
     bot.logger.info("Commenting on hashtag: " + hashtag)
     bot.comment_hashtag(hashtag)
 
@@ -83,7 +73,7 @@ def job9():  # Automatically post a pic in 'pics' folder
             if pic in posted_pic_list:
                 continue
 
-            caption = get_random(photo_captions)
+            caption = photo_captions_file.random()
             full_caption = caption + "\n" + config.FOLLOW_MESSAGE
             bot.logger.info("Uploading pic with caption: " + caption)
             bot.upload_photo(config.PICS_PATH + pic, caption=full_caption)
@@ -112,19 +102,12 @@ def job9():  # Automatically post a pic in 'pics' folder
 def job10():  # put non followers on blacklist
     try:
         bot.logger.info("Creating non-followers list")
-        followings = bot.following  # getting following
-        followers = bot.followers  # getting followers
-        friends = bot.read_list_from_file("friends.txt")  # same whitelist (just user ids)
-        nonfollowerslist = set(followings) - set(followers) - set(friends)
-        with open(config.BLACKLIST_FILE, 'a') as file:  # writing to the blacklist
-            for user_id in nonfollowerslist:
-                file.write(str(user_id) + "\n")
-        bot.logger.info("Removing duplicates...")
-        lines = open(config.BLACKLIST_FILE, 'r').readlines()
-        lines_set = set(lines)
-        out = open(config.BLACKLIST_FILE, 'w')
-        for line in lines_set:
-            out.write(line)
+        followings = set(bot.following)  # getting following
+        followers = set(bot.followers)  # getting followers
+        friends = bot.friends_file.set  # same whitelist (just user ids)
+        non_followers = followings - followers - friends
+        for user_id in non_followers:
+            bot.blacklist_file.append(user_id, allow_duplicates=False)
         bot.logger.info("Done.")
     except Exception as e:
         bot.logger.error("Couldn't update blacklist")

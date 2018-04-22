@@ -6,6 +6,8 @@ WHITELIST_FILE = "whitelist.txt"  # List of the users you don't want to unfollow
 
 COMMENTS_FILE = "comments.txt"  # Contains random comments posted by the bot
 
+FRIENDS_FILE = "friends.txt"  # Users IDs of friends
+
 PHOTO_CAPTIONS_FILE = "photo_captions.txt"  # Captions to put under the photos
 
 HASHTAGS_FILE = "hashtag_database.txt"

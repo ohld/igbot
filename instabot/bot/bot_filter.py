@@ -4,19 +4,8 @@
 
 from . import delay
 
-
-# Adding `users_id`s to `skipped.txt`, such that InstaBot will not
-# try to follow them again or InstaBot will not like their media anymore.
-def skippedlist_adder(self, user_id):
-    skipped = self.read_list_from_file("skipped.txt")
-    if user_id not in skipped:
-        with open('skipped.txt', 'a') as file:
-            msg = 'Adding `user_id` {} to `skipped.txt`.'.format(user_id)
-            self.console_print(msg, 'green')
-            file.write(str(user_id) + "\n")
-
-
 # Filtering media
+
 
 def filter_medias(self, media_items, filtration=True, quiet=False, is_comment=False):
     if filtration:
@@ -144,6 +133,8 @@ def check_user(self, user_id, filter_closed_acc=False, unfollowing=False):
         following=following_count
     ))
 
+    skipped = self.skipped_file
+
     if filter_closed_acc and "is_private" in user_info:
         if user_info["is_private"]:
             self.console_print('info: account is PRIVATE, skipping! ', 'red')
@@ -151,44 +142,44 @@ def check_user(self, user_id, filter_closed_acc=False, unfollowing=False):
     if "is_business" in user_info and self.filter_business_accounts:
         if user_info["is_business"]:
             self.console_print('info: is BUSINESS, skipping!', 'red')
-            skippedlist_adder(self, user_id)
+            skipped.append(user_id)
             return False
     if "is_verified" in user_info and self.filter_verified_accounts:
         if user_info["is_verified"]:
             self.console_print('info: is VERIFIED, skipping !', 'red')
-            skippedlist_adder(self, user_id)
+            skipped.append(user_id)
             return False
 
     if follower_count < self.min_followers_to_follow:
         msg = 'follower_count < bot.min_followers_to_follow, skipping!'
         self.console_print(msg, 'red')
-        skippedlist_adder(self, user_id)
+        skipped.append(user_id)
         return False
     if follower_count > self.max_followers_to_follow:
         msg = 'follower_count > bot.max_followers_to_follow, skipping!'
         self.console_print(msg, 'red')
-        skippedlist_adder(self, user_id)
+        skipped.append(user_id)
         return False
     if user_info["following_count"] < self.min_following_to_follow:
         msg = 'following_count < bot.min_following_to_follow, skipping!'
         self.console_print(msg, 'red')
-        skippedlist_adder(self, user_id)
+        skipped.append(user_id)
         return False
     if user_info["following_count"] > self.max_following_to_follow:
         msg = 'following_count > bot.max_following_to_follow, skipping!'
         self.console_print(msg, 'red')
-        skippedlist_adder(self, user_id)
+        skipped.append(user_id)
         return False
     try:
         if follower_count / following_count > self.max_followers_to_following_ratio:
             msg = 'follower_count / following_count > bot.max_followers_to_following_ratio, skipping!'
             self.console_print(msg, 'red')
-            skippedlist_adder(self, user_id)
+            skipped.append(user_id)
             return False
         if following_count / follower_count > self.max_following_to_followers_ratio:
             msg = 'following_count / follower_count > bot.max_following_to_followers_ratio, skipping!'
             self.console_print(msg, 'red')
-            skippedlist_adder(self, user_id)
+            skipped.append(user_id)
             return False
     except ZeroDivisionError:
         self.console_print('ZeroDivisionError: division by zero', 'red')
@@ -197,13 +188,13 @@ def check_user(self, user_id, filter_closed_acc=False, unfollowing=False):
     if 'media_count' in user_info and user_info["media_count"] < self.min_media_count_to_follow:
         msg = 'media_count < bot.min_media_count_to_follow, BOT or INACTIVE, skipping!'
         self.console_print(msg, 'red')
-        skippedlist_adder(self, user_id)
+        skipped.append(user_id)
         return False
 
     if search_stop_words_in_user(self, user_info):
         msg = '`bot.search_stop_words_in_user` found in user, skipping!'
         self.console_print(msg, 'red')
-        skippedlist_adder(self, user_id)
+        skipped.append(user_id)
         return False
 
     return True
@@ -215,24 +206,25 @@ def check_not_bot(self, user_id):
     user_id = self.convert_to_user_id(user_id)
     if not user_id:
         return False
-    if self.whitelist and user_id in self.whitelist:
+    if user_id in self.whitelist:
         return True
-    if self.blacklist and user_id in self.blacklist:
+    if user_id in self.blacklist:
         return False
 
     user_info = self.get_user_info(user_id)
     if not user_info:
         return True  # closed acc
 
+    skipped = self.skipped_file
     if "following_count" in user_info and user_info["following_count"] > self.max_following_to_block:
         msg = 'following_count > bot.max_following_to_block, skipping!'
         self.console_print(msg, 'red')
-        skippedlist_adder(self, user_id)
+        skipped.append(user_id)
         return False  # massfollower
 
     if search_stop_words_in_user(self, user_info):
         msg = '`bot.search_stop_words_in_user` found in user, skipping!'
-        skippedlist_adder(self, user_id)
+        skipped.append(user_id)
         return False
 
     return True

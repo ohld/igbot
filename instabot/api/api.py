@@ -2,9 +2,9 @@ import hashlib
 import hmac
 import json
 import logging
-from random import uniform
 import time
 import uuid
+from random import uniform
 
 import requests
 import six.moves.urllib as urllib

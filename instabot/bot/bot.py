@@ -2,6 +2,7 @@ import atexit
 import datetime
 import signal
 
+from .. import utils
 from ..api import API
 from .bot_archive import archive, archive_medias, unarchive_medias
 from .bot_block import block, block_bots, block_users, unblock, unblock_users
@@ -24,28 +25,31 @@ from .bot_get import (convert_to_user_id, get_archived_medias, get_comment,
                       get_media_owner, get_popular_medias, get_timeline_medias,
                       get_timeline_users, get_total_hashtag_medias,
                       get_total_user_medias, get_user_followers,
-                      get_user_following, get_user_info, get_user_likers,
-                      get_user_medias, get_user_id_from_username,
+                      get_user_following, get_user_id_from_username,
+                      get_user_info, get_user_likers, get_user_medias,
                       get_username_from_user_id, get_your_medias, search_users)
 from .bot_like import (like, like_followers, like_following, like_geotag,
                        like_hashtag, like_medias, like_timeline, like_user,
                        like_users)
 from .bot_photo import download_photo, download_photos, upload_photo
 from .bot_stats import save_user_stats
-from .bot_support import (add_blacklist, add_whitelist, check_if_file_exists,
-                          check_whitelists, console_print, extract_urls,
+from .bot_support import (check_if_file_exists, console_print, extract_urls,
                           read_list_from_file)
 from .bot_unfollow import (unfollow, unfollow_everyone, unfollow_non_followers,
-                           unfollow_users, update_unfollow_file)
+                           unfollow_users)
 from .bot_unlike import unlike, unlike_medias, unlike_user
 from .bot_video import upload_video
 
 
 class Bot(object):
     def __init__(self,
-                 whitelist=False,
-                 blacklist=False,
-                 comments_file=False,
+                 whitelist_file='whitelist.txt',
+                 blacklist_file='blacklist.txt',
+                 comments_file='comments.txt',
+                 followed_file='followed.txt',
+                 unfollowed_file='unfollowed.txt',
+                 skipped_file='skipped.txt',
+                 friends_file='friends.txt',
                  proxy=None,
                  max_likes_per_day=1000,
                  max_unlikes_per_day=1000,
@@ -141,26 +145,23 @@ class Bot(object):
         self._following = None
         self._followers = None
 
-        # proxy
+        # Database files
+        self.followed_file = utils.file(followed_file)
+        self.unfollowed_file = utils.file(unfollowed_file)
+        self.skipped_file = utils.file(skipped_file)
+        self.friends_file = utils.file(friends_file)
+        self.comments_file = utils.file(comments_file)
+        self.blacklist_file = utils.file(blacklist_file)
+        self.whitelist_file = utils.file(whitelist_file)
+
         self.proxy = proxy
-
-        # white and blacklists
-        self.whitelist = []
-        if whitelist:
-            self.whitelist = read_list_from_file(whitelist)
-        self.blacklist = []
-        if blacklist:
-            self.blacklist = read_list_from_file(blacklist)
-
         self.verbosity = verbosity
-
-        # comment file
-        self.comments = []
-        if comments_file:
-            self.comments = read_list_from_file(comments_file)
 
         self.logger = self.api.logger
         self.logger.info('Instabot Started')
+
+        self._user_infos = {}  # User info cache
+        self._usernames = {}  # `username` to `user_id` mapping
 
     @property
     def user_id(self):
@@ -181,6 +182,18 @@ class Bot(object):
     def last_json(self):
         # For compatibility
         return self.api.last_json
+
+    @property
+    def blacklist(self):
+        # This is a fast operation because `get_user_id_from_username` is cached.
+        return [self.convert_to_user_id(i) for i in self.blacklist_file.list
+                if i is not None]
+
+    @property
+    def whitelist(self):
+        # This is a fast operation because `get_user_id_from_username` is cached.
+        return [self.convert_to_user_id(i) for i in self.whitelist_file.list
+                if i is not None]
 
     @property
     def following(self):
@@ -235,24 +248,6 @@ class Bot(object):
              self.total_archived,
              self.total_unarchived,
              self.total_sent_messages) = storage
-        if not self.whitelist:
-            self.whitelist = check_whitelists(self)
-        self.whitelist = self.convert_whitelist(self.whitelist)
-        self.blacklist = [self.convert_to_user_id(u) for u in self.blacklist
-                          if u is not None]
-
-    def convert_whitelist(self, usernames):
-        """
-        Will convert every username in the whitelist to the user id.
-        """
-        ret = []
-        for u in usernames:
-            uid = self.convert_to_user_id(u)
-            if uid and uid not in ret:
-                ret.append(uid)
-            else:
-                print("WARNING: Whitelisted user '%s' not found" % u)
-        return ret
 
     def print_counters(self):
         if self.total_liked:
@@ -455,9 +450,6 @@ class Bot(object):
     def unfollow_everyone(self):
         return unfollow_everyone(self)
 
-    def update_unfollow_file(self):
-        return update_unfollow_file(self)
-
     # direct
 
     def send_message(self, text, user_ids, thread_id=None):
@@ -573,12 +565,6 @@ class Bot(object):
 
     def read_list_from_file(self, file_path):
         return read_list_from_file(file_path)
-
-    def add_whitelist(self, file_path):
-        return add_whitelist(self, file_path)
-
-    def add_blacklist(self, file_path):
-        return add_blacklist(self, file_path)
 
     def console_print(self, text, color=None):
         return console_print(self, text, color)
