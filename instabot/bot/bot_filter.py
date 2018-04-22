@@ -84,10 +84,6 @@ def search_stop_words_in_user(self, user_info):
     return False
 
 
-def filter_users(self, user_id_list):
-    return [str(user["pk"]) for user in user_id_list]
-
-
 def check_user(self, user_id, filter_closed_acc=False, unfollowing=False):
     if not self.filter_users and not unfollowing:
         return True

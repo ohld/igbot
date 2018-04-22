@@ -15,8 +15,7 @@ from .bot_comment import (comment, comment_geotag, comment_hashtag,
 from .bot_delete import delete_comment, delete_media, delete_medias
 from .bot_direct import (send_hashtag, send_like, send_media, send_medias,
                          send_message, send_messages, send_profile)
-from .bot_filter import (check_media, check_not_bot, check_user, filter_medias,
-                         filter_users)
+from .bot_filter import (check_media, check_not_bot, check_user, filter_medias)
 from .bot_follow import (follow, follow_followers, follow_following,
                          follow_users)
 from .bot_get import (convert_to_user_id, get_archived_medias, get_comment,
@@ -558,9 +557,6 @@ class Bot(object):
 
     def check_not_bot(self, user):
         return check_not_bot(self, user)
-
-    def filter_users(self, user_id_list):
-        return filter_users(self, user_id_list)
 
     # support
 
