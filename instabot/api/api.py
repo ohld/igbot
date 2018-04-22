@@ -95,7 +95,7 @@ class API(object):
         self.is_logged_in = not self.send_request('accounts/logout/')
         return not self.is_logged_in
 
-    def send_request(self, endpoint, post=None, login=False):
+    def send_request(self, endpoint, post=None, login=False, with_signature=True):
         if (not self.is_logged_in and not login):
             msg = "Not logged in!"
             self.logger.critical(msg)
@@ -112,7 +112,9 @@ class API(object):
         try:
             self.total_requests += 1
             if post is not None:  # POST
-                post = self.generate_signature(post)
+                if with_signature:
+                    # Only `send_direct_item` doesn't need a signature
+                    post = self.generate_signature(post)
                 response = self.session.post(
                     config.API_URL + endpoint, data=post)
             else:  # GET
@@ -424,36 +426,32 @@ class API(object):
             'action': 'send_item'
         }
 
-        url = ''
-        if item_type == 'links':
-            data['link_text'] = options.get('text')
+        url = 'direct_v2/threads/broadcast/{}/'.format(item_type)
+        text = options.get('text', '')
+        if item_type == 'link':
+            data['link_text'] = text
             data['link_urls'] = json.dumps(options.get('urls'))
-            url = 'direct_v2/threads/broadcast/link/'
         elif item_type == 'message':
-            data['text'] = options.get('text', '')
-            url = 'direct_v2/threads/broadcast/text/'
+            data['text'] = text
         elif item_type == 'media_share':
+            data['text'] = text
             data['media_type'] = options.get('media_type', 'photo')
-            data['text'] = options.get('text', '')
             data['media_id'] = options.get('media_id', '')
-            url = 'direct_v2/threads/broadcast/media_share/'
-        elif item_type == 'like':
-            url = 'direct_v2/threads/broadcast/like/'
         elif item_type == 'hashtag':
-            url = 'direct_v2/threads/broadcast/hashtag/'
-            data['text'] = options.get('text', '')
+            data['text'] = text
             data['hashtag'] = options.get('hashtag', '')
         elif item_type == 'profile':
-            url = 'direct_v2/threads/broadcast/profile/'
+            data['text'] = text
             data['profile_user_id'] = options.get('profile_user_id')
-            data['text'] = options.get('text', '')
+
         recipients = self._prepare_recipients(users, options.get('thread'), use_quotes=False)
         if not recipients:
             return False
         data['recipient_users'] = recipients.get('users')
         if recipients.get('thread'):
             data['thread_ids'] = recipients.get('thread')
-        return self.send_request(url, data)
+        data.update(self.default_data)
+        return self.send_request(url, data, with_signature=False)
 
     @staticmethod
     def generate_signature(data):
@@ -484,10 +482,10 @@ class API(object):
     def get_total_followers_or_followings(self, user_id, amount=None, which='followers'):
         if which == 'followers':
             key = 'follower_count'
-            get = getattr(self, 'get_user_followers')
+            get = self.get_user_followers
         elif which == 'followings':
             key = 'following_count'
-            get = getattr(self, 'get_user_followings')
+            get = self.get_user_followings
 
         sleep_track = 0
         result = []
