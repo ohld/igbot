@@ -89,18 +89,20 @@ def upload_video(self, video, thumbnail, caption=None, upload_id=None):
         last_request_extra = len(video_data) - 3 * request_size
 
         headers = copy.deepcopy(self.session.headers)
-        self.session.headers.update({'X-IG-Capabilities': '3Q4=',
-                                     'X-IG-Connection-Type': 'WIFI',
-                                     'Cookie2': '$Version=1',
-                                     'Accept-Language': 'en-US',
-                                     'Accept-Encoding': 'gzip, deflate',
-                                     'Content-type': 'application/octet-stream',
-                                     'Session-ID': upload_id,
-                                     'Connection': 'keep-alive',
-                                     'Content-Disposition': 'attachment; filename="video.mov"',
-                                     'job': upload_job,
-                                     'Host': 'upload.instagram.com',
-                                     'User-Agent': config.USER_AGENT})
+        self.session.headers.update({
+            'X-IG-Capabilities': '3Q4=',
+            'X-IG-Connection-Type': 'WIFI',
+            'Cookie2': '$Version=1',
+            'Accept-Language': 'en-US',
+            'Accept-Encoding': 'gzip, deflate',
+            'Content-type': 'application/octet-stream',
+            'Session-ID': upload_id,
+            'Connection': 'keep-alive',
+            'Content-Disposition': 'attachment; filename="video.mov"',
+            'job': upload_job,
+            'Host': 'upload.instagram.com',
+            'User-Agent': config.USER_AGENT
+        })
         for i in range(4):
             start = i * request_size
             if i == 3:
@@ -111,7 +113,7 @@ def upload_video(self, video, thumbnail, caption=None, upload_id=None):
             content_range = "bytes {start}-{end}/{len_video}".format(
                 start=start, end=end - 1, len_video=len(video_data)).encode('utf-8')
 
-            self.session.headers.update({'Content-Length': str(end - start), 'Content-Range': content_range, })
+            self.session.headers.update({'Content-Length': str(end - start), 'Content-Range': content_range})
             response = self.session.post(upload_url, data=video_data[start:start + length])
         self.session.headers = headers
 
