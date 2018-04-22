@@ -99,14 +99,14 @@ class Bot(object):
 
         self.start_time = datetime.datetime.now()
 
-        self.last ={'like': 0,
-                    'unlike': 0,
-                    'follow': 0,
-                    'unfollow': 0,
-                    'comment': 0,
-                    'block': 0,
-                    'unblock': 0,
-                    'message': 0}
+        self.last = {'like': 0,
+                     'unlike': 0,
+                     'follow': 0,
+                     'unfollow': 0,
+                     'comment': 0,
+                     'block': 0,
+                     'unblock': 0,
+                     'message': 0}
 
         self.delays = {'like': like_delay,
                        'unlike': unlike_delay,
@@ -122,14 +122,14 @@ class Bot(object):
         self.filter_business_accounts = filter_business_accounts
         self.filter_verified_accounts = filter_verified_accounts
 
-        self.max_per_day= {'likes': max_likes_per_day,
-                           'unlikes': max_unlikes_per_day,
-                           'follows': max_follows_per_day,
-                           'unfollows': max_unfollows_per_day,
-                           'comments': max_comments_per_day,
-                           'blocks': max_blocks_per_day,
-                           'unblocks': max_unblocks_per_day,
-                           'messages': max_messages_per_day}
+        self.max_per_day = {'likes': max_likes_per_day,
+                            'unlikes': max_unlikes_per_day,
+                            'follows': max_follows_per_day,
+                            'unfollows': max_unfollows_per_day,
+                            'comments': max_comments_per_day,
+                            'blocks': max_blocks_per_day,
+                            'unblocks': max_unblocks_per_day,
+                            'messages': max_messages_per_day}
 
         self.max_likes_to_like = max_likes_to_like
         self.max_followers_to_follow = max_followers_to_follow
