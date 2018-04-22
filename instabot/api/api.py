@@ -191,8 +191,8 @@ class API(object):
     def upload_photo(self, photo, caption=None, upload_id=None):
         return upload_photo(self, photo, caption, upload_id)
 
-    def download_photo(self, media_id, filename, media=False, path='photos/'):
-        return download_photo(self, media_id, filename, media, path)
+    def download_photo(self, media_id, filename, media=False, folder='photos'):
+        return download_photo(self, media_id, filename, media, folder)
 
     def configure_photo(self, upload_id, photo, caption=''):
         return configure_photo(self, upload_id, photo, caption)

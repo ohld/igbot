@@ -411,11 +411,11 @@ class Bot(object):
 
     # photo
 
-    def download_photo(self, media_id, path='photos/', filename=None, description=False):
-        return download_photo(self, media_id, path, filename, description)
+    def download_photo(self, media_id, folder='photos', filename=None, save_description=False):
+        return download_photo(self, media_id, folder, filename, save_description)
 
-    def download_photos(self, medias, path='photos/', description=False):
-        return download_photos(self, medias, path, description)
+    def download_photos(self, medias, folder='photos', save_description=False):
+        return download_photos(self, medias, folder, save_description)
 
     def upload_photo(self, photo, caption=None, upload_id=None):
         return upload_photo(self, photo, caption, upload_id)

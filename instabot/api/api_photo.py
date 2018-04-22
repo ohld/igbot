@@ -9,18 +9,18 @@ from requests_toolbelt import MultipartEncoder
 from . import config
 
 
-def download_photo(self, media_id, filename, media=False, path='photos'):
+def download_photo(self, media_id, filename, media=False, folder='photos'):
     if not media:
         self.media_info(media_id)
         if not self.last_json.get('items'):
             return True
         media = self.last_json['items'][0]
-    filename = ('{0}_{1}.jpg'.format(media['user']['username'], media_id)
-                if not filename else '{0}.jpg'.format(filename))
+    filename = ('{}_{}.jpg'.format(media['user']['username'], media_id)
+                if not filename else '{}.jpg'.format(filename))
     if media['media_type'] != 1:
         return True
     images = media['image_versions2']['candidates']
-    fname = os.path.join(path, filename)
+    fname = os.path.join(folder, filename)
     if os.path.exists(fname):
         return os.path.abspath(fname)
     response = self.session.get(images[0]['url'], stream=True)
