@@ -479,7 +479,7 @@ class Bot(object):
         return send_profile(self, profile_user_id, user_ids, text, thread_id)
 
     def send_like(self, user_ids, thread_id=None):
-        send_like(self, user_ids, thread_id)
+        return send_like(self, user_ids, thread_id)
 
     # delete
 
