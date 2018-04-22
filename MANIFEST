@@ -25,5 +25,3 @@ instabot/bot/bot_support.py
 instabot/bot/bot_unfollow.py
 instabot/bot/bot_unlike.py
 instabot/bot/bot_video.py
-instabot/bot/delay.py
-instabot/bot/limits.py
