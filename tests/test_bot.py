@@ -89,13 +89,11 @@ class TestBotAPI(TestBot):
 
     def test_reset_counters(self):
         from instabot.bot.limits import reset_counters
-        counters = ['total_liked', 'total_unliked', 'total_followed',
-                    'total_unfollowed', 'total_commented', 'total_blocked', 'total_unblocked']
-        for counter in counters:
-            setattr(self.bot, counter, 1)
-            assert getattr(self.bot, counter) is 1
-
-        reset_counters(self.bot)
-
-        for counter in counters:
-            assert getattr(self.bot, counter) is 0
+        keys = ['liked', 'unliked', 'followed',
+                'unfollowed', 'commented', 'blocked', 'unblocked']
+        for key in keys:
+            self.bot.total[key] = 1
+            assert self.bot.total[key] == 1
+       reset_counters(self.bot)
+       for key in keys:
+            assert self.bot.total[key] == 0
