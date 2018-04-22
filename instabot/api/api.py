@@ -95,7 +95,7 @@ class API(object):
         self.is_logged_in = not self.send_request('accounts/logout/')
         return not self.is_logged_in
 
-    def send_request(self, endpoint, post=None, login=False):
+    def send_request(self, endpoint, post=None, login=False, with_signature=True):
         if (not self.is_logged_in and not login):
             msg = "Not logged in!"
             self.logger.critical(msg)
@@ -112,7 +112,9 @@ class API(object):
         try:
             self.total_requests += 1
             if post is not None:  # POST
-                post = self.generate_signature(post)
+                if with_signature:
+                    # Only `send_direct_item` doesn't need a signature
+                    post = self.generate_signature(post)
                 response = self.session.post(
                     config.API_URL + endpoint, data=post)
             else:  # GET
@@ -453,7 +455,8 @@ class API(object):
         data['recipient_users'] = recipients.get('users')
         if recipients.get('thread'):
             data['thread_ids'] = recipients.get('thread')
-        return self.send_request(url, data)
+        data.update(self.default_data)
+        return self.send_request(url, data, with_signature=False)
 
     @staticmethod
     def generate_signature(data):
