@@ -14,7 +14,8 @@ class file(object):
     @property
     def list(self):
         with open(self.fname, 'r') as f:
-            return [x.strip('\n') for x in f.readlines()]
+            lines = [x.strip('\n') for x in f.readlines()]
+            return [x for x in lines if x]
 
     @property
     def set(self):
