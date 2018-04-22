@@ -431,7 +431,7 @@ class API(object):
         if item_type == 'link':
             data['link_text'] = text
             data['link_urls'] = json.dumps(options.get('urls'))
-        elif item_type == 'message':
+        elif item_type == 'text':
             data['text'] = text
         elif item_type == 'media_share':
             data['text'] = text
