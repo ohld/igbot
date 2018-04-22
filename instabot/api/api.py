@@ -482,10 +482,10 @@ class API(object):
     def get_total_followers_or_followings(self, user_id, amount=None, which='followers'):
         if which == 'followers':
             key = 'follower_count'
-            get = getattr(self, 'get_user_followers')
+            get = self.get_user_followers
         elif which == 'followings':
             key = 'following_count'
-            get = getattr(self, 'get_user_followings')
+            get = self.get_user_followings
 
         sleep_track = 0
         result = []
