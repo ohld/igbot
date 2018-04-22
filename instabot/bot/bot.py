@@ -222,25 +222,25 @@ class Bot(object):
             self.total, self.start_time = storage
 
     def print_counters(self):
-        if self.total['liked']:
+        if self.total['liked'] > 0:
             self.logger.info("Total liked: %d", self.total['liked'])
-        if self.total['unliked']:
+        if self.total['unliked'] > 0:
             self.logger.info("Total unliked: %d", self.total['unliked'])
-        if self.total['followed']:
+        if self.total['followed'] > 0:
             self.logger.info("Total followed: %d", self.total['followed'])
-        if self.total['unfollowed']:
+        if self.total['unfollowed'] > 0:
             self.logger.info("Total unfollowed: %d", self.total['unfollowed'])
-        if self.total['commented']:
+        if self.total['commented'] > 0:
             self.logger.info("Total commented: %d", self.total['commented'])
-        if self.total['blocked']:
+        if self.total['blocked'] > 0:
             self.logger.info("Total blocked: %d", self.total['blocked'])
-        if self.total['unblocked']:
+        if self.total['unblocked'] > 0:
             self.logger.info("Total unblocked: %d", self.total['unblocked'])
-        if self.total['archived']:
+        if self.total['archived'] > 0:
             self.logger.info("Total archived: %d", self.total['archived'])
-        if self.total['unarchived']:
+        if self.total['unarchived'] > 0:
             self.logger.info("Total unarchived: %d", self.total['unarchived'])
-        if self.total['sent_messages']:
+        if self.total['sent_messages'] > 0:
             self.logger.info("Total sent messages: %d", self.total['sent_messages'])
         self.logger.info("Total requests: %d", self.total['requests'])
 
