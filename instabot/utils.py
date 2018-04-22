@@ -25,6 +25,9 @@ class file(object):
         for i in self.list:
             yield next(iter(i))
 
+    def __len__(self):
+        return len(self.list)
+
     def append(self, item, allow_duplicates=False):
         if self.verbose:
             msg = "Adding '{}' to `{}`.".format(item, self.fname)
