@@ -17,7 +17,7 @@ def unfollow(self, user_id):
             msg = '===> Unfollowed, `user_id`: {}, user_name: {}'
             self.console_print(msg.format(user_id, username), 'yellow')
             self.unfollowed_file.append(user_id)
-            self.total_unfollowed += 1
+            self.total['unfollowed'] += 1
             return True
     else:
         self.logger.info("Out of unfollows for today.")
@@ -38,7 +38,7 @@ def unfollow_users(self, user_ids):
             i = filtered_user_ids.index(user_id)
             broken_items = filtered_user_ids[i:]
             break
-    self.logger.info("DONE: Total unfollowed {} users.".format(self.total_unfollowed))
+    self.logger.info("DONE: Total unfollowed {} users.".format(self.total['unfollowed']))
     return broken_items
 
 

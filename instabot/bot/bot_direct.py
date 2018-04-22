@@ -29,7 +29,7 @@ def send_message(self, text, user_ids, thread_id=None):
         thread=thread_id,
         urls=urls
     ):
-        self.total_sent_messages += 1
+        self.total['sent_messages'] += 1
         return True
 
     self.logger.info("Message to {user_ids} wasn't sent".format(user_ids=user_ids))
@@ -78,7 +78,7 @@ def send_media(self, media_id, user_ids, text='', thread_id=None):
         media_type=media.get('media_type'),
         media_id=media.get('id')
     ):
-        self.total_sent_messages += 1
+        self.total['sent_messages'] += 1
         return True
 
     self.logger.info("Message to {user_ids} wasn't sent".format(user_ids=user_ids))
@@ -120,7 +120,7 @@ def send_hashtag(self, hashtag, user_ids, text='', thread_id=None):
     if self.api.send_direct_item(
         'hashtag', user_ids, text=text, thread=thread_id, hashtag=hashtag
     ):
-        self.total_sent_messages += 1
+        self.total['sent_messages'] += 1
         return True
 
     self.logger.info("Message to {user_ids} wasn't sent".format(user_ids=user_ids))
@@ -153,7 +153,7 @@ def send_profile(self, profile_user_id, user_ids, text='', thread_id=None):
         thread=thread_id,
         profile_user_id=profile_id
     ):
-        self.total_sent_messages += 1
+        self.total['sent_messages'] += 1
         return True
     self.logger.info("Message to {user_ids} wasn't sent".format(user_ids=user_ids))
     return False
@@ -177,7 +177,7 @@ def send_like(self, user_ids, thread_id=None):
 
     delay.message_delay(self)
     if self.api.send_direct_item('like', user_ids, thread=thread_id):
-        self.total_sent_messages += 1
+        self.total['sent_messages'] += 1
         return True
     self.logger.info("Message to {user_ids} wasn't sent".format(user_ids=user_ids))
     return False

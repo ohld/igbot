@@ -8,8 +8,8 @@ def archive(self, media_id, undo=False):
     media = self.get_media_info(media_id)
     media = media[0] if isinstance(media, list) else media
     if self.api.archive_media(media, undo):
-        self.total_archived += int(not undo)
-        self.total_unarchived += int(undo)
+        self.total['archived'] += int(not undo)
+        self.total['unarchived'] += int(undo)
         return True
     self.logger.info("Media id %s is not %s.", media_id, 'unarchived' if undo else 'archived')
     return False
@@ -26,7 +26,7 @@ def archive_medias(self, medias):
             delay.error_delay(self)
             broken_items = medias[medias.index(media):]
             break
-    self.logger.info("DONE: Total archived %d medias." % self.total_archived)
+    self.logger.info("DONE: Total archived %d medias." % self.total['archived'])
     return broken_items
 
 
@@ -41,5 +41,5 @@ def unarchive_medias(self, medias):
             delay.error_delay(self)
             broken_items = medias[medias.index(media):]
             break
-    self.logger.info("DONE: Total unarchived %d medias." % self.total_unarchived)
+    self.logger.info("DONE: Total unarchived %d medias." % self.total['unarchived'])
     return broken_items

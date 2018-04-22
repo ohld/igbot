@@ -14,7 +14,7 @@ def follow(self, user_id):
         if self.api.follow(user_id):
             msg = '===> FOLLOWED <==== `user_id`: {}.'.format(user_id)
             self.console_print(msg, 'green')
-            self.total_followed += 1
+            self.total['followed'] += 1
             self.followed_file.append(user_id)
             return True
     else:
@@ -61,7 +61,7 @@ def follow_users(self, user_ids):
                     broken_items += user_ids[i:]
                     break
 
-    self.logger.info("DONE: Followed {} users in total.".format(self.total_followed))
+    self.logger.info("DONE: Followed {} users in total.".format(self.total['followed']))
     return broken_items
 
 

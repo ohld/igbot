@@ -1,4 +1,5 @@
 import atexit
+from collections import defaultdict
 import datetime
 import signal
 
@@ -84,19 +85,10 @@ class Bot(object):
                  ):
         self.api = API()
 
-        self.total_liked = 0
-        self.total_unliked = 0
-        self.total_followed = 0
-        self.total_unfollowed = 0
-        self.total_commented = 0
-        self.total_blocked = 0
-        self.total_unblocked = 0
-        self.total_archived = 0
-        self.total_unarchived = 0
-        self.total_sent_messages = 0
+        self.total = defaultdict(int)
+
         self.start_time = datetime.datetime.now()
 
-        # the time.time() of the last action
         self.last_like = 0
         self.last_unlike = 0
         self.last_follow = 0
@@ -236,41 +228,30 @@ class Bot(object):
     def prepare(self):
         storage = load_checkpoint(self)
         if storage is not None:
-            (self.total_liked,
-             self.total_unliked,
-             self.total_followed,
-             self.total_unfollowed,
-             self.total_commented,
-             self.total_blocked,
-             self.total_unblocked,
-             self.api.total_requests,
-             self.start_time,
-             self.total_archived,
-             self.total_unarchived,
-             self.total_sent_messages) = storage
+            self.total, self.start_time = storage
 
     def print_counters(self):
-        if self.total_liked:
-            self.logger.info("Total liked: %d", self.total_liked)
-        if self.total_unliked:
-            self.logger.info("Total unliked: %d", self.total_unliked)
-        if self.total_followed:
-            self.logger.info("Total followed: %d", self.total_followed)
-        if self.total_unfollowed:
-            self.logger.info("Total unfollowed: %d", self.total_unfollowed)
-        if self.total_commented:
-            self.logger.info("Total commented: %d", self.total_commented)
-        if self.total_blocked:
-            self.logger.info("Total blocked: %d", self.total_blocked)
-        if self.total_unblocked:
-            self.logger.info("Total unblocked: %d", self.total_unblocked)
-        if self.total_archived:
-            self.logger.info("Total archived: %d", self.total_archived)
-        if self.total_unarchived:
-            self.logger.info("Total unarchived: %d", self.total_unarchived)
-        if self.total_sent_messages:
-            self.logger.info("Total sent messages: %d", self.total_sent_messages)
-        self.logger.info("Total requests: %d", self.api.total_requests)
+        if self.total['liked']:
+            self.logger.info("Total liked: %d", self.total['liked'])
+        if self.total['unliked']:
+            self.logger.info("Total unliked: %d", self.total['unliked'])
+        if self.total['followed']:
+            self.logger.info("Total followed: %d", self.total['followed'])
+        if self.total['unfollowed']:
+            self.logger.info("Total unfollowed: %d", self.total['unfollowed'])
+        if self.total['commented']:
+            self.logger.info("Total commented: %d", self.total['commented'])
+        if self.total['blocked']:
+            self.logger.info("Total blocked: %d", self.total['blocked'])
+        if self.total['unblocked']:
+            self.logger.info("Total unblocked: %d", self.total['unblocked'])
+        if self.total['archived']:
+            self.logger.info("Total archived: %d", self.total['archived'])
+        if self.total['unarchived']:
+            self.logger.info("Total unarchived: %d", self.total['unarchived'])
+        if self.total['sent_messages']:
+            self.logger.info("Total sent messages: %d", self.total['sent_messages'])
+        self.logger.info("Total requests: %d", self.total['requests'])
 
     # getters
 

@@ -12,7 +12,7 @@ def block(self, user_id):
     if limits.check_if_bot_can_block(self):
         delay.block_delay(self)
         if self.api.block(user_id):
-            self.total_blocked += 1
+            self.total['blocked'] += 1
             return True
     else:
         self.logger.info("Out of blocks for today.")
@@ -24,7 +24,7 @@ def unblock(self, user_id):
     if limits.check_if_bot_can_unblock(self):
         delay.unblock_delay(self)
         if self.api.unblock(user_id):
-            self.total_unblocked += 1
+            self.total['unblocked'] += 1
             return True
     else:
         self.logger.info("Out of blocks for today.")
@@ -39,7 +39,7 @@ def block_users(self, user_ids):
             delay.error_delay(self)
             broken_items = user_ids[user_ids.index(user_id):]
             break
-    self.logger.info("DONE: Total blocked %d users." % self.total_blocked)
+    self.logger.info("DONE: Total blocked %d users." % self.total['blocked'])
     return broken_items
 
 
@@ -50,7 +50,7 @@ def unblock_users(self, user_ids):
         if not self.unblock(user_id):
             delay.error_delay(self)
             broken_items.append(user_id)
-    self.logger.info("DONE: Total unblocked %d users." % self.total_unblocked)
+    self.logger.info("DONE: Total unblocked %d users." % self.total['unblocked'])
     return broken_items
 
 

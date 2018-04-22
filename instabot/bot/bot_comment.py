@@ -20,7 +20,7 @@ def comment(self, media_id, comment_text):
     if limits.check_if_bot_can_comment(self):
         delay.comment_delay(self)
         if self.api.comment(media_id, comment_text):
-            self.total_commented += 1
+            self.total['commented'] += 1
             return True
     else:
         self.logger.info("Out of comments for today.")
@@ -39,7 +39,7 @@ def comment_medias(self, medias):
                 broken_items = medias[medias.index(media):]
                 break
     self.logger.info("DONE: Total commented on %d medias. " %
-                     self.total_commented)
+                     self.total['commented'])
     return broken_items
 
 
