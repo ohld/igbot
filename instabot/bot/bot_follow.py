@@ -1,6 +1,6 @@
-from tqdm import tqdm
+import time
 
-from . import delay, limits
+from tqdm import tqdm
 
 
 def follow(self, user_id):
@@ -9,12 +9,12 @@ def follow(self, user_id):
     self.console_print(msg)
     if not self.check_user(user_id):
         return True
-    if limits.check_if_bot_can_follow(self):
-        delay.follow_delay(self)
+    if not self.reached_limit('follows'):
+        self.delay('follow')
         if self.api.follow(user_id):
             msg = '===> FOLLOWED <==== `user_id`: {}.'.format(user_id)
             self.console_print(msg, 'green')
-            self.total_followed += 1
+            self.total['follows'] += 1
             self.followed_file.append(user_id)
             return True
     else:
@@ -24,7 +24,7 @@ def follow(self, user_id):
 
 def follow_users(self, user_ids):
     broken_items = []
-    if not limits.check_if_bot_can_follow(self):
+    if self.reached_limit('follows'):
         self.logger.info("Out of follows for today.")
         return
     msg = "Going to follow {} users.".format(len(user_ids))
@@ -50,24 +50,23 @@ def follow_users(self, user_ids):
                 try_number = 3
                 error_pass = False
                 for _ in range(try_number):
-                    delay_time = 60
-                    delay.delay_in_seconds(self, delay_time)
+                    time.sleep(60)
                     error_pass = self.follow(user_id)
                     if error_pass:
                         break
                 if not error_pass:
-                    delay.error_delay(self)
+                    self.error_delay()
                     i = user_ids.index(user_id)
                     broken_items += user_ids[i:]
                     break
 
-    self.logger.info("DONE: Followed {} users in total.".format(self.total_followed))
+    self.logger.info("DONE: Followed {} users in total.".format(self.total['follows']))
     return broken_items
 
 
 def follow_followers(self, user_id, nfollows=None):
     self.logger.info("Follow followers of: {}".format(user_id))
-    if not limits.check_if_bot_can_follow(self):
+    if self.reached_limit('follows'):
         self.logger.info("Out of follows for today.")
         return
     if not user_id:
@@ -82,7 +81,7 @@ def follow_followers(self, user_id, nfollows=None):
 
 def follow_following(self, user_id, nfollows=None):
     self.logger.info("Follow following of: {}".format(user_id))
-    if not limits.check_if_bot_can_follow(self):
+    if self.reached_limit('follows'):
         self.logger.info("Out of follows for today.")
         return
     if not user_id:

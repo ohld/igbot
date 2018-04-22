@@ -12,7 +12,7 @@ from requests_toolbelt import MultipartEncoder
 from . import config
 
 
-def download_video(self, media_id, filename, media=False, path='videos'):
+def download_video(self, media_id, filename, media=False, folder='videos'):
     if not media:
         self.media_info(media_id)
         media = self.last_json['items'][0]
@@ -21,7 +21,7 @@ def download_video(self, media_id, filename, media=False, path='videos'):
         clips = media['video_versions']
     except Exception:
         return False
-    fname = os.path.join(path, filename)
+    fname = os.path.join(folder, filename)
     if os.path.exists(fname):
         return os.path.abspath(fname)
     response = self.session.get(clips[0]['url'], stream=True)
@@ -36,7 +36,8 @@ def get_video_info(filename):
     res = {}
     try:
         terminalResult = subprocess.Popen(["ffprobe", filename],
-                                          stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+                                          stdout=subprocess.PIPE,
+                                          stderr=subprocess.STDOUT)
         for x in terminalResult.stdout.readlines():
             # Duration: 00:00:59.51, start: 0.000000, bitrate: 435 kb/s
             m = re.search(r'duration: (\d\d:\d\d:\d\d\.\d\d),', str(x), flags=re.IGNORECASE)
@@ -49,7 +50,8 @@ def get_video_info(filename):
                 res['height'] = m.group(2)
     finally:
         if 'width' not in res:
-            print("ERROR: 'ffprobe' not found, pls install 'ffprobe' with one of following methods")
+            print(("ERROR: 'ffprobe' not found, please install "
+                   "'ffprobe' with one of following methods:"))
             print("   sudo apt-get install ffmpeg")
             print("or sudo apt-get install -y libav-tools")
     return res
@@ -87,18 +89,20 @@ def upload_video(self, video, thumbnail, caption=None, upload_id=None):
         last_request_extra = len(video_data) - 3 * request_size
 
         headers = copy.deepcopy(self.session.headers)
-        self.session.headers.update({'X-IG-Capabilities': '3Q4=',
-                                     'X-IG-Connection-Type': 'WIFI',
-                                     'Cookie2': '$Version=1',
-                                     'Accept-Language': 'en-US',
-                                     'Accept-Encoding': 'gzip, deflate',
-                                     'Content-type': 'application/octet-stream',
-                                     'Session-ID': upload_id,
-                                     'Connection': 'keep-alive',
-                                     'Content-Disposition': 'attachment; filename="video.mov"',
-                                     'job': upload_job,
-                                     'Host': 'upload.instagram.com',
-                                     'User-Agent': config.USER_AGENT})
+        self.session.headers.update({
+            'X-IG-Capabilities': '3Q4=',
+            'X-IG-Connection-Type': 'WIFI',
+            'Cookie2': '$Version=1',
+            'Accept-Language': 'en-US',
+            'Accept-Encoding': 'gzip, deflate',
+            'Content-type': 'application/octet-stream',
+            'Session-ID': upload_id,
+            'Connection': 'keep-alive',
+            'Content-Disposition': 'attachment; filename="video.mov"',
+            'job': upload_job,
+            'Host': 'upload.instagram.com',
+            'User-Agent': config.USER_AGENT
+        })
         for i in range(4):
             start = i * request_size
             if i == 3:
@@ -109,7 +113,7 @@ def upload_video(self, video, thumbnail, caption=None, upload_id=None):
             content_range = "bytes {start}-{end}/{len_video}".format(
                 start=start, end=end - 1, len_video=len(video_data)).encode('utf-8')
 
-            self.session.headers.update({'Content-Length': str(end - start), 'Content-Range': content_range, })
+            self.session.headers.update({'Content-Length': str(end - start), 'Content-Range': content_range})
             response = self.session.post(upload_url, data=video_data[start:start + length])
         self.session.headers = headers
 

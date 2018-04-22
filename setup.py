@@ -5,7 +5,7 @@ with open('requirements.txt') as f:
 
 setup(
     name='instabot',
-    packages=['instabot', 'instabot.bot', 'instabot.api'],
+    packages=['instabot', 'instabot.bot', 'instabot.api', 'instabot.utils'],
     version='0.3.5.3',
     description='Cool Instagram bot scripts and API python wrapper.',
     author='Daniil Okhlopkov, Evgeny Kemerov',

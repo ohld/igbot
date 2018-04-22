@@ -41,8 +41,9 @@ class file(object):
     def remove(self, x):
         x = str(x)
         items = self.list
-        items.remove(x)
-        self.save_list(items)
+        if x in items:
+            items.remove(x)
+            self.save_list(items)
 
     def random(self):
         return random.choice(self.list)

@@ -1,6 +1,8 @@
 import atexit
 import datetime
+import random
 import signal
+import time
 
 from .. import utils
 from ..api import API
@@ -13,8 +15,7 @@ from .bot_comment import (comment, comment_geotag, comment_hashtag,
 from .bot_delete import delete_comment, delete_media, delete_medias
 from .bot_direct import (send_hashtag, send_like, send_media, send_medias,
                          send_message, send_messages, send_profile)
-from .bot_filter import (check_media, check_not_bot, check_user, filter_medias,
-                         filter_users)
+from .bot_filter import (check_media, check_not_bot, check_user, filter_medias)
 from .bot_follow import (follow, follow_followers, follow_following,
                          follow_users)
 from .bot_get import (convert_to_user_id, get_archived_medias, get_comment,
@@ -84,40 +85,44 @@ class Bot(object):
                  ):
         self.api = API()
 
-        self.total_liked = 0
-        self.total_unliked = 0
-        self.total_followed = 0
-        self.total_unfollowed = 0
-        self.total_commented = 0
-        self.total_blocked = 0
-        self.total_unblocked = 0
-        self.total_archived = 0
-        self.total_unarchived = 0
-        self.total_sent_messages = 0
+        self.total = {'likes': 0,
+                      'unlikes': 0,
+                      'follows': 0,
+                      'unfollows': 0,
+                      'comments': 0,
+                      'blocks': 0,
+                      'unblocks': 0,
+                      'messages': 0,
+                      'archived': 0,
+                      'unarchived': 0}
+
         self.start_time = datetime.datetime.now()
 
-        # the time.time() of the last action
-        self.last_like = 0
-        self.last_unlike = 0
-        self.last_follow = 0
-        self.last_unfollow = 0
-        self.last_comment = 0
-        self.last_block = 0
-        self.last_unblock = 0
-        self.last_message = 0
+        self.delays = {'like': like_delay,
+                       'unlike': unlike_delay,
+                       'follow': follow_delay,
+                       'unfollow': unfollow_delay,
+                       'comment': comment_delay,
+                       'block': block_delay,
+                       'unblock': unblock_delay,
+                       'message': message_delay}
+
+        self.last = {key: 0 for key in self.delays.keys()}
 
         # limits - follow
         self.filter_users = filter_users
         self.filter_business_accounts = filter_business_accounts
         self.filter_verified_accounts = filter_verified_accounts
-        self.max_likes_per_day = max_likes_per_day
-        self.max_unlikes_per_day = max_unlikes_per_day
-        self.max_follows_per_day = max_follows_per_day
-        self.max_unfollows_per_day = max_unfollows_per_day
-        self.max_comments_per_day = max_comments_per_day
-        self.max_blocks_per_day = max_blocks_per_day
-        self.max_unblocks_per_day = max_unblocks_per_day
-        self.max_messages_per_day = max_messages_per_day
+
+        self.max_per_day = {'likes': max_likes_per_day,
+                            'unlikes': max_unlikes_per_day,
+                            'follows': max_follows_per_day,
+                            'unfollows': max_unfollows_per_day,
+                            'comments': max_comments_per_day,
+                            'blocks': max_blocks_per_day,
+                            'unblocks': max_unblocks_per_day,
+                            'messages': max_messages_per_day}
+
         self.max_likes_to_like = max_likes_to_like
         self.max_followers_to_follow = max_followers_to_follow
         self.min_followers_to_follow = min_followers_to_follow
@@ -131,19 +136,11 @@ class Bot(object):
         # limits - block
         self.max_following_to_block = max_following_to_block
 
-        # delays
-        self.like_delay = like_delay
-        self.unlike_delay = unlike_delay
-        self.follow_delay = follow_delay
-        self.unfollow_delay = unfollow_delay
-        self.comment_delay = comment_delay
-        self.block_delay = block_delay
-        self.unblock_delay = unblock_delay
-        self.message_delay = message_delay
-
         # current following and followers
         self._following = None
         self._followers = None
+        self._user_infos = {}  # User info cache
+        self._usernames = {}  # `username` to `user_id` mapping
 
         # Database files
         self.followed_file = utils.file(followed_file)
@@ -159,9 +156,6 @@ class Bot(object):
 
         self.logger = self.api.logger
         self.logger.info('Instabot Started')
-
-        self._user_infos = {}  # User info cache
-        self._usernames = {}  # `username` to `user_id` mapping
 
     @property
     def user_id(self):
@@ -236,41 +230,43 @@ class Bot(object):
     def prepare(self):
         storage = load_checkpoint(self)
         if storage is not None:
-            (self.total_liked,
-             self.total_unliked,
-             self.total_followed,
-             self.total_unfollowed,
-             self.total_commented,
-             self.total_blocked,
-             self.total_unblocked,
-             self.api.total_requests,
-             self.start_time,
-             self.total_archived,
-             self.total_unarchived,
-             self.total_sent_messages) = storage
+            self.total, self.api.total_requests, self.start_time = storage
 
     def print_counters(self):
-        if self.total_liked:
-            self.logger.info("Total liked: %d", self.total_liked)
-        if self.total_unliked:
-            self.logger.info("Total unliked: %d", self.total_unliked)
-        if self.total_followed:
-            self.logger.info("Total followed: %d", self.total_followed)
-        if self.total_unfollowed:
-            self.logger.info("Total unfollowed: %d", self.total_unfollowed)
-        if self.total_commented:
-            self.logger.info("Total commented: %d", self.total_commented)
-        if self.total_blocked:
-            self.logger.info("Total blocked: %d", self.total_blocked)
-        if self.total_unblocked:
-            self.logger.info("Total unblocked: %d", self.total_unblocked)
-        if self.total_archived:
-            self.logger.info("Total archived: %d", self.total_archived)
-        if self.total_unarchived:
-            self.logger.info("Total unarchived: %d", self.total_unarchived)
-        if self.total_sent_messages:
-            self.logger.info("Total sent messages: %d", self.total_sent_messages)
-        self.logger.info("Total requests: %d", self.api.total_requests)
+        for key, val in self.total.items():
+            if val > 0:
+                self.logger.info("Total {}: {}".format(key, val))
+        self.logger.info("Total requests: {}".format(self.api.total_requests))
+
+    def delay(self, key):
+        """Sleep only if elapsed time since `self.last[key]` < `self.delay[key]`."""
+        last_action, target_delay = self.last[key], self.delays[key]
+        elapsed_time = time.time() - last_action
+        if elapsed_time < target_delay:
+            t_remaining = target_delay - elapsed_time
+            time.sleep(t_remaining * random.uniform(0.25, 1.25))
+        self.last[key] = time.time()
+
+    def error_delay(self):
+        time.sleep(10)
+
+    def small_delay(self):
+        time.sleep(random.uniform(0.75, 3.75))
+
+    def very_small_delay(self):
+        time.sleep(random.uniform(0.175, 0.875))
+
+    def reached_limit(self, key):
+        current_date = datetime.datetime.now()
+        passed_days = (current_date.date() - self.start_time.date()).days
+        if passed_days > 0:
+            self.reset_counters()
+        return self.max_per_day[key] - self.total[key] < 0
+
+    def reset_counters(self):
+        for k in self.total:
+            self.total[k] = 0
+        self.start_time = datetime.datetime.now()
 
     # getters
 
@@ -411,11 +407,11 @@ class Bot(object):
 
     # photo
 
-    def download_photo(self, media_id, path='photos/', filename=None, description=False):
-        return download_photo(self, media_id, path, filename, description)
+    def download_photo(self, media_id, folder='photos', filename=None, save_description=False):
+        return download_photo(self, media_id, folder, filename, save_description)
 
-    def download_photos(self, medias, path='photos/', description=False):
-        return download_photos(self, medias, path, description)
+    def download_photos(self, medias, folder='photos', save_description=False):
+        return download_photos(self, medias, folder, save_description)
 
     def upload_photo(self, photo, caption=None, upload_id=None):
         return upload_photo(self, photo, caption, upload_id)
@@ -474,7 +470,7 @@ class Bot(object):
         return send_profile(self, profile_user_id, user_ids, text, thread_id)
 
     def send_like(self, user_ids, thread_id=None):
-        send_like(self, user_ids, thread_id)
+        return send_like(self, user_ids, thread_id)
 
     # delete
 
@@ -554,9 +550,6 @@ class Bot(object):
 
     def check_not_bot(self, user):
         return check_not_bot(self, user)
-
-    def filter_users(self, user_id_list):
-        return filter_users(self, user_id_list)
 
     # support
 

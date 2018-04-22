@@ -30,7 +30,7 @@ def repost_photo(bot, new_media_id, path='posted_medias.txt'):
     if exists_in_posted_medias(new_media_id, path):
         bot.logger.warning("Media {0} was uploaded earlier".format(new_media_id))
         return False
-    photo_path = bot.download_photo(new_media_id, description=True)
+    photo_path = bot.download_photo(new_media_id, save_description=True)
     if not photo_path:
         return False
     with open(photo_path[:-3] + 'txt', 'r') as f:

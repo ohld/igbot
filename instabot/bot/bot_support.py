@@ -28,8 +28,8 @@ def read_list_from_file(file_path, quiet=False):
     try:
         if not check_if_file_exists(file_path, quiet=quiet):
             return []
-        with codecs.open(file_path, "r", encoding="utf-8") as file_descriptor:
-            content = file_descriptor.readlines()
+        with codecs.open(file_path, "r", encoding="utf-8") as f:
+            content = f.readlines()
             if sys.version_info[0] < 3:
                 content = [str(item.encode('utf8')) for item in content]
             content = [item.strip() for item in content]
