@@ -88,12 +88,11 @@ class TestBotAPI(TestBot):
         assert hasattr(self.bot.api, "uuid")
 
     def test_reset_counters(self):
-        from instabot.bot.limits import reset_counters
         keys = ['liked', 'unliked', 'followed',
                 'unfollowed', 'commented', 'blocked', 'unblocked']
         for key in keys:
             self.bot.total[key] = 1
             assert self.bot.total[key] == 1
-        reset_counters(self.bot)
+        self.reset_counters()
         for key in keys:
             assert self.bot.total[key] == 0

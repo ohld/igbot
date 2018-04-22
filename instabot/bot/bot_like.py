@@ -1,13 +1,11 @@
 from tqdm import tqdm
 
-from . import limits
-
 
 def like(self, media_id):
-    if limits.check_if_bot_can_like(self):
+    if self.is_under_limit('likes'):
         self.delay('like')
         if self.api.like(media_id):
-            self.total['liked'] += 1
+            self.total['likes'] += 1
             return True
     else:
         self.logger.info("Out of likes for today.")
@@ -25,7 +23,7 @@ def like_medias(self, medias):
             self.error_delay()
             broken_items = medias[medias.index(media):]
             break
-    self.logger.info("DONE: Total liked %d medias." % self.total['liked'])
+    self.logger.info("DONE: Total liked %d medias." % self.total['likes'])
     return broken_items
 
 
@@ -52,7 +50,7 @@ def like_user(self, user_id, amount=None, filtration=True):
 
 def like_users(self, user_ids, nlikes=None, filtration=True):
     for user_id in user_ids:
-        if not limits.check_if_bot_can_like(self):
+        if not self.is_under_limit('likes'):
             self.logger.info("Out of likes for today.")
             return
         self.like_user(user_id, amount=nlikes, filtration=filtration)
@@ -72,7 +70,7 @@ def like_geotag(self, geotag, amount=None):
 
 def like_followers(self, user_id, nlikes=None, nfollows=None):
     self.logger.info("Like followers of: %s." % user_id)
-    if not limits.check_if_bot_can_like(self):
+    if not self.is_under_limit('likes'):
         self.logger.info("Out of likes for today.")
         return
     if not user_id:
@@ -87,7 +85,7 @@ def like_followers(self, user_id, nlikes=None, nfollows=None):
 
 def like_following(self, user_id, nlikes=None):
     self.logger.info("Like following of: %s." % user_id)
-    if not limits.check_if_bot_can_like(self):
+    if not self.is_under_limit('likes'):
         self.logger.info("Out of likes for today.")
         return
     if not user_id:

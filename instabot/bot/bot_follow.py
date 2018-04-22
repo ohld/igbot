@@ -2,8 +2,6 @@ import time
 
 from tqdm import tqdm
 
-from . import limits
-
 
 def follow(self, user_id):
     user_id = self.convert_to_user_id(user_id)
@@ -11,12 +9,12 @@ def follow(self, user_id):
     self.console_print(msg)
     if not self.check_user(user_id):
         return True
-    if limits.check_if_bot_can_follow(self):
+    if self.is_under_limit('follows'):
         self.delay('follow')
         if self.api.follow(user_id):
             msg = '===> FOLLOWED <==== `user_id`: {}.'.format(user_id)
             self.console_print(msg, 'green')
-            self.total['followed'] += 1
+            self.total['follows'] += 1
             self.followed_file.append(user_id)
             return True
     else:
@@ -26,7 +24,7 @@ def follow(self, user_id):
 
 def follow_users(self, user_ids):
     broken_items = []
-    if not limits.check_if_bot_can_follow(self):
+    if not self.is_under_limit('follows'):
         self.logger.info("Out of follows for today.")
         return
     msg = "Going to follow {} users.".format(len(user_ids))
@@ -62,13 +60,13 @@ def follow_users(self, user_ids):
                     broken_items += user_ids[i:]
                     break
 
-    self.logger.info("DONE: Followed {} users in total.".format(self.total['followed']))
+    self.logger.info("DONE: Followed {} users in total.".format(self.total['follows']))
     return broken_items
 
 
 def follow_followers(self, user_id, nfollows=None):
     self.logger.info("Follow followers of: {}".format(user_id))
-    if not limits.check_if_bot_can_follow(self):
+    if not self.is_under_limit('follows'):
         self.logger.info("Out of follows for today.")
         return
     if not user_id:
@@ -83,7 +81,7 @@ def follow_followers(self, user_id, nfollows=None):
 
 def follow_following(self, user_id, nfollows=None):
     self.logger.info("Follow following of: {}".format(user_id))
-    if not limits.check_if_bot_can_follow(self):
+    if not self.is_under_limit('follows'):
         self.logger.info("Out of follows for today.")
         return
     if not user_id:

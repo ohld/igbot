@@ -2,7 +2,6 @@
     Instabot Checkpoint methods.
 """
 
-from collections import defaultdict
 from datetime import datetime
 import pickle
 import os
@@ -20,7 +19,7 @@ class Checkpoint(object):
     """
 
     def __init__(self, bot):
-        self.total = defaultdict(int)
+        self.total = {}
         for k in bot.total:
             self.total[k] = bot.total[k]
         self.start_time = bot.start_time

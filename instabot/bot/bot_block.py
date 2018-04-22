@@ -2,17 +2,15 @@ import random
 
 from tqdm import tqdm
 
-from . import limits
-
 
 def block(self, user_id):
     user_id = self.convert_to_user_id(user_id)
     if self.check_not_bot(user_id):
         return True
-    if limits.check_if_bot_can_block(self):
+    if self.is_under_limit('blocks'):
         self.delay('block')
         if self.api.block(user_id):
-            self.total['blocked'] += 1
+            self.total['blocks'] += 1
             return True
     else:
         self.logger.info("Out of blocks for today.")
@@ -21,10 +19,10 @@ def block(self, user_id):
 
 def unblock(self, user_id):
     user_id = self.convert_to_user_id(user_id)
-    if limits.check_if_bot_can_unblock(self):
+    if self.is_under_limit('unblocks'):
         self.delay('unblock')
         if self.api.unblock(user_id):
-            self.total['unblocked'] += 1
+            self.total['unblocks'] += 1
             return True
     else:
         self.logger.info("Out of blocks for today.")
@@ -39,7 +37,7 @@ def block_users(self, user_ids):
             self.error_delay()
             broken_items = user_ids[user_ids.index(user_id):]
             break
-    self.logger.info("DONE: Total blocked %d users." % self.total['blocked'])
+    self.logger.info("DONE: Total blocked %d users." % self.total['blocks'])
     return broken_items
 
 
@@ -50,7 +48,7 @@ def unblock_users(self, user_ids):
         if not self.unblock(user_id):
             self.error_delay()
             broken_items.append(user_id)
-    self.logger.info("DONE: Total unblocked %d users." % self.total['unblocked'])
+    self.logger.info("DONE: Total unblocked %d users." % self.total['unblocks'])
     return broken_items
 
 

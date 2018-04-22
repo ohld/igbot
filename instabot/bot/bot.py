@@ -1,5 +1,4 @@
 import atexit
-from collections import defaultdict
 import datetime
 import random
 import signal
@@ -87,9 +86,29 @@ class Bot(object):
                  ):
         self.api = API()
 
-        self.total = defaultdict(int)
+        self.total = {'likes': 0,
+                      'unlikes': 0,
+                      'follows': 0,
+                      'unfollows': 0,
+                      'comments': 0,
+                      'blocks': 0,
+                      'messages': 0,
+                      'unblocks': 0,
+                      'archived': 0,
+                      'unarchived': 0,
+                      'requests': 0}
+
         self.start_time = datetime.datetime.now()
-        self.last = defaultdict(float)
+
+        self.last ={'like': 0,
+                    'unlike': 0,
+                    'follow': 0,
+                    'unfollow': 0,
+                    'comment': 0,
+                    'block': 0,
+                    'unblock': 0,
+                    'message': 0}
+
         self.delays = {'like': like_delay,
                        'unlike': unlike_delay,
                        'follow': follow_delay,
@@ -224,29 +243,9 @@ class Bot(object):
             self.total, self.start_time = storage
 
     def print_counters(self):
-        if self.total['liked'] > 0:
-            self.logger.info("Total liked: %d", self.total['liked'])
-        if self.total['unliked'] > 0:
-            self.logger.info("Total unliked: %d", self.total['unliked'])
-        if self.total['followed'] > 0:
-            self.logger.info("Total followed: %d", self.total['followed'])
-        if self.total['unfollowed'] > 0:
-            self.logger.info("Total unfollowed: %d", self.total['unfollowed'])
-        if self.total['commented'] > 0:
-            self.logger.info("Total commented: %d", self.total['commented'])
-        if self.total['blocked'] > 0:
-            self.logger.info("Total blocked: %d", self.total['blocked'])
-        if self.total['unblocked'] > 0:
-            self.logger.info("Total unblocked: %d", self.total['unblocked'])
-        if self.total['archived'] > 0:
-            self.logger.info("Total archived: %d", self.total['archived'])
-        if self.total['unarchived'] > 0:
-            self.logger.info("Total unarchived: %d", self.total['unarchived'])
-        if self.total['sent_messages'] > 0:
-            self.logger.info("Total sent messages: %d", self.total['sent_messages'])
-        self.logger.info("Total requests: %d", self.total['requests'])
-
-    # Delay functions
+        for key, val in self.total.items():
+            if val > 0:
+                self.logger.info("Total {}: {}".format(key, val))
 
     def delay(self, key):
         """Sleep only if elapsed time since `self.last[key]` < `self.delay[key]`."""
@@ -265,6 +264,18 @@ class Bot(object):
 
     def very_small_delay(self):
         time.sleep(random.uniform(0.175, 0.875))
+
+    def is_under_limit(self, key):
+        current_date = datetime.datetime.now()
+        passed_days = (current_date.date() - self.start_time.date()).days
+        if passed_days > 1:
+            self.reset_counters()
+        return self.max_per_day[key] - self.total[key] > 0
+
+    def reset_counters(self):
+        for k in self.total:
+            self.total[k] = 0
+        self.start_time = datetime.datetime.now()
 
     # getters
 

@@ -1,7 +1,5 @@
 from tqdm import tqdm
 
-from . import limits
-
 
 def unfollow(self, user_id):
     user_id = self.convert_to_user_id(user_id)
@@ -11,13 +9,13 @@ def unfollow(self, user_id):
 
     if self.check_user(user_id, unfollowing=True):
         return True  # whitelisted user
-    if limits.check_if_bot_can_unfollow(self):
+    if self.is_under_limit('unfollows'):
         self.delay('unfollow')
         if self.api.unfollow(user_id):
             msg = '===> Unfollowed, `user_id`: {}, user_name: {}'
             self.console_print(msg.format(user_id, username), 'yellow')
             self.unfollowed_file.append(user_id)
-            self.total['unfollowed'] += 1
+            self.total['unfollows'] += 1
             return True
     else:
         self.logger.info("Out of unfollows for today.")
@@ -38,7 +36,7 @@ def unfollow_users(self, user_ids):
             i = filtered_user_ids.index(user_id)
             broken_items = filtered_user_ids[i:]
             break
-    self.logger.info("DONE: Total unfollowed {} users.".format(self.total['unfollowed']))
+    self.logger.info("DONE: Total unfollowed {} users.".format(self.total['unfollows']))
     return broken_items
 
 
