@@ -32,6 +32,7 @@ def download_photo(self, media_id, folder='photos', filename=None, save_descript
         self.logger.info("Media with `{}` is not downloaded.".format(media_id))
         return False
 
+
 def download_photos(self, medias, folder, save_description=False):
     broken_items = []
     if not medias:
