@@ -20,39 +20,39 @@ def reset_if_day_passed(bot):
 
 def check_if_bot_can_follow(bot):
     reset_if_day_passed(bot)
-    return bot.max_follows_per_day - bot.total['followed'] > 0
+    return bot.max_per_day['follows'] - bot.total['followed'] > 0
 
 
 def check_if_bot_can_unfollow(bot):
     reset_if_day_passed(bot)
-    return bot.max_unfollows_per_day - bot.total['unfollowed'] > 0
+    return bot.max_per_day['unfollows'] - bot.total['unfollowed'] > 0
 
 
 def check_if_bot_can_unlike(bot):
     reset_if_day_passed(bot)
-    return bot.max_unlikes_per_day - bot.total['unliked'] > 0
+    return bot.max_per_day['unlikes'] - bot.total['unliked'] > 0
 
 
 def check_if_bot_can_like(bot):
     reset_if_day_passed(bot)
-    return bot.max_likes_per_day - bot.total['liked'] > 0
+    return bot.max_per_day['likes'] - bot.total['liked'] > 0
 
 
 def check_if_bot_can_comment(bot):
     reset_if_day_passed(bot)
-    return bot.max_comments_per_day - bot.total['commented'] > 0
+    return bot.max_per_day['comments'] - bot.total['commented'] > 0
 
 
 def check_if_bot_can_block(bot):
     reset_if_day_passed(bot)
-    return bot.max_blocks_per_day - bot.total['blocked'] > 0
+    return bot.max_per_day['blocks'] - bot.total['blocked'] > 0
 
 
 def check_if_bot_can_unblock(bot):
     reset_if_day_passed(bot)
-    return bot.max_unblocks_per_day - bot.total['unblocked'] > 0
+    return bot.max_per_day['unblocks'] - bot.total['unblocked'] > 0
 
 
 def check_if_bot_can_send_message(bot):
     reset_if_day_passed(bot)
-    return bot.max_messages_per_day - bot.total['sent_messages'] > 0
+    return bot.max_per_day['messages'] - bot.total['sent_messages'] > 0

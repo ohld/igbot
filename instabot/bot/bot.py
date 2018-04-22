@@ -103,14 +103,16 @@ class Bot(object):
         self.filter_users = filter_users
         self.filter_business_accounts = filter_business_accounts
         self.filter_verified_accounts = filter_verified_accounts
-        self.max_likes_per_day = max_likes_per_day
-        self.max_unlikes_per_day = max_unlikes_per_day
-        self.max_follows_per_day = max_follows_per_day
-        self.max_unfollows_per_day = max_unfollows_per_day
-        self.max_comments_per_day = max_comments_per_day
-        self.max_blocks_per_day = max_blocks_per_day
-        self.max_unblocks_per_day = max_unblocks_per_day
-        self.max_messages_per_day = max_messages_per_day
+
+        self.max_per_day= {'likes': max_likes_per_day,
+                           'unlikes': max_unlikes_per_day,
+                           'follows': max_follows_per_day,
+                           'unfollows': max_unfollows_per_day,
+                           'comments': max_comments_per_day,
+                           'blocks': max_blocks_per_day,
+                           'unblocks': max_unblocks_per_day,
+                           'messages': max_messages_per_day}
+
         self.max_likes_to_like = max_likes_to_like
         self.max_followers_to_follow = max_followers_to_follow
         self.min_followers_to_follow = min_followers_to_follow
