@@ -426,29 +426,24 @@ class API(object):
             'action': 'send_item'
         }
 
-        url = ''
+        url = 'direct_v2/threads/broadcast/{}/'.format(item_type)
+        text = options.get('text', '')
         if item_type == 'link':
-            data['link_text'] = options.get('text')
+            data['link_text'] = text
             data['link_urls'] = json.dumps(options.get('urls'))
-            url = 'direct_v2/threads/broadcast/link/'
         elif item_type == 'message':
-            data['text'] = options.get('text', '')
-            url = 'direct_v2/threads/broadcast/text/'
+            data['text'] = text
         elif item_type == 'media_share':
+            data['text'] = text
             data['media_type'] = options.get('media_type', 'photo')
-            data['text'] = options.get('text', '')
             data['media_id'] = options.get('media_id', '')
-            url = 'direct_v2/threads/broadcast/media_share/'
-        elif item_type == 'like':
-            url = 'direct_v2/threads/broadcast/like/'
         elif item_type == 'hashtag':
-            url = 'direct_v2/threads/broadcast/hashtag/'
-            data['text'] = options.get('text', '')
+            data['text'] = text
             data['hashtag'] = options.get('hashtag', '')
         elif item_type == 'profile':
-            url = 'direct_v2/threads/broadcast/profile/'
+            data['text'] = text
             data['profile_user_id'] = options.get('profile_user_id')
-            data['text'] = options.get('text', '')
+
         recipients = self._prepare_recipients(users, options.get('thread'), use_quotes=False)
         if not recipients:
             return False
