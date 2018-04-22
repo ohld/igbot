@@ -11,52 +11,46 @@ def add_dispersion(delay_value):
 
 
 # this function will sleep only if elapsed time since `last_action` is less than `target_delay`
-def sleep_if_need(last_action, target_delay):
+def sleep_if_need(bot, key):
+    last_action, target_delay = bot.last[key], bot.delay[key]
     now = time.time()
     elapsed_time = now - last_action
     if elapsed_time < target_delay:
         remains_to_wait = target_delay - elapsed_time
         time.sleep(add_dispersion(remains_to_wait))
+    bot.last[key] = time.time()
 
 
 def like_delay(bot):
-    sleep_if_need(bot.last_like, bot.like_delay)
-    bot.last_like = time.time()
+    sleep_if_need(bot, 'like')
 
 
 def message_delay(bot):
-    sleep_if_need(bot.last_message, bot.message_delay)
-    bot.last_message = time.time()
+    sleep_if_need(bot, 'message')
 
 
 def unlike_delay(bot):
-    sleep_if_need(bot.last_unlike, bot.unlike_delay)
-    bot.last_unlike = time.time()
+    sleep_if_need(bot, 'unlike')
 
 
 def follow_delay(bot):
-    sleep_if_need(bot.last_follow, bot.follow_delay)
-    bot.last_follow = time.time()
+    sleep_if_need(bot, 'follow')
 
 
 def unfollow_delay(bot):
-    sleep_if_need(bot.last_unfollow, bot.unfollow_delay)
-    bot.last_unfollow = time.time()
+    sleep_if_need(bot, 'unfollow')
 
 
 def comment_delay(bot):
-    sleep_if_need(bot.last_comment, bot.comment_delay)
-    bot.last_comment = time.time()
+    sleep_if_need(bot, 'comment')
 
 
 def block_delay(bot):
-    sleep_if_need(bot.last_block, bot.block_delay)
-    bot.last_block = time.time()
+    sleep_if_need(bot, 'block')
 
 
 def unblock_delay(bot):
-    sleep_if_need(bot.last_unblock, bot.unblock_delay)
-    bot.last_unblock = time.time()
+    sleep_if_need(bot, 'unblock')
 
 
 def error_delay(bot):

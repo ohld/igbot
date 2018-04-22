@@ -86,17 +86,9 @@ class Bot(object):
         self.api = API()
 
         self.total = defaultdict(int)
-
         self.start_time = datetime.datetime.now()
-
-        self.last_like = 0
-        self.last_unlike = 0
-        self.last_follow = 0
-        self.last_unfollow = 0
-        self.last_comment = 0
-        self.last_block = 0
-        self.last_unblock = 0
-        self.last_message = 0
+        self.last = defaultdict(float)
+        self.delay = defaultdict(int)
 
         # limits - follow
         self.filter_users = filter_users
@@ -122,16 +114,6 @@ class Bot(object):
 
         # limits - block
         self.max_following_to_block = max_following_to_block
-
-        # delays
-        self.like_delay = like_delay
-        self.unlike_delay = unlike_delay
-        self.follow_delay = follow_delay
-        self.unfollow_delay = unfollow_delay
-        self.comment_delay = comment_delay
-        self.block_delay = block_delay
-        self.unblock_delay = unblock_delay
-        self.message_delay = message_delay
 
         # current following and followers
         self._following = None
