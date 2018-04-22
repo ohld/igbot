@@ -95,8 +95,7 @@ class Bot(object):
                       'messages': 0,
                       'unblocks': 0,
                       'archived': 0,
-                      'unarchived': 0,
-                      'requests': 0}
+                      'unarchived': 0}
 
         self.start_time = datetime.datetime.now()
 
@@ -240,12 +239,13 @@ class Bot(object):
     def prepare(self):
         storage = load_checkpoint(self)
         if storage is not None:
-            self.total, self.start_time = storage
+            self.total, self.api.total_requests, self.start_time = storage
 
     def print_counters(self):
         for key, val in self.total.items():
             if val > 0:
                 self.logger.info("Total {}: {}".format(key, val))
+        self.logger.info("Total requests: {}".format(self.api.total_requests))
 
     def delay(self, key):
         """Sleep only if elapsed time since `self.last[key]` < `self.delay[key]`."""
