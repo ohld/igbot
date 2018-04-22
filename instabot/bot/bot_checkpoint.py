@@ -2,9 +2,10 @@
     Instabot Checkpoint methods.
 """
 
-import os
-import pickle
+from collections import defaultdict
 from datetime import datetime
+import pickle
+import os
 
 CHECKPOINT_PATH = "{fname}.checkpoint"
 
@@ -19,6 +20,7 @@ class Checkpoint(object):
     """
 
     def __init__(self, bot):
+        self.total = defaultdict(int)
         for k in bot.total:
             self.total[k] = bot.total[k]
         self.start_time = bot.start_time

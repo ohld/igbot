@@ -90,14 +90,14 @@ class Bot(object):
         self.total = defaultdict(int)
         self.start_time = datetime.datetime.now()
         self.last = defaultdict(float)
-        self.delay = {'like': like_delay,
-                      'unlike': unlike_delay,
-                      'follow': follow_delay,
-                      'unfollow': unfollow_delay,
-                      'comment': comment_delay,
-                      'block': block_delay,
-                      'unblock': unblock_delay,
-                      'message': message_delay}
+        self.delays = {'like': like_delay,
+                       'unlike': unlike_delay,
+                       'follow': follow_delay,
+                       'unfollow': unfollow_delay,
+                       'comment': comment_delay,
+                       'block': block_delay,
+                       'unblock': unblock_delay,
+                       'message': message_delay}
 
         # limits - follow
         self.filter_users = filter_users
@@ -248,7 +248,7 @@ class Bot(object):
 
     def delay(self, key):
         """Sleep only if elapsed time since `self.last[key]` < `self.delay[key]`."""
-        last_action, target_delay = self.last[key], self.delay[key]
+        last_action, target_delay = self.last[key], self.delays[key]
         elapsed_time = time.time() - last_action
         if elapsed_time < target_delay:
             t_remaining = target_delay - elapsed_time

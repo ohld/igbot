@@ -94,6 +94,6 @@ class TestBotAPI(TestBot):
         for key in keys:
             self.bot.total[key] = 1
             assert self.bot.total[key] == 1
-       reset_counters(self.bot)
-       for key in keys:
+        reset_counters(self.bot)
+        for key in keys:
             assert self.bot.total[key] == 0
