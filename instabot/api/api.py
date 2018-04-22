@@ -428,7 +428,7 @@ class API(object):
 
         url = 'direct_v2/threads/broadcast/{}/'.format(item_type)
         text = options.get('text', '')
-        if item_type == 'link':
+        if item_type == 'links':
             data['link_text'] = text
             data['link_urls'] = json.dumps(options.get('urls'))
         elif item_type == 'message':
