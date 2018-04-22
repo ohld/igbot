@@ -427,7 +427,7 @@ class API(object):
         }
 
         url = ''
-        if item_type == 'links':
+        if item_type == 'link':
             data['link_text'] = options.get('text')
             data['link_urls'] = json.dumps(options.get('urls'))
             url = 'direct_v2/threads/broadcast/link/'
