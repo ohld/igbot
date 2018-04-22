@@ -15,13 +15,12 @@ class TestBot:
         self.USERNAME = 'test_username'
         self.PASSWORD = 'test_password'
         self.FULLNAME = 'test_full_name'
+        self.TOKEN = 'abcdef123456'
         self.bot = Bot()
         self.prepare_api(self.bot)
 
     def prepare_api(self, bot):
         bot.api.is_logged_in = True
-        bot.api.user_id = self.USER_ID
-        bot.api.token = 'abcdef123456'
         bot.api.session = requests.Session()
         bot.api.set_user(self.USERNAME, self.PASSWORD)
         bot.api.rank_token = '{}_{}'.format(bot.api.user_id, bot.api.uuid)
@@ -34,14 +33,14 @@ class TestBotAPI(TestBot):
         def mockreturn(*args, **kwargs):
             r = Mock()
             r.status_code = 200
-            r.cookies = {'csrftoken': 'abcdef1234'}
+            r.cookies = {'csrftoken': self.TOKEN, 'ds_user_id': self.USER_ID}
             r.text = '{"status": "ok"}'
             return r
 
         def mockreturn_login(*args, **kwargs):
             r = Mock()
             r.status_code = 200
-            r.cookies = {'csrftoken': 'abcdef1234'}
+            r.cookies = {'csrftoken': self.TOKEN, 'ds_user_id': self.USER_ID}
             r.text = json.dumps({
                 "logged_in_user": {
                     "pk": self.USER_ID,
