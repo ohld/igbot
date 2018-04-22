@@ -1,6 +1,6 @@
 from tqdm import tqdm
 
-from . import delay, limits
+from . import limits
 
 
 def send_message(self, text, user_ids, thread_id=None):
@@ -19,7 +19,7 @@ def send_message(self, text, user_ids, thread_id=None):
         self.logger.info("Out of messages for today.")
         return False
 
-    delay.message_delay(self)
+    self.delay('message')
     urls = self.extract_urls(text)
     item_type = 'link' if urls else 'message'
     if self.api.send_direct_item(
@@ -44,7 +44,7 @@ def send_messages(self, text, user_ids):
     self.logger.info("Going to send %d messages." % (len(user_ids)))
     for user in tqdm(user_ids):
         if not self.send_message(text, user):
-            delay.error_delay(self)
+            self.error_delay()
             broken_items = user_ids[user_ids.index(user):]
             break
     return broken_items
@@ -69,7 +69,7 @@ def send_media(self, media_id, user_ids, text='', thread_id=None):
     media = self.get_media_info(media_id)
     media = media[0] if isinstance(media, list) else media
 
-    delay.message_delay(self)
+    self.delay('message')
     if self.api.send_direct_item(
         'media_share',
         user_ids,
@@ -93,7 +93,7 @@ def send_medias(self, media_id, user_ids, text):
     self.logger.info("Going to send %d messages." % (len(user_ids)))
     for user in tqdm(user_ids):
         if not self.send_media(media_id, user, text):
-            delay.error_delay(self)
+            self.error_delay()
             broken_items = user_ids[user_ids.index(user):]
             break
     return broken_items
@@ -116,7 +116,7 @@ def send_hashtag(self, hashtag, user_ids, text='', thread_id=None):
         self.logger.info("Out of messages for today.")
         return False
 
-    delay.message_delay(self)
+    self.delay('message')
     if self.api.send_direct_item(
         'hashtag', user_ids, text=text, thread=thread_id, hashtag=hashtag
     ):
@@ -145,7 +145,7 @@ def send_profile(self, profile_user_id, user_ids, text='', thread_id=None):
         self.logger.info("Out of messages for today.")
         return False
 
-    delay.message_delay(self)
+    self.delay('message')
     if self.api.send_direct_item(
         'profile',
         user_ids,
@@ -175,7 +175,7 @@ def send_like(self, user_ids, thread_id=None):
         self.logger.info("Out of messages for today.")
         return False
 
-    delay.message_delay(self)
+    self.delay('message')
     if self.api.send_direct_item('like', user_ids, thread=thread_id):
         self.total['sent_messages'] += 1
         return True

@@ -3,11 +3,9 @@ from io import open
 
 from tqdm import tqdm
 
-from . import delay
-
 
 def upload_photo(self, photo, caption=None, upload_id=None):
-    delay.small_delay(self)
+    self.small_delay()
     if self.api.upload_photo(photo, caption, upload_id):
         self.logger.info("Photo '{}' is uploaded.".format(photo))
         return True
@@ -16,7 +14,7 @@ def upload_photo(self, photo, caption=None, upload_id=None):
 
 
 def download_photo(self, media_id, folder='photos', filename=None, save_description=False):
-    delay.small_delay(self)
+    self.small_delay()
     if not os.path.exists(folder):
         os.makedirs(folder)
     if save_description:
@@ -41,6 +39,6 @@ def download_photos(self, medias, folder, save_description=False):
     self.logger.info("Going to download {} medias.".format(len(medias)))
     for media in tqdm(medias):
         if not self.download_photo(media, folder, save_description=save_description):
-            delay.error_delay(self)
+            self.error_delay()
             broken_items = medias[medias.index(media):]
     return broken_items

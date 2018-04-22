@@ -1,6 +1,6 @@
 from tqdm import tqdm
 
-from . import delay, limits
+from . import limits
 
 
 def unfollow(self, user_id):
@@ -12,7 +12,7 @@ def unfollow(self, user_id):
     if self.check_user(user_id, unfollowing=True):
         return True  # whitelisted user
     if limits.check_if_bot_can_unfollow(self):
-        delay.unfollow_delay(self)
+        self.delay('unfollow')
         if self.api.unfollow(user_id):
             msg = '===> Unfollowed, `user_id`: {}, user_name: {}'
             self.console_print(msg.format(user_id, username), 'yellow')
@@ -34,7 +34,7 @@ def unfollow_users(self, user_ids):
             "After filtration by whitelist {} users left.".format(len(filtered_user_ids)))
     for user_id in tqdm(filtered_user_ids, desc='Processed users'):
         if not self.unfollow(user_id):
-            delay.error_delay(self)
+            self.error_delay()
             i = filtered_user_ids.index(user_id)
             broken_items = filtered_user_ids[i:]
             break

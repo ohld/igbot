@@ -1,11 +1,11 @@
 from tqdm import tqdm
 
-from . import delay, limits
+from . import limits
 
 
 def like(self, media_id):
     if limits.check_if_bot_can_like(self):
-        delay.like_delay(self)
+        self.delay('like')
         if self.api.like(media_id):
             self.total['liked'] += 1
             return True
@@ -22,7 +22,7 @@ def like_medias(self, medias):
     self.logger.info("Going to like %d medias." % (len(medias)))
     for media in tqdm(medias):
         if not self.like(media):
-            delay.error_delay(self)
+            self.error_delay()
             broken_items = medias[medias.index(media):]
             break
     self.logger.info("DONE: Total liked %d medias." % self.total['liked'])

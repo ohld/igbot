@@ -2,10 +2,6 @@
     Filter functions for media and user lists.
 """
 
-from . import delay
-
-# Filtering media
-
 
 def filter_medias(self, media_items, filtration=True, quiet=False, is_comment=False):
     if filtration:
@@ -96,7 +92,7 @@ def check_user(self, user_id, filter_closed_acc=False, unfollowing=False):
     if not self.filter_users and not unfollowing:
         return True
 
-    delay.small_delay(self)
+    self.small_delay()
     user_id = self.convert_to_user_id(user_id)
 
     if not user_id:
@@ -202,7 +198,7 @@ def check_user(self, user_id, filter_closed_acc=False, unfollowing=False):
 
 def check_not_bot(self, user_id):
     """ Filter bot from real users. """
-    delay.small_delay(self)
+    self.small_delay()
     user_id = self.convert_to_user_id(user_id)
     if not user_id:
         return False

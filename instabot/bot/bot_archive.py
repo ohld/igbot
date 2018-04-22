@@ -1,10 +1,8 @@
 from tqdm import tqdm
 
-from . import delay
-
 
 def archive(self, media_id, undo=False):
-    delay.small_delay(self)
+    self.small_delay()
     media = self.get_media_info(media_id)
     media = media[0] if isinstance(media, list) else media
     if self.api.archive_media(media, undo):
@@ -23,7 +21,7 @@ def archive_medias(self, medias):
     self.logger.info("Going to archive %d medias." % (len(medias)))
     for media in tqdm(medias):
         if not self.archive(media):
-            delay.error_delay(self)
+            self.error_delay()
             broken_items = medias[medias.index(media):]
             break
     self.logger.info("DONE: Total archived %d medias." % self.total['archived'])
@@ -38,7 +36,7 @@ def unarchive_medias(self, medias):
     self.logger.info("Going to unarchive %d medias." % (len(medias)))
     for media in tqdm(medias):
         if not self.unarchive(media):
-            delay.error_delay(self)
+            self.error_delay()
             broken_items = medias[medias.index(media):]
             break
     self.logger.info("DONE: Total unarchived %d medias." % self.total['unarchived'])

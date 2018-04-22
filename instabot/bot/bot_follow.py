@@ -1,6 +1,6 @@
 from tqdm import tqdm
 
-from . import delay, limits
+from . import limits
 
 
 def follow(self, user_id):
@@ -10,7 +10,7 @@ def follow(self, user_id):
     if not self.check_user(user_id):
         return True
     if limits.check_if_bot_can_follow(self):
-        delay.follow_delay(self)
+        self.delay('follow')
         if self.api.follow(user_id):
             msg = '===> FOLLOWED <==== `user_id`: {}.'.format(user_id)
             self.console_print(msg, 'green')
@@ -50,13 +50,12 @@ def follow_users(self, user_ids):
                 try_number = 3
                 error_pass = False
                 for _ in range(try_number):
-                    delay_time = 60
-                    delay.delay_in_seconds(self, delay_time)
+                    time.sleep(60)
                     error_pass = self.follow(user_id)
                     if error_pass:
                         break
                 if not error_pass:
-                    delay.error_delay(self)
+                    self.error_delay()
                     i = user_ids.index(user_id)
                     broken_items += user_ids[i:]
                     break

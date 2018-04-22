@@ -11,14 +11,14 @@
 """
 from tqdm import tqdm
 
-from . import delay, limits
+from . import limits
 
 
 def comment(self, media_id, comment_text):
     if self.is_commented(media_id):
         return True
     if limits.check_if_bot_can_comment(self):
-        delay.comment_delay(self)
+        self.delay('comment')
         if self.api.comment(media_id, comment_text):
             self.total['commented'] += 1
             return True
@@ -35,7 +35,7 @@ def comment_medias(self, medias):
             text = self.get_comment()
             self.logger.info("Commented with text: %s" % text)
             if not self.comment(media, text):
-                delay.comment_delay(self)
+                self.delay('comment')
                 broken_items = medias[medias.index(media):]
                 break
     self.logger.info("DONE: Total commented on %d medias. " %

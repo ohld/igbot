@@ -1,7 +1,9 @@
 import atexit
 from collections import defaultdict
 import datetime
+import random
 import signal
+import time
 
 from .. import utils
 from ..api import API
@@ -88,7 +90,14 @@ class Bot(object):
         self.total = defaultdict(int)
         self.start_time = datetime.datetime.now()
         self.last = defaultdict(float)
-        self.delay = defaultdict(int)
+        self.delay = {'like': like_delay,
+                      'unlike': unlike_delay,
+                      'follow': follow_delay,
+                      'unfollow': unfollow_delay,
+                      'comment': comment_delay,
+                      'block': block_delay,
+                      'unblock': unblock_delay,
+                      'message': message_delay}
 
         # limits - follow
         self.filter_users = filter_users
@@ -234,6 +243,26 @@ class Bot(object):
         if self.total['sent_messages']:
             self.logger.info("Total sent messages: %d", self.total['sent_messages'])
         self.logger.info("Total requests: %d", self.total['requests'])
+
+    # Delay functions
+
+    def delay(self, key):
+        """Sleep only if elapsed time since `self.last[key]` < `self.delay[key]`."""
+        last_action, target_delay = self.last[key], self.delay[key]
+        elapsed_time = time.time() - last_action
+        if elapsed_time < target_delay:
+            t_remaining = target_delay - elapsed_time
+            time.sleep(t_remaining * random.uniform(0.25, 1.25))
+        self.last[key] = time.time()
+
+    def error_delay(self):
+        time.sleep(10)
+
+    def small_delay(self):
+        time.sleep(random.uniform(0.75, 3.75))
+
+    def very_small_delay(self):
+        time.sleep(random.uniform(0.175, 0.875))
 
     # getters
 

@@ -5,8 +5,6 @@
 
 from tqdm import tqdm
 
-from . import delay
-
 
 def get_media_owner(self, media_id):
     self.api.media_info(media_id)
@@ -137,7 +135,7 @@ def get_geotag_users(self, geotag):
 def get_user_id_from_username(self, username):
     if username not in self._usernames:
         self.api.search_username(username)
-        delay.very_small_delay(self)
+        self.very_small_delay()
         if "user" in self.api.last_json:
             self._usernames[username] = str(self.api.last_json["user"]["pk"])
         else:

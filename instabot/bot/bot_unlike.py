@@ -1,11 +1,11 @@
 from tqdm import tqdm
 
-from . import delay, limits
+from . import limits
 
 
 def unlike(self, media_id):
     if limits.check_if_bot_can_unlike(self):
-        delay.unlike_delay(self)
+        self.delay('unlike')
         if self.api.unlike(media_id):
             self.total['unliked'] += 1
             return True
@@ -19,7 +19,7 @@ def unlike_medias(self, medias):
     self.logger.info("Going to unlike %d medias." % (len(medias)))
     for media in tqdm(medias):
         if not self.unlike(media):
-            delay.error_delay(self)
+            self.error_delay()
             broken_items = medias[medias.index(media):]
             break
     self.logger.info("DONE: Total unliked %d medias." % self.total['unliked'])
