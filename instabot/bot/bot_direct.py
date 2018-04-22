@@ -21,7 +21,7 @@ def send_message(self, text, user_ids, thread_id=None):
 
     delay.message_delay(self)
     urls = self.extract_urls(text)
-    item_type = 'link' if urls else 'message'
+    item_type = 'links' if urls else 'message'
     if self.api.send_direct_item(
         item_type,
         user_ids,
