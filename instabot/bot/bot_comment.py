@@ -15,7 +15,7 @@ from tqdm import tqdm
 def comment(self, media_id, comment_text):
     if self.is_commented(media_id):
         return True
-    if self.is_under_limit('comments'):
+    if not self.reached_limit('comments'):
         self.delay('comment')
         if self.api.comment(media_id, comment_text):
             self.total['comments'] += 1
@@ -63,7 +63,7 @@ def comment_user(self, user_id, amount=None):
 
 def comment_users(self, user_ids, ncomments=None):
     for user_id in user_ids:
-        if not self.is_under_limit('comments'):
+        if not self.reached_limit('comments'):
             self.logger.info("Out of comments for today.")
             return
         self.comment_user(user_id, amount=ncomments)

@@ -7,7 +7,7 @@ def block(self, user_id):
     user_id = self.convert_to_user_id(user_id)
     if self.check_not_bot(user_id):
         return True
-    if self.is_under_limit('blocks'):
+    if not self.reached_limit('blocks'):
         self.delay('block')
         if self.api.block(user_id):
             self.total['blocks'] += 1
@@ -19,7 +19,7 @@ def block(self, user_id):
 
 def unblock(self, user_id):
     user_id = self.convert_to_user_id(user_id)
-    if self.is_under_limit('unblocks'):
+    if not self.reached_limit('unblocks'):
         self.delay('unblock')
         if self.api.unblock(user_id):
             self.total['unblocks'] += 1

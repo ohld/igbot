@@ -265,12 +265,12 @@ class Bot(object):
     def very_small_delay(self):
         time.sleep(random.uniform(0.175, 0.875))
 
-    def is_under_limit(self, key):
+    def reached_limit(self, key):
         current_date = datetime.datetime.now()
         passed_days = (current_date.date() - self.start_time.date()).days
         if passed_days > 1:
             self.reset_counters()
-        return self.max_per_day[key] - self.total[key] > 0
+        return self.max_per_day[key] - self.total[key] < 0
 
     def reset_counters(self):
         for k in self.total:

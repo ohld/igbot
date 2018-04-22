@@ -2,7 +2,7 @@ from tqdm import tqdm
 
 
 def like(self, media_id):
-    if self.is_under_limit('likes'):
+    if not self.reached_limit('likes'):
         self.delay('like')
         if self.api.like(media_id):
             self.total['likes'] += 1
@@ -50,7 +50,7 @@ def like_user(self, user_id, amount=None, filtration=True):
 
 def like_users(self, user_ids, nlikes=None, filtration=True):
     for user_id in user_ids:
-        if not self.is_under_limit('likes'):
+        if not self.reached_limit('likes'):
             self.logger.info("Out of likes for today.")
             return
         self.like_user(user_id, amount=nlikes, filtration=filtration)
@@ -70,7 +70,7 @@ def like_geotag(self, geotag, amount=None):
 
 def like_followers(self, user_id, nlikes=None, nfollows=None):
     self.logger.info("Like followers of: %s." % user_id)
-    if not self.is_under_limit('likes'):
+    if not self.reached_limit('likes'):
         self.logger.info("Out of likes for today.")
         return
     if not user_id:
@@ -85,7 +85,7 @@ def like_followers(self, user_id, nlikes=None, nfollows=None):
 
 def like_following(self, user_id, nlikes=None):
     self.logger.info("Like following of: %s." % user_id)
-    if not self.is_under_limit('likes'):
+    if not self.reached_limit('likes'):
         self.logger.info("Out of likes for today.")
         return
     if not user_id:

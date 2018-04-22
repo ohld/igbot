@@ -2,7 +2,7 @@ from tqdm import tqdm
 
 
 def unlike(self, media_id):
-    if self.is_under_limit('unlikes'):
+    if not self.reached_limit('unlikes'):
         self.delay('unlike')
         if self.api.unlike(media_id):
             self.total['unlikes'] += 1

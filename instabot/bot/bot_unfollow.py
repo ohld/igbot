@@ -9,7 +9,7 @@ def unfollow(self, user_id):
 
     if self.check_user(user_id, unfollowing=True):
         return True  # whitelisted user
-    if self.is_under_limit('unfollows'):
+    if not self.reached_limit('unfollows'):
         self.delay('unfollow')
         if self.api.unfollow(user_id):
             msg = '===> Unfollowed, `user_id`: {}, user_name: {}'
