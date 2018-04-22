@@ -23,12 +23,12 @@ def ensure_dir(file_path):
 def dump_data(data, path):
     ensure_dir(path)
     if not os.path.exists(path):
-        with open(path, "w") as file_descriptor:
-            file_descriptor.write(get_header_line(data))
-            file_descriptor.write(get_tsv_line(data))
+        with open(path, "w") as f:
+            f.write(get_header_line(data))
+            f.write(get_tsv_line(data))
     else:
-        with open(path, "a") as file_descriptor:
-            file_descriptor.write(get_tsv_line(data))
+        with open(path, "a") as f:
+            f.write(get_tsv_line(data))
 
 
 def save_user_stats(self, username, path=""):
