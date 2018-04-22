@@ -91,21 +91,12 @@ class Bot(object):
                       'unfollows': 0,
                       'comments': 0,
                       'blocks': 0,
-                      'messages': 0,
                       'unblocks': 0,
+                      'messages': 0,
                       'archived': 0,
                       'unarchived': 0}
 
         self.start_time = datetime.datetime.now()
-
-        self.last = {'like': 0,
-                     'unlike': 0,
-                     'follow': 0,
-                     'unfollow': 0,
-                     'comment': 0,
-                     'block': 0,
-                     'unblock': 0,
-                     'message': 0}
 
         self.delays = {'like': like_delay,
                        'unlike': unlike_delay,
@@ -115,6 +106,8 @@ class Bot(object):
                        'block': block_delay,
                        'unblock': unblock_delay,
                        'message': message_delay}
+
+        self.last = {key: 0 for key in self.delays.keys()}
 
         # limits - follow
         self.filter_users = filter_users
