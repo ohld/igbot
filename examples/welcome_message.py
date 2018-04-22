@@ -13,6 +13,7 @@ from tqdm import tqdm
 
 sys.path.append(os.path.join(sys.path[0], '../'))
 from instabot import Bot
+from instabot.utils import file
 
 NOTIFIED_USERS_PATH = 'notified_users.txt'
 
@@ -35,12 +36,9 @@ if args.message:
     MESSAGE = args.message
 
 # Check on existed file with notified users
-if not bot.check_if_file_exists(NOTIFIED_USERS_PATH):
-    followers = bot.followers
-    followers = map(str, followers)
-    followers_string = '\n'.join(followers)
-    with open(NOTIFIED_USERS_PATH, 'w') as users_file:
-        users_file.write(followers_string)
+notified_users = file(NOTIFIED_USERS_PATH)
+if not notified_users.list:
+    notified_users.save_list(bot.followers)
     print(
         'All followers saved in file {users_path}.\n'
         'In a next time, for all new followers script will send messages.'.format(
@@ -49,7 +47,6 @@ if not bot.check_if_file_exists(NOTIFIED_USERS_PATH):
     )
     exit(0)
 
-notified_users = bot.read_list_from_file(NOTIFIED_USERS_PATH)
 print('Read saved list of notified users. Count: {count}'.format(
     count=len(notified_users)
 ))
@@ -58,7 +55,7 @@ print('Amount of all followers is {count}'.format(
     count=len(all_followers)
 ))
 
-new_followers = set(all_followers) - set(notified_users)
+new_followers = set(all_followers) - set(notified_users.list)
 
 if not new_followers:
     print('New followers not found')
@@ -68,16 +65,6 @@ print('Found new followers. Count: {count}'.format(
     count=len(new_followers)
 ))
 
-new_notified_users = []
-
 for follower in tqdm(new_followers):
     if bot.send_message(MESSAGE, follower):
-        new_notified_users.append(follower)
-
-if new_notified_users:
-    print('Updating notified users list')
-    with open(NOTIFIED_USERS_PATH, 'a') as fo:
-        new_notified_users_string = '\n'.join(new_notified_users)
-        fo.write('\n{users}'.format(
-            users=new_notified_users_string
-        ))
+        notified_users.append(follower)
