@@ -147,6 +147,8 @@ class Bot(object):
         # current following and followers
         self._following = None
         self._followers = None
+        self._user_infos = {}  # User info cache
+        self._usernames = {}  # `username` to `user_id` mapping
 
         # Database files
         self.followed_file = utils.file(followed_file)
@@ -162,9 +164,6 @@ class Bot(object):
 
         self.logger = self.api.logger
         self.logger.info('Instabot Started')
-
-        self._user_infos = {}  # User info cache
-        self._usernames = {}  # `username` to `user_id` mapping
 
     @property
     def user_id(self):
