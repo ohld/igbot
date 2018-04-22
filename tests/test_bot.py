@@ -88,7 +88,7 @@ class TestBotAPI(TestBot):
         assert hasattr(self.bot.api, "uuid")
 
     def test_reset_counters(self):
-        keys = ['liked', 'unliked', 'followed',
+        keys = ['liked', 'unliked', 'followed', 'messages',
                 'unfollowed', 'commented', 'blocked', 'unblocked']
         for key in keys:
             self.bot.total[key] = 1
