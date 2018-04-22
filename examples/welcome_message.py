@@ -12,8 +12,7 @@ import sys
 from tqdm import tqdm
 
 sys.path.append(os.path.join(sys.path[0], '../'))
-from instabot import Bot
-from instabot.utils import file
+from instabot import Bot, utils
 
 NOTIFIED_USERS_PATH = 'notified_users.txt'
 
@@ -36,7 +35,7 @@ if args.message:
     MESSAGE = args.message
 
 # Check on existed file with notified users
-notified_users = file(NOTIFIED_USERS_PATH)
+notified_users = utils.file(NOTIFIED_USERS_PATH)
 if not notified_users.list:
     notified_users.save_list(bot.followers)
     print(
@@ -55,7 +54,7 @@ print('Amount of all followers is {count}'.format(
     count=len(all_followers)
 ))
 
-new_followers = set(all_followers) - set(notified_users.list)
+new_followers = set(all_followers) - notified_users.set
 
 if not new_followers:
     print('New followers not found')
