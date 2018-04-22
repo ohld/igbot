@@ -2,11 +2,13 @@ import hashlib
 import hmac
 import json
 import logging
+import os
 import time
 import uuid
 from random import uniform
 
 import requests
+import requests.utils
 import six.moves.urllib as urllib
 from tqdm import tqdm
 
@@ -45,31 +47,37 @@ class API(object):
         self.password = password
         self.uuid = self.generate_UUID(uuid_type=True)
 
-    def login(self, username=None, password=None, force=False, proxy=None):
+    def login(self, username=None, password=None, force=False, proxy=None,
+              use_cookie=False, cookie_fname='cookie.txt'):
         if password is None:
             username, password = get_credentials(username=username)
 
-        m = hashlib.md5()
-        m.update(username.encode('utf-8') + password.encode('utf-8'))
+        self.device_id = self.generate_device_id(self.get_seed(username, password))
         self.proxy = proxy
-        self.device_id = self.generate_device_id(m.hexdigest())
         self.set_user(username, password)
 
-        if not self.is_logged_in or force:
-            self.session = requests.Session()
-            if self.proxy is not None:
-                parsed = urllib.parse.urlparse(self.proxy)
-                scheme = 'http://' if not parsed.scheme else ''
-                self.session.proxies['http'] = scheme + self.proxy
-                self.session.proxies['https'] = scheme + self.proxy
+        cookie_is_loaded = False
+        if use_cookie:
+            try:
+                self.load_cookie(cookie_fname)
+                cookie_is_loaded = True
+                self.is_logged_in = True
+                self.set_proxy()  # Only happens if `self.proxy`
+                self.logger.info("Logged-in successfully as '{}' using the cookie!".format(self.username))
+                return True
+            except Exception as e:
+                print(str(e))
 
+        if not cookie_is_loaded and (not self.is_logged_in or force):
+            self.session = requests.Session()
+            self.set_proxy()  # Only happens if `self.proxy`
             url = 'si/fetch_headers/?challenge_type=signup&guid={uuid}'
             url = url.format(uuid=self.generate_UUID(False))
             if self.send_request(url, login=True):
                 data = json.dumps({
                     'phone_id': self.generate_UUID(True),
-                    '_csrftoken': self.last_response.cookies['csrftoken'],
-                    'username': self.username,
+                    '_csrftoken': self.token,
+                    'username': username,
                     'guid': self.uuid,
                     'device_id': self.device_id,
                     'password': self.password,
@@ -78,22 +86,50 @@ class API(object):
 
                 if self.send_request('accounts/login/', data, True):
                     self.is_logged_in = True
-                    self.user_id = self.last_json["logged_in_user"]["pk"]
-                    self.rank_token = "{}_{}".format(self.user_id, self.uuid)
-                    self.token = self.last_response.cookies["csrftoken"]
-
                     self.logger.info("Logged-in successfully as '{}'!".format(self.username))
+                    if use_cookie:
+                        self.save_cookie(cookie_fname)
+                        self.logger.info("Saved cookie!")
                     return True
                 else:
                     self.logger.info("Username or password is incorrect.")
                     delete_credentials()
                     return False
 
+    def load_cookie(self, fname):
+        try:
+            with open(fname, 'r') as f:
+                self.session = requests.Session()
+                self.session.cookies = requests.utils.cookiejar_from_dict(json.load(f))
+            cookie_username = self.cookie_dict['ds_user']
+            assert cookie_username == self.username
+        except FileNotFoundError:
+            raise Exception('Cookie file `{}` not found'.format(fname))
+        except (TypeError, EOFError):
+            os.remove(fname)
+            msg = ('An error occured opening the cookie `{}`, '
+                   'it will be removed an recreated.')
+            raise Exception(msg.format(fname))
+        except AssertionError:
+            msg = 'The loaded cookie was for {} instead of {}.'
+            raise Exception(msg.format(cookie_username, self.username))
+
+    def save_cookie(self, fname):
+        with open(fname, 'w') as f:
+            json.dump(requests.utils.dict_from_cookiejar(self.session.cookies), f)
+
     def logout(self):
         if not self.is_logged_in:
             return True
         self.is_logged_in = not self.send_request('accounts/logout/')
         return not self.is_logged_in
+
+    def set_proxy(self):
+        if self.proxy:
+            parsed = urllib.parse.urlparse(self.proxy)
+            scheme = 'http://' if not parsed.scheme else ''
+            self.session.proxies['http'] = scheme + self.proxy
+            self.session.proxies['https'] = scheme + self.proxy
 
     def send_request(self, endpoint, post=None, login=False, with_signature=True):
         if (not self.is_logged_in and not login):
@@ -151,6 +187,22 @@ class API(object):
             except Exception:
                 pass
             return False
+
+    @property
+    def cookie_dict(self):
+        return self.session.cookies.get_dict()
+
+    @property
+    def token(self):
+        return self.cookie_dict['csrftoken']
+
+    @property
+    def user_id(self):
+        return self.cookie_dict['ds_user_id']
+
+    @property
+    def rank_token(self):
+        return "{}_{}".format(self.user_id, self.uuid)
 
     @property
     def default_data(self):
@@ -466,6 +518,12 @@ class API(object):
         m = hashlib.md5()
         m.update(seed.encode('utf-8') + volatile_seed.encode('utf-8'))
         return 'android-' + m.hexdigest()[:16]
+
+    @staticmethod
+    def get_seed(*args):
+        m = hashlib.md5()
+        m.update(b''.join([arg.encode('utf-8') for arg in args]))
+        return m.hexdigest()
 
     @staticmethod
     def generate_UUID(uuid_type):
