@@ -200,8 +200,8 @@ class API(object):
     def upload_video(self, photo, caption=None, upload_id=None):
         return upload_video(self, photo, caption, upload_id)
 
-    def download_video(self, media_id, filename, media=False, path='video/'):
-        return download_video(self, media_id, filename, media, path)
+    def download_video(self, media_id, filename, media=False, folder='video/'):
+        return download_video(self, media_id, filename, media, folder)
 
     def configure_video(self, upload_id, video, thumbnail, caption=''):
         return configure_video(self, upload_id, video, thumbnail, caption)
