@@ -22,7 +22,7 @@ class TestBot:
     def prepare_api(self, bot):
         bot.api.is_logged_in = True
         bot.api.session = requests.Session()
-        
+
         cookies = Mock()
         cookies.return_value = {
             'csrftoken': self.TOKEN,
