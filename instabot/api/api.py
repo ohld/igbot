@@ -97,6 +97,12 @@ class API(object):
                     return False
 
     def load_cookie(self, fname):
+        # Python2 compatibility
+        try:
+            FileNotFoundError
+        except NameError:
+            FileNotFoundError = IOError
+
         try:
             with open(fname, 'r') as f:
                 self.session = requests.Session()
