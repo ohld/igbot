@@ -22,8 +22,14 @@ class TestBot:
     def prepare_api(self, bot):
         bot.api.is_logged_in = True
         bot.api.session = requests.Session()
+        
+        cookies = Mock()
+        cookies.return_value = {
+            'csrftoken': self.TOKEN,
+            'ds_user_id': self.USER_ID
+        }
+        bot.api.session.cookies.get_dict = cookies
         bot.api.set_user(self.USERNAME, self.PASSWORD)
-        bot.api.rank_token = '{}_{}'.format(bot.api.user_id, bot.api.uuid)
 
 
 class TestBotAPI(TestBot):
@@ -33,14 +39,12 @@ class TestBotAPI(TestBot):
         def mockreturn(*args, **kwargs):
             r = Mock()
             r.status_code = 200
-            r.cookies = {'csrftoken': self.TOKEN, 'ds_user_id': self.USER_ID}
             r.text = '{"status": "ok"}'
             return r
 
         def mockreturn_login(*args, **kwargs):
             r = Mock()
             r.status_code = 200
-            r.cookies = {'csrftoken': self.TOKEN, 'ds_user_id': self.USER_ID}
             r.text = json.dumps({
                 "logged_in_user": {
                     "pk": self.USER_ID,
@@ -55,6 +59,9 @@ class TestBotAPI(TestBot):
             instance = Session.return_value
             instance.get.return_value = mockreturn()
             instance.post.return_value = mockreturn_login()
+            instance.cookies = requests.cookies.RequestsCookieJar()
+            instance.cookies.update(
+                {'csrftoken': self.TOKEN, 'ds_user_id': self.USER_ID})
 
             assert self.bot.api.login(username=self.USERNAME,
                                       password=self.PASSWORD)
@@ -64,11 +71,6 @@ class TestBotAPI(TestBot):
         assert self.bot.api.is_logged_in
         assert self.bot.api.uuid
         assert self.bot.api.token
-
-    def test_logout(self):
-        self.bot.logout()
-
-        assert not self.bot.api.is_logged_in
 
     def test_generate_uuid(self):
         from uuid import UUID
