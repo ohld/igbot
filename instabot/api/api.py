@@ -77,7 +77,7 @@ class API(object):
                 data = json.dumps({
                     'phone_id': self.generate_UUID(True),
                     '_csrftoken': self.token,
-                    'username': username,
+                    'username': self.username,
                     'guid': self.uuid,
                     'device_id': self.device_id,
                     'password': self.password,
