@@ -20,8 +20,12 @@ def get_credentials(username=None):
     while not check_secret():
         pass
     while True:
-        with open(SECRET_FILE, "r") as f:
-            lines = [line.strip().split(":", 2) for line in f.readlines()]
+        try:
+            with open(SECRET_FILE, "r") as f:
+                lines = [line.strip().split(":", 2) for line in f.readlines()]
+        except ValueError:
+            msg = 'Problem with opening `{}`, will remove the file.'
+            raise Exception(msg.format(SECRET_FILE))
         if username is not None:
             for login, password in lines:
                 if login == username.strip():
