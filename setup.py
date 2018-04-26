@@ -4,7 +4,7 @@ from setuptools import setup
 setup(
     name='instabot',
     packages=['instabot', 'instabot.bot', 'instabot.api'],
-    version='0.4',
+    version='0.4.1',
     description='Cool Instagram bot scripts and API python wrapper.',
     author='Daniil Okhlopkov, Evgeny Kemerov',
     author_email='ohld@icloud.com, eskemerov@gmail.com',
