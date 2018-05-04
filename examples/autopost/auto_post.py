@@ -33,8 +33,8 @@ while True:
 
             print("upload: " + caption)
             bot.upload_photo(pic, caption=caption)
-            if bot.last_response.status_code != 200:
-                print(bot.last_response)
+            if bot.api.last_response.status_code != 200:
+                print(bot.api.last_response)
                 # snd msg
                 break
 
