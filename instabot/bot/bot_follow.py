@@ -40,11 +40,11 @@ def follow_users(self, user_ids):
     self.console_print(msg, 'green')
     for user_id in tqdm(user_ids, desc='Processed users'):
         if not self.follow(user_id):
-            if self.last_response.status_code == 404:
+            if self.api.last_response.status_code == 404:
                 self.console_print("404 error user {user_id} doesn't exist.", 'red')
                 broken_items.append(user_id)
 
-            elif self.last_response.status_code not in (400, 429):
+            elif self.api.last_response.status_code not in (400, 429):
                 # 400 (block to follow) and 429 (many request error)
                 # which is like the 500 error.
                 try_number = 3

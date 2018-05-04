@@ -76,9 +76,9 @@ def upload_pictures():  # Automatically post a pic in 'pics' folder
             full_caption = caption + "\n" + config.FOLLOW_MESSAGE
             bot.logger.info("Uploading pic with caption: " + caption)
             bot.upload_photo(config.PICS_PATH + pic, caption=full_caption)
-            if bot.last_response.status_code != 200:
+            if bot.api.last_response.status_code != 200:
                 bot.logger.error("Something went wrong, read the following ->\n")
-                bot.logger.error(bot.last_response)
+                bot.logger.error(bot.api.last_response)
                 break
 
             if pic not in posted_pic_list:
