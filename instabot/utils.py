@@ -46,6 +46,8 @@ class file(object):
         items = self.list
         if x in items:
             items.remove(x)
+            msg = "Removing '{}' from `{}`.".format(x, self.fname)
+            print(bold(green(msg)))
             self.save_list(items)
 
     def random(self):
