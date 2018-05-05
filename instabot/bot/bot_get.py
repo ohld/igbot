@@ -154,9 +154,10 @@ def get_user_info(self, user_id):
     user_id = self.convert_to_user_id(user_id)
     if user_id not in self._user_infos:
         self.api.get_username_info(user_id)
-        if 'user' not in self.api.last_json:
+        last_json = self.api.last_json
+        if last_json is None or 'user' not in last_json:
             return False
-        user_info = self.api.last_json['user']
+        user_info = last_json['user']
         self._user_infos[user_id] = user_info
     return self._user_infos[user_id]
 
