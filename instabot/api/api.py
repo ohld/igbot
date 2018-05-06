@@ -620,8 +620,13 @@ class API(object):
         with tqdm(total=amount, desc="Getting hashtag media.", leave=False) as pbar:
             while True:
                 self.get_hashtag_feed(hashtag_str, next_max_id)
-                last_json = self.last_json
+                
+                if not self.last_json.get('items'):
+                    return hashtag_feed[:amount]
+
+                last_json = self.last_json    
                 items = last_json['items']
+
                 try:
                     pbar.update(len(items))
                     hashtag_feed += items
