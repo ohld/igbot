@@ -16,6 +16,7 @@ def unfollow(self, user_id):
             self.console_print(msg.format(user_id, username), 'yellow')
             self.unfollowed_file.append(user_id)
             self.total['unfollows'] += 1
+            self._following = None  # Invalidate cache
             return True
     else:
         self.logger.info("Out of unfollows for today.")
