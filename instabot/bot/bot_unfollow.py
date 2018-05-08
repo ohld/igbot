@@ -2,27 +2,24 @@ from tqdm import tqdm
 
 
 def unfollow(self, user_id):
-    try:
-        user_id = self.convert_to_user_id(user_id)
-        user_info = self.get_user_info(user_id)
-        username = user_info["username"]
-        self.console_print('===> Going to unfollow `user_id`: {} with username: {}'.format(user_id, username))
+    user_id = self.convert_to_user_id(user_id)
+    user_info = self.get_user_info(user_id)
+    username = user_info["username"]
+    self.console_print('===> Going to unfollow `user_id`: {} with username: {}'.format(user_id, username))
 
-        if self.check_user(user_id, unfollowing=True):
-            return True  # whitelisted user
-        if not self.reached_limit('unfollows'):
-            self.delay('unfollow')
-            if self.api.unfollow(user_id):
-                msg = '===> Unfollowed, `user_id`: {}, user_name: {}'
-                self.console_print(msg.format(user_id, username), 'yellow')
-                self.unfollowed_file.append(user_id)
-                self.total['unfollows'] += 1
-                self._following = None  # Invalidate cache
-                return True
-        else:
-            self.logger.info("Out of unfollows for today.")
-    except Exception:
-        return False
+    if self.check_user(user_id, unfollowing=True):
+        return True  # whitelisted user
+    if not self.reached_limit('unfollows'):
+        self.delay('unfollow')
+        if self.api.unfollow(user_id):
+            msg = '===> Unfollowed, `user_id`: {}, user_name: {}'
+            self.console_print(msg.format(user_id, username), 'yellow')
+            self.unfollowed_file.append(user_id)
+            self.total['unfollows'] += 1
+            self._following = None  # Invalidate cache
+            return True
+    else:
+        self.logger.info("Out of unfollows for today.")
     return False
 
 
