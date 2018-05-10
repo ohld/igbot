@@ -191,16 +191,22 @@ class Bot(object):
 
     @property
     def following(self):
-        if self._following is None:
+        now = time.time()
+        last = self.last.get('updated_following', now)
+        if self._following is None or now - last > 7200:
             self.console_print('`bot.following` is empty, will download.', 'green')
             self._following = self.get_user_following(self.user_id)
+            self.last['updated_following'] = now
         return self._following
 
     @property
     def followers(self):
-        if self._followers is None:
+        now = time.time()
+        last = self.last.get('updated_followers', now)
+        if self._followers is None or now - last > 7200:
             self.console_print('`bot.followers` is empty, will download.', 'green')
             self._followers = self.get_user_followers(self.user_id)
+            self.last['updated_followers'] = now
         return self._followers
 
     def version(self):
