@@ -589,7 +589,7 @@ class API(object):
                 if last_json["big_list"] is False:
                     return result[:total]
 
-                next_max_id = last_json["next_max_id"]
+                next_max_id = last_json.get("next_max_id", "")
 
     def get_total_followers(self, user_id, amount=None):
         return self.get_total_followers_or_followings(
@@ -611,7 +611,7 @@ class API(object):
             user_feed += last_json["items"]
             if not last_json.get("more_available"):
                 return user_feed
-            next_max_id = last_json["next_max_id"]
+            next_max_id = last_json.get("next_max_id", "")
 
     def get_total_hashtag_feed(self, hashtag_str, amount=100):
         hashtag_feed = []
@@ -620,8 +620,13 @@ class API(object):
         with tqdm(total=amount, desc="Getting hashtag media.", leave=False) as pbar:
             while True:
                 self.get_hashtag_feed(hashtag_str, next_max_id)
+
+                if not self.last_json.get('items'):
+                    return hashtag_feed[:amount]
+
                 last_json = self.last_json
                 items = last_json['items']
+
                 try:
                     pbar.update(len(items))
                     hashtag_feed += items
@@ -629,7 +634,7 @@ class API(object):
                         return hashtag_feed[:amount]
                 except Exception:
                     return hashtag_feed[:amount]
-                next_max_id = last_json["next_max_id"]
+                next_max_id = last_json.get("next_max_id", "")
 
     def get_total_self_user_feed(self, min_timestamp=None):
         return self.get_total_user_feed(self.user_id, min_timestamp)
@@ -646,7 +651,7 @@ class API(object):
         for _ in range(scan_rate):
             self.get_liked_media(next_id)
             last_json = self.last_json
-            next_id = last_json["next_max_id"]
+            next_id = last_json.get("next_max_id", "")
             liked_items += last_json["items"]
         return liked_items
 
