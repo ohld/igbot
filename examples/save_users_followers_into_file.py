@@ -27,7 +27,7 @@ bot = Bot()
 bot.login(username=args.u, password=args.p,
           proxy=args.proxy)
 
-fh = open("users_followings.txt", "a+")
+fh = open("users_followers.txt", "a+")
 for username in args.users:
     followers = bot.get_user_followers(username)
     for user in followers:
