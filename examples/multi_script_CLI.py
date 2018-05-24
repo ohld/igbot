@@ -139,7 +139,7 @@ def get_adder(name, fname):
                 if "y" not in sys.stdin.readline():
                     print('Done adding {}s to database'.format(name))
                     break
-    return _adder
+    return _adder()
 
 
 def hashtag_adder():
