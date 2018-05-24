@@ -7,7 +7,7 @@
 import os
 import sys
 import argparse
-from instabot import Bot
+from instabot import Bot, utils
 sys.path.append(os.path.join(sys.path[0], '../'))
 
 
@@ -23,9 +23,7 @@ bot = Bot()
 bot.login(username=args.u, password=args.p,
           proxy=args.proxy)
 
-fh = open(args.filename, "a+")
+f = utils.file(args.filename)
 for username in args.users:
     following = bot.get_user_following(username)
-    for user in following:
-        fh.write(user + "\n")
-fh.close()
+    f.save_list(following)
