@@ -35,7 +35,7 @@ def save_user_stats(self, username, path=""):
     if not username:
         username = self.api.username
     user_id = self.convert_to_user_id(username)
-    infodict = self.get_user_info(user_id)
+    infodict = self.get_user_info(user_id, use_cache=False)
     if infodict:
         data_to_save = {
             "date": str(datetime.datetime.now().replace(microsecond=0)),
