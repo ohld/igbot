@@ -150,9 +150,9 @@ def get_username_from_user_id(self, user_id):
     return None  # Not found
 
 
-def get_user_info(self, user_id):
+def get_user_info(self, user_id, use_cache=True):
     user_id = self.convert_to_user_id(user_id)
-    if user_id not in self._user_infos:
+    if not use_cache or user_id not in self._user_infos:
         self.api.get_username_info(user_id)
         last_json = self.api.last_json
         if last_json is None or 'user' not in last_json:
