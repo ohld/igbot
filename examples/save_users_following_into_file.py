@@ -9,7 +9,7 @@ import sys
 import argparse
 
 sys.path.append(os.path.join(sys.path[0], '../'))
-from instabot import Bot, utilsx
+from instabot import Bot, utils
 
 parser = argparse.ArgumentParser(add_help=False)
 parser.add_argument('-u', type=str, help="username")
