@@ -61,7 +61,7 @@ def get_total_user_medias(self, user_id):
 
 def get_last_user_medias(self, user_id, count):
     user_id = self.convert_to_user_id(user_id)
-    medias = self.api.get_last_user_feed(user_id, count)
+    medias = self.api.get_last_user_feed(user_id, count) # count of latest posts in int type
     if self.api.last_json["status"] == 'fail':
         self.logger.warning("This is a closed account.")
         return []

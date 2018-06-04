@@ -303,6 +303,12 @@ class Bot(object):
         return get_total_user_medias(self, user_id)
 
     def get_last_user_medias(self, user_id, count):
+        """
+        Returns the last number of posts specified in count in media ids array.
+        :type count: int
+        :param count: Count of posts
+        :return: array
+        """
         return get_last_user_medias(self, user_id, count)
 
     def get_hashtag_medias(self, hashtag, filtration=True):

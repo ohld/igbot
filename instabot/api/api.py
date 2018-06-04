@@ -617,7 +617,7 @@ class API(object):
         user_feed = []
         next_max_id = ''
         while True:
-            if len(user_feed) >= int(count):
+            if len(user_feed) >= int(count):  # cause one request can get 13 items.
                 return user_feed[:count]
             self.get_user_feed(user_id, next_max_id, min_timestamp)
             last_json = self.last_json
