@@ -302,7 +302,7 @@ class Bot(object):
     def get_total_user_medias(self, user_id):
         return get_total_user_medias(self, user_id)
 
-    def get_last_user_medias(self, user_id):
+    def get_last_user_medias(self, user_id, count):
         return get_last_user_medias(self, user_id, count)
 
     def get_hashtag_medias(self, hashtag, filtration=True):
