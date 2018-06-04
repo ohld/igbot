@@ -59,6 +59,15 @@ def get_total_user_medias(self, user_id):
     return self.filter_medias(medias, filtration=False)
 
 
+def get_last_user_medias(self, user_id, count):
+    user_id = self.convert_to_user_id(user_id)
+    medias = self.api.get_last_user_feed(user_id, count)
+    if self.api.last_json["status"] == 'fail':
+        self.logger.warning("This is a closed account.")
+        return []
+    return self.filter_medias(medias, filtration=False)
+
+
 def get_user_likers(self, user_id, media_count=10):
     your_likers = set()
     media_items = self.get_user_medias(user_id, filtration=False)
