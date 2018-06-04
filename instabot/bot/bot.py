@@ -26,7 +26,7 @@ from .bot_get import (convert_to_user_id, get_archived_medias, get_comment,
                       get_media_owner, get_popular_medias, get_timeline_medias,
                       get_timeline_users, get_total_hashtag_medias,
                       get_total_user_medias, get_user_followers, get_messages,
-                      get_user_following, get_user_id_from_username,
+                      get_user_following, get_user_id_from_username, get_last_user_medias,
                       get_user_info, get_user_likers, get_user_medias,
                       get_username_from_user_id, get_your_medias, search_users)
 from .bot_like import (like, like_followers, like_following, like_geotag,
@@ -301,6 +301,9 @@ class Bot(object):
 
     def get_total_user_medias(self, user_id):
         return get_total_user_medias(self, user_id)
+
+    def get_last_user_medias(self, user_id, count):
+        return get_last_user_medias(self, user_id, count)
 
     def get_hashtag_medias(self, hashtag, filtration=True):
         return get_hashtag_medias(self, hashtag, filtration)
