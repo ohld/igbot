@@ -617,8 +617,8 @@ class API(object):
         user_feed = []
         next_max_id = ''
         while True:
-            if len(user_feed) == count:
-                return user_feed
+            if len(user_feed) >= count:
+                return user_feed[:count]
             self.get_user_feed(user_id, next_max_id, min_timestamp)
             last_json = self.last_json
             if "items" not in last_json:
