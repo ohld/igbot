@@ -341,7 +341,7 @@ class Bot(object):
     def get_username_from_user_id(self, user_id):
         return get_username_from_user_id(self, user_id)
 
-    def get_user_info(self, user_id, use_cache):
+    def get_user_info(self, user_id, use_cache=True):
         return get_user_info(self, user_id, use_cache)
 
     def get_user_followers(self, user_id, nfollows=None):
