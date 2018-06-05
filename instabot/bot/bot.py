@@ -300,7 +300,7 @@ class Bot(object):
         return get_user_medias(self, user_id, filtration, is_comment)
 
     def get_total_user_medias(self, user_id):
-        return get_total_user_medias(self, user_id)
+        return get_last_user_medias(self, user_id,amount=float('inf'))
 
     def get_last_user_medias(self, user_id, count):
         """
