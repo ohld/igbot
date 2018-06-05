@@ -600,9 +600,15 @@ class API(object):
             user_id, amount, 'followings')
 
     def get_total_user_feed(self, user_id, min_timestamp=None):
+        return self.get_last_user_feed(user_id, amount=float('inf'), min_timestamp=min_timestamp)
+
+    def get_last_user_feed(self, user_id, amount, min_timestamp=None):
         user_feed = []
         next_max_id = ''
         while True:
+            if len(user_feed) >= int(amount):
+                # one request returns max 13 items
+                return user_feed[:amount]
             self.get_user_feed(user_id, next_max_id, min_timestamp)
             last_json = self.last_json
             if "items" not in last_json:
