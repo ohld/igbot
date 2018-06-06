@@ -9,6 +9,11 @@ def follow(self, user_id):
     self.console_print(msg)
     if not self.check_user(user_id):
         return True
+    # Check if we hadn't previously followed the user
+    followed = self.followed_file
+    if user_id in followed:
+        self.logger.info("User previously followed, skipping.")
+        return True
     if not self.reached_limit('follows'):
         self.delay('follow')
         if self.api.follow(user_id):
