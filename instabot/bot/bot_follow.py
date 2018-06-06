@@ -11,7 +11,7 @@ def follow(self, user_id):
         return True
     # Check if we hadn't previously followed the user
     followed = self.followed_file
-    if user_id in followed:
+    if user_id in followed.set:
         self.logger.info("User previously followed, skipping.")
         return True
     if not self.reached_limit('follows'):
