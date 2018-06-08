@@ -61,7 +61,7 @@ def follow_users(self, user_ids):
                     broken_items += user_ids[i:]
                     break
 
-    self.logger.info("DONE: Followed {} users in total.".format(self.total['follows']))
+    self.logger.info("DONE: Now following {} users in total.".format(self.total['follows']))
     return broken_items
 
 
