@@ -14,8 +14,7 @@ import sys
 from tqdm import tqdm
 
 sys.path.append(os.path.join(sys.path[0], '../'))
-from instabot import Bot
-from instabot.bot.bot_support import read_list_from_file
+from instabot import Bot, utils
 
 USERNAME_DATABASE = 'username_database.txt'
 POSTED_MEDIAS = 'posted_medias.txt'
@@ -36,7 +35,7 @@ def sort_best_medias(bot, media_ids, amount=1):
 
 def get_not_used_medias_from_users(bot, users=None, users_path=USERNAME_DATABASE):
     if not users:
-        users = read_list_from_file(users_path)
+        users = utils.file(users_path).list
     users = map(str, users)
     total_medias = []
     for user in users:
@@ -47,15 +46,13 @@ def get_not_used_medias_from_users(bot, users=None, users_path=USERNAME_DATABASE
 
 
 def exists_in_posted_medias(new_media_id, path=POSTED_MEDIAS):
-    medias = read_list_from_file(path)
+    medias = utils.file(path).list
     return str(new_media_id) in medias
 
 
 def update_posted_medias(new_media_id, path=POSTED_MEDIAS):
-    medias = read_list_from_file(path)
+    medias = utils.file(path)
     medias.append(str(new_media_id))
-    with open(path, 'w') as file:
-        file.writelines('\n'.join(medias))
     return True
 
 
@@ -89,6 +86,6 @@ users = None
 if args.users:
     users = args.users
 elif args.file:
-    users = read_list_from_file(args.file)
+    users = utils.file(args.file).list
 
 repost_best_photos(bot, users, args.amount)
