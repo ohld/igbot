@@ -36,8 +36,8 @@ def follow_users(self, user_ids):
 
     # Remove skipped list from user_ids
     user_ids = list(set(user_ids) - skipped.set)
-    msg = 'After filtering `{}` and `{}`, {} user_ids left to follow.'
-    msg = msg.format(followed.fname, skipped.fname, len(user_ids))
+    msg = 'After filtering `{}`, {} user_ids left to follow.'
+    msg = msg.format(skipped.fname, len(user_ids))
     self.console_print(msg, 'green')
     for user_id in tqdm(user_ids, desc='Processed users'):
         if not self.follow(user_id):

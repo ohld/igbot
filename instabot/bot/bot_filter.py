@@ -129,7 +129,7 @@ def check_user(self, user_id, filter_closed_acc=False, unfollowing=False):
     followed = self.followed_file
 
     if not unfollowing:
-        if self.filter_previously_followed and used_id in followed.list:
+        if self.filter_previously_followed and user_id in followed.list:
             self.console_print('info: account previously followed, skipping!', 'red')
             return False
     if filter_closed_acc and "is_private" in user_info:
