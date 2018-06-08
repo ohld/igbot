@@ -9,11 +9,6 @@ def follow(self, user_id):
     self.console_print(msg)
     if not self.check_user(user_id):
         return True
-    # Check if we hadn't previously followed the user
-    followed = self.followed_file
-    if user_id in followed.set:
-        self.logger.info("User previously followed, skipping.")
-        return True
     if not self.reached_limit('follows'):
         self.delay('follow')
         if self.api.follow(user_id):
@@ -36,12 +31,11 @@ def follow_users(self, user_ids):
         return
     msg = "Going to follow {} users.".format(len(user_ids))
     self.logger.info(msg)
-    followed = self.followed_file
     skipped = self.skipped_file
     self.console_print(msg, 'green')
 
-    # Remove skipped and followed list from user_ids
-    user_ids = list(set(user_ids) - followed.set - skipped.set)
+    # Remove skipped list from user_ids
+    user_ids = list(set(user_ids) - skipped.set)
     msg = 'After filtering `{}` and `{}`, {} user_ids left to follow.'
     msg = msg.format(followed.fname, skipped.fname, len(user_ids))
     self.console_print(msg, 'green')

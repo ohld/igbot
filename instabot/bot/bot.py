@@ -62,6 +62,7 @@ class Bot(object):
                  max_likes_to_like=100,
                  max_messages_per_day=300,
                  filter_users=True,
+                 filter_previously_followed=False,
                  filter_business_accounts=True,
                  filter_verified_accounts=True,
                  max_followers_to_follow=2000,
