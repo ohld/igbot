@@ -62,6 +62,7 @@ class Bot(object):
                  max_likes_to_like=100,
                  max_messages_per_day=300,
                  filter_users=True,
+                 filter_previously_followed=False,
                  filter_business_accounts=True,
                  filter_verified_accounts=True,
                  max_followers_to_follow=2000,
@@ -113,6 +114,7 @@ class Bot(object):
         self.filter_users = filter_users
         self.filter_business_accounts = filter_business_accounts
         self.filter_verified_accounts = filter_verified_accounts
+        self.filter_previously_followed = filter_previously_followed
 
         self.max_per_day = {'likes': max_likes_per_day,
                             'unlikes': max_unlikes_per_day,
