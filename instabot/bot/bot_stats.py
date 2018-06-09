@@ -6,7 +6,7 @@ def get_tsv_line(dictionary):
     line = ""
     for key in sorted(dictionary):
         line += str(dictionary[key]) + "\t"
-    return line[:-2] + "\n"
+    return line[:-1] + "\n"
 
 
 def get_header_line(dictionary):
