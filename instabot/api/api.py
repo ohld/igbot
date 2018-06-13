@@ -606,7 +606,7 @@ class API(object):
         user_feed = []
         next_max_id = ''
         while True:
-            if len(user_feed) >= int(amount):
+            if len(user_feed) >= float(amount):
                 # one request returns max 13 items
                 return user_feed[:amount]
             self.get_user_feed(user_id, next_max_id, min_timestamp)
