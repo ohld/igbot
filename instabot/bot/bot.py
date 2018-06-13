@@ -33,7 +33,7 @@ from .bot_get import (convert_to_user_id, get_archived_medias, get_comment,
                       get_username_from_user_id, get_your_medias, search_users)
 from .bot_like import (like, like_comment, like_followers, like_following,
                        like_geotag, like_hashtag, like_medias, like_timeline,
-                       like_user, like_users)
+                       like_user, like_users, like_media_comments)
 from .bot_photo import download_photo, download_photos, upload_photo
 from .bot_stats import save_user_stats
 from .bot_support import (check_if_file_exists, console_print, extract_urls,
@@ -400,6 +400,9 @@ class Bot(object):
 
     def like_timeline(self, amount=None):
         return like_timeline(self, amount)
+
+    def like_media_comments(self, media_id):
+        return like_media_comments(self, media_id)
 
     def like_user(self, user_id, amount=None, filtration=True):
         return like_user(self, user_id, amount, filtration)

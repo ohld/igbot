@@ -18,6 +18,27 @@ def like_comment(self, comment_id):
     return False
 
 
+def like_media_comments(self, media_id):
+    broken_items = []
+    media_comments = self.get_media_comments(media_id)
+    comment_ids = [item["pk"] for item in media_comments if not item["has_liked_comment"]]
+
+    if not comment_ids:
+        self.logger.info("None comments received: comments not found or comments have been filtered.")
+        return broken_items
+
+    self.logger.info("Going to like %d comments." % (len(comment_ids)))
+
+    for comment in tqdm(comment_ids):
+        if not self.like_comment(comment):
+            self.error_delay()
+            broken_items = comment_ids[comment_ids.index(comment):]
+    self.logger.info("DONE: Liked {count} comments.".format(
+        count=len(comment_ids) - len(broken_items)
+    ))
+    return broken_items
+
+
 def like_medias(self, medias):
     broken_items = []
     if not medias:
