@@ -19,16 +19,17 @@ from .bot_filter import check_media, check_not_bot, check_user, filter_medias
 from .bot_follow import (follow, follow_followers, follow_following,
                          follow_users)
 from .bot_get import (convert_to_user_id, get_archived_medias, get_comment,
-                      get_geotag_medias, get_geotag_users, get_hashtag_medias,
-                      get_hashtag_users, get_last_user_medias,
-                      get_locations_from_coordinates, get_media_commenters,
-                      get_media_comments, get_media_id_from_link,
-                      get_media_info, get_media_likers, get_media_owner,
-                      get_messages, get_popular_medias, get_timeline_medias,
-                      get_timeline_users, get_total_hashtag_medias,
-                      get_total_user_medias, get_user_followers,
-                      get_user_following, get_user_id_from_username,
-                      get_user_info, get_user_likers, get_user_medias,
+                      get_comment_likers, get_geotag_medias, get_geotag_users,
+                      get_hashtag_medias, get_hashtag_users,
+                      get_last_user_medias, get_locations_from_coordinates,
+                      get_media_commenters, get_media_comments,
+                      get_media_id_from_link, get_media_info, get_media_likers,
+                      get_media_owner, get_messages, get_popular_medias,
+                      get_timeline_medias, get_timeline_users,
+                      get_total_hashtag_medias, get_total_user_medias,
+                      get_user_followers, get_user_following,
+                      get_user_id_from_username, get_user_info,
+                      get_user_likers, get_user_medias,
                       get_username_from_user_id, get_your_medias, search_users)
 from .bot_like import (like, like_comment, like_followers, like_following,
                        like_geotag, like_hashtag, like_medias, like_timeline,
@@ -352,6 +353,9 @@ class Bot(object):
 
     def get_user_following(self, user_id, nfollows=None):
         return get_user_following(self, user_id, nfollows)
+
+    def get_comment_likers(self, comment_id):
+        return get_comment_likers(self, comment_id)
 
     def get_media_likers(self, media_id):
         return get_media_likers(self, media_id)

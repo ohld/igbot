@@ -344,6 +344,10 @@ class API(object):
         url = 'feed/tag/{tag}/?rank_token={rank_token}&ranked_content=true&'
         return self.send_request(url.format(tag=tag, rank_token=self.rank_token))
 
+    def get_comment_likers(self, comment_id):
+        url = 'media/{comment_id}/comment_likers/?'.format(comment_id=comment_id)
+        return self.send_request(url)
+
     def get_media_likers(self, media_id):
         url = 'media/{media_id}/likers/?'.format(media_id=media_id)
         return self.send_request(url)

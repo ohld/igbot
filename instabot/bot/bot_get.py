@@ -183,6 +183,14 @@ def get_user_following(self, user_id, nfollows=None):
     return [str(item['pk']) for item in following][::-1] if following else []
 
 
+def get_comment_likers(self, comment_id):
+    self.api.get_comment_likers(comment_id)
+    if "users" not in self.api.last_json:
+        self.logger.info("Comment with %s not found." % comment_id)
+        return []
+    return list(map(lambda user: str(user['pk']), self.api.last_json["users"]))
+
+
 def get_media_likers(self, media_id):
     self.api.get_media_likers(media_id)
     if "users" not in self.api.last_json:
