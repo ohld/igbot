@@ -425,6 +425,16 @@ class API(object):
     def get_self_user_followers(self):
         return self.followers
 
+    def like_comment(self, comment_id):
+        data = self.json_data()
+        url = 'media/{comment_id}/comment_like/'.format(comment_id=comment_id)
+        return self.send_request(url, data)
+
+    def unlike_comment(self, comment_id):
+        data = self.json_data()
+        url = 'media/{comment_id}/comment_unlike/'.format(comment_id=comment_id)
+        return self.send_request(url, data)
+
     def like(self, media_id):
         data = self.json_data({'media_id': media_id})
         url = 'media/{media_id}/like/'.format(media_id=media_id)

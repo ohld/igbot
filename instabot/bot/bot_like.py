@@ -12,6 +12,12 @@ def like(self, media_id):
     return False
 
 
+def like_comment(self, comment_id):
+    if self.api.like_comment(comment_id):
+        return True
+    return False
+
+
 def like_medias(self, medias):
     broken_items = []
     if not medias:
