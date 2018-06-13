@@ -32,15 +32,16 @@ from .bot_get import (convert_to_user_id, get_archived_medias, get_comment,
                       get_user_likers, get_user_medias,
                       get_username_from_user_id, get_your_medias, search_users)
 from .bot_like import (like, like_comment, like_followers, like_following,
-                       like_geotag, like_hashtag, like_medias, like_timeline,
-                       like_user, like_users, like_media_comments)
+                       like_geotag, like_hashtag, like_media_comments,
+                       like_medias, like_timeline, like_user, like_users)
 from .bot_photo import download_photo, download_photos, upload_photo
 from .bot_stats import save_user_stats
 from .bot_support import (check_if_file_exists, console_print, extract_urls,
                           read_list_from_file)
 from .bot_unfollow import (unfollow, unfollow_everyone, unfollow_non_followers,
                            unfollow_users)
-from .bot_unlike import unlike, unlike_comment, unlike_medias, unlike_user
+from .bot_unlike import (unlike, unlike_comment, unlike_media_comments,
+                         unlike_medias, unlike_user)
 from .bot_video import upload_video
 
 
@@ -429,6 +430,9 @@ class Bot(object):
 
     def unlike_comment(self, comment_id):
         return unlike_comment(self, comment_id)
+
+    def unlike_media_comments(self, media_id):
+        return unlike_media_comments(self, media_id)
 
     def unlike_medias(self, media_ids):
         return unlike_medias(self, media_ids)
