@@ -12,14 +12,19 @@ import requests.utils
 import six.moves.urllib as urllib
 from tqdm import tqdm
 
-from . import config
+from . import config, devices
 from .api_photo import configure_photo, download_photo, upload_photo
 from .api_video import configure_video, download_video, upload_video
 from .prepare import delete_credentials, get_credentials
 
 
 class API(object):
-    def __init__(self):
+    def __init__(self, device=None):
+        # Setup device and user_agent
+        device = device or devices.DEFAULT_DEVICE
+        self.device_settings = devices.DEVICES[device]
+        self.user_agent = config.USER_AGENT_BASE.format(**self.device_settings)
+
         self.is_logged_in = False
         self.last_response = None
         self.total_requests = 0
@@ -143,14 +148,8 @@ class API(object):
             self.logger.critical(msg)
             raise Exception(msg)
 
-        self.session.headers.update({
-            'Connection': 'close',
-            'Accept': '*/*',
-            'Content-type': 'application/x-www-form-urlencoded; charset=UTF-8',
-            'Cookie2': '$Version=1',
-            'Accept-Language': 'en-US',
-            'User-Agent': config.USER_AGENT
-        })
+        self.session.headers.update(config.REQUEST_HEADERS)
+        self.session.headers.update({'User-Agent': self.user_agent})
         try:
             self.total_requests += 1
             if post is not None:  # POST
