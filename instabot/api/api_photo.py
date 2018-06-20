@@ -45,7 +45,7 @@ def configure_photo(self, upload_id, photo, caption=''):
         'source_type': 4,
         'caption': caption,
         'upload_id': upload_id,
-        'device': config.DEVICE_SETTINTS,
+        'device': self.device_settings,
         'edits': {
             'crop_original_size': [w * 1.0, h * 1.0],
             'crop_center': [0.0, 0.0],
@@ -80,7 +80,7 @@ def upload_photo(self, photo, caption=None, upload_id=None):
                                  'Accept-Encoding': 'gzip, deflate',
                                  'Content-type': m.content_type,
                                  'Connection': 'close',
-                                 'User-Agent': config.USER_AGENT})
+                                 'User-Agent': self.user_agent})
     response = self.session.post(
         config.API_URL + "upload/photo/", data=m.to_string())
     if response.status_code == 200:

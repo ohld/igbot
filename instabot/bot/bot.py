@@ -86,8 +86,9 @@ class Bot(object):
                  message_delay=60,
                  stop_words=('shop', 'store', 'free'),
                  verbosity=True,
+                 device=None
                  ):
-        self.api = API()
+        self.api = API(device=device)
 
         self.total = {'likes': 0,
                       'unlikes': 0,
