@@ -70,7 +70,7 @@ class API(object):
                 self.set_proxy()  # Only happens if `self.proxy`
                 self.logger.info("Logged-in successfully as '{}' using the cookie!".format(self.username))
                 return True
-            except Exception as e:
+            except Exception:
                 print("The cookie is not found, but don't worry `instabot`"
                       " will create it for you using your login details.")
 
