@@ -168,8 +168,11 @@ class API(object):
 
         if response.status_code == 200:
             self.last_response = response
-            self.last_json = json.loads(response.text)
-            return True
+            try:
+                self.last_json = json.loads(response.text)
+                return True
+            except json.decoder.JSONDecodeError:
+                return False
         else:
             self.logger.error("Request returns {} error!".format(response.status_code))
             if response.status_code == 429:
