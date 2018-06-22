@@ -648,9 +648,6 @@ class API(object):
                     return hashtag_feed[:amount]
 
                 last_json = self.last_json
-                if "items" not in last_json:
-                    # User is private, we have no access to the posts
-                    return []
                 items = last_json['items']
 
                 try:
