@@ -168,8 +168,11 @@ class API(object):
 
         if response.status_code == 200:
             self.last_response = response
-            self.last_json = json.loads(response.text)
-            return True
+            try:
+                self.last_json = json.loads(response.text)
+                return True
+            except json.decoder.JSONDecodeError:
+                return False
         else:
             self.logger.error("Request returns {} error!".format(response.status_code))
             if response.status_code == 429:
@@ -625,9 +628,8 @@ class API(object):
                 return user_feed[:amount]
             self.get_user_feed(user_id, next_max_id, min_timestamp)
             last_json = self.last_json
-            if "items" not in last_json:
-                # User is private, we have no access to the posts
-                return []
+            if 'items' not in last_json:
+                return user_feed
             user_feed += last_json["items"]
             if not last_json.get("more_available"):
                 return user_feed
@@ -640,13 +642,10 @@ class API(object):
         with tqdm(total=amount, desc="Getting hashtag media.", leave=False) as pbar:
             while True:
                 self.get_hashtag_feed(hashtag_str, next_max_id)
-
-                if not self.last_json.get('items'):
-                    return hashtag_feed[:amount]
-
                 last_json = self.last_json
+                if 'items' not in last_json:
+                    return hashtag_feed[:amount]
                 items = last_json['items']
-
                 try:
                     pbar.update(len(items))
                     hashtag_feed += items
