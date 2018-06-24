@@ -74,7 +74,7 @@ def get_version_from_git():
     # that were merged-in.
     for opts in [['--first-parent'], []]:
         try:
-            p = subprocess.Popen(['git', 'describe', '--long'] + opts,
+            p = subprocess.Popen(['git', 'describe', '--long', '--tags'] + opts,
                                  cwd=distr_root,
                                  stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         except OSError:
