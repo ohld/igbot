@@ -94,7 +94,7 @@ def get_version_from_git():
     try:
         p = subprocess.Popen(['git', 'diff', '--quiet'], cwd=distr_root)
     except OSError:
-        labels.append('confused') # This should never happen.
+        labels.append('confused')  # This should never happen.
     else:
         if p.wait() == 1:
             labels.append('dirty')
@@ -135,6 +135,7 @@ __version__ = get_version()
 # The following section defines a module global 'cmdclass',
 # which can be used from setup.py. The 'package_name' and
 # '__version__' module globals are used (but not modified).
+
 
 def _write_version(fname):
     # This could be a hard link, so try to delete it first.  Is there any way
