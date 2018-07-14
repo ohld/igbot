@@ -15,20 +15,44 @@ def download_photo(self, media_id, filename, media=False, folder='photos'):
         if not self.last_json.get('items'):
             return True
         media = self.last_json['items'][0]
-    filename = ('{}_{}.jpg'.format(media['user']['username'], media_id)
-                if not filename else '{}.jpg'.format(filename))
-    if media['media_type'] != 1:
+    if media['media_type'] == 2:
         return True
-    images = media['image_versions2']['candidates']
-    fname = os.path.join(folder, filename)
-    if os.path.exists(fname):
-        return os.path.abspath(fname)
-    response = self.session.get(images[0]['url'], stream=True)
-    if response.status_code == 200:
-        with open(fname, 'wb') as f:
-            response.raw.decode_content = True
-            shutil.copyfileobj(response.raw, f)
-        return os.path.abspath(fname)
+    elif media['media_type'] == 1:
+        filename = ('{}_{}.jpg'.format(media['user']['username'], media_id)
+                    if not filename else '{}.jpg'.format(filename))
+        images = media['image_versions2']['candidates']
+        fname = os.path.join(folder, filename)
+        if os.path.exists(fname):
+            return os.path.abspath(fname)
+        response = self.session.get(images[0]['url'], stream=True)
+        if response.status_code == 200:
+            with open(fname, 'wb') as f:
+                response.raw.decode_content = True
+                shutil.copyfileobj(response.raw, f)
+            return os.path.abspath(fname)
+    else:
+        success = False
+        video_included = False
+        for index in range(len(media["carousel_media"])):
+            if media["carousel_media"][index]["media_type"] != 1:
+                video_included = True
+                continue
+            filename_i = ('{}_{}_{}.jpg'.format(media['user']['username'], media_id, index)
+                        if not filename else '{}_{}.jpg'.format(filename, index))
+            images = media["carousel_media"][index]["image_versions2"]["candidates"]
+            fname = os.path.join(folder, filename_i)
+            if os.path.exists(fname):
+                return os.path.abspath(fname)
+            response = self.session.get(images[0]['url'], stream=True)
+            if response.status_code == 200:
+                success = True
+                with open(fname, 'wb') as f:
+                    response.raw.decode_content = True
+                    shutil.copyfileobj(response.raw, f)
+        if success:
+            return os.path.abspath(fname)
+        elif video_included:
+            return True
 
 
 def compatible_aspect_ratio(size):
