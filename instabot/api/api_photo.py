@@ -38,7 +38,7 @@ def download_photo(self, media_id, filename, media=False, folder='photos'):
                 video_included = True
                 continue
             filename_i = ('{}_{}_{}.jpg'.format(media['user']['username'], media_id, index)
-                        if not filename else '{}_{}.jpg'.format(filename, index))
+                          if not filename else '{}_{}.jpg'.format(filename, index))
             images = media["carousel_media"][index]["image_versions2"]["candidates"]
             fname = os.path.join(folder, filename_i)
             if os.path.exists(fname):
