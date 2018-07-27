@@ -7,6 +7,11 @@ import time
 import uuid
 from random import uniform
 
+try:
+    from json.decoder import JSONDecodeError
+except ImportError:
+    JSONDecodeError = ValueError
+
 import requests
 import requests.utils
 import six.moves.urllib as urllib
@@ -171,7 +176,7 @@ class API(object):
             try:
                 self.last_json = json.loads(response.text)
                 return True
-            except json.decoder.JSONDecodeError:
+            except JSONDecodeError:
                 return False
         else:
             self.logger.error("Request returns {} error!".format(response.status_code))
