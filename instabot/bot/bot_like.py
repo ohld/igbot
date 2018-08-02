@@ -65,6 +65,7 @@ def like_user(self, user_id, amount=None, filtration=True):
     if filtration:
         if not self.check_user(user_id, filter_closed_acc=True):
             return False
+    self.liked_file.append(user_id)
     self.logger.info("Liking user_%s's feed:" % user_id)
     user_id = self.convert_to_user_id(user_id)
     medias = self.get_user_medias(user_id, filtration=filtration)
