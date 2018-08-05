@@ -1,7 +1,13 @@
 """
     Filter functions for media and user lists.
 """
+def isInSkippedList(self, user_id):
+    skipped = self.read_list_from_file("skipped.txt")
+    return user_id in skipped
 
+def isInLikedUsersList(self, user_id):
+    skipped = self.read_list_from_file("liked.txt")
+    return user_id in skipped
 
 def filter_medias(self, media_items, filtration=True, quiet=False, is_comment=False):
     if filtration:
@@ -127,6 +133,16 @@ def check_user(self, user_id, filter_closed_acc=False, unfollowing=False):
 
     skipped = self.skipped_file
     followed = self.followed_file
+    
+    if isInLikedUsersList(self, user_id):
+        self.logger.warning(
+            '\033[38;5;216m USER ALREADY LIKED! Skipping. \033[0m')
+        return False
+        
+    if isInSkippedList(self, user_id):
+        self.logger.warning(
+            '\033[38;5;216m USER IN SKIPPED LIST! Skipping. \033[0m')
+        return False
 
     if not unfollowing:
         if self.filter_previously_followed and user_id in followed.list:
