@@ -72,6 +72,7 @@ def like_user(self, user_id, amount=None, filtration=True):
         self.logger.info(
             "None medias received: account is closed or medias have been filtered.")
         return False
+    self.liked_file.append(user_id)
     return self.like_medias(medias[:amount])
 
 
