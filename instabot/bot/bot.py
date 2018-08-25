@@ -66,6 +66,8 @@ class Bot(object):
                  max_likes_to_like=100,
                  max_messages_per_day=300,
                  filter_users=True,
+                 filter_private_users=True,
+                 filter_users_without_profile_photo=True,
                  filter_previously_followed=False,
                  filter_business_accounts=True,
                  filter_verified_accounts=True,
@@ -86,6 +88,7 @@ class Bot(object):
                  unblock_delay=30,
                  message_delay=60,
                  stop_words=('shop', 'store', 'free'),
+                 blacklist_hashtags=['#shop', '#store', '#free'],
                  verbosity=True,
                  device=None
                  ):
@@ -117,6 +120,8 @@ class Bot(object):
 
         # limits - follow
         self.filter_users = filter_users
+        self.filter_private_users = filter_private_users
+        self.filter_users_without_profile_photo = filter_users_without_profile_photo
         self.filter_business_accounts = filter_business_accounts
         self.filter_verified_accounts = filter_verified_accounts
         self.filter_previously_followed = filter_previously_followed
@@ -139,6 +144,7 @@ class Bot(object):
         self.max_following_to_followers_ratio = max_following_to_followers_ratio
         self.min_media_count_to_follow = min_media_count_to_follow
         self.stop_words = stop_words
+        self.blacklist_hashtags = blacklist_hashtags
 
         # limits - block
         self.max_following_to_block = max_following_to_block
@@ -588,8 +594,8 @@ class Bot(object):
     def check_media(self, media):
         return check_media(self, media)
 
-    def check_user(self, user, filter_closed_acc=False, unfollowing=False):
-        return check_user(self, user, filter_closed_acc, unfollowing)
+    def check_user(self, user, unfollowing=False):
+        return check_user(self, user, unfollowing)
 
     def check_not_bot(self, user):
         return check_not_bot(self, user)
