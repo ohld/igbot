@@ -19,7 +19,7 @@ def download_photo(self, media_id, folder='photos', filename=None, save_descript
         os.makedirs(folder)
     if save_description:
         media = self.get_media_info(media_id)[0]
-        caption = media['caption']['text'] if media['caption'] else u''
+        caption = media['caption']['text'] if media['caption'] else ''
         username = media['user']['username']
         fname = os.path.join(folder, '{}_{}.txt'.format(username, media_id))
         with open(fname, encoding='utf8', mode='w') as f:
