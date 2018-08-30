@@ -97,7 +97,7 @@ def search_stop_words_in_user(self, user_info):
 def search_blacklist_hashtags_in_media(self, media_id):
     text = self.get_media_info(media_id)[0]['caption']['text']
 
-    comments_number = max(6, len(len(self.get_media_comments(media_id)))
+    comments_number = max(6, len(self.get_media_comments(media_id)))
     text += ''.join(self.get_media_comments(media_id, only_text=True)[:comments_number])
 
     return any((h in text) for h in self.blacklist_hashtags)
