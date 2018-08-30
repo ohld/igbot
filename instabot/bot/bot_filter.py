@@ -100,11 +100,7 @@ def search_blacklist_hashtags_in_media(self, media_id):
     comments_number = max(6, len(len(self.get_media_comments(media_id)))
     text += ''.join(self.get_media_comments(media_id, only_text=True)[:comments_number])
 
-    for blacklist_hashtag in self.blacklist_hashtags:
-        if blacklist_hashtag in text:
-            return True
-
-    return False
+    return any((h in text) for h in self.blacklist_hashtags)
 
 
 def check_user(self, user_id, unfollowing=False):
