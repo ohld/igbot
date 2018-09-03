@@ -23,8 +23,8 @@ from .bot_get import (convert_to_user_id, get_archived_medias, get_comment,
                       get_hashtag_medias, get_hashtag_users,
                       get_last_user_medias, get_locations_from_coordinates,
                       get_media_commenters, get_media_comments,
-                      get_media_id_from_link, get_link_from_media_id,
-                      get_media_info, get_media_likers,
+                      get_media_comments_all, get_media_id_from_link,
+                      get_link_from_media_id, get_media_info, get_media_likers,
                       get_media_owner, get_messages, get_popular_medias,
                       get_timeline_medias, get_timeline_users,
                       get_total_hashtag_medias, get_total_user_medias,
@@ -368,6 +368,9 @@ class Bot(object):
 
     def get_media_comments(self, media_id, only_text=False):
         return get_media_comments(self, media_id, only_text)
+
+    def get_media_comments_all(self, media_id, only_text=False, count=False):
+        return get_media_comments_all(self, media_id, only_text, count)
 
     def get_comment(self):
         return get_comment(self)
