@@ -233,7 +233,7 @@ def get_media_comments_all(self, media_id, only_text=False, count=False):
         if has_more_comments:
             max_id = self.api.last_json['next_max_id']
             time.sleep(2)
-            
+
     if only_text:
         return [str(item["text"]) for item in sorted(
             comments, key=lambda k: k['created_at_utc'], reverse=False)]
