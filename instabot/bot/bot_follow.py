@@ -45,6 +45,9 @@ def follow_users(self, user_ids):
                 self.console_print("404 error user {user_id} doesn't exist.", 'red')
                 broken_items.append(user_id)
 
+            elif self.api.last_response.status_code == 200:
+                broken_items.append(user_id)
+
             elif self.api.last_response.status_code not in (400, 429):
                 # 400 (block to follow) and 429 (many request error)
                 # which is like the 500 error.
