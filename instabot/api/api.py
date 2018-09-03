@@ -457,8 +457,10 @@ class API(object):
         url = 'media/{media_id}/unlike/'.format(media_id=media_id)
         return self.send_request(url, data)
 
-    def get_media_comments(self, media_id):
-        url = 'media/{media_id}/comments/?'.format(media_id=media_id)
+    def get_media_comments(self, media_id, max_id=''):
+        url = 'media/{media_id}/comments/'.format(media_id=media_id)
+        if max_id:
+            url += '?max_id={max_id}'.format(max_id=max_id)
         return self.send_request(url)
 
     def get_direct_share(self):
