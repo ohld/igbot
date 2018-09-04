@@ -2,7 +2,7 @@
     instabot filtering private users example
 
     Workflow:
-        Try to follow a private user with the bot and see how it 
+        Try to follow a private user with the bot and see how it
         filters that user out.
 """
 
