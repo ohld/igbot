@@ -20,4 +20,4 @@ bot = Bot(filter_users=True,
           filter_verified_accounts=True,
           blacklist_hashtags=[blacklist_hashtag_input],)
 bot.login()
-bot.like_hashtag(blacklist_hashtag_input, amount = 2)
+bot.like_hashtag(blacklist_hashtag_input, amount=2)
