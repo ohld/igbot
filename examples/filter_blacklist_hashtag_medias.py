@@ -2,7 +2,8 @@
     instabot filters out the media with your set blacklist hashtags
 
     Workflow:
-        Try to follow a media with your blacklist hashtag in the description and see how bot filters it out.
+        Try to follow a media with your blacklist hashtag in the 
+        description and see how bot filters it out.
 """
 
 import os
