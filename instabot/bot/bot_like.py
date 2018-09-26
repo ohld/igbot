@@ -4,7 +4,10 @@ from tqdm import tqdm
 def like(self, media_id):
     if not self.reached_limit('likes'):
         self.delay('like')
+        if not self.check_media(media_id):
+            return False
         if self.api.like(media_id):
+            self.logger.info("Liked media %d." % media_id)
             self.total['likes'] += 1
             return True
     else:
@@ -48,8 +51,7 @@ def like_medias(self, medias):
     for media in tqdm(medias):
         if not self.like(media):
             self.error_delay()
-            broken_items = medias[medias.index(media):]
-            break
+            broken_items.append(media)
     self.logger.info("DONE: Total liked %d medias." % self.total['likes'])
     return broken_items
 

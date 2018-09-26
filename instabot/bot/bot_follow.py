@@ -8,7 +8,7 @@ def follow(self, user_id):
     msg = ' ===> Going to follow `user_id`: {}.'.format(user_id)
     self.console_print(msg)
     if not self.check_user(user_id):
-        return True
+        return False
     if not self.reached_limit('follows'):
         self.delay('follow')
         if self.api.follow(user_id):
@@ -43,6 +43,9 @@ def follow_users(self, user_ids):
         if not self.follow(user_id):
             if self.api.last_response.status_code == 404:
                 self.console_print("404 error user {user_id} doesn't exist.", 'red')
+                broken_items.append(user_id)
+
+            elif self.api.last_response.status_code == 200:
                 broken_items.append(user_id)
 
             elif self.api.last_response.status_code not in (400, 429):
