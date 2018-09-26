@@ -215,6 +215,29 @@ def get_media_comments(self, media_id, only_text=False):
     return self.api.last_json['comments']
 
 
+def get_media_comments_all(self, media_id, only_text=False, count=False):
+    has_more_comments = True
+    max_id = ''
+    comments = []
+
+    while has_more_comments:
+        self.api.get_media_comments(media_id, max_id=max_id)
+        for comment in self.api.last_json['comments']:
+            comments.append(comment)
+        has_more_comments = self.api.last_json['has_more_comments']
+        if count and len(comments) >= count:
+            comments = comments[:count]
+            has_more_comments = False
+            self.logger.info("Getting comments stopped by count (%s)." % count)
+        if has_more_comments:
+            max_id = self.api.last_json['next_max_id']
+
+    if only_text:
+        return [str(item["text"]) for item in sorted(
+            comments, key=lambda k: k['created_at_utc'], reverse=False)]
+    return sorted(comments, key=lambda k: k['created_at_utc'], reverse=False)
+
+
 def get_media_commenters(self, media_id):
     self.get_media_comments(media_id)
     if 'comments' not in self.api.last_json:
