@@ -484,8 +484,8 @@ class Bot(object):
     def follow_followers(self, user_id, nfollows=None):
         return follow_followers(self, user_id, nfollows)
 
-    def follow_following(self, user_id):
-        return follow_following(self, user_id)
+    def follow_following(self, user_id, nfollows=None):
+        return follow_following(self, user_id, nfollows)
 
     # unfollow
 
