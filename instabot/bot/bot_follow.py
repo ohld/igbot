@@ -79,6 +79,7 @@ def follow_followers(self, user_id, nfollows=None):
         self.logger.info("User not found.")
         return
     followers = self.get_user_followers(user_id, nfollows)
+    followers = list(set(followers) - set(self.blacklist))
     if not followers:
         self.logger.info("{} not found / closed / has no followers.".format(user_id))
     else:
