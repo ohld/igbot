@@ -64,6 +64,7 @@ class Bot(object):
                  max_blocks_per_day=100,
                  max_unblocks_per_day=100,
                  max_likes_to_like=100,
+                 min_likes_to_like=20,
                  max_messages_per_day=300,
                  filter_users=True,
                  filter_private_users=True,
@@ -136,6 +137,7 @@ class Bot(object):
                             'messages': max_messages_per_day}
 
         self.max_likes_to_like = max_likes_to_like
+        self.min_likes_to_like = min_likes_to_like
         self.max_followers_to_follow = max_followers_to_follow
         self.min_followers_to_follow = min_followers_to_follow
         self.max_following_to_follow = max_following_to_follow
@@ -484,8 +486,8 @@ class Bot(object):
     def follow_followers(self, user_id, nfollows=None):
         return follow_followers(self, user_id, nfollows)
 
-    def follow_following(self, user_id):
-        return follow_following(self, user_id)
+    def follow_following(self, user_id, nfollows=None):
+        return follow_following(self, user_id, nfollows)
 
     # unfollow
 

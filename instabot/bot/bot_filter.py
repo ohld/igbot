@@ -11,7 +11,7 @@ def filter_medias(self, media_items, filtration=True, quiet=False, is_comment=Fa
             media_items = _filter_medias_not_liked(media_items)
             if self.max_likes_to_like:
                 media_items = _filter_medias_nlikes(
-                    media_items, self.max_likes_to_like)
+                    media_items, self.max_likes_to_like, self.min_likes_to_like)
         else:
             media_items = _filter_medias_not_commented(self, media_items)
         if not quiet:
@@ -40,11 +40,11 @@ def _filter_medias_not_commented(self, media_items):
     return not_commented_medias
 
 
-def _filter_medias_nlikes(media_items, max_likes_to_like):
+def _filter_medias_nlikes(media_items, max_likes_to_like, min_likes_to_like):
     filtered_medias = []
     for media in media_items:
         if 'like_count' in media:
-            if media['like_count'] < max_likes_to_like:
+            if media['like_count'] < max_likes_to_like and media['like_count'] > min_likes_to_like:
                 filtered_medias.append(media)
     return filtered_medias
 
