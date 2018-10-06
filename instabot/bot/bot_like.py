@@ -65,7 +65,7 @@ def like_timeline(self, amount=None):
 def like_user(self, user_id, amount=None, filtration=True):
     """ Likes last user_id's medias """
     if filtration:
-        if not self.check_user(user_id, filter_closed_acc=True):
+        if not self.check_user(user_id):
             return False
     self.logger.info("Liking user_%s's feed:" % user_id)
     user_id = self.convert_to_user_id(user_id)
