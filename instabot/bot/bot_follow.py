@@ -42,6 +42,9 @@ def follow_users(self, user_ids):
     msg = msg.format(skipped.fname, len(user_ids))
     self.console_print(msg, 'green')
     for user_id in tqdm(user_ids, desc='Processed users'):
+        if self.reached_limit('follows'):
+            self.logger.info("Out of follows for today.")
+            break 
         if not self.follow(user_id):
             if self.api.last_response.status_code == 404:
                 self.console_print("404 error user {user_id} doesn't exist.", 'red')
