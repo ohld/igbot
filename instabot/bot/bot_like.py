@@ -112,7 +112,7 @@ def like_followers(self, user_id, nlikes=None, nfollows=None):
         self.like_users(follower_ids[:nfollows], nlikes)
 
 
-def like_following(self, user_id, nlikes=None):
+def like_following(self, user_id, nlikes=None, nfollows=None):
     self.logger.info("Like following of: %s." % user_id)
     if self.reached_limit('likes'):
         self.logger.info("Out of likes for today.")
@@ -120,7 +120,7 @@ def like_following(self, user_id, nlikes=None):
     if not user_id:
         self.logger.info("User not found.")
         return
-    following_ids = self.get_user_following(user_id)
+    following_ids = self.get_user_following(user_id, nfollows)
     if not following_ids:
         self.logger.info("%s not found / closed / has no following." % user_id)
     else:
