@@ -11,7 +11,7 @@ def filter_medias(self, media_items, filtration=True, quiet=False, is_comment=Fa
             media_items = _filter_medias_not_liked(media_items)
             if self.max_likes_to_like:
                 media_items = _filter_medias_nlikes(
-                    media_items, self.max_likes_to_like)
+                    media_items, self.max_likes_to_like, self.min_likes_to_like)
         else:
             media_items = _filter_medias_not_commented(self, media_items)
         if not quiet:
@@ -40,11 +40,11 @@ def _filter_medias_not_commented(self, media_items):
     return not_commented_medias
 
 
-def _filter_medias_nlikes(media_items, max_likes_to_like):
+def _filter_medias_nlikes(media_items, max_likes_to_like, min_likes_to_like):
     filtered_medias = []
     for media in media_items:
         if 'like_count' in media:
-            if media['like_count'] < max_likes_to_like:
+            if media['like_count'] < max_likes_to_like and media['like_count'] > min_likes_to_like:
                 filtered_medias.append(media)
     return filtered_medias
 
@@ -95,10 +95,14 @@ def search_stop_words_in_user(self, user_info):
 
 
 def search_blacklist_hashtags_in_media(self, media_id):
-    text = self.get_media_info(media_id)[0]['caption']['text']
+    media_info = self.get_media_info(media_id)
+    text = media_info[0]['caption']['text'] if media_info[0]['caption'] else ''
 
-    comments_number = max(6, len(self.get_media_comments(media_id)))
-    text += ''.join(self.get_media_comments(media_id, only_text=True)[:comments_number])
+    media_comments = self.get_media_comments(media_id)
+    comments_number = min(6, len(media_comments))
+
+    for i in range(0, comments_number):
+        text += ''.join(media_comments[i]['text'])
 
     return any((h in text) for h in self.blacklist_hashtags)
 
