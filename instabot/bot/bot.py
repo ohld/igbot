@@ -439,8 +439,8 @@ class Bot(object):
     def like_followers(self, user_id, nlikes=None, nfollows=None):
         return like_followers(self, user_id, nlikes, nfollows)
 
-    def like_following(self, user_id, nlikes=None):
-        return like_following(self, user_id, nlikes)
+    def like_following(self, user_id, nlikes=None, nfollows=None):
+        return like_following(self, user_id, nlikes, nfollows)
 
     # unlike
 
