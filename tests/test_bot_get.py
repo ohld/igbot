@@ -78,7 +78,7 @@ class TestBotGet(TestBot):
                 "status": "ok",
                 "next_max_id": None,
                 "more_available": False,
-                "items": [TEST_PHOTO_ITEM for _ in range(results)]
+                "feed_items": [TEST_PHOTO_ITEM for _ in range(results)]
             }, status=200)
         responses.add(
             responses.GET, "{api_url}feed/timeline/".format(api_url=API_URL),
