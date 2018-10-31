@@ -8,7 +8,7 @@ Forever free. Written in Python.
 ---
 
 [![Telegram Chat](https://img.shields.io/badge/chat%20on-Telegram-blue.svg)](https://t.me/instabotproject)
-![Python 2.7, 3.5, 3.6](https://img.shields.io/badge/python-2.7%2C%203.5%2C%203.6-blue.svg)
+![Python 2.7, 3.5, 3.6, 3.7](https://img.shields.io/badge/python-2.7%2C%203.5%2C%203.6%2C%203.7-blue.svg)
 [![PyPI version](https://badge.fury.io/py/instabot.svg)](https://badge.fury.io/py/instabot)
 [![Build Status](https://travis-ci.org/instagrambot/instabot.svg?branch=master)](https://travis-ci.org/instagrambot/instabot)
 [![codecov](https://codecov.io/gh/instagrambot/instabot/branch/master/graph/badge.svg)](https://codecov.io/gh/instagrambot/instabot)
