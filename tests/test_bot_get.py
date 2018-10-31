@@ -139,7 +139,7 @@ class TestBotGet(TestBot):
             "items": [my_test_photo_item for _ in range(results)]
         }
         responses.add(
-            responses.GET, '{api_url}feed/user/{user_id}/?max_id=&min_timestamp=&rank_token={rank_token}&ranked_content=true'.format(
+            responses.GET, '{api_url}feed/user/{user_id}/'.format(
                 api_url=API_URL, user_id=self.bot.user_id, rank_token=self.bot.api.rank_token),
             json=response_data, status=200)
 
