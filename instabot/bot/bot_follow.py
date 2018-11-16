@@ -16,8 +16,8 @@ def follow(self, user_id):
             self.console_print(msg, 'green')
             self.total['follows'] += 1
             self.followed_file.append(user_id)
-            if user_id not in self._following:
-                self._following.append(user_id)
+            if user_id not in self.following:
+                self.following.append(user_id)
             return True
     else:
         self.logger.info("Out of follows for today.")
