@@ -38,21 +38,21 @@ if args.message:
 notified_users = utils.file(NOTIFIED_USERS_PATH)
 if not notified_users.list:
     notified_users.save_list(bot.followers)
-    print(
+    print((
         'All followers saved in file {users_path}.\n'
         'In a next time, for all new followers script will send messages.'.format(
             users_path=NOTIFIED_USERS_PATH
         )
-    )
+    ))
     exit(0)
 
-print('Read saved list of notified users. Count: {count}'.format(
+print(('Read saved list of notified users. Count: {count}'.format(
     count=len(notified_users)
-))
+)))
 all_followers = bot.followers
-print('Amount of all followers is {count}'.format(
+print(('Amount of all followers is {count}'.format(
     count=len(all_followers)
-))
+)))
 
 new_followers = set(all_followers) - notified_users.set
 
@@ -60,9 +60,9 @@ if not new_followers:
     print('New followers not found')
     exit()
 
-print('Found new followers. Count: {count}'.format(
+print(('Found new followers. Count: {count}'.format(
     count=len(new_followers)
-))
+)))
 
 for follower in tqdm(new_followers):
     if bot.send_message(MESSAGE, follower):

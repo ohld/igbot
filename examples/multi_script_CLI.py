@@ -109,7 +109,7 @@ def parameter_setting():
 
     print("Current parameters\n")
     for s, d in zip(settings, data):
-        print(s + d)
+        print((s + d))
 
 
 def username_adder():
@@ -129,15 +129,15 @@ def username_adder():
 def get_adder(name, fname):
     def _adder():
         print("Current Database:")
-        print(bot.read_list_from_file(fname))
+        print((bot.read_list_from_file(fname)))
         with open(fname, "a") as f:
-            print('Add {} to database'.format(name))
+            print(('Add {} to database'.format(name)))
             while True:
-                print("Enter {}: ".format(name))
+                print(("Enter {}: ".format(name)))
                 f.write(str(sys.stdin.readline().strip()) + "\n")
-                print("Do you want to add another {}? (y/n)\n".format(name))
+                print(("Do you want to add another {}? (y/n)\n".format(name)))
                 if "y" not in sys.stdin.readline():
-                    print('Done adding {}s to database'.format(name))
+                    print(('Done adding {}s to database'.format(name)))
                     break
     return _adder()
 
@@ -223,7 +223,7 @@ def menu_follow():
             else:
                 hashtags = bot.read_list_from_file(hashtag_file)
             for hashtag in hashtags:
-                print("Begin following: " + hashtag)
+                print(("Begin following: " + hashtag))
                 users = bot.get_hashtag_users(hashtag)
                 bot.follow_users(users)
             menu_follow()

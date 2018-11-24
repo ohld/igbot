@@ -53,7 +53,7 @@ parser.add_argument('locations', type=str, nargs='*', help='locations')
 args = parser.parse_args()
 
 try:
-    print(u'Like medias by location')
+    print('Like medias by location')
 except TypeError:
     sys.stdout = stdout
 
@@ -63,33 +63,33 @@ bot.login(username=args.u, password=args.p,
 
 if args.locations:
     for location in args.locations:
-        print(u"Location: {}".format(location))
+        print(("Location: {}".format(location)))
         bot.api.search_location(location)
         finded_location = bot.api.last_json['items'][0]
         if finded_location:
-            print(u"Found {}".format(finded_location['title']))
+            print(("Found {}".format(finded_location['title'])))
 
             if not args.amount:
-                nlikes = input(u"How much likes per location?\n")
+                nlikes = eval(input("How much likes per location?\n"))
             else:
                 nlikes = args.amount
             like_location_feed(bot, finded_location, amount=int(nlikes))
 else:
-    location_name = input(u"Write location name:\n").strip()
+    location_name = input("Write location name:\n").strip()
     bot.api.search_location(location_name)
     if not bot.api.last_json['items']:
-        print(u'Location was not found')
+        print('Location was not found')
         exit(1)
     if not args.amount:
-        nlikes = input(u"How much likes per location?\n")
+        nlikes = eval(input("How much likes per location?\n"))
     else:
         nlikes = args.amount
     ans = True
     while ans:
         for n, location in enumerate(bot.api.last_json["items"], start=1):
-            print(u'{0}. {1}'.format(n, location['title']))
-        print(u'\n0. Exit\n')
-        ans = int(input(u"What place would you want to choose?\n").strip())
+            print(('{0}. {1}'.format(n, location['title'])))
+        print('\n0. Exit\n')
+        ans = int(input("What place would you want to choose?\n").strip())
         if ans == 0:
             exit(0)
         try:
@@ -97,4 +97,4 @@ else:
             if 0 <= ans < len(bot.last_json["items"]):
                 like_location_feed(bot, bot.api.last_json["items"][ans], amount=int(nlikes))
         except ValueError:
-            print(u"\n Not valid choice. Try again")
+            print("\n Not valid choice. Try again")

@@ -195,7 +195,7 @@ def get_comment_likers(self, comment_id):
     if "users" not in self.api.last_json:
         self.logger.info("Comment with %s not found." % comment_id)
         return []
-    return list(map(lambda user: str(user['pk']), self.api.last_json["users"]))
+    return list([str(user['pk']) for user in self.api.last_json["users"]])
 
 
 def get_media_likers(self, media_id):
@@ -203,7 +203,7 @@ def get_media_likers(self, media_id):
     if "users" not in self.api.last_json:
         self.logger.info("Media with %s not found." % media_id)
         return []
-    return list(map(lambda user: str(user['pk']), self.api.last_json["users"]))
+    return list([str(user['pk']) for user in self.api.last_json["users"]])
 
 
 def get_media_comments(self, media_id, only_text=False):

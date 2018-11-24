@@ -25,7 +25,7 @@ users_to_follow = bot.read_list_from_file(args.filepath)
 if not users_to_follow:
     exit()
 else:
-    print("Found %d users in file." % len(users_to_follow))
+    print(("Found %d users in file." % len(users_to_follow)))
 
 bot.login(username=args.u, password=args.p,
           proxy=args.proxy)

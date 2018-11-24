@@ -2,7 +2,7 @@
     Support instabot's methods.
 """
 
-from __future__ import unicode_literals
+
 
 import codecs
 import os
@@ -15,7 +15,7 @@ import huepy
 def check_if_file_exists(file_path, quiet=False):
     if not os.path.exists(file_path):
         if not quiet:
-            print("Can't find '%s' file." % file_path)
+            print(("Can't find '%s' file." % file_path))
         return False
     return True
 
@@ -35,7 +35,7 @@ def read_list_from_file(file_path, quiet=False):
             content = [item.strip() for item in content]
             return [i for i in content if i]
     except Exception as exception:
-        print(str(exception))
+        print((str(exception)))
         return []
 
 

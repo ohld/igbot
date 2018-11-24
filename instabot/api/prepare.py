@@ -32,9 +32,9 @@ def get_credentials(username=None):
                     return login, password
         print("Which account do you want to use? (Type number)")
         for ind, (login, password) in enumerate(lines):
-            print("%d: %s" % (ind + 1, login))
-        print("%d: %s" % (0, "add another account."))
-        print("%d: %s" % (-1, "delete all accounts."))
+            print(("%d: %s" % (ind + 1, login)))
+        print(("%d: %s" % (0, "add another account.")))
+        print(("%d: %s" % (-1, "delete all accounts.")))
         try:
             ind = int(sys.stdin.readline())
             if ind == 0:
@@ -69,8 +69,8 @@ def check_secret():
                           "and try again.")
                     os.remove(SECRET_FILE)
         else:
-            print("We need to create a text file '%s' where "
-                  "we will store your login and password from Instagram." % SECRET_FILE)
+            print(("We need to create a text file '%s' where "
+                  "we will store your login and password from Instagram." % SECRET_FILE))
             print("Don't worry. It will be stored locally.")
             while True:
                 add_credentials()

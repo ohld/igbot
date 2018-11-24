@@ -24,11 +24,11 @@ messagesToSend = 100
 banDelay = (86400 / messagesToSend)
 
 print("Which type of delivery method? (Type number)")
-print("%d: %s" % (0, "Messages From CSV File."))
-print("%d: %s" % (1, "Group Message All Users From List."))
-print("%d: %s" % (2, "Message Each User From List."))
-print("%d: %s" % (3, "Message Each Your Follower."))
-print("%d: %s" % (4, "Message LatestMediaLikers Of A Page"))
+print(("%d: %s" % (0, "Messages From CSV File.")))
+print(("%d: %s" % (1, "Group Message All Users From List.")))
+print(("%d: %s" % (2, "Message Each User From List.")))
+print(("%d: %s" % (3, "Message Each Your Follower.")))
+print(("%d: %s" % (4, "Message LatestMediaLikers Of A Page")))
 
 deliveryMethod = int(sys.stdin.readline())
 
@@ -39,9 +39,9 @@ if deliveryMethod == 0:
     with open('messages.csv', 'rU') as f:
         reader = csv.reader(f)
         for row in reader:
-            print('Messaging ' + row[0])
+            print(('Messaging ' + row[0]))
             bot.send_message(row[1], row[0])
-            print('Waiting ' + str(banDelay) + ' seconds...')
+            print(('Waiting ' + str(banDelay) + ' seconds...'))
             time.sleep(banDelay)
 elif deliveryMethod == 1:
     bot.send_message(directMessage, instaUsers)
@@ -62,7 +62,7 @@ elif deliveryMethod == 3:
 
 # new method
 elif deliveryMethod == 4:
-    scrape = input("what page likers do you want to message? :")
+    scrape = eval(input("what page likers do you want to message? :"))
     with open('scrape.txt', 'w') as file:
         file.write(scrape)
 pages_to_scrape = bot.read_list_from_file("scrape.txt")  # usernames to get likers from
@@ -72,7 +72,7 @@ for users in pages_to_scrape:
     getlikers = bot.get_media_likers(medias[0])
     for likers in getlikers:
             f.write(likers + "\n")
-print("succesfully written latest medialikers of" + str(pages_to_scrape))
+print(("succesfully written latest medialikers of" + str(pages_to_scrape)))
 f.close()
 
 # convert passed user-ids to usernames for usablility
@@ -82,7 +82,7 @@ with open("usernames.txt", 'w') as f:
     for user_id in wusers:
         username = bot.get_username_from_user_id(user_id)
         f.write(username + "\n")
-print("succesfully converted  " + str(wusers))
+print(("succesfully converted  " + str(wusers)))
 # parse usernames into a list
 with open("usernames.txt", encoding="utf-8") as file:
     instaUsers4 = [l.strip() for l in file]

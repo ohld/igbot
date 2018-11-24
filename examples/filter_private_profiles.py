@@ -16,5 +16,5 @@ from instabot import Bot
 bot = Bot(filter_users=True,
           filter_private_users=True)
 bot.login()
-private_user_input = input("\n Enter a private user: ")
+private_user_input = eval(input("\n Enter a private user: "))
 bot.follow(bot.get_user_id_from_username(private_user_input))

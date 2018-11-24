@@ -31,11 +31,11 @@ class file(object):
     def append(self, item, allow_duplicates=False):
         if self.verbose:
             msg = "Adding '{}' to `{}`.".format(item, self.fname)
-            print(bold(green(msg)))
+            print((bold(green(msg))))
 
         if not allow_duplicates and str(item) in self.list:
             msg = "'{}' already in `{}`.".format(item, self.fname)
-            print(bold(orange(msg)))
+            print((bold(orange(msg))))
             return
 
         with open(self.fname, 'a') as f:
@@ -47,7 +47,7 @@ class file(object):
         if x in items:
             items.remove(x)
             msg = "Removing '{}' from `{}`.".format(x, self.fname)
-            print(bold(green(msg)))
+            print((bold(green(msg))))
             self.save_list(items)
 
     def random(self):

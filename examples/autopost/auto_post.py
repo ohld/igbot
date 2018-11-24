@@ -31,10 +31,10 @@ while True:
             caption = pic[:-4].split(" ")
             caption = " ".join(caption[1:])
 
-            print("upload: " + caption)
+            print(("upload: " + caption))
             bot.upload_photo(pic, caption=caption)
             if bot.api.last_response.status_code != 200:
-                print(bot.api.last_response)
+                print((bot.api.last_response))
                 # snd msg
                 break
 
@@ -46,5 +46,5 @@ while True:
             time.sleep(timeout)
 
     except Exception as e:
-        print(str(e))
+        print((str(e)))
     time.sleep(60)

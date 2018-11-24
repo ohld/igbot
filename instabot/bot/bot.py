@@ -117,7 +117,7 @@ class Bot(object):
                        'unblock': unblock_delay,
                        'message': message_delay}
 
-        self.last = {key: 0 for key in self.delays.keys()}
+        self.last = {key: 0 for key in list(self.delays.keys())}
 
         # limits - follow
         self.filter_users = filter_users
@@ -254,7 +254,7 @@ class Bot(object):
             self.total, self.api.total_requests, self.start_time = storage
 
     def print_counters(self):
-        for key, val in self.total.items():
+        for key, val in list(self.total.items()):
             if val > 0:
                 self.logger.info("Total {}: {}".format(key, val))
         self.logger.info("Total requests: {}".format(self.api.total_requests))

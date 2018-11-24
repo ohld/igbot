@@ -602,7 +602,7 @@ class API(object):
                         if sleep_track >= 20000:
                             sleep_time = uniform(120, 180)
                             msg = "\nWaiting {:.2f} min. due to too many requests."
-                            print(msg.format(sleep_time / 60))
+                            print((msg.format(sleep_time / 60)))
                             time.sleep(sleep_time)
                             sleep_track = 0
                     if not last_json["users"] or len(result) >= total:

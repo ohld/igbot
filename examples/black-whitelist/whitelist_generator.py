@@ -25,8 +25,8 @@ random.shuffle(rest_users)
 with open("whitelist.txt", "a") as f:
     for user_id in rest_users:
         user_info = bot.get_user_info(user_id)
-        print(user_info["username"])
-        print(user_info["full_name"])
+        print((user_info["username"]))
+        print((user_info["full_name"]))
 
         input_line = sys.stdin.readline().lower()
         if "y" in input_line.lower():

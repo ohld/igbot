@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
+
 
 import os
 import sys
@@ -45,7 +45,7 @@ class TestBotSupport(TestBot):
             if sys.version_info > (3,):
                 from io import StringIO
             else:
-                from StringIO import StringIO
+                from io import StringIO
             saved_stdout = sys.stdout
             out = StringIO()
             sys.stdout = out

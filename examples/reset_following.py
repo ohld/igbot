@@ -17,7 +17,7 @@ class Task(object):
     # getting the user to pick what to do
     @staticmethod
     def start(bot):
-        answer = input("""
+        answer = eval(input("""
         Please select
         1) Create Friends List
             Make a list of the users you follow before you follow bot.
@@ -25,7 +25,7 @@ class Task(object):
             Unfollow all user accept for the users in your friends list.
         3) Exit
         \n
-        """)
+        """))
 
         answer = str(answer)
         # make a script

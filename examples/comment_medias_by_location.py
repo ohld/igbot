@@ -53,7 +53,7 @@ parser.add_argument('locations', type=str, nargs='*', help='locations')
 args = parser.parse_args()
 
 try:
-    print(u'Comment medias by location')
+    print('Comment medias by location')
 except TypeError:
     sys.stdout = stdout
 
@@ -65,27 +65,27 @@ bot.login(username=args.u, password=args.p,
 
 if args.locations:
     for location in args.locations:
-        print(u"Location: {}".format(location))
+        print(("Location: {}".format(location)))
         bot.api.search_location(location)
         finded_location = bot.api.last_json['items'][0]
         if finded_location:
-            print(u"Found {}".format(finded_location['title']))
+            print(("Found {}".format(finded_location['title'])))
 
-            ncomments = args.amount or input(u"How much comments per location?\n")
+            ncomments = args.amount or eval(input("How much comments per location?\n"))
             comment_location_feed(bot, finded_location, amount=int(ncomments))
 else:
-    location_name = input(u"Write location name:\n").strip()
+    location_name = input("Write location name:\n").strip()
     bot.api.search_location(location_name)
     if not bot.api.last_json['items']:
-        print(u'Location was not found')
+        print('Location was not found')
         exit(1)
-    ncomments = args.amount or input(u"How much comments per location?\n")
+    ncomments = args.amount or eval(input("How much comments per location?\n"))
     ans = True
     while ans:
         for n, location in enumerate(bot.api.last_json["items"], start=1):
-            print(u'{0}. {1}'.format(n, location['title']))
-        print(u'\n0. Exit\n')
-        ans = input(u"What place would you want to choose?\n").strip()
+            print(('{0}. {1}'.format(n, location['title'])))
+        print('\n0. Exit\n')
+        ans = input("What place would you want to choose?\n").strip()
         if ans == '0':
             exit(0)
         try:
@@ -93,4 +93,4 @@ else:
             if ans in range(len(bot.api.last_json["items"])):
                 comment_location_feed(bot, bot.api.last_json["items"][ans], amount=int(ncomments))
         except ValueError:
-            print(u"\n Not valid choice. Try again")
+            print("\n Not valid choice. Try again")
