@@ -36,7 +36,7 @@ def sort_best_medias(bot, media_ids, amount=1):
 def get_not_used_medias_from_users(bot, users=None, users_path=USERNAME_DATABASE):
     if not users:
         users = utils.file(users_path).list
-    users = list(map(str, users))
+    users = map(str, users)
     total_medias = []
     for user in users:
         medias = bot.get_user_medias(user, filtration=False)
