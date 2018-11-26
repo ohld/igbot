@@ -223,7 +223,7 @@ class Bot(object):
             import pkg_resources
         return next((p.version for p in pkg_resources.working_set if p.project_name.lower() == 'instabot'), "No match")
 
-    def logout(self):
+    def logout(self, *args, **kwargs):
         save_checkpoint(self)
         self.api.logout()
         self.logger.info("Bot stopped. "
