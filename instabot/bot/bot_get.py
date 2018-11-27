@@ -43,7 +43,7 @@ def get_timeline_medias(self, filtration=True):
     if not self.api.get_timeline_feed():
         self.logger.warning("Error while getting timeline feed.")
         return []
-    return self.filter_medias(self.api.last_json["items"], filtration)
+    return self.filter_medias(self.api.last_json["feed_items"], filtration)
 
 
 def get_user_medias(self, user_id, filtration=True, is_comment=False):
@@ -217,6 +217,29 @@ def get_media_comments(self, media_id, only_text=False):
     if only_text:
         return [str(item["text"]) for item in self.api.last_json['comments']]
     return self.api.last_json['comments']
+
+
+def get_media_comments_all(self, media_id, only_text=False, count=False):
+    has_more_comments = True
+    max_id = ''
+    comments = []
+
+    while has_more_comments:
+        self.api.get_media_comments(media_id, max_id=max_id)
+        for comment in self.api.last_json['comments']:
+            comments.append(comment)
+        has_more_comments = self.api.last_json['has_more_comments']
+        if count and len(comments) >= count:
+            comments = comments[:count]
+            has_more_comments = False
+            self.logger.info("Getting comments stopped by count (%s)." % count)
+        if has_more_comments:
+            max_id = self.api.last_json['next_max_id']
+
+    if only_text:
+        return [str(item["text"]) for item in sorted(
+            comments, key=lambda k: k['created_at_utc'], reverse=False)]
+    return sorted(comments, key=lambda k: k['created_at_utc'], reverse=False)
 
 
 def get_media_commenters(self, media_id):

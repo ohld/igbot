@@ -16,8 +16,8 @@ def unfollow(self, user_id):
             self.console_print(msg.format(user_id, username), 'yellow')
             self.unfollowed_file.append(user_id)
             self.total['unfollows'] += 1
-            if user_id in self._following:
-                self._following.remove(user_id)
+            if user_id in self.following:
+                self.following.remove(user_id)
             return True
     else:
         self.logger.info("Out of unfollows for today.")
@@ -48,6 +48,9 @@ def unfollow_non_followers(self, n_to_unfollows=None):
     non_followers = set(self.following) - set(self.followers) - self.friends_file.set
     non_followers = list(non_followers)
     for user_id in tqdm(non_followers[:n_to_unfollows]):
+        if self.reached_limit('unfollows'):
+            self.logger.info("Out of unfollows for today.")
+            break
         self.unfollow(user_id)
     self.console_print(" ===> Unfollow non-followers done! <===", 'red')
 

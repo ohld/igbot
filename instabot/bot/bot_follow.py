@@ -8,7 +8,7 @@ def follow(self, user_id):
     msg = ' ===> Going to follow `user_id`: {}.'.format(user_id)
     self.console_print(msg)
     if not self.check_user(user_id):
-        return True
+        return False
     if not self.reached_limit('follows'):
         self.delay('follow')
         if self.api.follow(user_id):
@@ -16,8 +16,8 @@ def follow(self, user_id):
             self.console_print(msg, 'green')
             self.total['follows'] += 1
             self.followed_file.append(user_id)
-            if user_id not in self._following:
-                self._following.append(user_id)
+            if user_id not in self.following:
+                self.following.append(user_id)
             return True
     else:
         self.logger.info("Out of follows for today.")
@@ -32,17 +32,25 @@ def follow_users(self, user_ids):
     msg = "Going to follow {} users.".format(len(user_ids))
     self.logger.info(msg)
     skipped = self.skipped_file
+    followed = self.followed_file
+    unfollowed = self.unfollowed_file
     self.console_print(msg, 'green')
 
-    # Remove skipped list from user_ids
-    user_ids = list(set(user_ids) - skipped.set)
-    msg = 'After filtering `{}`, {} user_ids left to follow.'
+    # Remove skipped and already followed and unfollowed list from user_ids
+    user_ids = list(set(user_ids) - skipped.set - followed.set - unfollowed.set)
+    msg = 'After filtering followed, unfollowed and `{}`, {} user_ids left to follow.'
     msg = msg.format(skipped.fname, len(user_ids))
     self.console_print(msg, 'green')
     for user_id in tqdm(user_ids, desc='Processed users'):
+        if self.reached_limit('follows'):
+            self.logger.info("Out of follows for today.")
+            break
         if not self.follow(user_id):
             if self.api.last_response.status_code == 404:
                 self.console_print("404 error user {user_id} doesn't exist.", 'red')
+                broken_items.append(user_id)
+
+            elif self.api.last_response.status_code == 200:
                 broken_items.append(user_id)
 
             elif self.api.last_response.status_code not in (400, 429):
@@ -74,6 +82,7 @@ def follow_followers(self, user_id, nfollows=None):
         self.logger.info("User not found.")
         return
     followers = self.get_user_followers(user_id, nfollows)
+    followers = list(set(followers) - set(self.blacklist))
     if not followers:
         self.logger.info("{} not found / closed / has no followers.".format(user_id))
     else:

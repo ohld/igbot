@@ -78,7 +78,7 @@ class TestBotGet(TestBot):
                 "status": "ok",
                 "next_max_id": None,
                 "more_available": False,
-                "items": [TEST_PHOTO_ITEM for _ in range(results)]
+                "feed_items": [TEST_PHOTO_ITEM for _ in range(results)]
             }, status=200)
         responses.add(
             responses.GET, "{api_url}feed/timeline/".format(api_url=API_URL),
@@ -139,7 +139,7 @@ class TestBotGet(TestBot):
             "items": [my_test_photo_item for _ in range(results)]
         }
         responses.add(
-            responses.GET, '{api_url}feed/user/{user_id}/?max_id=&min_timestamp=&rank_token={rank_token}&ranked_content=true'.format(
+            responses.GET, '{api_url}feed/user/{user_id}/'.format(
                 api_url=API_URL, user_id=self.bot.user_id, rank_token=self.bot.api.rank_token),
             json=response_data, status=200)
 
