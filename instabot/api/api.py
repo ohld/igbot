@@ -135,7 +135,7 @@ class API(object):
         with open(fname, 'w') as f:
             json.dump(requests.utils.dict_from_cookiejar(self.session.cookies), f)
 
-    def logout(self):
+    def logout(self, *args, **kwargs):
         if not self.is_logged_in:
             return True
         self.is_logged_in = not self.send_request('accounts/logout/')
