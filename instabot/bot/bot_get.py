@@ -140,6 +140,7 @@ def get_timeline_users(self):
     self.logger.info("Users for timeline not found.")
     return []
 
+
 def get_hashtag_users(self, hashtag):
     if not self.api.get_hashtag_feed(hashtag):
         self.logger.warning("Error while getting hastag feed.")
