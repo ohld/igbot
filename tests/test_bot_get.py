@@ -15,7 +15,8 @@ from instabot import utils
 from .test_bot import TestBot
 from .test_variables import (TEST_CAPTION_ITEM, TEST_COMMENT_ITEM,
                              TEST_PHOTO_ITEM, TEST_SEARCH_USERNAME_ITEM,
-                             TEST_USER_ITEM, TEST_USERNAME_INFO_ITEM)
+                             TEST_USER_ITEM, TEST_USERNAME_INFO_ITEM,
+                             TEST_TIMELINE_PHOTO_ITEM)
 
 
 class TestBotGet(TestBot):
@@ -78,7 +79,7 @@ class TestBotGet(TestBot):
                 "status": "ok",
                 "next_max_id": None,
                 "more_available": False,
-                "feed_items": [TEST_PHOTO_ITEM for _ in range(results)]
+                "feed_items": [TEST_TIMELINE_PHOTO_ITEM for _ in range(results)]
             }, status=200)
         responses.add(
             responses.GET, "{api_url}feed/timeline/".format(api_url=API_URL),
@@ -108,7 +109,7 @@ class TestBotGet(TestBot):
                 "status": "ok",
                 "next_max_id": None,
                 "more_available": False,
-                "items": [TEST_PHOTO_ITEM for _ in range(results)]
+                "feed_items": [TEST_TIMELINE_PHOTO_ITEM for _ in range(results)]
             }, status=200)
         responses.add(
             responses.GET, "{api_url}feed/timeline/".format(api_url=API_URL),
@@ -118,7 +119,7 @@ class TestBotGet(TestBot):
 
         users = self.bot.get_timeline_users()
 
-        assert users == [str(TEST_PHOTO_ITEM["user"]["pk"]) for _ in range(results)]
+        assert users == [str(TEST_TIMELINE_PHOTO_ITEM["media_or_ad"]["user"]["pk"]) for _ in range(results)]
         assert len(users) == results
 
         users = self.bot.get_timeline_users()
