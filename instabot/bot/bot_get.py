@@ -43,7 +43,13 @@ def get_timeline_medias(self, filtration=True):
     if not self.api.get_timeline_feed():
         self.logger.warning("Error while getting timeline feed.")
         return []
-    return self.filter_medias(self.api.last_json["feed_items"], filtration)
+
+    feed_items = [
+        item["media_or_ad"]
+        for item in self.api.last_json["feed_items"]
+        if item.get("media_or_ad")
+    ]
+    return self.filter_medias(feed_items, filtration)
 
 
 def get_user_medias(self, user_id, filtration=True, is_comment=False):
