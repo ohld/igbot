@@ -409,14 +409,14 @@ class Bot(object):
 
     # like
 
-    def like(self, media_id):
-        return like(self, media_id)
+    def like(self, media_id, check_media=True):
+        return like(self, media_id, check_media)
 
     def like_comment(self, comment_id):
         return like_comment(self, comment_id)
 
-    def like_medias(self, media_ids):
-        return like_medias(self, media_ids)
+    def like_medias(self, media_ids, check_media=True):
+        return like_medias(self, media_ids, check_media)
 
     def like_timeline(self, amount=None):
         return like_timeline(self, amount)
