@@ -26,6 +26,24 @@ def comment(self, media_id, comment_text):
         self.logger.info("Out of comments for today.")
     return False
 
+def reply_to_comment(self, media_id, comment_text, parent_comment_id):
+    if not self.is_commented(media_id):
+        self.logger.info("Media is not commented yet, nothing to answer to...")
+        return False
+    if not self.reached_limit('comments'):
+        self.delay('comment')
+        if comment_text[0] != '@':
+            self.logger.error("A reply must start with mention, so '@' must be the 1st char, followed by the username you're replying to")
+            return False
+        if comment_text.split(' ')[0][1:] == self.get_username_from_user_id(self.user_id):
+            self.logger.error("You can't reply to yourself")
+            return False
+        if self.api.reply_to_comment(media_id, comment_text, parent_comment_id):
+            self.total['comments'] += 1
+            return True
+    else:
+        self.logger.info("Out of comments for today.")
+    return False
 
 def comment_medias(self, medias):
     broken_items = []
