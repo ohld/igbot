@@ -555,7 +555,7 @@ class Bot(object):
 
     def comment(self, media_id, comment_text):
         return comment(self, media_id, comment_text)
-      
+
     def reply_to_comment(self, media_id, comment_text, parent_comment_id):
         return reply_to_comment(self, media_id, comment_text, parent_comment_id)
 
