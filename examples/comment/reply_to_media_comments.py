@@ -67,8 +67,8 @@ for comment in tqdm(comments):
     if replied:
         continue
     comment_txt = "@{username} {text}".format(
-        username=commenter,text=bot.get_comment())
+        username=commenter, text=bot.get_comment())
     bot.logger.info("Going to reply to `{username}` with text `{text}`".format(
-        username=commenter,text=comment_txt))
+        username=commenter, text=comment_txt))
     if bot.reply_to_comment(media_id,comment_txt,parent_comment_id):
         bot.logger.info("Replied to comment.")
