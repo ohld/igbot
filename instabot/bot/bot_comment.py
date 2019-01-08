@@ -24,6 +24,7 @@ def comment(self, media_id, comment_text):
         self.logger.info("Out of comments for today.")
     return False
 
+
 def reply_to_comment(self, media_id, comment_text, parent_comment_id):
     if not self.is_commented(media_id):
         self.logger.info("Media is not commented yet, nothing to answer to...")
@@ -42,6 +43,7 @@ def reply_to_comment(self, media_id, comment_text, parent_comment_id):
     else:
         self.logger.info("Out of comments for today.")
     return False
+
 
 def comment_medias(self, medias):
     broken_items = []
