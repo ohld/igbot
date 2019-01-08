@@ -11,8 +11,6 @@
 
 import os
 import sys
-import time
-from random import shuffle
 
 sys.path.append(os.path.join(sys.path[0], '../../'))
 from instabot import Bot

@@ -5,10 +5,10 @@
         Like last images with hashtag.
 """
 
-import sys
-import os
-import time
 import argparse
+import os
+import sys
+import time
 
 sys.path.append(os.path.join(sys.path[0], '../'))
 from instabot import Bot

@@ -9,9 +9,8 @@
     1) You should pass user_id, not username
 """
 
-import time
-import sys
 import os
+import sys
 
 sys.path.append(os.path.join(sys.path[0], '../'))
 from instabot import Bot

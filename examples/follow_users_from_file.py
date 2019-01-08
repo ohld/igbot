@@ -6,9 +6,9 @@
         The file should contain one username per line!
 """
 
-import sys
-import os
 import argparse
+import os
+import sys
 
 sys.path.append(os.path.join(sys.path[0], '../'))
 from instabot import Bot

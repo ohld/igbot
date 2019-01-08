@@ -5,12 +5,13 @@
         Like and follow likers of last medias from your timeline feed.
 """
 
-import sys
-import os
-import time
-import random
-from tqdm import tqdm
 import argparse
+import os
+import random
+import sys
+import time
+
+from tqdm import tqdm
 
 sys.path.append(os.path.join(sys.path[0], '../'))
 from instabot import Bot

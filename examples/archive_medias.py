@@ -5,11 +5,10 @@
         Archive medias.
 """
 
-import sys
-import os
-import time
-import random
 import argparse
+import os
+import sys
+
 from tqdm import tqdm
 
 sys.path.append(os.path.join(sys.path[0], '../'))

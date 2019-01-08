@@ -1,7 +1,12 @@
-tqdm==4.8.4
-requests==2.11.1
-requests-toolbelt==0.7.0
-pep8
+tqdm==4.28.1
+requests==2.20.0
+requests-toolbelt==0.8.0
+pycodestyle
 pyflakes
 schedule
 pysocks
+pytest
+responses
+future
+six
+huepy

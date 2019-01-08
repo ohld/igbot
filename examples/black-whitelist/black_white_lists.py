@@ -27,8 +27,8 @@ parser.add_argument('-p', type=str, help="password")
 parser.add_argument('-proxy', type=str, help="proxy")
 args = parser.parse_args()
 
-bot = Bot(whitelist="whitelist.txt",
-          blacklist="blacklist.txt")
+bot = Bot(whitelist_file="whitelist.txt",
+          blacklist_file="blacklist.txt")
 
 bot.login(username=args.u, password=args.p,
           proxy=args.proxy)

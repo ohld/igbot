@@ -1,17 +1,18 @@
-import time
-import sys
-import os
-import yaml
 import glob
+import os
+import sys
+import time
+
+from io import open
 
 sys.path.append(os.path.join(sys.path[0], '../../'))
 from instabot import Bot
 
 posted_pic_list = []
 try:
-    with open('pics.txt', 'r') as f:
+    with open('pics.txt', 'r', encoding='utf8') as f:
         posted_pic_list = f.read().splitlines()
-except:
+except Exception:
     posted_pic_list = []
 
 timeout = 24 * 60 * 60  # pics will be posted every 24 hours
@@ -31,15 +32,15 @@ while True:
             caption = " ".join(caption[1:])
 
             print("upload: " + caption)
-            bot.uploadPhoto(pic, caption=caption)
-            if bot.LastResponse.status_code != 200:
-                print(bot.LastResponse)
+            bot.upload_photo(pic, caption=caption)
+            if bot.api.last_response.status_code != 200:
+                print(bot.api.last_response)
                 # snd msg
                 break
 
-            if not pic in posted_pic_list:
+            if pic not in posted_pic_list:
                 posted_pic_list.append(pic)
-                with open('pics.txt', 'a') as f:
+                with open('pics.txt', 'a', encoding='utf8') as f:
                     f.write(pic + "\n")
 
             time.sleep(timeout)

@@ -2,11 +2,10 @@
 setup.cfg
 setup.py
 instabot/__init__.py
+instabot/utils.py
 instabot/api/__init__.py
 instabot/api/api.py
 instabot/api/api_photo.py
-instabot/api/api_profile.py
-instabot/api/api_search.py
 instabot/api/api_video.py
 instabot/api/config.py
 instabot/api/prepare.py
@@ -26,5 +25,3 @@ instabot/bot/bot_support.py
 instabot/bot/bot_unfollow.py
 instabot/bot/bot_unlike.py
 instabot/bot/bot_video.py
-instabot/bot/delay.py
-instabot/bot/limits.py

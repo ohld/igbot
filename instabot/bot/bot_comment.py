@@ -11,16 +11,14 @@
 """
 from tqdm import tqdm
 
-from . import limits, delay
-
 
 def comment(self, media_id, comment_text):
     if self.is_commented(media_id):
         return True
-    if limits.check_if_bot_can_comment(self):
-        delay.comment_delay(self)
-        if super(self.__class__, self).comment(media_id, comment_text):
-            self.total_commented += 1
+    if not self.reached_limit('comments'):
+        self.delay('comment')
+        if self.api.comment(media_id, comment_text):
+            self.total['comments'] += 1
             return True
     else:
         self.logger.info("Out of comments for today.")
@@ -53,18 +51,18 @@ def comment_medias(self, medias):
             text = self.get_comment()
             self.logger.info("Commented with text: %s" % text)
             if not self.comment(media, text):
-                delay.comment_delay(self)
+                self.delay('comment')
                 broken_items = medias[medias.index(media):]
                 break
     self.logger.info("DONE: Total commented on %d medias. " %
-                     self.total_commented)
+                     self.total['comments'])
     return broken_items
 
 
 def comment_hashtag(self, hashtag, amount=None):
     self.logger.info("Going to comment medias by %s hashtag" % hashtag)
-    medias = self.get_hashtag_medias(hashtag)
-    return self.comment_medias(medias[:amount])
+    medias = self.get_total_hashtag_medias(hashtag, amount)
+    return self.comment_medias(medias)
 
 
 def comment_user(self, user_id, amount=None):
@@ -83,7 +81,7 @@ def comment_user(self, user_id, amount=None):
 
 def comment_users(self, user_ids, ncomments=None):
     for user_id in user_ids:
-        if not limits.check_if_bot_can_comment(self):
+        if self.reached_limit('comments'):
             self.logger.info("Out of comments for today.")
             return
         self.comment_user(user_id, amount=ncomments)

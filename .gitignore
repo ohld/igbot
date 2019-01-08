@@ -1,6 +1,9 @@
 # File with login and password
 secret.txt
 
+# Mac OS X stuff
+.DS_Store
+
 # Files with downloaded data
 *.tsv
 
@@ -103,6 +106,12 @@ bot_cp_*
 # JetBrains IDE
 .idea
 
+# nohup
+nohup.out
+
+# VS Code
+.vscode
+
 # Settings files
-examples/*.txt
+*.txt
 *.checkpoint

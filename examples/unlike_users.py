@@ -5,12 +5,9 @@
         Unlike last media's of users.
 """
 
-import sys
-import os
-import time
-import random
-from tqdm import tqdm
 import argparse
+import os
+import sys
 
 sys.path.append(os.path.join(sys.path[0], '../'))
 from instabot import Bot
