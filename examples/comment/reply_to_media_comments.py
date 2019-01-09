@@ -18,7 +18,7 @@ parser = argparse.ArgumentParser(add_help=True)
 parser.add_argument('-u', type=str, help="username")
 parser.add_argument('-p', type=str, help="password")
 parser.add_argument('-proxy', type=str, help="proxy")
-parser.add_argument('-comments_file', type=str, help="comments_file")
+parser.add_argument('-comments_file', type=str, help="comments_file", required=True)
 parser.add_argument('-link', type=str, help='media_link')
 args = parser.parse_args()
 
