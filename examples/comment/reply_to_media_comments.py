@@ -19,7 +19,7 @@ parser.add_argument('-u', type=str, help="username")
 parser.add_argument('-p', type=str, help="password")
 parser.add_argument('-proxy', type=str, help="proxy")
 parser.add_argument('-comments_file', type=str, help="comments_file", required=True)
-parser.add_argument('-link', type=str, help='media_link')
+parser.add_argument('-link', type=str, help='media_link', required=True)
 args = parser.parse_args()
 
 if not args.comments_file:
