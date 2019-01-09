@@ -44,6 +44,8 @@ comments = bot.get_media_comments(media_id)
 if len(comments) == 0:
     bot.logger.info("Media `{link}` has got no comments yet.".format(args.link))
     exit()
+
+commented_users = []
 for comment in tqdm(comments):
     replied = False
     parent_comment_id = comment['pk']
@@ -57,6 +59,9 @@ for comment in tqdm(comments):
     # to save time, because you can't reply to yourself
     if str(user_id) == bot.user_id:
         bot.logger.error("You can't reply to yourself")
+        continue
+    if user_id in commented_users:
+        bot.logger.info("You already replied to this user")
         continue
     for _comment in comments:
         # comments are of type 0 (standard) or type 2 (replies)
@@ -72,3 +77,4 @@ for comment in tqdm(comments):
         username=commenter, text=comment_txt))
     if bot.reply_to_comment(media_id, comment_txt, parent_comment_id):
         bot.logger.info("Replied to comment.")
+        commented_users.append(user_id)
