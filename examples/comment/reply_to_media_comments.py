@@ -57,7 +57,7 @@ for comment in tqdm(comments):
     if sys.version_info[0] < 3:
         bot.logger.info(unicode("Checking comment `{text}` from `{commenter}`".format(text=text, commenter=commenter), 'utf-8'))
     else:
-        bot.logger.info("Checking comment `{text}` from `{commenter}`".format(text=text,commenter=commenter))
+        bot.logger.info("Checking comment `{text}` from `{commenter}`".format(text=text, commenter=commenter))
     # to save time, because you can't reply to yourself
     if str(user_id) == bot.user_id:
         bot.logger.error("You can't reply to yourself")
