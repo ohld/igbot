@@ -53,11 +53,11 @@ for comment in tqdm(comments):
     comment_type = comment['type']
     commenter = comment['user']['username']
     text = comment['text']
-    # if using python3 change to:
-    if sys.version_info.major < 3:
-        bot.logger.info(unicode("Checking comment `{text}` from `{commenter}`".format(text=text, commenter=commenter), 'utf-8'))
-    else:
-        bot.logger.info("Checking comment `{text}` from `{commenter}`".format(text=text, commenter=commenter))
+    bot.logger.info("Checking comment from `{commenter}`".format(commenter=commenter))
+    try:
+        bot.logger.info("Comment text: `{text}`".format(text=text))
+    except Exception as e:
+        bot.logger.error("{}".format(e))
     # to save time, because you can't reply to yourself
     if str(user_id) == bot.user_id:
         bot.logger.error("You can't reply to yourself")
