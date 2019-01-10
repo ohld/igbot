@@ -54,7 +54,7 @@ for comment in tqdm(comments):
     commenter = comment['user']['username']
     text = comment['text']
     # if using python3 change to:
-    if sys.version_info[0] < 3:
+    if sys.version_info.major < 3:
         bot.logger.info(unicode("Checking comment `{text}` from `{commenter}`".format(text=text, commenter=commenter), 'utf-8'))
     else:
         bot.logger.info("Checking comment `{text}` from `{commenter}`".format(text=text, commenter=commenter))
