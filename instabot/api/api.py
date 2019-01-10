@@ -318,6 +318,11 @@ class API(object):
         url = 'media/{media_id}/comment/'.format(media_id=media_id)
         return self.send_request(url, data)
 
+    def reply_to_comment(self, media_id, comment_text, parent_comment_id):
+        data = self.json_data({'comment_text': comment_text, 'replied_to_comment_id': parent_comment_id})
+        url = 'media/{media_id}/comment/'.format(media_id=media_id)
+        return self.send_request(url, data)
+
     def delete_comment(self, media_id, comment_id):
         data = self.json_data()
         url = 'media/{media_id}/comment/{comment_id}/delete/'

@@ -11,7 +11,7 @@ from .bot_block import block, block_bots, block_users, unblock, unblock_users
 from .bot_checkpoint import load_checkpoint, save_checkpoint
 from .bot_comment import (comment, comment_geotag, comment_hashtag,
                           comment_medias, comment_user, comment_users,
-                          is_commented)
+                          is_commented, reply_to_comment)
 from .bot_delete import delete_comment, delete_media, delete_medias
 from .bot_direct import (send_hashtag, send_like, send_media, send_medias,
                          send_message, send_messages, send_profile)
@@ -555,6 +555,9 @@ class Bot(object):
 
     def comment(self, media_id, comment_text):
         return comment(self, media_id, comment_text)
+
+    def reply_to_comment(self, media_id, comment_text, parent_comment_id):
+        return reply_to_comment(self, media_id, comment_text, parent_comment_id)
 
     def comment_hashtag(self, hashtag, amount=None):
         return comment_hashtag(self, hashtag, amount)
