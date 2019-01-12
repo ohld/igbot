@@ -19,7 +19,7 @@ from tqdm import tqdm
 
 from . import config, devices
 from .api_photo import configure_photo, download_photo, upload_photo
-from .api_video import configure_video, download_video, upload_video
+from .api_video import configure_video, download_video, upload_video, resize_video
 from .prepare import delete_credentials, get_credentials
 
 
@@ -263,8 +263,11 @@ class API(object):
     def configure_photo(self, upload_id, photo, caption=''):
         return configure_photo(self, upload_id, photo, caption)
 
-    def upload_video(self, photo, caption=None, upload_id=None):
-        return upload_video(self, photo, caption, upload_id)
+    def upload_video(self, photo, caption=None, upload_id=None, thumbnail=None):
+        return upload_video(self, photo, caption, upload_id, thumbnail)
+
+    def resize_video(self, fname):
+        return resize_video(self, fname)
 
     def download_video(self, media_id, filename, media=False, folder='video'):
         return download_video(self, media_id, filename, media, folder)
