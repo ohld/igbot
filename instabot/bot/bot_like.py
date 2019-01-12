@@ -6,7 +6,11 @@ def like(self, media_id, check_media=True):
         self.delay('like')
         if check_media and not self.check_media(media_id):
             return False
-        if self.api.like(media_id):
+        _r = self.api.like(media_id)
+        if _r == 'feedback_required':
+            self.logger.error("`Like` action has been BLOCKED...!!!")
+            return False
+        if _r:
             self.logger.info("Liked media %d." % media_id)
             self.total['likes'] += 1
             return True
