@@ -182,8 +182,7 @@ def resize_video(self, fname):
                      "-sexagesimal",
                      "-show_entries", "stream_tags=rotate",
                      "-of", "csv=s=x:p=0",
-                     "%s" % fname],
-            stdout=PIPE)
+                     "%s" % fname], stdout=PIPE)
         res_array = res.stdout.read().strip().split('x')
         width = int(res_array[0])
         height = int(res_array[1])
@@ -192,18 +191,18 @@ def resize_video(self, fname):
         else:
             rotation = 0
     except Exception as e:
-        self.logger.error( "VID - \033[41mERROR: %s\033[0m" % e )
+        self.logger.error("VID - \033[41mERROR: %s\033[0m" % e)
         return False
     if rotation == 90 or rotation == 270:
-        self.logger.info( "VID - Rotated video" )
+        self.logger.info("VID - Rotated video")
         width, height = height, width
-    self.logger.info( "VID - FOUND w:%s h:%s (r:%s)" % (width, height, rotation) )
+    self.logger.info("VID - FOUND w:%s h:%s (r:%s)" % (width, height, rotation))
     ratio = (width * 1.0) / (height * 1.0)
     rename(fname, "%s.ORIGINAL.%s" % (name, ext))
     # HORIZONTAL
     if width > height:
         self.logger.info("VID - HORIZONTAL VIDEO")
-        if ratio > (16./9.):
+        if ratio > (16. / 9.):
             self.logger.info("VID - CROPPING...")
             vf = "scale=-1:450, crop=800:450"
         else:
@@ -211,7 +210,7 @@ def resize_video(self, fname):
     # VERTICAL
     elif width < height:
         self.logger.info("VID - VERTICAL")
-        if ratio < (4./5.):
+        if ratio < (4. / 5.):
             self.logger.info("VID - CROPPING")
             vf = "scale=-1:800, crop=640:800"
         else:
@@ -224,7 +223,7 @@ def resize_video(self, fname):
     res = Popen(["ffmpeg",
                  "-i", "%s.ORIGINAL.%s" % (name, ext),
                  "-ss", "0",
-                 "-t",  "20",
+                 "-t", "20",
                  "-vf", vf,
                  fname], stdout=PIPE)
     self.logger.info("VID - FFMPEG OK")
@@ -241,11 +240,8 @@ def resize_video(self, fname):
 def create_thumbnail(fname):
     thumbnail = "%s.thumbnail.jpg" % fname
     try:
-        res = Popen(["convert",
-                     "%s[0]" % fname,
-                     thumbnail],
-            stdout=PIPE)
+        res = Popen(["convert", "%s[0]" % fname, thumbnail], stdout=PIPE)
     except Exception as e:
-        print( "VID - \033[41mERROR: %s\033[0m" % e )
+        print("VID - \033[41mERROR: %s\033[0m" % e)
         return False
     return thumbnail
