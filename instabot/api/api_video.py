@@ -220,12 +220,12 @@ def resize_video(self, fname):
         self.logger.info("VID - SQUARE")
         vf = "scale=800:800"
     self.logger.info("VID - FFMPEG... with `-vf {}`".format(vf))
-    Popen(["ffmpeg",
-           "-i", "%s.ORIGINAL.%s" % (name, ext),
-           "-ss", "0",
-           "-t", "20",
-           "-vf", vf,
-           fname], stdout=PIPE)
+    res = Popen(["ffmpeg",
+                 "-i", "%s.ORIGINAL.%s" % (name, ext),
+                 "-ss", "0",
+                 "-t", "20",
+                 "-vf", vf,
+                 fname], stdout=PIPE)
     self.logger.info("VID - FFMPEG OK")
     self.logger.info("VID - CREATING THUMBNAIL...")
     thumbnail = create_thumbnail(fname)
@@ -240,7 +240,9 @@ def resize_video(self, fname):
 def create_thumbnail(fname):
     thumbnail = "%s.thumbnail.jpg" % fname
     try:
-        Popen(["convert", "%s[0]" % fname, thumbnail], stdout=PIPE)
+        res = Popen(["convert",
+                     "%s[0]" % fname,
+                     thumbnail], stdout=PIPE)
     except Exception as e:
         print("VID - \033[41mERROR: %s\033[0m" % e)
         return False
