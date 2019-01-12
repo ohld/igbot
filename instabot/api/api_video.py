@@ -57,9 +57,22 @@ def get_video_info(filename):
     return res
 
 
-def upload_video(self, video, thumbnail, caption=None, upload_id=None):
+def upload_video(self, video, caption=None, upload_id=None, thumbnail=None):
+    from distutils.spawn import find_executable
+    requirements = ['ffprobe', 'ffmpeg', 'convert']
+    for requirement in requirements:
+        if requirement == 'convert' and thumbnail is not None:
+            continue
+        if find_executable(requirement) is None:
+            self.logger.error("{} not found in your OS. Please install and retry".format(requirement))
+            return False
     if upload_id is None:
         upload_id = str(int(time.time() * 1000))
+    if thumbnail is None:
+        thumbnail = self.resize_video(video)
+    if not thumbnail:
+        self.logger.error("Error creating thumbnail...")
+        return False
     data = {
         'upload_id': upload_id,
         '_csrftoken': self.token,
@@ -148,3 +161,92 @@ def configure_video(self, upload_id, video, thumbnail, caption=''):
         'caption': caption,
     })
     return self.send_request('media/configure/?video=1', data)
+
+
+def resize_video(self, fname):
+    from os import rename, remove
+    self.logger.info("VID - \033[1;32mVIDEO: %s\033[0m" % fname)
+    thumbnail = create_thumbnail(fname)
+    if not thumbnail:
+        self.logger.error("Error creating thumbnail...")
+        return False
+    ext = fname.split('.')[-1]
+    name = fname.strip(".%s" % ext)
+    self.logger.info("VID - finding video info...")
+    try:
+        res = Popen(["ffprobe",
+                     "-v", "error",
+                     "-select_streams", "v:0",
+                     "-show_entries", "stream=height,width",
+                     "-sexagesimal",
+                     "-show_entries", "stream_tags=rotate",
+                     "-of", "csv=s=x:p=0",
+                     "%s" % fname],
+            stdout=PIPE)
+        res_array = res.stdout.read().strip().split('x')
+        width = int(res_array[0])
+        height = int(res_array[1])
+        if len(res_array) > 2:
+            rotation = int(res_array[2])
+        else:
+            rotation = 0
+    except Exception as e:
+        self.logger.error( "VID - \033[41mERROR: %s\033[0m" % e )
+        return False
+    if rotation == 90 or rotation == 270:
+        self.logger.info( "VID - Rotated video" )
+        width, height = height, width
+    self.logger.info( "VID - FOUND w:%s h:%s (r:%s)" % (width, height, rotation) )
+    ratio = (width * 1.0) / (height * 1.0)
+    rename(fname, "%s.ORIGINAL.%s" % (name, ext))
+    # HORIZONTAL
+    if width > height:
+        self.logger.info("VID - HORIZONTAL VIDEO")
+        if ratio > (16./9.):
+            self.logger.info("VID - CROPPING...")
+            vf = "scale=-1:450, crop=800:450"
+        else:
+            vf = "scale=800:-1"
+    # VERTICAL
+    elif width < height:
+        self.logger.info("VID - VERTICAL")
+        if ratio < (4./5.):
+            self.logger.info("VID - CROPPING")
+            vf = "scale=-1:800, crop=640:800"
+        else:
+            vf = "scale=-1:800"
+    # SQUARE
+    else:
+        self.logger.info("VID - SQUARE")
+        vf = "scale=800:800"
+    self.logger.info("VID - FFMPEG... with `-vf {}`".format(vf))
+    res = Popen(["ffmpeg",
+                 "-i", "%s.ORIGINAL.%s" % (name, ext),
+                 "-ss", "0",
+                 "-t",  "20",
+                 "-vf", vf,
+                 fname], stdout=PIPE)
+    out = res.stdout.read()
+    self.logger.info("VID - FFMPEG OK")
+    self.logger.info("VID - CREATING THUMBNAIL...")
+    thumbnail = create_thumbnail(fname)
+    if not thumbnail:
+        self.logger.error("Error creating thumbnail...")
+        return False
+    self.logger.info("VID - THUMBNAIL OK")
+    rename("%s.ORIGINAL.%s" % (name, ext), "%s.ORIGINAL.%s.REMOVE_ME" % (name, ext))
+    return thumbnail
+
+
+def create_thumbnail(fname):
+    thumbnail = "%s.thumbnail.jpg" % fname
+    try:
+        res = Popen(["convert",
+                     "%s[0]" % fname,
+                     thumbnail],
+            stdout=PIPE)
+        out = res.stdout.read()
+    except Exception as e:
+        print( "VID - \033[41mERROR: %s\033[0m" % e )
+        return False
+    return thumbnail
