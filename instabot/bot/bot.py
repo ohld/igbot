@@ -472,8 +472,8 @@ class Bot(object):
 
     # video
 
-    def upload_video(self, video, thumbnail, caption=''):
-        return upload_video(self, video, thumbnail, caption)
+    def upload_video(self, video, caption='', thumbnail=None):
+        return upload_video(self, video, caption=caption, thumbnail=thumbnail)
 
     # follow
 
