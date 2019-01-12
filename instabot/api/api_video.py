@@ -7,6 +7,7 @@ import shutil
 import subprocess
 import time
 
+from subprocess import Popen, PIPE
 from requests_toolbelt import MultipartEncoder
 
 from . import config
