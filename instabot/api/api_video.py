@@ -226,6 +226,7 @@ def resize_video(self, fname):
                  "-t", "20",
                  "-vf", vf,
                  fname], stdout=PIPE)
+    res.stdout.read()
     self.logger.info("VID - FFMPEG OK")
     self.logger.info("VID - CREATING THUMBNAIL...")
     thumbnail = create_thumbnail(fname)
@@ -240,9 +241,10 @@ def resize_video(self, fname):
 def create_thumbnail(fname):
     thumbnail = "%s.thumbnail.jpg" % fname
     try:
-        Popen(["convert",
-               "%s[0]" % fname,
-               thumbnail], stdout=PIPE)
+        res = Popen(["convert",
+                     "%s[0]" % fname,
+                     thumbnail], stdout=PIPE)
+    res.stdout.read()
     except Exception as e:
         print("VID - \033[41mERROR: %s\033[0m" % e)
         return False
