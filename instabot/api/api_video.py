@@ -165,7 +165,7 @@ def configure_video(self, upload_id, video, thumbnail, caption=''):
 
 
 def resize_video(self, fname):
-    from os import rename, remove
+    from os import rename
     self.logger.info("VID - \033[1;32mVIDEO: %s\033[0m" % fname)
     thumbnail = create_thumbnail(fname)
     if not thumbnail:
@@ -227,7 +227,6 @@ def resize_video(self, fname):
                  "-t",  "20",
                  "-vf", vf,
                  fname], stdout=PIPE)
-    out = res.stdout.read()
     self.logger.info("VID - FFMPEG OK")
     self.logger.info("VID - CREATING THUMBNAIL...")
     thumbnail = create_thumbnail(fname)
@@ -246,7 +245,6 @@ def create_thumbnail(fname):
                      "%s[0]" % fname,
                      thumbnail],
             stdout=PIPE)
-        out = res.stdout.read()
     except Exception as e:
         print( "VID - \033[41mERROR: %s\033[0m" % e )
         return False
