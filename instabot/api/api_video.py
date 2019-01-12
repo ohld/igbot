@@ -240,9 +240,9 @@ def resize_video(self, fname):
 def create_thumbnail(fname):
     thumbnail = "%s.thumbnail.jpg" % fname
     try:
-        res = Popen(["convert",
-                     "%s[0]" % fname,
-                     thumbnail], stdout=PIPE)
+        Popen(["convert",
+               "%s[0]" % fname,
+               thumbnail], stdout=PIPE)
     except Exception as e:
         print("VID - \033[41mERROR: %s\033[0m" % e)
         return False
