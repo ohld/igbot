@@ -14,7 +14,7 @@ To resize/crop photos, are required on your OS:
 ## How to run
 - To show help, run
 ```
-python upload_photoss.py -h
+python upload_photos.py -h
 ```
 - To upload one random photo, run the script
 ```
