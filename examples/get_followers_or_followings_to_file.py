@@ -7,7 +7,6 @@
 import argparse
 import os
 import sys
-import time
 
 sys.path.append(os.path.join(sys.path[0], '../'))
 from instabot import Bot
@@ -36,8 +35,7 @@ if args.get != 'followers' and args.get != 'followings':
     exit()
 
 bot = Bot()
-bot.login(username=args.u, password=args.p,
-proxy=args.proxy)
+bot.login(username=args.u, password=args.p, proxy=args.proxy)
 
 try:
     user_id = bot.get_user_id_from_username(args.user)
