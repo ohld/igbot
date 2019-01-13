@@ -63,7 +63,7 @@ def compatible_aspect_ratio(size):
 
 
 def configure_photo(self, upload_id, photo, caption=''):
-    (w, h) = get_image_size(photo)
+    (w, h) = get_exiftool_image_size(photo)
     data = self.json_data({
         'media_folder': 'Instagram',
         'source_type': 4,
@@ -85,9 +85,9 @@ def configure_photo(self, upload_id, photo, caption=''):
 def upload_photo(self, photo, caption=None, upload_id=None):
     if upload_id is None:
         upload_id = str(int(time.time() * 1000))
-    if not compatible_aspect_ratio(get_image_size(photo)):
-        self.logger.info('Photo does not have a compatible '
-                         'photo aspect ratio.')
+    resized_photo = resize_picture(photo)
+    if not resized_photo:
+        self.logger.error("Error resizing photo. Aborting upload.")
         return False
     data = {
         'upload_id': upload_id,
@@ -144,3 +144,118 @@ def get_image_size(fname):
         else:
             raise RuntimeError("Unsupported format")
         return width, height
+
+
+def resize_picture(fname):
+    from subprocess import Popen, PIPE
+    from os import rename, remove
+    from distutils.spawn import find_executable
+    requirements = ['exiftool', 'convert']
+    for requirement in requirements:
+        if find_executable(requirement) is None:
+            print("{} not found in your OS. Please install and retry".format(requirement))
+            return False
+        if requirement == 'convert':
+            res = Popen(['convert', '--version'], stdout=PIPE)
+            inf = res.stdout.read()
+            ver = inf.split(' ')[2]
+            if ver[0] != '7':
+                print("WARNING: your `convert` version is `{}`\n."
+                      "Version 7.x is required to crop images.\n"
+                      "This could cause errors. Consider upgrading.\n"
+                      "Hit ctrl-C within 20 seconds to abort...".format(ver))
+                from time import sleep
+                sleep(20)
+    default = 1080
+    ext = fname.split('.')[-1]
+    name = fname.strip(".%s" % ext)
+    try:
+        pic_info = {}
+        res = Popen(["identify", "-format", "%w", fname], stdout=PIPE)
+        pic_info['width'] = int( res.stdout.read())
+        res = Popen(["identify", "-format", "%h", fname], stdout=PIPE)
+        pic_info['height'] = int( res.stdout.read())
+        try:
+            res = Popen(["identify", "-format" , "%[EXIF:Orientation]", fname], stdout=PIPE)
+            pic_info['rotation'] = int( res.stdout.read())
+        except:
+            pic_info['rotation'] = 0
+    except Exception as e:
+        print("ERROR: {}".format(e))
+        return False
+    width, height = pic_info['width'], pic_info['height']
+    degrees = "0"
+    if 'rotation' in pic_info:
+        if pic_info['rotation'] == 8:
+            width, height = height, width
+            degrees = "270"
+        elif pic_info['rotation'] == 6:
+            width, height = height, width
+            degrees = "90"
+        elif pic_info['rotation'] == 3:
+            degrees = "180"
+        print("Rotated picture deg: {}".format(degrees))
+    print("FOUND width:{} height:{}".format(width, height))
+    ratio = (width * 1.) / (height * 1.)
+    if width > height and ratio > (90. / 47.):
+        print("Resize and crop horizontal picture...")
+        res = Popen(["convert",
+                     fname,
+                     "-gravity" , "center",
+                     "-crop", "90:47",
+                     "-resize", "{default}x{default}".format(default=default),
+                     "-rotate", degrees,
+                     "{}.TMP.jpg".format(name)], stdout=PIPE)
+        out = res.stdout.read()
+        print(out)
+    elif width < height and ratio < (4. / 5.):
+        print("Resize and crop vertical picture...")
+        res = Popen(["convert",
+                     fname,
+                     "-gravity" , "center",
+                     "-crop", "5:4",
+                     "-resize", "{default}x{default}".format(default=default),
+                     "-rotate", degrees,
+                     "{}.TMP.jpg".format(name)], stdout=PIPE)
+        out = res.stdout.read()
+        print(out)
+    else:
+        print("Resize picture...")
+        res = Popen(["convert",
+                     fname,
+                     "-gravity" , "center",
+                     "-resize", "{default}x{default}".format(default=default),
+                     "-rotate", degrees,
+                     "{}.TMP.jpg".format(name)], stdout=PIPE)
+        out = res.stdout.read()
+        print(out)
+    print("Strip exif metadata...")
+    res = Popen(["exiftool",
+                 "-all=",
+                 "{}.TMP.jpg".format(name)], stdout=PIPE)
+    out = res.stdout.read()
+    print(out)
+    print("DONE :-)")
+    rename(fname, "{}.ORIGINAL".format(fname))
+    rename("{}.TMP.jpg".format(name), "{}.jpg".format(name))
+    return "{}.jpg".format(name)
+
+
+def get_exiftool_image_size(fname):
+    print("Getting image size...")
+    import re
+    from subprocess import Popen, PIPE, STDOUT
+    exif_info = {}
+    try:
+        xRes = Popen(["exiftool", fname], stdout=PIPE, stderr=STDOUT)
+        for x in xRes.stdout.readlines():
+            m = re.search(r'^image size.*:\s(\d+)x(\d+).*$', str(x), flags=re.IGNORECASE)
+            if m is not None:
+                exif_info['width'] = int(m.group(1))
+                exif_info['height'] = int(m.group(2))
+                print "width:'{}' height:'{}'".format(exif_info['width'], exif_info['height'])
+    finally:
+        if 'width' not in exif_info:
+            print("ERROR getting image size with `exiftool`")
+            return False, False
+    return exif_info['width'], exif_info['height']
