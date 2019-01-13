@@ -172,13 +172,14 @@ def resize_picture(fname):
     try:
         pic_info = {}
         res = Popen(["identify", "-format", "%w", fname], stdout=PIPE)
-        pic_info['width'] = int( res.stdout.read())
+        pic_info['width'] = int(res.stdout.read())
         res = Popen(["identify", "-format", "%h", fname], stdout=PIPE)
-        pic_info['height'] = int( res.stdout.read())
+        pic_info['height'] = int(res.stdout.read())
         try:
-            res = Popen(["identify", "-format" , "%[EXIF:Orientation]", fname], stdout=PIPE)
-            pic_info['rotation'] = int( res.stdout.read())
-        except:
+            res = Popen(["identify", "-format", "%[EXIF:Orientation]", fname], stdout=PIPE)
+            pic_info['rotation'] = int(res.stdout.read())
+        except Exception as e:
+            print("{}".format(e))
             pic_info['rotation'] = 0
     except Exception as e:
         print("ERROR: {}".format(e))
@@ -201,7 +202,7 @@ def resize_picture(fname):
         print("Resize and crop horizontal picture...")
         res = Popen(["convert",
                      fname,
-                     "-gravity" , "center",
+                     "-gravity", "center",
                      "-crop", "90:47",
                      "-resize", "{default}x{default}".format(default=default),
                      "-rotate", degrees,
@@ -212,7 +213,7 @@ def resize_picture(fname):
         print("Resize and crop vertical picture...")
         res = Popen(["convert",
                      fname,
-                     "-gravity" , "center",
+                     "-gravity", "center",
                      "-crop", "5:4",
                      "-resize", "{default}x{default}".format(default=default),
                      "-rotate", degrees,
@@ -223,7 +224,7 @@ def resize_picture(fname):
         print("Resize picture...")
         res = Popen(["convert",
                      fname,
-                     "-gravity" , "center",
+                     "-gravity", "center",
                      "-resize", "{default}x{default}".format(default=default),
                      "-rotate", degrees,
                      "{}.TMP.jpg".format(name)], stdout=PIPE)
@@ -253,7 +254,7 @@ def get_exiftool_image_size(fname):
             if m is not None:
                 exif_info['width'] = int(m.group(1))
                 exif_info['height'] = int(m.group(2))
-                print "width:'{}' height:'{}'".format(exif_info['width'], exif_info['height'])
+                print("width:`{}` height:`{}`".format(exif_info['width'], exif_info['height']))
     finally:
         if 'width' not in exif_info:
             print("ERROR getting image size with `exiftool`")
