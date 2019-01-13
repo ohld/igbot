@@ -603,7 +603,7 @@ class API(object):
         else:
             return False
         if filter_business:
-            print("--> You are going to filter business account. This will take time! <--")
+            print("--> You are going to filter business accounts. This will take time! <--")
             from random import random
         if to_file is not None:
             if os.path.isfile(to_file):
@@ -624,7 +624,7 @@ class API(object):
                     for item in last_json["users"]:
                         if filter_private and item['is_private']: continue
                         if filter_business:
-                            time.sleep(2*random())
+                            time.sleep(2 * random())
                             self.get_username_info(item['pk'])
                             item_info = self.last_json
                             if item_info['user']['is_business']:
