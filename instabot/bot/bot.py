@@ -282,7 +282,7 @@ class Bot(object):
         passed_days = (current_date.date() - self.start_time.date()).days
         if passed_days > 0:
             self.reset_counters()
-        return self.max_per_day[key] - self.total[key] < 0
+        return self.max_per_day[key] - self.total[key] <= 0
 
     def reset_counters(self):
         for k in self.total:
