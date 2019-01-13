@@ -4,7 +4,9 @@ Upload videos. Thumbnails will be created from instabot.
 ## Requirements
 To resize/crop videos and create thumbnails, are required on your OS
 - `ffprobe` and `ffmpeg`. Tested with version `3.4.4`
+  - Read here how to install `ffmpeg` https://github.com/adaptlearning/adapt_authoring/wiki/Installing-FFmpeg
 - `convert` (ImageMagick). Tested with versions `7.0.8` and `6.8.9`
+  - Read here how to install `convert` https://imagemagick.org/script/download.php
 
 ## How to run
 - To show help, run
