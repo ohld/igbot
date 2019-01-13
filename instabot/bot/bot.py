@@ -265,7 +265,7 @@ class Bot(object):
         elapsed_time = time.time() - last_action
         if elapsed_time < target_delay:
             t_remaining = target_delay - elapsed_time
-            time.sleep(t_remaining * random.uniform(0.25, 1.25))
+            time.sleep(t_remaining * random.uniform(0.75, 1.25))
         self.last[key] = time.time()
 
     def error_delay(self):
