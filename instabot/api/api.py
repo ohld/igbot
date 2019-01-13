@@ -612,8 +612,9 @@ class API(object):
                     return False
                 else:
                     print("Overwriting file `{}`".format(to_file))
-            with open(to_file, 'w'): pass
-        desc = "Getting {} of {}".format(which,user_id)
+            with open(to_file, 'w'):
+                pass
+        desc = "Getting {} of {}".format(which, user_id)
         with tqdm(total=total, desc=desc, leave=True) as pbar:
             while True:
                 get(user_id, next_max_id)
@@ -622,14 +623,16 @@ class API(object):
                     if to_file is not None:
                         f = open(to_file, 'a')
                     for item in last_json["users"]:
-                        if filter_private and item['is_private']: continue
+                        if filter_private and item['is_private']:
+                            continue
                         if filter_business:
                             time.sleep(2 * random())
                             self.get_username_info(item['pk'])
                             item_info = self.last_json
                             if item_info['user']['is_business']:
                                 continue
-                        if filter_verified and item['is_verified']: continue
+                        if filter_verified and item['is_verified']:
+                            continue
                         if to_file is not None:
                             if usernames:
                                 f.write("{}\n".format(item['username']))
