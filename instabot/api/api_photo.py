@@ -148,7 +148,7 @@ def get_image_size(fname):
 
 def resize_picture(fname):
     from subprocess import Popen, PIPE
-    from os import rename, remove
+    from os import rename
     from distutils.spawn import find_executable
     requirements = ['exiftool', 'convert']
     for requirement in requirements:
