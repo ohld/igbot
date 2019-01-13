@@ -572,7 +572,16 @@ class API(object):
         url = 'feed/liked/?max_id={max_id}'.format(max_id=max_id)
         return self.send_request(url)
 
-    def get_total_followers_or_followings(self, user_id, amount=None, which='followers'):
+    def get_total_followers_or_followings(self,
+                                          user_id,
+                                          amount=None,
+                                          which='followers',
+                                          filter_private=False,
+                                          filter_business=False,
+                                          filter_verified=False,
+                                          usernames=False,
+                                          to_file=None
+                                          overwrite=False):
         if which == 'followers':
             key = 'follower_count'
             get = self.get_user_followers
@@ -593,7 +602,14 @@ class API(object):
                       "operation. This will take a while.\n")
         else:
             return False
-
+        if to_file is not None:
+            if os.path.isfile(to_file):
+                if not overwrite:
+                    print("File {} already exists. Not overwriting.".format(to_file))
+                    return False
+                else:
+                    print("Overwriting file {}".format(to_file))
+            with open(to_file, 'w'): pass
         desc = "Getting {}".format(which)
         with tqdm(total=total, desc=desc, leave=False) as pbar:
             while True:
@@ -601,7 +617,17 @@ class API(object):
                 last_json = self.last_json
                 try:
                     pbar.update(len(last_json["users"]))
+                    if to_file is not None:
+                        f = open(to_file, 'a')
                     for item in last_json["users"]:
+                        if filter_private and item['is_private']: continue
+                        if fiter_business and item['is_business']: continue
+                        if filter_verified and item['is_verified']: continue
+                        if to_file is not None:
+                            if usernames:
+                                f.write("{}\n".format(item['username']))
+                             else:
+                                f.write("{}\n".format(item['pk']))
                         result.append(item)
                         sleep_track += 1
                         if sleep_track >= 20000:
@@ -610,6 +636,8 @@ class API(object):
                             print(msg.format(sleep_time / 60))
                             time.sleep(sleep_time)
                             sleep_track = 0
+                    if to_file is not None:
+                        f.close()
                     if not last_json["users"] or len(result) >= total:
                         return result[:total]
                 except Exception:
