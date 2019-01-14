@@ -15,6 +15,7 @@ if len(sys.argv) < 2:
 bot = Bot()
 bot.login()
 
+
 def dispositions(l):
     from itertools import permutations
     print("Generating dispositions...")
@@ -23,11 +24,12 @@ def dispositions(l):
     length = len(l)
     num = 2
     while num <= length:
-        p = list(permutations(l,num))
+        p = list(permutations(l, num))
         res += [' '.join(c) for c in p]
         num += 1
     print("Generated {} dispositions".format(len(res)))
     return res
+
 
 tags = {}
 for i in tqdm(dispositions(sys.argv[1:])):
