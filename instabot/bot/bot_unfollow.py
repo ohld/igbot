@@ -16,8 +16,8 @@ def unfollow(self, user_id):
             self.console_print(msg.format(user_id, username), 'yellow')
             self.unfollowed_file.append(user_id)
             self.total['unfollows'] += 1
-            if user_id in self._following:
-                self._following.remove(user_id)
+            if user_id in self.following:
+                self.following.remove(user_id)
             return True
     else:
         self.logger.info("Out of unfollows for today.")

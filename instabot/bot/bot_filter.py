@@ -59,13 +59,14 @@ def _get_media_ids(media_items):
 
 def check_media(self, media_id):
     if self.api.media_info(media_id):
+        medias = self.api.last_json["items"]
+
         if search_blacklist_hashtags_in_media(self, media_id):
             msg = 'Blacklist hashtag found in media, skipping!'
             self.console_print(msg, 'red')
             return False
 
-        self.api.media_info(media_id)
-        if self.filter_medias(self.api.last_json["items"]):
+        if self.filter_medias(medias, quiet=True):
             return check_user(self, self.get_media_owner(media_id))
         return False
 

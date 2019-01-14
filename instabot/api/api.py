@@ -135,7 +135,7 @@ class API(object):
         with open(fname, 'w') as f:
             json.dump(requests.utils.dict_from_cookiejar(self.session.cookies), f)
 
-    def logout(self):
+    def logout(self, *args, **kwargs):
         if not self.is_logged_in:
             return True
         self.is_logged_in = not self.send_request('accounts/logout/')
@@ -315,6 +315,11 @@ class API(object):
 
     def comment(self, media_id, comment_text):
         data = self.json_data({'comment_text': comment_text})
+        url = 'media/{media_id}/comment/'.format(media_id=media_id)
+        return self.send_request(url, data)
+
+    def reply_to_comment(self, media_id, comment_text, parent_comment_id):
+        data = self.json_data({'comment_text': comment_text, 'replied_to_comment_id': parent_comment_id})
         url = 'media/{media_id}/comment/'.format(media_id=media_id)
         return self.send_request(url, data)
 

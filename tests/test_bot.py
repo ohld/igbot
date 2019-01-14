@@ -33,8 +33,11 @@ class TestBot:
 
 
 class TestBotAPI(TestBot):
-    def test_login(self):
+    @patch('instabot.API.load_cookie')
+    def test_login(self, load_cookie_mock):
         self.bot = Bot()
+
+        load_cookie_mock.side_effect = Exception()
 
         def mockreturn(*args, **kwargs):
             r = Mock()
