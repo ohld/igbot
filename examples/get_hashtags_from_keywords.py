@@ -9,7 +9,7 @@ from instabot import Bot
 if len(sys.argv) < 2:
     print("Please provide keywords separated by space\n"
           "Usage:\n"
-          "python search_tags.py keyword1 keyword2 etc")
+          "python get_hashtags_from_keywords.py keyword1 keyword2 etc")
     exit()
 
 bot = Bot()
