@@ -215,13 +215,11 @@ class TestBotGet(TestBot):
         # user feed object returned by `feed/user/{user_id}/` API call.
 
         medias = self.bot.get_user_medias(user_id, filtration=False, is_comment=False)
-        assert medias == [test_photo_item["pk"] for _ in my_test_photo_items]
+        assert medias == [test_photo_item["pk"] for test_photo_item in my_test_photo_items]
         assert len(medias) == results
 
         medias = self.bot.get_user_medias(user_id, filtration=True, is_comment=False)
-        assert medias == [test_photo_item["pk"] for _ in my_test_photo_items if (not test_photo_item["has_liked"] and
-                                                                                 test_photo_item["like_count"] < self.bot.max_likes_to_like and
-                                                                                 test_photo_item["like_count"] > self.bot.min_likes_to_like)]
+        assert medias == [test_photo_item["pk"] for test_photo_item in my_test_photo_items if (not test_photo_item["has_liked"] and test_photo_item["like_count"] < self.bot.max_likes_to_like and test_photo_item["like_count"] > self.bot.min_likes_to_like)]
         assert len(medias) == results - expect_filtered
 
     @responses.activate
