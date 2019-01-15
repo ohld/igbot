@@ -129,7 +129,7 @@ def upload_video(self, video, caption=None, upload_id=None):
 
 
 def configure_video(self, upload_id, video, thumbnail, width, height, duration, caption=''):
-    #clipInfo = get_video_info(video)
+    # clipInfo = get_video_info(video)
     self.upload_photo(photo=thumbnail, caption=caption, upload_id=upload_id, from_video=True)
     data = self.json_data({
         'upload_id': upload_id,
@@ -184,11 +184,11 @@ def resize_video(fname):
             right = w - cut
             top = 0
             bottom = h
-            vid = vid.crop(x1 = left, y1 = top, x2 = right, y2 = bottom)
+            vid = vid.crop(x1=left, y1=top, x2=right, y2=bottom)
             (w, h) = vid.size
         if w > 1080:
             print("Resizing video")
-            vid = vid.resize(width = 1080)
+            vid = vid.resize(width=1080)
     elif w < h:
         print("Vertical image")
         if ratio < (v_lim['w'] / v_lim['h']):
@@ -198,24 +198,24 @@ def resize_video(fname):
             right = w
             top = cut
             bottom = h - cut
-            vid = vid.crop(x1 = left, y1 = top, x2 = right, y2 = bottom)
+            vid = vid.crop(x1=left, y1=top, x2=right, y2=bottom)
             (w, h) = vid.size
         if h > 1080:
             print("Resizing video")
-            vid = vid.resize(height = 1080)
+            vid = vid.resize(height=1080)
     else:
         print("Square video")
         if w > 1080:
             print("Resizing image")
-            vid = vid.resize(width = 1080)
+            vid = vid.resize(width=1080)
     (w, h) = vid.size
     if vid.duration > d_lim:
         print("Cutting video to {} sec from start".format(d_lim))
-        vid = vid.subclip(0,d_lim)
+        vid = vid.subclip(0, d_lim)
     new_fname = "{}.CONVERTED.mp4".format(fname)
     print("Saving new video w:{w} h:{h} to `{f}`".format(w=w, h=h, f=new_fname))
     vid.write_videofile(new_fname, codec="libx264", audio_codec="aac")
     print("Generating thumbnail...")
     thumbnail_name = "{}.jpg".format(fname)
-    thumbnail = vid.save_frame(thumbnail_name, t = vid.duration / 2)
+    thumbnail = vid.save_frame(thumbnail_name, t=(vid.duration / 2))
     return new_fname, thumbnail_name, w, h, vid.duration
