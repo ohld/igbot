@@ -24,8 +24,8 @@ python upload_photos.py -photo {photo_name} -caption "{your_caption}"
 ## Settings
 - photos are stored in _media_ folder
 - photos can be `.jpg`, `.jpeg` or `.png`
-- edit _captions_for_pictures.py_ to add captions for photos in _media_ folder
-- if you don't provide a caption in _captions_for_pictures.py_, the script will ask you to write it in CLI
+- edit _captions_for_medias.py_ to add captions for photos in _media_ folder
+- if you don't provide a caption in _captions_for_medias.py_, the script will ask you to write it in CLI
 
 ## WARNINGS
 - Photos will be resized and, if needed, cropped to
