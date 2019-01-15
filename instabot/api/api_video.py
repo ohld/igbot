@@ -217,5 +217,5 @@ def resize_video(fname):
     vid.write_videofile(new_fname, codec="libx264", audio_codec="aac")
     print("Generating thumbnail...")
     thumbnail_name = "{}.jpg".format(fname)
-    thumbnail = vid.save_frame(thumbnail_name, t=(vid.duration / 2))
+    vid.save_frame(thumbnail_name, t=(vid.duration / 2))
     return new_fname, thumbnail_name, w, h, vid.duration
