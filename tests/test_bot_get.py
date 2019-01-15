@@ -47,6 +47,34 @@ class TestBotGet(TestBot):
 
         assert owner is False
 
+
+    @responses.activate
+    def test_get_media_info(self):
+        media_id = 1234
+
+        responses.add(
+            responses.POST, "{api_url}media/{media_id}/info/".format(
+                api_url=API_URL, media_id=media_id),
+            json={
+                "auto_load_more_enabled": True,
+                "num_results": 1,
+                "status": "ok",
+                "more_available": False,
+                "items": [TEST_PHOTO_ITEM]
+            }, status=200)
+        responses.add(
+            responses.POST, "{api_url}media/{media_id}/info/".format(
+                api_url=API_URL, media_id=media_id),
+            json={"status": "ok"}, status=200)
+
+        expected_result = {}
+        for key in TEST_PHOTO_ITEM:
+            expected_result[key] = TEST_PHOTO_ITEM[key]
+            
+        result = self.bot.get_media_info(media_id)
+
+        assert result == expected_result
+
     @responses.activate
     def test_get_popular_medias(self):
         results = 5
