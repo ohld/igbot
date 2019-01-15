@@ -59,7 +59,8 @@ def download_photo(self, media_id, filename, media=False, folder='photos'):
 def compatible_aspect_ratio(size):
     min_ratio, max_ratio = 4.0 / 5.0, 90.0 / 47.0
     width, height = size
-    ratio = width / height
+    ratio = width * 1. / height * 1.
+    print("FOUND: w:{} h:{} r:{}".format(width, height, ratio))
     return min_ratio <= ratio <= max_ratio
 
 
@@ -153,6 +154,7 @@ def get_image_size(fname):
 
 
 def resize_image(fname):
+    from math import ceil
     try:
         from PIL import Image, ExifTags
     except ImportError, e:
@@ -192,7 +194,7 @@ def resize_image(fname):
         print("Horizontal image")
         if ratio > (h_lim['w'] / h_lim['h']):
             print("Cropping image")
-            cut = (w - h * int(h_lim['w']) / int(h_lim['h'])) / 2
+            cut = int(ceil((w - h * h_lim['w'] / h_lim['h']) / 2))
             l = cut
             r = w - cut
             t = 0
@@ -202,13 +204,13 @@ def resize_image(fname):
         if w > 1080:
             print("Resizing image")
             nw = 1080
-            nh = 1080 * h / w
+            nh = int(ceil(1080. * h / w))
             img = img.resize((nw, nh), Image.ANTIALIAS)
     elif w < h:
         print("Vertical image")
         if ratio < (v_lim['w'] / v_lim['h']):
             print("Cropping image")
-            cut = (h - w * int(v_lim['h']) / int(v_lim['w'])) / 2
+            cut = int(ceil((h - w * v_lim['h'] / v_lim['w']) / 2))
             l = 0
             r = w
             t = cut
@@ -217,7 +219,7 @@ def resize_image(fname):
             (w, h) = img.size
         if h > 1080:
             print("Resizing image")
-            nw = 1080 * w / h
+            nw = int(ceil(1080. * w / h))
             nh = 1080
             img = img.resize((nw, nh), Image.ANTIALIAS)
     else:
@@ -230,5 +232,5 @@ def resize_image(fname):
     print("Saving new image w:{w} h:{h} to `{f}`".format(w=w, h=h, f=new_fname))
     new = Image.new("RGB", img.size, (255,255,255))
     new.paste(img, (0, 0, w, h), img)
-    new.save(new_fname, quality=100)
+    new.save(new_fname, quality=95)
     return new_fname
