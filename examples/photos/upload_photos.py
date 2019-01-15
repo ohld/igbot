@@ -35,7 +35,7 @@ else:
 if not args.photo:
     import glob
     pics = []
-    exts = ['jpg', 'jpeg', 'png']
+    exts = ['jpg', 'JPG', 'jpeg', 'JPEG', 'png', 'PNG']
     for ext in exts:
         pics += [os.path.basename(x) for x in glob.glob("media/*.{}".format(ext))]
     from random import shuffle
