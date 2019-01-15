@@ -184,7 +184,7 @@ def resize_image(fname):
             print("Rotating by {d} degrees".format(d=deg))
             img = img.rotate(deg, expand=True)
             (w, h) = img.size
-    except (AttributeError, KeyError, IndexError), e:
+    except (AttributeError, KeyError, IndexError) as e:
         print("No exif info found (ERR: {})".format(e))
         pass
     img = img.convert("RGBA")
