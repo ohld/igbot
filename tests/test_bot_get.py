@@ -189,6 +189,7 @@ class TestBotGet(TestBot):
         results = 4
         my_test_photo_item = TEST_PHOTO_ITEM.copy()
         my_test_photo_item['user']['pk'] = user_id
+        my_test_photo_items = []
         for _ in range(results):
             my_test_photo_items.append(my_test_photo_item.copy())
         expect_filtered = 0
