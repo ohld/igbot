@@ -180,6 +180,10 @@ class API(object):
                 return False
         else:
             self.logger.error("Request returns {} error!".format(response.status_code))
+            response_data = json.loads(response.text)
+            if "feedback_required" in str(response_data.get('message')):
+                self.logger.error("ATTENTION!: `feedback_required`, your action could have been blocked")
+                return "feedback_required"
             if response.status_code == 429:
                 sleep_minutes = 5
                 self.logger.warning(
