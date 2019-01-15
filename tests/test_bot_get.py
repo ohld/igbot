@@ -338,7 +338,6 @@ class TestBotGet(TestBot):
         else:
             assert self.bot.get_comment() == 'Wow!'
 
-
     @responses.activate
     @pytest.mark.parametrize('user_id', [
         1234, '1234'
@@ -360,7 +359,6 @@ class TestBotGet(TestBot):
         result = self.bot.get_user_info(user_id)
 
         assert result == expected_result
-
 
     @responses.activate
     @pytest.mark.parametrize('user_id', [
