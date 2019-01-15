@@ -208,7 +208,7 @@ class TestBotGet(TestBot):
         }
         responses.add(
             responses.GET, '{api_url}feed/user/{user_id}/'.format(
-                api_url=API_URL, user_id=self.bot.user_id, rank_token=self.bot.api.rank_token),
+                api_url=API_URL, user_id=user_id, rank_token=self.bot.api.rank_token),
             json=response_data, status=200)
 
         # no need to test is_comment=True because there's no item 'comments' in
