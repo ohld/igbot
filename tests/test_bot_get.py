@@ -47,7 +47,6 @@ class TestBotGet(TestBot):
 
         assert owner is False
 
-
     @responses.activate
     def test_get_media_info(self):
         media_id = 1234
@@ -70,7 +69,7 @@ class TestBotGet(TestBot):
         expected_result = {}
         for key in TEST_PHOTO_ITEM:
             expected_result[key] = TEST_PHOTO_ITEM[key]
-            
+
         result = self.bot.get_media_info(media_id)
 
         assert result == expected_result
