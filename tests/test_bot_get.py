@@ -182,6 +182,48 @@ class TestBotGet(TestBot):
         assert len(medias) == results
 
     @responses.activate
+    @pytest.mark.parametrize('user_id', [
+        1234567890, '1234567890'
+    ])
+    def test_get_user_medias(self, user_id):
+        results = 4
+        my_test_photo_item = TEST_PHOTO_ITEM.copy()
+        my_test_photo_item['user']['pk'] = user_id
+        for _ in range(results):
+            my_test_photo_items.append(my_test_photo_item.copy())
+        expect_filtered = 0
+        my_test_photo_items[1]["has_liked"] = True
+        expect_filtered += 1
+        my_test_photo_items[2]["like_count"] = self.bot.max_likes_to_like + 1
+        expect_filtered += 1
+        my_test_photo_items[3]["like_count"] = self.bot.max_likes_to_like - 1
+        expect_filtered += 1
+        response_data = {
+            "auto_load_more_enabled": True,
+            "num_results": results,
+            "status": "ok",
+            "more_available": False,
+            "items": my_test_photo_items
+        }
+        responses.add(
+            responses.GET, '{api_url}feed/user/{user_id}/'.format(
+                api_url=API_URL, user_id=self.bot.user_id, rank_token=self.bot.api.rank_token),
+            json=response_data, status=200)
+
+        # no need to test is_comment=True because there's no item 'comments' in
+        # user feed object returned by `feed/user/{user_id}/` API call.
+
+        medias = self.bot.get_user_medias(user_id, filtration=False, is_comment=False)
+        assert medias == [test_photo_item["pk"] for _ in my_test_photo_items]
+        assert len(medias) == results
+
+        medias = self.bot.get_user_medias(user_id, filtration=True, is_comment=False)
+        assert medias == [test_photo_item["pk"] for _ in my_test_photo_items if (not test_photo_item["has_liked"] and
+                                                                                 test_photo_item["like_count"] < self.bot.max_likes_to_like and
+                                                                                 test_photo_item["like_count"] > self.bot.min_likes_to_like)]
+        assert len(medias) == results - expect_filtered
+
+    @responses.activate
     def test_get_archived_medias(self):
         results = 5
         my_test_photo_item = TEST_PHOTO_ITEM.copy()
