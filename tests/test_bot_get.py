@@ -72,7 +72,7 @@ class TestBotGet(TestBot):
 
         result = self.bot.get_media_info(media_id)
 
-        assert result == expected_result
+        assert result[0] == expected_result
 
     @responses.activate
     def test_get_popular_medias(self):
