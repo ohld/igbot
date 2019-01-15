@@ -190,9 +190,9 @@ def resize_video(fname):
             print("Resizing video")
             vid = vid.resize(width=1080)
     elif w < h:
-        print("Vertical image")
+        print("Vertical video")
         if ratio < (v_lim['w'] / v_lim['h']):
-            print("Cropping image")
+            print("Cropping video")
             cut = int(ceil((h - w * v_lim['h'] / v_lim['w']) / 2))
             left = 0
             right = w
@@ -206,7 +206,7 @@ def resize_video(fname):
     else:
         print("Square video")
         if w > 1080:
-            print("Resizing image")
+            print("Resizing video")
             vid = vid.resize(width=1080)
     (w, h) = vid.size
     if vid.duration > d_lim:
