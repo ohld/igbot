@@ -157,7 +157,7 @@ def resize_image(fname):
     from math import ceil
     try:
         from PIL import Image, ExifTags
-    except ImportError, e:
+    except ImportError as e:
         print("ERROR: {}".format(e))
         print("Required module `PIL` not installed\n"
               "Install with `pip install Pillow` and retry")
