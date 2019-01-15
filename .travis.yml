@@ -25,6 +25,5 @@ script:
 
 branches:
   only:
-    - tests
-    - tests-tests
+    - master
 cache: pip
