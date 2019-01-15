@@ -338,6 +338,30 @@ class TestBotGet(TestBot):
         else:
             assert self.bot.get_comment() == 'Wow!'
 
+
+    @responses.activate
+    @pytest.mark.parametrize('user_id', [
+        1234, '1234'
+    ])
+    def test_get_username_info(self, user_id):
+        response_data = {
+            'status': 'ok',
+            'user': TEST_USERNAME_INFO_ITEM
+        }
+        expected_result = {}
+        for key in TEST_USERNAME_INFO_ITEM:
+            expected_result[key] = TEST_USERNAME_INFO_ITEM[key]
+
+        responses.add(
+            responses.GET, '{api_url}users/{user_id}/info/'.format(
+                api_url=API_URL, user_id=user_id
+            ), status=200, json=response_data)
+
+        result = self.bot.get_user_info(user_id)
+
+        assert result == expected_result
+
+
     @responses.activate
     @pytest.mark.parametrize('user_id', [
         1234, '1234'
