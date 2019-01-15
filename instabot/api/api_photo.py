@@ -172,7 +172,7 @@ def resize_image(fname):
         for orientation in ExifTags.TAGS.keys():
             if ExifTags.TAGS[orientation] == 'Orientation':
                 break
-        exif=dict(img._getexif().items())
+        exif = dict(img._getexif().items())
         o = exif[orientation]
         if o == 3:
             deg = 180
@@ -195,11 +195,11 @@ def resize_image(fname):
         if ratio > (h_lim['w'] / h_lim['h']):
             print("Cropping image")
             cut = int(ceil((w - h * h_lim['w'] / h_lim['h']) / 2))
-            l = cut
-            r = w - cut
-            t = 0
-            b = h
-            img = img.crop((l,t,r,b))
+            left = cut
+            right = w - cut
+            top = 0
+            bottom = h
+            img = img.crop((left, top, right, bottom))
             (w, h) = img.size
         if w > 1080:
             print("Resizing image")
@@ -211,11 +211,11 @@ def resize_image(fname):
         if ratio < (v_lim['w'] / v_lim['h']):
             print("Cropping image")
             cut = int(ceil((h - w * v_lim['h'] / v_lim['w']) / 2))
-            l = 0
-            r = w
-            t = cut
-            b = h - cut
-            img = img.crop((l,t,r,b))
+            left = 0
+            right = w
+            top = cut
+            bottom = h - cut
+            img = img.crop((left, top, right, bottom))
             (w, h) = img.size
         if h > 1080:
             print("Resizing image")
@@ -230,7 +230,7 @@ def resize_image(fname):
     (w, h) = img.size
     new_fname = "{}.CONVERTED.jpg".format(fname)
     print("Saving new image w:{w} h:{h} to `{f}`".format(w=w, h=h, f=new_fname))
-    new = Image.new("RGB", img.size, (255,255,255))
+    new = Image.new("RGB", img.size, (255, 255, 255))
     new.paste(img, (0, 0, w, h), img)
     new.save(new_fname, quality=95)
     return new_fname
