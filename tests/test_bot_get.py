@@ -16,7 +16,8 @@ from .test_bot import TestBot
 from .test_variables import (TEST_CAPTION_ITEM, TEST_COMMENT_ITEM,
                              TEST_PHOTO_ITEM, TEST_SEARCH_USERNAME_ITEM,
                              TEST_USER_ITEM, TEST_USERNAME_INFO_ITEM,
-                             TEST_TIMELINE_PHOTO_ITEM, TEST_USER_TAG_ITEM)
+                             TEST_TIMELINE_PHOTO_ITEM, TEST_USER_TAG_ITEM,
+                             TEST_MEDIA_LIKER)
 
 
 class TestBotGet(TestBot):
@@ -547,3 +548,37 @@ class TestBotGet(TestBot):
 
         assert medias == [str(TEST_USER_TAG_ITEM["pk"]) for _ in range(results)]
         assert len(medias) == results
+
+    @responses.activate
+    @pytest.mark.parametrize('user_id', [
+        '1234567890', 1234567890
+    ])
+    def test_get_user_likers(self, user_id):
+
+        results_1 = 1
+        responses.add(
+            responses.GET, "{api_url}feed/user/{user_id}/?max_id={max_id}&min_timestamp={min_timestamp}&rank_token={rank_token}&ranked_content=true".format(
+                api_url=API_URL, user_id=user_id, max_id='',
+                min_timestamp=None, rank_token=self.bot.api.rank_token),
+            json={
+                "auto_load_more_enabled": True,
+                "num_results": results_1,
+                "status": "ok",
+                "more_available": False,
+                "items": [TEST_PHOTO_ITEM for _ in range(results_1)]
+            }, status=200)
+
+        results_2 = 3
+        responses.add(
+            responses.GET, "{api_url}media/{media_id}/likers/?".format(
+                api_url=API_URL, media_id=TEST_PHOTO_ITEM['pk']),
+            json={
+                "user_count": results_2,
+                "status": "ok",
+                "users": [TEST_MEDIA_LIKER for _ in range(results_2)]
+            }, status=200)
+
+        user_ids = self.bot.get_user_likers(user_id)
+
+        assert user_ids == list(set([str(TEST_MEDIA_LIKER["pk"]) for _ in range(results_2)]))
+        assert len(user_ids) == len(list(set([str(TEST_MEDIA_LIKER["pk"]) for _ in range(results_2)])))
