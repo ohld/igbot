@@ -547,3 +547,28 @@ class TestBotGet(TestBot):
 
         assert medias == [str(TEST_USER_TAG_ITEM["pk"]) for _ in range(results)]
         assert len(medias) == results
+
+    @responses.activate
+    @pytest.mark.parametrize('user_id', [
+        19, '19'
+    ])
+    def test_get_last_user_medias(self, user_id):
+
+        results = 5
+        response_data = {
+            "auto_load_more_enabled": True,
+            "num_results": results,
+            "status": "ok",
+            "more_available": False,
+            "items": [TEST_PHOTO_ITEM for _ in range(results)]
+        }
+
+        responses.add(
+            responses.GET, '{api_url}feed/user/{user_id}/?max_id={max_id}&min_timestamp={min_timestamp}&rank_token={rank_token}&ranked_content=true'.format(
+                api_url=API_URL, user_id=user_id, max_id='',
+                min_timestamp=None, rank_token=self.bot.api.rank_token),
+            json=response_data, status=200)
+
+        medias = self.bot.get_last_user_medias(user_id, count=results)
+        assert medias == [TEST_PHOTO_ITEM["pk"] for _ in range(results)]
+        assert len(medias) == results
