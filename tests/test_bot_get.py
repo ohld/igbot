@@ -16,7 +16,7 @@ from .test_bot import TestBot
 from .test_variables import (TEST_CAPTION_ITEM, TEST_COMMENT_ITEM,
                              TEST_PHOTO_ITEM, TEST_SEARCH_USERNAME_ITEM,
                              TEST_USER_ITEM, TEST_USERNAME_INFO_ITEM,
-                             TEST_TIMELINE_PHOTO_ITEM)
+                             TEST_TIMELINE_PHOTO_ITEM, TEST_USER_TAG_ITEM)
 
 
 class TestBotGet(TestBot):
@@ -522,3 +522,28 @@ class TestBotGet(TestBot):
         user_id = self.bot.convert_to_user_id(username)
 
         assert result == user_id
+
+    @responses.activate
+    @pytest.mark.parametrize('user_id', [
+        '3998456661', 3998456661
+    ])
+    def test_get_user_tags_medias(self, user_id):
+        results = 8
+        responses.add(
+            responses.GET, "{api_url}usertags/{user_id}/feed/?rank_token={rank_token}&ranked_content=true&".format(
+                api_url=API_URL, user_id=user_id, rank_token=self.bot.api.rank_token),
+            json={
+                'status': 'ok',
+                'num_results': results,
+                'auto_load_more_enabled': True,
+                'items': [TEST_USER_TAG_ITEM for _ in range(results)],
+                'more_available': False,
+                'total_count': results,
+                'requires_review': False,
+                'new_photos': []
+            }, status=200)
+
+        medias = self.bot.get_user_tags_medias(user_id)
+
+        assert medias == [str(TEST_USER_TAG_ITEM["pk"]) for _ in range(results)]
+        assert len(medias) == results
