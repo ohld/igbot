@@ -27,7 +27,7 @@ if not users_to_like:
     exit()
 else:
     print("Found %d users in file." % len(users_to_like))
-    
+
 bot.login(username=args.u, password=args.p,
           proxy=args.proxy)
 
