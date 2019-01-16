@@ -2,7 +2,7 @@ from tqdm import tqdm
 
 
 def like(self, media_id, check_media=True):
-    if blocked_actions['likes']:
+    if self.blocked_actions['likes']:
         self.logger.warn("Your `like` action has been recently blocked")
         if self.blocked_actions_protection:
             self.logger.warn("Protection active: skipping `like` action")

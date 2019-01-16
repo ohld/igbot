@@ -13,7 +13,7 @@ from tqdm import tqdm
 
 
 def comment(self, media_id, comment_text):
-    if blocked_actions['comments']:
+    if self.blocked_actions['comments']:
         self.logger.warn("Your `comment` action has been recently blocked")
         if self.blocked_actions_protection:
             self.logger.warn("Protection active: skipping `comment` action")

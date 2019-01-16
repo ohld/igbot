@@ -2,7 +2,7 @@ from tqdm import tqdm
 
 
 def unlike(self, media_id):
-    if blocked_actions['unlikes']:
+    if self.blocked_actions['unlikes']:
         self.logger.warn("Your `unlike` action has been recently blocked")
         if self.blocked_actions_protection:
             self.logger.warn("Protection active: skipping `unlike` action")
