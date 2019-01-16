@@ -90,6 +90,7 @@ class Bot(object):
                  message_delay=60,
                  stop_words=('shop', 'store', 'free'),
                  blacklist_hashtags=['#shop', '#store', '#free'],
+                 blocked_actions_protection = True,
                  verbosity=True,
                  device=None
                  ):
@@ -165,6 +166,16 @@ class Bot(object):
         self.comments_file = utils.file(comments_file)
         self.blacklist_file = utils.file(blacklist_file)
         self.whitelist_file = utils.file(whitelist_file)
+
+        # current bloked actions
+        self.blocked_actions = {'likes': False,
+                                'unlikes': False,
+                                'follows': False,
+                                'unfollows': False,
+                                'comments': False,
+                                'blocks': False,
+                                'unblocks': False,
+                                'messages': False}
 
         self.proxy = proxy
         self.verbosity = verbosity
@@ -287,6 +298,9 @@ class Bot(object):
     def reset_counters(self):
         for k in self.total:
             self.total[k] = 0
+        print("Releasing blocked actions...")
+        for k in self.blocked_actions:
+            self.blocked_actions[k] = False
         self.start_time = datetime.datetime.now()
 
     # getters

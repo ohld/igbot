@@ -13,6 +13,11 @@ from tqdm import tqdm
 
 
 def comment(self, media_id, comment_text):
+    if blocked_actions['comments']:
+        self.logger.warn("Your `comment` action has been recently blocked")
+        if self.blocked_actions_protection:
+            self.logger.warn("Protection active: skipping `comment` action")
+            return False
     if self.is_commented(media_id):
         return True
     if not self.reached_limit('comments'):
@@ -20,6 +25,9 @@ def comment(self, media_id, comment_text):
         _r = self.api.comment(media_id, comment_text)
         if _r == 'feedback_required':
             self.logger.error("`Comment` action has been BLOCKED...!!!")
+            if self.blocked_actions_protection:
+                self.logger.warn("Protecting you for 24h\n")
+                self.blocked_actions['comments'] = True
             return False
         if _r:
             self.total['comments'] += 1

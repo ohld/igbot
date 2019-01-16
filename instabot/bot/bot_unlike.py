@@ -2,9 +2,21 @@ from tqdm import tqdm
 
 
 def unlike(self, media_id):
+    if blocked_actions['unlikes']:
+        self.logger.warn("Your `unlike` action has been recently blocked")
+        if self.blocked_actions_protection:
+            self.logger.warn("Protection active: skipping `unlike` action")
+            return False
     if not self.reached_limit('unlikes'):
         self.delay('unlike')
-        if self.api.unlike(media_id):
+        _r = self.api.unlike(media_id)
+        if _r == 'feedback_required':
+            self.logger.error("`Unlike` action has been BLOCKED...!!!")
+            if self.blocked_actions_protection:
+                self.logger.warn("Protecting you for 24h\n")
+                self.blocked_actions['unlikes'] = True
+            return False
+        if _r:
             self.total['unlikes'] += 1
             return True
     else:

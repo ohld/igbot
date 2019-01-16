@@ -2,6 +2,11 @@ from tqdm import tqdm
 
 
 def like(self, media_id, check_media=True):
+    if blocked_actions['likes']:
+        self.logger.warn("Your `like` action has been recently blocked")
+        if self.blocked_actions_protection:
+            self.logger.warn("Protection active: skipping `like` action")
+            return False
     if not self.reached_limit('likes'):
         self.delay('like')
         if check_media and not self.check_media(media_id):
@@ -9,6 +14,9 @@ def like(self, media_id, check_media=True):
         _r = self.api.like(media_id)
         if _r == 'feedback_required':
             self.logger.error("`Like` action has been BLOCKED...!!!")
+            if self.blocked_actions_protection:
+                self.logger.warn("Protecting you for 24h\n")
+                self.blocked_actions['likes'] = True
             return False
         if _r:
             self.logger.info("Liked media %d." % media_id)
