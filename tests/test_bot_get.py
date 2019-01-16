@@ -547,3 +547,23 @@ class TestBotGet(TestBot):
 
         assert medias == [str(TEST_USER_TAG_ITEM["pk"]) for _ in range(results)]
         assert len(medias) == results
+
+    @responses.activate
+    @pytest.mark.parametrize('media_id', [
+        '1234567890', 1234567890
+    ])
+    def test_get_media_likers(self, media_id):
+        results = 5
+        responses.add(
+            responses.GET, "{api_url}media/{media_id}/likers/?".format(
+                api_url=API_URL, media_id=media_id),
+            json={
+                "user_count": results,
+                "status": "ok",
+                "users": [TEST_MEDIA_LIKER for _ in range(results)]
+            }, status=200)
+
+        medias = self.bot.get_media_likers(media_id)
+
+        assert medias == [str(TEST_MEDIA_LIKER["pk"]) for _ in range(results)]
+        assert len(medias) == results
