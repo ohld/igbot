@@ -90,7 +90,7 @@ class Bot(object):
                  message_delay=60,
                  stop_words=('shop', 'store', 'free'),
                  blacklist_hashtags=['#shop', '#store', '#free'],
-                 blocked_actions_protection = True,
+                 blocked_actions_protection=True,
                  verbosity=True,
                  device=None
                  ):
