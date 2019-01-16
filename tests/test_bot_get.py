@@ -548,7 +548,6 @@ class TestBotGet(TestBot):
         assert medias == [str(TEST_USER_TAG_ITEM["pk"]) for _ in range(results)]
         assert len(medias) == results
 
-
     @responses.activate
     @pytest.mark.parametrize('hashtag', [
         'hashtag1', 'hashtag2'
