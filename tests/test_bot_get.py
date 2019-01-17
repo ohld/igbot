@@ -17,7 +17,7 @@ from .test_variables import (TEST_CAPTION_ITEM, TEST_COMMENT_ITEM,
                              TEST_PHOTO_ITEM, TEST_SEARCH_USERNAME_ITEM,
                              TEST_USER_ITEM, TEST_USERNAME_INFO_ITEM,
                              TEST_TIMELINE_PHOTO_ITEM, TEST_USER_TAG_ITEM,
-                             TEST_MEDIA_LIKER)
+                             TEST_MEDIA_LIKER, TEST_FOLLOWER_ITEM, TEST_FOLLOWING_ITEM)
 
 
 class TestBotGet(TestBot):
@@ -738,3 +738,89 @@ class TestBotGet(TestBot):
 
         assert user_ids == list(set([str(TEST_MEDIA_LIKER["pk"]) for _ in range(results_2)]))
         assert len(user_ids) == len(list(set([str(TEST_MEDIA_LIKER["pk"]) for _ in range(results_2)])))
+
+    @responses.activate
+    @pytest.mark.parametrize('username', [
+        '1234567890', 1234567890
+    ])
+    def test_get_user_followers(self, username):
+
+        test_username = 'test.username'
+
+        response_data_1 = {
+            'status': 'ok',
+            'user': TEST_SEARCH_USERNAME_ITEM
+        }
+        responses.add(
+            responses.GET, '{api_url}users/{username}/usernameinfo/'.format(
+                api_url=API_URL, username=test_username
+            ), status=200, json=response_data_1)
+
+        response_data_2 = {
+            'status': 'ok',
+            'user': TEST_USERNAME_INFO_ITEM
+        }
+        responses.add(
+            responses.GET, '{api_url}users/{user_id}/info/'.format(
+                api_url=API_URL, user_id=username
+            ), status=200, json=response_data_2)
+
+        results_3 = 5
+        response_data_3 = {
+            'status': 'ok',
+            'big_list': False,
+            'next_max_id': None,
+            'sections': None,
+            'users': [TEST_FOLLOWER_ITEM for _ in range(results_3)]
+        }
+        responses.add(
+            responses.GET, "{api_url}friendships/{user_id}/followers/?rank_token={rank_token}".format(
+                api_url=API_URL, user_id=username, rank_token=self.bot.api.rank_token
+            ), json=response_data_3, status=200)
+
+        user_ids = self.bot.get_user_followers(username)
+
+        assert user_ids == [str(TEST_FOLLOWER_ITEM['pk']) for _ in range(results_3)]
+
+    @responses.activate
+    @pytest.mark.parametrize('username', [
+        '1234567890', 1234567890
+    ])
+    def test_get_user_following(self, username):
+
+        test_username = 'test.username'
+
+        response_data_1 = {
+            'status': 'ok',
+            'user': TEST_SEARCH_USERNAME_ITEM
+        }
+        responses.add(
+            responses.GET, '{api_url}users/{username}/usernameinfo/'.format(
+                api_url=API_URL, username=test_username
+            ), status=200, json=response_data_1)
+
+        response_data_2 = {
+            'status': 'ok',
+            'user': TEST_USERNAME_INFO_ITEM
+        }
+        responses.add(
+            responses.GET, '{api_url}users/{user_id}/info/'.format(
+                api_url=API_URL, user_id=username
+            ), status=200, json=response_data_2)
+
+        results_3 = 5
+        response_data_3 = {
+            'status': 'ok',
+            'big_list': False,
+            'next_max_id': None,
+            'sections': None,
+            'users': [TEST_FOLLOWING_ITEM for _ in range(results_3)]
+        }
+        responses.add(
+            responses.GET, "{api_url}friendships/{user_id}/following/?max_id={max_id}&ig_sig_key_version={sig_key}&rank_token={rank_token}".format(
+                api_url=API_URL, user_id=username, rank_token=self.bot.api.rank_token, sig_key=SIG_KEY_VERSION, max_id=''
+            ), json=response_data_3, status=200)
+
+        user_ids = self.bot.get_user_following(username)
+
+        assert user_ids == [str(TEST_FOLLOWING_ITEM['pk']) for _ in range(results_3)]
