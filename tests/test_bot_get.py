@@ -633,6 +633,7 @@ class TestBotGet(TestBot):
         assert medias == [test_photo_item["pk"] for test_photo_item in my_test_photo_items[:amount] if (not test_photo_item["has_liked"] and test_photo_item["like_count"] < self.bot.max_likes_to_like and test_photo_item["like_count"] > self.bot.min_likes_to_like)]
         assert len(medias) == amount - expect_filtered
 
+    @responses.activate
     @pytest.mark.parametrize('user_id', [
         '1234567890', 1234567890
     ])
