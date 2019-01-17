@@ -287,7 +287,7 @@ class API(object):
         return self.send_request(url, data)
 
     def media_info(self, media_id):
-        #data = self.json_data({'media_id': media_id})
+        # data = self.json_data({'media_id': media_id})
         url = 'media/{media_id}/info/'.format(media_id=media_id)
         return self.send_request(url)
 
