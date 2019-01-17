@@ -43,7 +43,13 @@ def get_timeline_medias(self, filtration=True):
     if not self.api.get_timeline_feed():
         self.logger.warning("Error while getting timeline feed.")
         return []
-    return self.filter_medias(self.api.last_json["feed_items"], filtration)
+
+    feed_items = [
+        item["media_or_ad"]
+        for item in self.api.last_json["feed_items"]
+        if item.get("media_or_ad")
+    ]
+    return self.filter_medias(feed_items, filtration)
 
 
 def get_user_medias(self, user_id, filtration=True, is_comment=False):
@@ -133,12 +139,17 @@ def get_timeline_users(self):
     if not self.api.get_timeline_feed():
         self.logger.warning("Error while getting timeline feed.")
         return []
-    return [str(i['user']['pk']) for i in self.api.last_json['items'] if i.get('user')]
+    if 'items' in self.api.last_json:
+        return [str(i['user']['pk']) for i in self.api.last_json['items'] if i.get('user')]
+    elif 'feed_items' in self.api.last_json:
+        return [str(i['media_or_ad']['user']['pk']) for i in self.api.last_json['feed_items'] if i.get('media_or_ad', {}).get('user')]
+    self.logger.info("Users for timeline not found.")
+    return []
 
 
 def get_hashtag_users(self, hashtag):
     if not self.api.get_hashtag_feed(hashtag):
-        self.logger.warning("Error while getting hastag feed.")
+        self.logger.warning("Error while getting hashtag feed.")
         return []
     return [str(i['user']['pk']) for i in self.api.last_json['items']]
 

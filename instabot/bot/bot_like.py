@@ -1,12 +1,16 @@
 from tqdm import tqdm
 
 
-def like(self, media_id):
+def like(self, media_id, check_media=True):
     if not self.reached_limit('likes'):
         self.delay('like')
-        if not self.check_media(media_id):
+        if check_media and not self.check_media(media_id):
             return False
-        if self.api.like(media_id):
+        _r = self.api.like(media_id)
+        if _r == 'feedback_required':
+            self.logger.error("`Like` action has been BLOCKED...!!!")
+            return False
+        if _r:
             self.logger.info("Liked media %d." % media_id)
             self.total['likes'] += 1
             return True
@@ -42,14 +46,14 @@ def like_media_comments(self, media_id):
     return broken_items
 
 
-def like_medias(self, medias):
+def like_medias(self, medias, check_media=True):
     broken_items = []
     if not medias:
         self.logger.info("Nothing to like.")
         return broken_items
     self.logger.info("Going to like %d medias." % (len(medias)))
     for media in tqdm(medias):
-        if not self.like(media):
+        if not self.like(media, check_media):
             self.error_delay()
             broken_items.append(media)
     self.logger.info("DONE: Total liked %d medias." % self.total['likes'])
@@ -59,7 +63,7 @@ def like_medias(self, medias):
 def like_timeline(self, amount=None):
     self.logger.info("Liking timeline feed:")
     medias = self.get_timeline_medias()[:amount]
-    return self.like_medias(medias)
+    return self.like_medias(medias, check_media=False)
 
 
 def like_user(self, user_id, amount=None, filtration=True):

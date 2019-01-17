@@ -11,7 +11,7 @@ from .bot_block import block, block_bots, block_users, unblock, unblock_users
 from .bot_checkpoint import load_checkpoint, save_checkpoint
 from .bot_comment import (comment, comment_geotag, comment_hashtag,
                           comment_medias, comment_user, comment_users,
-                          is_commented)
+                          is_commented, reply_to_comment)
 from .bot_delete import delete_comment, delete_media, delete_medias
 from .bot_direct import (send_hashtag, send_like, send_media, send_medias,
                          send_message, send_messages, send_profile)
@@ -231,7 +231,7 @@ class Bot(object):
             import pkg_resources
         return next((p.version for p in pkg_resources.working_set if p.project_name.lower() == 'instabot'), "No match")
 
-    def logout(self):
+    def logout(self, *args, **kwargs):
         save_checkpoint(self)
         self.api.logout()
         self.logger.info("Bot stopped. "
@@ -282,7 +282,7 @@ class Bot(object):
         passed_days = (current_date.date() - self.start_time.date()).days
         if passed_days > 0:
             self.reset_counters()
-        return self.max_per_day[key] - self.total[key] < 0
+        return self.max_per_day[key] - self.total[key] <= 0
 
     def reset_counters(self):
         for k in self.total:
@@ -409,14 +409,14 @@ class Bot(object):
 
     # like
 
-    def like(self, media_id):
-        return like(self, media_id)
+    def like(self, media_id, check_media=True):
+        return like(self, media_id, check_media)
 
     def like_comment(self, comment_id):
         return like_comment(self, comment_id)
 
-    def like_medias(self, media_ids):
-        return like_medias(self, media_ids)
+    def like_medias(self, media_ids, check_media=True):
+        return like_medias(self, media_ids, check_media)
 
     def like_timeline(self, amount=None):
         return like_timeline(self, amount)
@@ -555,6 +555,9 @@ class Bot(object):
 
     def comment(self, media_id, comment_text):
         return comment(self, media_id, comment_text)
+
+    def reply_to_comment(self, media_id, comment_text, parent_comment_id):
+        return reply_to_comment(self, media_id, comment_text, parent_comment_id)
 
     def comment_hashtag(self, hashtag, amount=None):
         return comment_hashtag(self, hashtag, amount)
