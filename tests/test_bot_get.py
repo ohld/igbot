@@ -16,7 +16,8 @@ from .test_bot import TestBot
 from .test_variables import (TEST_CAPTION_ITEM, TEST_COMMENT_ITEM,
                              TEST_PHOTO_ITEM, TEST_SEARCH_USERNAME_ITEM,
                              TEST_USER_ITEM, TEST_USERNAME_INFO_ITEM,
-                             TEST_TIMELINE_PHOTO_ITEM, TEST_USER_TAG_ITEM)
+                             TEST_TIMELINE_PHOTO_ITEM, TEST_USER_TAG_ITEM,
+                             TEST_MEDIA_LIKER)
 
 
 class TestBotGet(TestBot):
@@ -391,6 +392,7 @@ class TestBotGet(TestBot):
 
         assert result == media_id
 
+    @responses.activate
     @pytest.mark.parametrize('comments', [
         ['comment1', 'comment2', 'comment3'],
         [],
@@ -547,3 +549,192 @@ class TestBotGet(TestBot):
 
         assert medias == [str(TEST_USER_TAG_ITEM["pk"]) for _ in range(results)]
         assert len(medias) == results
+
+    @responses.activate
+    @pytest.mark.parametrize('hashtag', [
+        'hashtag1', 'hashtag2'
+    ])
+    def test_get_hashtag_medias(self, hashtag):
+
+        results = 5
+        my_test_photo_item = TEST_PHOTO_ITEM.copy()
+        my_test_photo_item["like_count"] = self.bot.min_likes_to_like + 1
+        my_test_photo_items = []
+        for _ in range(results):
+            my_test_photo_items.append(my_test_photo_item.copy())
+        expect_filtered = 0
+        my_test_photo_items[1]["has_liked"] = True
+        expect_filtered += 1
+        my_test_photo_items[2]["like_count"] = self.bot.max_likes_to_like + 1
+        expect_filtered += 1
+        my_test_photo_items[3]["like_count"] = self.bot.min_likes_to_like - 1
+        expect_filtered += 1
+        response_data = {
+            "auto_load_more_enabled": True,
+            "num_results": results,
+            "status": "ok",
+            "more_available": False,
+            "items": my_test_photo_items
+        }
+
+        responses.add(
+            responses.GET, '{api_url}feed/tag/{hashtag}/?max_id={max_id}&rank_token={rank_token}&ranked_content=true&'.format(
+                api_url=API_URL, hashtag=hashtag, max_id='',
+                rank_token=self.bot.api.rank_token),
+            json=response_data, status=200)
+
+        medias = self.bot.get_hashtag_medias(hashtag, filtration=False)
+        assert medias == [test_photo_item["pk"] for test_photo_item in my_test_photo_items]
+        assert len(medias) == results
+
+        medias = self.bot.get_hashtag_medias(hashtag, filtration=True)
+        assert medias == [test_photo_item["pk"] for test_photo_item in my_test_photo_items if (not test_photo_item["has_liked"] and test_photo_item["like_count"] < self.bot.max_likes_to_like and test_photo_item["like_count"] > self.bot.min_likes_to_like)]
+        assert len(medias) == results - expect_filtered
+
+    @responses.activate
+    @pytest.mark.parametrize('hashtag', [
+        'hashtag1', 'hashtag2'
+    ])
+    def test_get_total_hashtag_medias(self, hashtag):
+
+        amount = 5
+        results = 10
+        my_test_photo_item = TEST_PHOTO_ITEM.copy()
+        my_test_photo_item["like_count"] = self.bot.min_likes_to_like + 1
+        my_test_photo_items = []
+        for _ in range(results):
+            my_test_photo_items.append(my_test_photo_item.copy())
+        expect_filtered = 0
+        my_test_photo_items[1]["has_liked"] = True
+        expect_filtered += 1
+        my_test_photo_items[2]["like_count"] = self.bot.max_likes_to_like + 1
+        expect_filtered += 1
+        my_test_photo_items[3]["like_count"] = self.bot.min_likes_to_like - 1
+        expect_filtered += 1
+        response_data = {
+            "auto_load_more_enabled": True,
+            "num_results": results,
+            "status": "ok",
+            "more_available": True,
+            "next_max_id": TEST_PHOTO_ITEM['id'],
+            "items": my_test_photo_items
+        }
+
+        responses.add(
+            responses.GET, '{api_url}feed/tag/{hashtag}/?max_id={max_id}&rank_token={rank_token}&ranked_content=true&'.format(
+                api_url=API_URL, hashtag=hashtag, max_id='',
+                rank_token=self.bot.api.rank_token),
+            json=response_data, status=200)
+
+        medias = self.bot.get_total_hashtag_medias(hashtag, amount=amount, filtration=False)
+        assert medias == [test_photo_item["pk"] for test_photo_item in my_test_photo_items[:amount]]
+        assert len(medias) == amount
+
+        medias = self.bot.get_total_hashtag_medias(hashtag, amount=amount, filtration=True)
+        assert medias == [test_photo_item["pk"] for test_photo_item in my_test_photo_items[:amount] if (not test_photo_item["has_liked"] and test_photo_item["like_count"] < self.bot.max_likes_to_like and test_photo_item["like_count"] > self.bot.min_likes_to_like)]
+        assert len(medias) == amount - expect_filtered
+
+    @responses.activate
+    @pytest.mark.parametrize('media_id', [
+        '1234567890', 1234567890
+    ])
+    def test_get_media_likers(self, media_id):
+        results = 5
+        responses.add(
+            responses.GET, "{api_url}media/{media_id}/likers/?".format(
+                api_url=API_URL, media_id=media_id),
+            json={
+                "user_count": results,
+                "status": "ok",
+                "users": [TEST_MEDIA_LIKER for _ in range(results)]
+            }, status=200)
+
+        medias = self.bot.get_media_likers(media_id)
+
+        assert medias == [str(TEST_MEDIA_LIKER["pk"]) for _ in range(results)]
+        assert len(medias) == results
+
+    @responses.activate
+    @pytest.mark.parametrize('user_id', [
+        19, '19'
+    ])
+    def test_get_last_user_medias(self, user_id):
+
+        results = 5
+        response_data = {
+            "auto_load_more_enabled": True,
+            "num_results": results,
+            "status": "ok",
+            "more_available": False,
+            "items": [TEST_PHOTO_ITEM for _ in range(results)]
+        }
+
+        responses.add(
+            responses.GET, '{api_url}feed/user/{user_id}/?max_id={max_id}&min_timestamp={min_timestamp}&rank_token={rank_token}&ranked_content=true'.format(
+                api_url=API_URL, user_id=user_id, max_id='',
+                min_timestamp=None, rank_token=self.bot.api.rank_token),
+            json=response_data, status=200)
+
+        medias = self.bot.get_last_user_medias(user_id, count=results)
+
+        assert medias == [TEST_PHOTO_ITEM["pk"] for _ in range(results)]
+        assert len(medias) == results
+
+    @responses.activate
+    @pytest.mark.parametrize('user_id', [
+        19, '19'
+    ])
+    def test_get_total_user_medias(self, user_id):
+
+        results = 18
+        response_data = {
+            "auto_load_more_enabled": True,
+            "num_results": results,
+            "status": "ok",
+            "more_available": False,
+            "items": [TEST_PHOTO_ITEM for _ in range(results)]
+        }
+
+        responses.add(
+            responses.GET, '{api_url}feed/user/{user_id}/?max_id={max_id}&min_timestamp={min_timestamp}&rank_token={rank_token}&ranked_content=true'.format(
+                api_url=API_URL, user_id=user_id, max_id='',
+                min_timestamp=None, rank_token=self.bot.api.rank_token),
+            json=response_data, status=200)
+
+        medias = self.bot.get_total_user_medias(user_id)
+        assert medias == [TEST_PHOTO_ITEM["pk"] for _ in range(results)]
+        assert len(medias) == results
+
+    @responses.activate
+    @pytest.mark.parametrize('user_id', [
+        '1234567890', 1234567890
+    ])
+    def test_get_user_likers(self, user_id):
+
+        results_1 = 1
+        responses.add(
+            responses.GET, "{api_url}feed/user/{user_id}/?max_id={max_id}&min_timestamp={min_timestamp}&rank_token={rank_token}&ranked_content=true".format(
+                api_url=API_URL, user_id=user_id, max_id='',
+                min_timestamp=None, rank_token=self.bot.api.rank_token),
+            json={
+                "auto_load_more_enabled": True,
+                "num_results": results_1,
+                "status": "ok",
+                "more_available": False,
+                "items": [TEST_PHOTO_ITEM for _ in range(results_1)]
+            }, status=200)
+
+        results_2 = 3
+        responses.add(
+            responses.GET, "{api_url}media/{media_id}/likers/?".format(
+                api_url=API_URL, media_id=TEST_PHOTO_ITEM['pk']),
+            json={
+                "user_count": results_2,
+                "status": "ok",
+                "users": [TEST_MEDIA_LIKER for _ in range(results_2)]
+            }, status=200)
+
+        user_ids = self.bot.get_user_likers(user_id)
+
+        assert user_ids == list(set([str(TEST_MEDIA_LIKER["pk"]) for _ in range(results_2)]))
+        assert len(user_ids) == len(list(set([str(TEST_MEDIA_LIKER["pk"]) for _ in range(results_2)])))
