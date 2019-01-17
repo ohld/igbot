@@ -392,6 +392,7 @@ class TestBotGet(TestBot):
 
         assert result == media_id
 
+    @responses.activate
     @pytest.mark.parametrize('comments', [
         ['comment1', 'comment2', 'comment3'],
         [],
@@ -632,6 +633,26 @@ class TestBotGet(TestBot):
         medias = self.bot.get_total_hashtag_medias(hashtag, amount=amount, filtration=True)
         assert medias == [test_photo_item["pk"] for test_photo_item in my_test_photo_items[:amount] if (not test_photo_item["has_liked"] and test_photo_item["like_count"] < self.bot.max_likes_to_like and test_photo_item["like_count"] > self.bot.min_likes_to_like)]
         assert len(medias) == amount - expect_filtered
+
+    @responses.activate
+    @pytest.mark.parametrize('media_id', [
+        '1234567890', 1234567890
+    ])
+    def test_get_media_likers(self, media_id):
+        results = 5
+        responses.add(
+            responses.GET, "{api_url}media/{media_id}/likers/?".format(
+                api_url=API_URL, media_id=media_id),
+            json={
+                "user_count": results,
+                "status": "ok",
+                "users": [TEST_MEDIA_LIKER for _ in range(results)]
+            }, status=200)
+
+        medias = self.bot.get_media_likers(media_id)
+
+        assert medias == [str(TEST_MEDIA_LIKER["pk"]) for _ in range(results)]
+        assert len(medias) == results
 
     @responses.activate
     @pytest.mark.parametrize('user_id', [
