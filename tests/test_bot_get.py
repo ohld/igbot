@@ -392,6 +392,7 @@ class TestBotGet(TestBot):
 
         assert result == media_id
 
+    @responses.activate
     @pytest.mark.parametrize('comments', [
         ['comment1', 'comment2', 'comment3'],
         [],
@@ -569,6 +570,7 @@ class TestBotGet(TestBot):
         assert medias == [str(TEST_MEDIA_LIKER["pk"]) for _ in range(results)]
         assert len(medias) == results
 
+    @responses.activate
     @pytest.mark.parametrize('user_id', [
         '1234567890', 1234567890
     ])
