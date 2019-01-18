@@ -749,3 +749,17 @@ class API(object):
         url = 'fbsearch/places/?rank_token={rank_token}&query={query}&lat={lat}&lng={lng}'
         url = url.format(rank_token=self.rank_token, query=query, lat=lat, lng=lng)
         return self.send_request(url)
+
+    def get_user_reel(self, user_id):
+        url = 'feed/user/{}/reel_media/'.format(user_id)
+        return self.send_request(url)
+
+    def get_user_stories(self,user_id):
+        url = 'feed/user/{}/story/'.format(user_id)
+        return self.send_request(url)
+
+    def get_tv_suggestions(self):
+        url = 'igtv/tv_guide/'
+        return self.send_request(url)
+
+
