@@ -472,4 +472,12 @@ TEST_LOCATION_ITEM = {
     u'media_bundles': [],
     u'subtitle': u'',
     u'title': u'City, State'
+
+TEST_COMMENT_LIKER_ITEM = {
+    u'full_name': u'Instagrambot Instabot',
+    u'is_private': False,
+    u'is_verified': False,
+    u'pk': 9876543210,
+    u'profile_pic_url': u'https://instagram.fmxp5-1.fna.fbcdn.net/vp/1234567890abcdef1234567890abcdef/ABCDEF12/t00.0000-00/s150x150/12345678_1234567890123456_1234567890123456789_n.jpg?_nc_ht=instagram.fmxp5-1.fna.fbcdn.net',
+    u'username': u'instabot'
 }
