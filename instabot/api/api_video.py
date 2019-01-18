@@ -75,7 +75,7 @@ def upload_video(self, video, thumbnail, caption=None, upload_id=None):
                                  'Accept-Encoding': 'gzip, deflate',
                                  'Content-type': m.content_type,
                                  'Connection': 'keep-alive',
-                                 'User-Agent': config.USER_AGENT})
+                                 'User-Agent': self.user_agent})
     response = self.session.post(config.API_URL + "upload/video/", data=m.to_string())
     if response.status_code == 200:
         body = json.loads(response.text)
@@ -101,7 +101,7 @@ def upload_video(self, video, thumbnail, caption=None, upload_id=None):
             'Content-Disposition': 'attachment; filename="video.mov"',
             'job': upload_job,
             'Host': 'upload.instagram.com',
-            'User-Agent': config.USER_AGENT
+            'User-Agent': self.user_agent
         })
         for i in range(4):
             start = i * request_size
@@ -144,7 +144,7 @@ def configure_video(self, upload_id, video, thumbnail, caption=''):
             'source_width': clipInfo['width'],
             'source_height': clipInfo['height'],
         },
-        'device': config.DEVICE_SETTINTS,
+        'device': self.device_settings,
         'caption': caption,
     })
     return self.send_request('media/configure/?video=1', data)

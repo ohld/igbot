@@ -7,19 +7,29 @@ import time
 import uuid
 from random import uniform
 
+try:
+    from json.decoder import JSONDecodeError
+except ImportError:
+    JSONDecodeError = ValueError
+
 import requests
 import requests.utils
 import six.moves.urllib as urllib
 from tqdm import tqdm
 
-from . import config
+from . import config, devices
 from .api_photo import configure_photo, download_photo, upload_photo
 from .api_video import configure_video, download_video, upload_video
 from .prepare import delete_credentials, get_credentials
 
 
 class API(object):
-    def __init__(self):
+    def __init__(self, device=None):
+        # Setup device and user_agent
+        device = device or devices.DEFAULT_DEVICE
+        self.device_settings = devices.DEVICES[device]
+        self.user_agent = config.USER_AGENT_BASE.format(**self.device_settings)
+
         self.is_logged_in = False
         self.last_response = None
         self.total_requests = 0
@@ -65,8 +75,9 @@ class API(object):
                 self.set_proxy()  # Only happens if `self.proxy`
                 self.logger.info("Logged-in successfully as '{}' using the cookie!".format(self.username))
                 return True
-            except Exception as e:
-                print(str(e))
+            except Exception:
+                print("The cookie is not found, but don't worry `instabot`"
+                      " will create it for you using your login details.")
 
         if not cookie_is_loaded and (not self.is_logged_in or force):
             self.session = requests.Session()
@@ -124,7 +135,7 @@ class API(object):
         with open(fname, 'w') as f:
             json.dump(requests.utils.dict_from_cookiejar(self.session.cookies), f)
 
-    def logout(self):
+    def logout(self, *args, **kwargs):
         if not self.is_logged_in:
             return True
         self.is_logged_in = not self.send_request('accounts/logout/')
@@ -143,14 +154,8 @@ class API(object):
             self.logger.critical(msg)
             raise Exception(msg)
 
-        self.session.headers.update({
-            'Connection': 'close',
-            'Accept': '*/*',
-            'Content-type': 'application/x-www-form-urlencoded; charset=UTF-8',
-            'Cookie2': '$Version=1',
-            'Accept-Language': 'en-US',
-            'User-Agent': config.USER_AGENT
-        })
+        self.session.headers.update(config.REQUEST_HEADERS)
+        self.session.headers.update({'User-Agent': self.user_agent})
         try:
             self.total_requests += 1
             if post is not None:  # POST
@@ -168,10 +173,17 @@ class API(object):
 
         if response.status_code == 200:
             self.last_response = response
-            self.last_json = json.loads(response.text)
-            return True
+            try:
+                self.last_json = json.loads(response.text)
+                return True
+            except JSONDecodeError:
+                return False
         else:
             self.logger.error("Request returns {} error!".format(response.status_code))
+            response_data = json.loads(response.text)
+            if "feedback_required" in str(response_data.get('message')):
+                self.logger.error("ATTENTION!: `feedback_required`, your action could have been blocked")
+                return "feedback_required"
             if response.status_code == 429:
                 sleep_minutes = 5
                 self.logger.warning(
@@ -310,6 +322,11 @@ class API(object):
         url = 'media/{media_id}/comment/'.format(media_id=media_id)
         return self.send_request(url, data)
 
+    def reply_to_comment(self, media_id, comment_text, parent_comment_id):
+        data = self.json_data({'comment_text': comment_text, 'replied_to_comment_id': parent_comment_id})
+        url = 'media/{media_id}/comment/'.format(media_id=media_id)
+        return self.send_request(url, data)
+
     def delete_comment(self, media_id, comment_id):
         data = self.json_data()
         url = 'media/{media_id}/comment/{comment_id}/delete/'
@@ -343,6 +360,10 @@ class API(object):
     def tag_feed(self, tag):
         url = 'feed/tag/{tag}/?rank_token={rank_token}&ranked_content=true&'
         return self.send_request(url.format(tag=tag, rank_token=self.rank_token))
+
+    def get_comment_likers(self, comment_id):
+        url = 'media/{comment_id}/comment_likers/?'.format(comment_id=comment_id)
+        return self.send_request(url)
 
     def get_media_likers(self, media_id):
         url = 'media/{media_id}/likers/?'.format(media_id=media_id)
@@ -425,6 +446,16 @@ class API(object):
     def get_self_user_followers(self):
         return self.followers
 
+    def like_comment(self, comment_id):
+        data = self.json_data()
+        url = 'media/{comment_id}/comment_like/'.format(comment_id=comment_id)
+        return self.send_request(url, data)
+
+    def unlike_comment(self, comment_id):
+        data = self.json_data()
+        url = 'media/{comment_id}/comment_unlike/'.format(comment_id=comment_id)
+        return self.send_request(url, data)
+
     def like(self, media_id):
         data = self.json_data({'media_id': media_id})
         url = 'media/{media_id}/like/'.format(media_id=media_id)
@@ -435,8 +466,10 @@ class API(object):
         url = 'media/{media_id}/unlike/'.format(media_id=media_id)
         return self.send_request(url, data)
 
-    def get_media_comments(self, media_id):
-        url = 'media/{media_id}/comments/?'.format(media_id=media_id)
+    def get_media_comments(self, media_id, max_id=''):
+        url = 'media/{media_id}/comments/'.format(media_id=media_id)
+        if max_id:
+            url += '?max_id={max_id}'.format(max_id=max_id)
         return self.send_request(url)
 
     def get_direct_share(self):
@@ -600,14 +633,19 @@ class API(object):
             user_id, amount, 'followings')
 
     def get_total_user_feed(self, user_id, min_timestamp=None):
+        return self.get_last_user_feed(user_id, amount=float('inf'), min_timestamp=min_timestamp)
+
+    def get_last_user_feed(self, user_id, amount, min_timestamp=None):
         user_feed = []
         next_max_id = ''
         while True:
+            if len(user_feed) >= float(amount):
+                # one request returns max 13 items
+                return user_feed[:amount]
             self.get_user_feed(user_id, next_max_id, min_timestamp)
             last_json = self.last_json
-            if "items" not in last_json:
-                # User is private, we have no access to the posts
-                return []
+            if 'items' not in last_json:
+                return user_feed
             user_feed += last_json["items"]
             if not last_json.get("more_available"):
                 return user_feed
@@ -620,13 +658,10 @@ class API(object):
         with tqdm(total=amount, desc="Getting hashtag media.", leave=False) as pbar:
             while True:
                 self.get_hashtag_feed(hashtag_str, next_max_id)
-
-                if not self.last_json.get('items'):
-                    return hashtag_feed[:amount]
-
                 last_json = self.last_json
+                if 'items' not in last_json:
+                    return hashtag_feed[:amount]
                 items = last_json['items']
-
                 try:
                     pbar.update(len(items))
                     hashtag_feed += items

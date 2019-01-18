@@ -11,34 +11,38 @@ from .bot_block import block, block_bots, block_users, unblock, unblock_users
 from .bot_checkpoint import load_checkpoint, save_checkpoint
 from .bot_comment import (comment, comment_geotag, comment_hashtag,
                           comment_medias, comment_user, comment_users,
-                          is_commented)
+                          is_commented, reply_to_comment)
 from .bot_delete import delete_comment, delete_media, delete_medias
 from .bot_direct import (send_hashtag, send_like, send_media, send_medias,
                          send_message, send_messages, send_profile)
-from .bot_filter import (check_media, check_not_bot, check_user, filter_medias)
+from .bot_filter import check_media, check_not_bot, check_user, filter_medias
 from .bot_follow import (follow, follow_followers, follow_following,
                          follow_users)
 from .bot_get import (convert_to_user_id, get_archived_medias, get_comment,
-                      get_geotag_medias, get_geotag_users, get_hashtag_medias,
-                      get_hashtag_users, get_locations_from_coordinates,
+                      get_comment_likers, get_geotag_medias, get_geotag_users,
+                      get_hashtag_medias, get_hashtag_users,
+                      get_last_user_medias, get_locations_from_coordinates,
                       get_media_commenters, get_media_comments,
-                      get_media_id_from_link, get_media_info, get_media_likers,
-                      get_media_owner, get_popular_medias, get_timeline_medias,
-                      get_timeline_users, get_total_hashtag_medias,
-                      get_total_user_medias, get_user_followers, get_messages,
-                      get_user_following, get_user_id_from_username,
-                      get_user_info, get_user_likers, get_user_medias,
+                      get_media_comments_all, get_media_id_from_link,
+                      get_link_from_media_id, get_media_info, get_media_likers,
+                      get_media_owner, get_messages, get_popular_medias,
+                      get_timeline_medias, get_timeline_users,
+                      get_total_hashtag_medias, get_total_user_medias,
+                      get_user_followers, get_user_following,
+                      get_user_id_from_username, get_user_info,
+                      get_user_likers, get_user_medias, get_user_tags_medias,
                       get_username_from_user_id, get_your_medias, search_users)
-from .bot_like import (like, like_followers, like_following, like_geotag,
-                       like_hashtag, like_medias, like_timeline, like_user,
-                       like_users)
+from .bot_like import (like, like_comment, like_followers, like_following,
+                       like_geotag, like_hashtag, like_media_comments,
+                       like_medias, like_timeline, like_user, like_users)
 from .bot_photo import download_photo, download_photos, upload_photo
 from .bot_stats import save_user_stats
 from .bot_support import (check_if_file_exists, console_print, extract_urls,
                           read_list_from_file)
 from .bot_unfollow import (unfollow, unfollow_everyone, unfollow_non_followers,
                            unfollow_users)
-from .bot_unlike import unlike, unlike_medias, unlike_user
+from .bot_unlike import (unlike, unlike_comment, unlike_media_comments,
+                         unlike_medias, unlike_user)
 from .bot_video import upload_video
 
 
@@ -60,8 +64,12 @@ class Bot(object):
                  max_blocks_per_day=100,
                  max_unblocks_per_day=100,
                  max_likes_to_like=100,
+                 min_likes_to_like=20,
                  max_messages_per_day=300,
                  filter_users=True,
+                 filter_private_users=True,
+                 filter_users_without_profile_photo=True,
+                 filter_previously_followed=False,
                  filter_business_accounts=True,
                  filter_verified_accounts=True,
                  max_followers_to_follow=2000,
@@ -81,9 +89,11 @@ class Bot(object):
                  unblock_delay=30,
                  message_delay=60,
                  stop_words=('shop', 'store', 'free'),
+                 blacklist_hashtags=['#shop', '#store', '#free'],
                  verbosity=True,
+                 device=None
                  ):
-        self.api = API()
+        self.api = API(device=device)
 
         self.total = {'likes': 0,
                       'unlikes': 0,
@@ -111,8 +121,11 @@ class Bot(object):
 
         # limits - follow
         self.filter_users = filter_users
+        self.filter_private_users = filter_private_users
+        self.filter_users_without_profile_photo = filter_users_without_profile_photo
         self.filter_business_accounts = filter_business_accounts
         self.filter_verified_accounts = filter_verified_accounts
+        self.filter_previously_followed = filter_previously_followed
 
         self.max_per_day = {'likes': max_likes_per_day,
                             'unlikes': max_unlikes_per_day,
@@ -124,6 +137,7 @@ class Bot(object):
                             'messages': max_messages_per_day}
 
         self.max_likes_to_like = max_likes_to_like
+        self.min_likes_to_like = min_likes_to_like
         self.max_followers_to_follow = max_followers_to_follow
         self.min_followers_to_follow = min_followers_to_follow
         self.max_following_to_follow = max_following_to_follow
@@ -132,6 +146,7 @@ class Bot(object):
         self.max_following_to_followers_ratio = max_following_to_followers_ratio
         self.min_media_count_to_follow = min_media_count_to_follow
         self.stop_words = stop_words
+        self.blacklist_hashtags = blacklist_hashtags
 
         # limits - block
         self.max_following_to_block = max_following_to_block
@@ -216,7 +231,7 @@ class Bot(object):
             import pkg_resources
         return next((p.version for p in pkg_resources.working_set if p.project_name.lower() == 'instabot'), "No match")
 
-    def logout(self):
+    def logout(self, *args, **kwargs):
         save_checkpoint(self)
         self.api.logout()
         self.logger.info("Bot stopped. "
@@ -267,7 +282,7 @@ class Bot(object):
         passed_days = (current_date.date() - self.start_time.date()).days
         if passed_days > 0:
             self.reset_counters()
-        return self.max_per_day[key] - self.total[key] < 0
+        return self.max_per_day[key] - self.total[key] <= 0
 
     def reset_counters(self):
         for k in self.total:
@@ -302,6 +317,15 @@ class Bot(object):
     def get_total_user_medias(self, user_id):
         return get_total_user_medias(self, user_id)
 
+    def get_last_user_medias(self, user_id, count):
+        """
+        Returns the last number of posts specified in count in media ids array.
+        :type count: int
+        :param count: Count of posts
+        :return: array
+        """
+        return get_last_user_medias(self, user_id, count)
+
     def get_hashtag_medias(self, hashtag, filtration=True):
         return get_hashtag_medias(self, hashtag, filtration)
 
@@ -329,11 +353,14 @@ class Bot(object):
     def get_user_id_from_username(self, username):
         return get_user_id_from_username(self, username)
 
+    def get_user_tags_medias(self, user_id):
+        return get_user_tags_medias(self, user_id)
+
     def get_username_from_user_id(self, user_id):
         return get_username_from_user_id(self, user_id)
 
-    def get_user_info(self, user_id):
-        return get_user_info(self, user_id)
+    def get_user_info(self, user_id, use_cache=True):
+        return get_user_info(self, user_id, use_cache)
 
     def get_user_followers(self, user_id, nfollows=None):
         return get_user_followers(self, user_id, nfollows)
@@ -341,11 +368,17 @@ class Bot(object):
     def get_user_following(self, user_id, nfollows=None):
         return get_user_following(self, user_id, nfollows)
 
+    def get_comment_likers(self, comment_id):
+        return get_comment_likers(self, comment_id)
+
     def get_media_likers(self, media_id):
         return get_media_likers(self, media_id)
 
     def get_media_comments(self, media_id, only_text=False):
         return get_media_comments(self, media_id, only_text)
+
+    def get_media_comments_all(self, media_id, only_text=False, count=False):
+        return get_media_comments_all(self, media_id, only_text, count)
 
     def get_comment(self):
         return get_comment(self)
@@ -362,6 +395,9 @@ class Bot(object):
     def get_media_id_from_link(self, link):
         return get_media_id_from_link(self, link)
 
+    def get_link_from_media_id(self, link):
+        return get_link_from_media_id(self, link)
+
     def get_messages(self):
         return get_messages(self)
 
@@ -373,14 +409,20 @@ class Bot(object):
 
     # like
 
-    def like(self, media_id):
-        return like(self, media_id)
+    def like(self, media_id, check_media=True):
+        return like(self, media_id, check_media)
 
-    def like_medias(self, media_ids):
-        return like_medias(self, media_ids)
+    def like_comment(self, comment_id):
+        return like_comment(self, comment_id)
+
+    def like_medias(self, media_ids, check_media=True):
+        return like_medias(self, media_ids, check_media)
 
     def like_timeline(self, amount=None):
         return like_timeline(self, amount)
+
+    def like_media_comments(self, media_id):
+        return like_media_comments(self, media_id)
 
     def like_user(self, user_id, amount=None, filtration=True):
         return like_user(self, user_id, amount, filtration)
@@ -397,13 +439,19 @@ class Bot(object):
     def like_followers(self, user_id, nlikes=None, nfollows=None):
         return like_followers(self, user_id, nlikes, nfollows)
 
-    def like_following(self, user_id, nlikes=None):
-        return like_following(self, user_id, nlikes)
+    def like_following(self, user_id, nlikes=None, nfollows=None):
+        return like_following(self, user_id, nlikes, nfollows)
 
     # unlike
 
     def unlike(self, media_id):
         return unlike(self, media_id)
+
+    def unlike_comment(self, comment_id):
+        return unlike_comment(self, comment_id)
+
+    def unlike_media_comments(self, media_id):
+        return unlike_media_comments(self, media_id)
 
     def unlike_medias(self, media_ids):
         return unlike_medias(self, media_ids)
@@ -438,8 +486,8 @@ class Bot(object):
     def follow_followers(self, user_id, nfollows=None):
         return follow_followers(self, user_id, nfollows)
 
-    def follow_following(self, user_id):
-        return follow_following(self, user_id)
+    def follow_following(self, user_id, nfollows=None):
+        return follow_following(self, user_id, nfollows)
 
     # unfollow
 
@@ -508,6 +556,9 @@ class Bot(object):
     def comment(self, media_id, comment_text):
         return comment(self, media_id, comment_text)
 
+    def reply_to_comment(self, media_id, comment_text, parent_comment_id):
+        return reply_to_comment(self, media_id, comment_text, parent_comment_id)
+
     def comment_hashtag(self, hashtag, amount=None):
         return comment_hashtag(self, hashtag, amount)
 
@@ -551,8 +602,8 @@ class Bot(object):
     def check_media(self, media):
         return check_media(self, media)
 
-    def check_user(self, user, filter_closed_acc=False, unfollowing=False):
-        return check_user(self, user, filter_closed_acc, unfollowing)
+    def check_user(self, user, unfollowing=False):
+        return check_user(self, user, unfollowing)
 
     def check_not_bot(self, user):
         return check_not_bot(self, user)

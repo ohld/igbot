@@ -6,7 +6,7 @@ def get_tsv_line(dictionary):
     line = ""
     for key in sorted(dictionary):
         line += str(dictionary[key]) + "\t"
-    return line[:-2] + "\n"
+    return line[:-1] + "\n"
 
 
 def get_header_line(dictionary):
@@ -35,7 +35,7 @@ def save_user_stats(self, username, path=""):
     if not username:
         username = self.api.username
     user_id = self.convert_to_user_id(username)
-    infodict = self.get_user_info(user_id)
+    infodict = self.get_user_info(user_id, use_cache=False)
     if infodict:
         data_to_save = {
             "date": str(datetime.datetime.now().replace(microsecond=0)),

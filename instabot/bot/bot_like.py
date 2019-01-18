@@ -1,10 +1,17 @@
 from tqdm import tqdm
 
 
-def like(self, media_id):
+def like(self, media_id, check_media=True):
     if not self.reached_limit('likes'):
         self.delay('like')
-        if self.api.like(media_id):
+        if check_media and not self.check_media(media_id):
+            return False
+        _r = self.api.like(media_id)
+        if _r == 'feedback_required':
+            self.logger.error("`Like` action has been BLOCKED...!!!")
+            return False
+        if _r:
+            self.logger.info("Liked media %d." % media_id)
             self.total['likes'] += 1
             return True
     else:
@@ -12,17 +19,43 @@ def like(self, media_id):
     return False
 
 
-def like_medias(self, medias):
+def like_comment(self, comment_id):
+    if self.api.like_comment(comment_id):
+        return True
+    return False
+
+
+def like_media_comments(self, media_id):
+    broken_items = []
+    media_comments = self.get_media_comments(media_id)
+    comment_ids = [item["pk"] for item in media_comments if not item["has_liked_comment"]]
+
+    if not comment_ids:
+        self.logger.info("None comments received: comments not found or comments have been filtered.")
+        return broken_items
+
+    self.logger.info("Going to like %d comments." % (len(comment_ids)))
+
+    for comment in tqdm(comment_ids):
+        if not self.like_comment(comment):
+            self.error_delay()
+            broken_items = comment_ids[comment_ids.index(comment):]
+    self.logger.info("DONE: Liked {count} comments.".format(
+        count=len(comment_ids) - len(broken_items)
+    ))
+    return broken_items
+
+
+def like_medias(self, medias, check_media=True):
     broken_items = []
     if not medias:
         self.logger.info("Nothing to like.")
         return broken_items
     self.logger.info("Going to like %d medias." % (len(medias)))
     for media in tqdm(medias):
-        if not self.like(media):
+        if not self.like(media, check_media):
             self.error_delay()
-            broken_items = medias[medias.index(media):]
-            break
+            broken_items.append(media)
     self.logger.info("DONE: Total liked %d medias." % self.total['likes'])
     return broken_items
 
@@ -30,13 +63,13 @@ def like_medias(self, medias):
 def like_timeline(self, amount=None):
     self.logger.info("Liking timeline feed:")
     medias = self.get_timeline_medias()[:amount]
-    return self.like_medias(medias)
+    return self.like_medias(medias, check_media=False)
 
 
 def like_user(self, user_id, amount=None, filtration=True):
     """ Likes last user_id's medias """
     if filtration:
-        if not self.check_user(user_id, filter_closed_acc=True):
+        if not self.check_user(user_id):
             return False
     self.logger.info("Liking user_%s's feed:" % user_id)
     user_id = self.convert_to_user_id(user_id)
@@ -83,7 +116,7 @@ def like_followers(self, user_id, nlikes=None, nfollows=None):
         self.like_users(follower_ids[:nfollows], nlikes)
 
 
-def like_following(self, user_id, nlikes=None):
+def like_following(self, user_id, nlikes=None, nfollows=None):
     self.logger.info("Like following of: %s." % user_id)
     if self.reached_limit('likes'):
         self.logger.info("Out of likes for today.")
@@ -91,7 +124,7 @@ def like_following(self, user_id, nlikes=None):
     if not user_id:
         self.logger.info("User not found.")
         return
-    following_ids = self.get_user_following(user_id)
+    following_ids = self.get_user_following(user_id, nfollows)
     if not following_ids:
         self.logger.info("%s not found / closed / has no following." % user_id)
     else:

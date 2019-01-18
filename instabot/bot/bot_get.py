@@ -15,6 +15,11 @@ def get_media_owner(self, media_id):
         return False
 
 
+def get_user_tags_medias(self, user_id):
+    self.api.get_user_tags(user_id)
+    return [str(media['pk']) for media in self.api.last_json['items']]
+
+
 def get_popular_medias(self):
     self.api.get_popular_feed()
     return [str(media['pk']) for media in self.api.last_json['items']]
@@ -38,7 +43,13 @@ def get_timeline_medias(self, filtration=True):
     if not self.api.get_timeline_feed():
         self.logger.warning("Error while getting timeline feed.")
         return []
-    return self.filter_medias(self.api.last_json["items"], filtration)
+
+    feed_items = [
+        item["media_or_ad"]
+        for item in self.api.last_json["feed_items"]
+        if item.get("media_or_ad")
+    ]
+    return self.filter_medias(feed_items, filtration)
 
 
 def get_user_medias(self, user_id, filtration=True, is_comment=False):
@@ -53,6 +64,15 @@ def get_user_medias(self, user_id, filtration=True, is_comment=False):
 def get_total_user_medias(self, user_id):
     user_id = self.convert_to_user_id(user_id)
     medias = self.api.get_total_user_feed(user_id)
+    if self.api.last_json["status"] == 'fail':
+        self.logger.warning("This is a closed account.")
+        return []
+    return self.filter_medias(medias, filtration=False)
+
+
+def get_last_user_medias(self, user_id, amount):
+    user_id = self.convert_to_user_id(user_id)
+    medias = self.api.get_last_user_feed(user_id, amount)
     if self.api.last_json["status"] == 'fail':
         self.logger.warning("This is a closed account.")
         return []
@@ -120,11 +140,18 @@ def get_timeline_users(self):
     if not self.api.get_timeline_feed():
         self.logger.warning("Error while getting timeline feed.")
         return []
-    return [str(i['user']['pk']) for i in self.api.last_json['items'] if i.get('user')]
+    if 'items' in self.api.last_json:
+        return [str(i['user']['pk']) for i in self.api.last_json['items'] if i.get('user')]
+    elif 'feed_items' in self.api.last_json:
+        return [str(i['media_or_ad']['user']['pk']) for i in self.api.last_json['feed_items'] if i.get('media_or_ad', {}).get('user')]
+    self.logger.info("Users for timeline not found.")
+    return []
 
 
 def get_hashtag_users(self, hashtag):
-    self.api.get_hashtag_feed(hashtag)
+    if not self.api.get_hashtag_feed(hashtag):
+        self.logger.warning("Error while getting hashtag feed.")
+        return []
     return [str(i['user']['pk']) for i in self.api.last_json['items']]
 
 
@@ -151,9 +178,9 @@ def get_username_from_user_id(self, user_id):
     return None  # Not found
 
 
-def get_user_info(self, user_id):
+def get_user_info(self, user_id, use_cache=True):
     user_id = self.convert_to_user_id(user_id)
-    if user_id not in self._user_infos:
+    if not use_cache or user_id not in self._user_infos:
         self.api.get_username_info(user_id)
         last_json = self.api.last_json
         if last_json is None or 'user' not in last_json:
@@ -175,6 +202,14 @@ def get_user_following(self, user_id, nfollows=None):
     return [str(item['pk']) for item in following][::-1] if following else []
 
 
+def get_comment_likers(self, comment_id):
+    self.api.get_comment_likers(comment_id)
+    if "users" not in self.api.last_json:
+        self.logger.info("Comment with %s not found." % comment_id)
+        return []
+    return list(map(lambda user: str(user['pk']), self.api.last_json["users"]))
+
+
 def get_media_likers(self, media_id):
     self.api.get_media_likers(media_id)
     if "users" not in self.api.last_json:
@@ -190,6 +225,29 @@ def get_media_comments(self, media_id, only_text=False):
     if only_text:
         return [str(item["text"]) for item in self.api.last_json['comments']]
     return self.api.last_json['comments']
+
+
+def get_media_comments_all(self, media_id, only_text=False, count=False):
+    has_more_comments = True
+    max_id = ''
+    comments = []
+
+    while has_more_comments:
+        self.api.get_media_comments(media_id, max_id=max_id)
+        for comment in self.api.last_json['comments']:
+            comments.append(comment)
+        has_more_comments = self.api.last_json['has_more_comments']
+        if count and len(comments) >= count:
+            comments = comments[:count]
+            has_more_comments = False
+            self.logger.info("Getting comments stopped by count (%s)." % count)
+        if has_more_comments:
+            max_id = self.api.last_json['next_max_id']
+
+    if only_text:
+        return [str(item["text"]) for item in sorted(
+            comments, key=lambda k: k['created_at_utc'], reverse=False)]
+    return sorted(comments, key=lambda k: k['created_at_utc'], reverse=False)
 
 
 def get_media_commenters(self, media_id):
@@ -237,6 +295,25 @@ def get_media_id_from_link(self, link):
     for char in code:
         result = result * 64 + alphabet[char]
     return result
+
+
+def get_link_from_media_id(self, media_id):
+    alphabet = {
+        '-': 62, '1': 53, '0': 52, '3': 55, '2': 54, '5': 57, '4': 56,
+        '7': 59, '6': 58, '9': 61, '8': 60, 'A': 0, 'C': 2, 'B': 1,
+        'E': 4, 'D': 3, 'G': 6, 'F': 5, 'I': 8, 'H': 7, 'K': 10, 'J': 9,
+        'M': 12, 'L': 11, 'O': 14, 'N': 13, 'Q': 16, 'P': 15, 'S': 18,
+        'R': 17, 'U': 20, 'T': 19, 'W': 22, 'V': 21, 'Y': 24, 'X': 23,
+        'Z': 25, '_': 63, 'a': 26, 'c': 28, 'b': 27, 'e': 30, 'd': 29,
+        'g': 32, 'f': 31, 'i': 34, 'h': 33, 'k': 36, 'j': 35, 'm': 38,
+        'l': 37, 'o': 40, 'n': 39, 'q': 42, 'p': 41, 's': 44, 'r': 43,
+        'u': 46, 't': 45, 'w': 48, 'v': 47, 'y': 50, 'x': 49, 'z': 51,
+    }
+    result = ''
+    while media_id:
+        media_id, char = media_id // 64, media_id % 64
+        result += list(alphabet.keys())[list(alphabet.values()).index(char)]
+    return 'https://instagram.com/p/' + result[::-1] + '/'
 
 
 def get_messages(self):
