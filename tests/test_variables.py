@@ -472,6 +472,7 @@ TEST_LOCATION_ITEM = {
     u'media_bundles': [],
     u'subtitle': u'',
     u'title': u'City, State'
+}
 
 TEST_COMMENT_LIKER_ITEM = {
     u'full_name': u'Instagrambot Instabot',
