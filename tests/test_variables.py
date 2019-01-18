@@ -456,3 +456,20 @@ TEST_FOLLOWING_ITEM = {
     u'reel_auto_archive': u'unset',
     u'username': u'following.username'
 }
+
+TEST_LOCATION_ITEM = {
+    u'header_media': {},
+    u'location': {
+        u'address': u'',
+        u'city': u'Location City Name',
+        u'external_source': u'facebook_places',
+        u'facebook_places_id': 123456789012345,
+        u'lat': 1.2345,
+        u'lng': 9.8765,
+        u'name': u'City, State',
+        u'pk': 123456789,
+        u'short_name': u'City'},
+    u'media_bundles': [],
+    u'subtitle': u'',
+    u'title': u'City, State'
+}

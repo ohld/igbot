@@ -17,7 +17,8 @@ from .test_variables import (TEST_CAPTION_ITEM, TEST_COMMENT_ITEM,
                              TEST_PHOTO_ITEM, TEST_SEARCH_USERNAME_ITEM,
                              TEST_USER_ITEM, TEST_USERNAME_INFO_ITEM,
                              TEST_TIMELINE_PHOTO_ITEM, TEST_USER_TAG_ITEM,
-                             TEST_MEDIA_LIKER, TEST_FOLLOWER_ITEM, TEST_FOLLOWING_ITEM)
+                             TEST_MEDIA_LIKER, TEST_FOLLOWER_ITEM, TEST_FOLLOWING_ITEM,
+                             TEST_LOCATION_ITEM)
 
 
 class TestBotGet(TestBot):
@@ -824,3 +825,22 @@ class TestBotGet(TestBot):
         user_ids = self.bot.get_user_following(username)
 
         assert user_ids == [str(TEST_FOLLOWING_ITEM['pk']) for _ in range(results_3)]
+
+    @responses.activate
+    @pytest.mark.parametrize('latitude', [1.2345])
+    @pytest.mark.parametrize('longitude', [9.8765])
+    def test_get_locations_from_coordinates(self, latitude, longitude):
+        results = 10
+        response_data = {
+            'has_more': False,
+            'items': [TEST_LOCATION_ITEM for _ in range(results)],
+            'rank_token': self.bot.api.rank_token,
+            'status': 'ok'
+        }
+        responses.add(
+            responses.GET, '{api_url}fbsearch/places/?rank_token={rank_token}&query={query}&lat={lat}&lng={lng}'.format(
+                api_url=API_URL, rank_token=self.bot.api.rank_token, query='', lat=latitude, lng=longitude),
+            json=response_data, status=200)
+        locations = self.bot.get_locations_from_coordinates(latitude, longitude)
+        assert locations == [TEST_LOCATION_ITEM for _ in range(results)]
+        assert len(locations) == results
