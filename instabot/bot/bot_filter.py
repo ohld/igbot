@@ -58,7 +58,6 @@ def _get_media_ids(media_items):
 
 
 def check_media(self, media_id):
-    return True
     if self.api.media_info(media_id):
         medias = self.api.last_json["items"]
 
