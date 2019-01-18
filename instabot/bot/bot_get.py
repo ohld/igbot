@@ -106,9 +106,8 @@ def get_total_hashtag_medias(self, hashtag, amount=100, filtration=False):
 
 
 def get_geotag_medias(self, geotag, filtration=True):
-    self.api.get_location_feed(geotag)
-    lst = self.last_json['items']
-    return [item['pk'] for item in self.last_json['items']]
+    # TODO: returns list of medias from geotag
+    pass
 
 
 def get_locations_from_coordinates(self, latitude, longitude):
