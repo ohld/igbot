@@ -5,6 +5,7 @@ import logging
 import os
 import time
 import uuid
+
 from random import uniform
 
 try:
@@ -754,7 +755,7 @@ class API(object):
         url = 'feed/user/{}/reel_media/'.format(user_id)
         return self.send_request(url)
 
-    def get_user_stories(self,user_id):
+    def get_user_stories(self, user_id):
         url = 'feed/user/{}/story/'.format(user_id)
         return self.send_request(url)
 
@@ -762,4 +763,6 @@ class API(object):
         url = 'igtv/tv_guide/'
         return self.send_request(url)
 
-
+    def get_media_insight(self, media_id):
+        url = 'insights/media_organic_insights/{}/?ig_sig_key_version={}'.format(media_id, config.IG_SIG_KEY)
+        return self.send_request(url)
