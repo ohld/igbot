@@ -432,3 +432,27 @@ TEST_MEDIA_LIKER = {
     u'profile_pic_url': u'https://instagram.fmxp5-1.fna.fbcdn.net/vp/1234567890abcdef1234567890abcdef/ABCDEF12/t00.0000-00/s150x150/12345678_1234567890123456_1234567890123456789_n.jpg?_nc_ht=instagram.fmxp5-1.fna.fbcdn.net',
     u'username': u'instabot'
 }
+
+TEST_FOLLOWER_ITEM = {
+    u'full_name': u'Follower Username',
+    u'has_anonymous_profile_picture': False,
+    u'is_private': False,
+    u'is_verified': False,
+    u'pk': 1234567890,
+    u'profile_pic_id': u'1234567890123456789_1234567890',
+    u'profile_pic_url': u'https://instagram.fmxp5-1.fna.fbcdn.net/vp/1234567890abcdef1234567890abcdef/ABCDEF12/t00.0000-00/s150x150/12345678_1234567890123456_1234567890123456789_n.jpg?_nc_ht=instagram.fmxp5-1.fna.fbcdn.net',
+    u'reel_auto_archive': u'on',
+    u'username': u'follower.username.'
+}
+
+TEST_FOLLOWING_ITEM = {
+    u'full_name': u'Following Username',
+    u'has_anonymous_profile_picture': False,
+    u'is_favorite': False,
+    u'is_private': False,
+    u'is_verified': False,
+    u'pk': 1234567890,
+    u'profile_pic_url': u'https://instagram.fmxp5-1.fna.fbcdn.net/vp/1234567890abcdef1234567890abcdef/ABCDEF12/t00.0000-00/s150x150/12345678_1234567890123456_1234567890123456789_n.jpg?_nc_ht=instagram.fmxp5-1.fna.fbcdn.net',
+    u'reel_auto_archive': u'unset',
+    u'username': u'following.username'
+}
