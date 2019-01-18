@@ -17,7 +17,8 @@ from .test_variables import (TEST_CAPTION_ITEM, TEST_COMMENT_ITEM,
                              TEST_PHOTO_ITEM, TEST_SEARCH_USERNAME_ITEM,
                              TEST_USER_ITEM, TEST_USERNAME_INFO_ITEM,
                              TEST_TIMELINE_PHOTO_ITEM, TEST_USER_TAG_ITEM,
-                             TEST_MEDIA_LIKER, TEST_FOLLOWER_ITEM, TEST_FOLLOWING_ITEM)
+                             TEST_MEDIA_LIKER, TEST_FOLLOWER_ITEM, TEST_FOLLOWING_ITEM,
+                             TEST_COMMENT_LIKER_ITEM)
 
 
 class TestBotGet(TestBot):
