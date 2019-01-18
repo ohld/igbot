@@ -766,6 +766,25 @@ class API(object):
         url = 'tags/{}/story/'.format(hashtag)
         return self.send_request(url)
 
+    def follow_hashtag(self, hashtag):
+        data = self.json_data({})
+        url = 'tags/follow/{}/'.format(hashtag)
+        return self.send_request(url, data)
+
+    def unfollow_hashtag(self, hashtag):
+        data = self.json_data({})
+        url = 'tags/unfollow/{}/'.format(hashtag)
+        return self.send_request(url, data)
+
+    def get_tags_followed_by_user(self, user_id):
+        url = 'users/{}/following_tags_info/'.format(user_id)
+        return self.send_request(url)
+
+    def get_hashtag_sections(self, hashtag):
+        data = self.json_data({'supported_tabs': "['top','recent','places']", 'include_persistent': 'true'})
+        url = 'tags/{}/sections/'.format(hashtag)
+        return self.send_request(url, data)
+
     def get_media_insight(self, media_id):
         url = 'insights/media_organic_insights/{}/?ig_sig_key_version={}'.format(media_id, config.IG_SIG_KEY)
         return self.send_request(url)
