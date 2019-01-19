@@ -796,5 +796,19 @@ class API(object):
         return self.send_request(url)
 
     def get_self_insight(self):
-        url = 'insights/account_organic_insights/?show_promotions_in_landing_page=true&first={}'.format()#todo
+        url = 'insights/account_organic_insights/?show_promotions_in_landing_page=true&first={}'.format()  # todo
+        return self.send_request(url)
+
+    def save_media(self, media_id):
+        data = self.json_data()
+        url = 'media/{}/save/'.format(media_id)
+        return self.send_request(url, data)
+
+    def unsave_media(self, media_id):
+        data = self.json_data()
+        url = 'media/{}/unsave/'.format(media_id)
+        return self.send_request(url, data)
+
+    def get_saved_medias(self):
+        url = 'feed/saved/'
         return self.send_request(url)
