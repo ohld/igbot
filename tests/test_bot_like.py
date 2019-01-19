@@ -189,3 +189,54 @@ class TestBotGet(TestBot):
             ), status=200, json={'status': 'ok'})
 
         assert self.bot.like(media_id, check_media=check_media) == expected
+
+    @pytest.mark.parametrize(
+        'comment_id', [12345678901234567, '12345678901234567'])
+    @responses.activate
+    def test_bot_like_comment(self, comment_id):
+        responses.add(
+            responses.POST, '{api_url}media/{comment_id}/comment_like/'.format(
+                api_url=API_URL, comment_id=comment_id
+            ), json={'status': 'ok'}, status=200
+        )
+        assert self.bot.like_comment(comment_id)
+
+    @responses.activate
+    @pytest.mark.parametrize('has_liked_comment,comment_id', [
+        (True, True),
+        (True, False),
+        (False, False),
+        (False, True)])
+    @patch('time.sleep', return_value=None)
+    def test_like_media_comments(self, patched_time_sleep, has_liked_comment, comment_id):
+        TEST_COMMENT_ITEM['has_liked_comment'] = has_liked_comment
+        results = 2
+        if comment_id or has_liked_comment:
+            comment_id = TEST_COMMENT_ITEM['pk']
+            expected_broken_items = []
+        else:
+            comment_id = 'wrong_comment_id'
+            expected_broken_items = [TEST_COMMENT_ITEM['pk'] for _ in range(results)]
+        response_data = {
+            "caption": TEST_CAPTION_ITEM,
+            "caption_is_edited": False,
+            "comment_count": 4,
+            "comment_likes_enabled": True,
+            "comments": [TEST_COMMENT_ITEM for _ in range(results)],
+            "has_more_comments": False,
+            "has_more_headload_comments": False,
+            "media_header_display": "none",
+            "preview_comments": [],
+            "status": "ok"
+        }
+        media_id = 1234567890
+        responses.add(
+            responses.GET, '{api_url}media/{media_id}/comments/?'.format(
+                api_url=API_URL, media_id=media_id), json=response_data, status=200)
+        responses.add(
+            responses.POST, '{api_url}media/{comment_id}/comment_like/'.format(
+                api_url=API_URL, comment_id=comment_id
+            ), json={'status': 'ok'}, status=200
+        )
+        broken_items = self.bot.like_media_comments(media_id)
+        assert broken_items == expected_broken_items
