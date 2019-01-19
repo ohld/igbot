@@ -119,7 +119,7 @@ def get_locations_from_coordinates(self, latitude, longitude):
         location_lat = location["location"]["lat"]
         location_lng = location["location"]["lng"]
 
-        if int(location_lat) == int(latitude) and int(location_lng) == longitude:
+        if int(location_lat) == int(latitude) and int(location_lng) == int(longitude):
             filtered_locations.append(location)
 
     return filtered_locations
