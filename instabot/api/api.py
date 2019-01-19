@@ -758,6 +758,12 @@ class API(object):
         url = 'feed/user/{}/story/'.format(user_id)
         return self.send_request(url)
 
+    def get_self_story_viewers(self, story_id):
+
+        url = 'media/{}/list_reel_media_viewer/?supported_capabilities_new={}'.format(story_id,
+                                                                                      config.SUPPORTED_CAPABILITIES)
+        return self.send_request(url)
+
     def get_tv_suggestions(self):
         url = 'igtv/tv_guide/'
         return self.send_request(url)
@@ -787,4 +793,8 @@ class API(object):
 
     def get_media_insight(self, media_id):
         url = 'insights/media_organic_insights/{}/?ig_sig_key_version={}'.format(media_id, config.IG_SIG_KEY)
+        return self.send_request(url)
+
+    def get_self_insight(self):
+        url = 'insights/account_organic_insights/?show_promotions_in_landing_page=true&first={}'.format()#todo
         return self.send_request(url)
