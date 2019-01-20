@@ -32,6 +32,7 @@ def download_video(self, media_id, filename, media=False, folder='videos'):
         return os.path.abspath(fname)
 
 
+# leaving here function used by old upload_video, no more used now
 def get_video_info(filename):
     res = {}
     try:
@@ -57,9 +58,10 @@ def get_video_info(filename):
     return res
 
 
-def upload_video(self, video, thumbnail, caption=None, upload_id=None):
+def upload_video(self, video, caption=None, upload_id=None):
     if upload_id is None:
         upload_id = str(int(time.time() * 1000))
+    video, thumbnail, width, height, duration = resize_video(video)
     data = {
         'upload_id': upload_id,
         '_csrftoken': self.token,
@@ -118,15 +120,17 @@ def upload_video(self, video, thumbnail, caption=None, upload_id=None):
         self.session.headers = headers
 
         if response.status_code == 200:
-            if self.configure_video(upload_id, video, thumbnail, caption):
+            if self.configure_video(upload_id, video, thumbnail, width, height, duration, caption):
                 self.expose()
+                from os import rename
+                rename(video, "{}.REMOVE_ME".format(video))
                 return True
     return False
 
 
-def configure_video(self, upload_id, video, thumbnail, caption=''):
-    clipInfo = get_video_info(video)
-    self.upload_photo(photo=thumbnail, caption=caption, upload_id=upload_id)
+def configure_video(self, upload_id, video, thumbnail, width, height, duration, caption=''):
+    # clipInfo = get_video_info(video)
+    self.upload_photo(photo=thumbnail, caption=caption, upload_id=upload_id, from_video=True)
     data = self.json_data({
         'upload_id': upload_id,
         'source_type': 3,
@@ -136,15 +140,82 @@ def configure_video(self, upload_id, video, thumbnail, caption=''):
         'filter_type': 0,
         'video_result': 'deprecated',
         'clips': {
-            'length': clipInfo['duration'],
+            'length': duration,
             'source_type': '3',
             'camera_position': 'back',
         },
         'extra': {
-            'source_width': clipInfo['width'],
-            'source_height': clipInfo['height'],
+            'source_width': width,
+            'source_height': height,
         },
         'device': self.device_settings,
         'caption': caption,
     })
     return self.send_request('media/configure/?video=1', data)
+
+
+def resize_video(fname):
+    from math import ceil
+    try:
+        import moviepy.editor as mp
+    except ImportError as e:
+        print("ERROR: {}".format(e))
+        print("Required module `moviepy` not installed\n"
+              "Install with `pip install moviepy` and retry.\n\n"
+              "You may need also:\n"
+              "pip install --upgrade setuptools\n"
+              "pip install numpy --upgrade --ignore-installed")
+        return False
+    print("Analizing `{}`".format(fname))
+    h_lim = {'w': 90., 'h': 47.}
+    v_lim = {'w': 4., 'h': 5.}
+    d_lim = 30
+    vid = mp.VideoFileClip(fname)
+    (w, h) = vid.size
+    deg = vid.rotation
+    ratio = w * 1. / h * 1.
+    print("FOUND w:{w}, h:{h}, rotation={d}, ratio={r}".format(w=w, h=h, r=ratio, d=deg))
+    if w > h:
+        print("Horizontal video")
+        if ratio > (h_lim['w'] / h_lim['h']):
+            print("Cropping video")
+            cut = int(ceil((w - h * h_lim['w'] / h_lim['h']) / 2))
+            left = cut
+            right = w - cut
+            top = 0
+            bottom = h
+            vid = vid.crop(x1=left, y1=top, x2=right, y2=bottom)
+            (w, h) = vid.size
+        if w > 1080:
+            print("Resizing video")
+            vid = vid.resize(width=1080)
+    elif w < h:
+        print("Vertical video")
+        if ratio < (v_lim['w'] / v_lim['h']):
+            print("Cropping video")
+            cut = int(ceil((h - w * v_lim['h'] / v_lim['w']) / 2))
+            left = 0
+            right = w
+            top = cut
+            bottom = h - cut
+            vid = vid.crop(x1=left, y1=top, x2=right, y2=bottom)
+            (w, h) = vid.size
+        if h > 1080:
+            print("Resizing video")
+            vid = vid.resize(height=1080)
+    else:
+        print("Square video")
+        if w > 1080:
+            print("Resizing video")
+            vid = vid.resize(width=1080)
+    (w, h) = vid.size
+    if vid.duration > d_lim:
+        print("Cutting video to {} sec from start".format(d_lim))
+        vid = vid.subclip(0, d_lim)
+    new_fname = "{}.CONVERTED.mp4".format(fname)
+    print("Saving new video w:{w} h:{h} to `{f}`".format(w=w, h=h, f=new_fname))
+    vid.write_videofile(new_fname, codec="libx264", audio_codec="aac")
+    print("Generating thumbnail...")
+    thumbnail_name = "{}.jpg".format(fname)
+    vid.save_frame(thumbnail_name, t=(vid.duration / 2))
+    return new_fname, thumbnail_name, w, h, vid.duration
