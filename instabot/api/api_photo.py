@@ -1,3 +1,4 @@
+from __future__ import unicode_literals
 import imghdr
 import os
 import shutil
@@ -58,7 +59,8 @@ def download_photo(self, media_id, filename, media=False, folder='photos'):
 def compatible_aspect_ratio(size):
     min_ratio, max_ratio = 4.0 / 5.0, 90.0 / 47.0
     width, height = size
-    ratio = width / height
+    ratio = width * 1. / height * 1.
+    print("FOUND: w:{} h:{} r:{}".format(width, height, ratio))
     return min_ratio <= ratio <= max_ratio
 
 
@@ -82,9 +84,13 @@ def configure_photo(self, upload_id, photo, caption=''):
     return self.send_request('media/configure/?', data)
 
 
-def upload_photo(self, photo, caption=None, upload_id=None):
+def upload_photo(self, photo, caption=None, upload_id=None, from_video=False):
     if upload_id is None:
         upload_id = str(int(time.time() * 1000))
+    if not from_video:
+        photo = resize_image(photo)
+    if not photo:
+        return False
     if not compatible_aspect_ratio(get_image_size(photo)):
         self.logger.info('Photo does not have a compatible '
                          'photo aspect ratio.')
@@ -110,6 +116,8 @@ def upload_photo(self, photo, caption=None, upload_id=None):
     if response.status_code == 200:
         if self.configure_photo(upload_id, photo, caption):
             self.expose()
+            from os import rename
+            rename(photo, "{}.REMOVE_ME".format(photo))
             return True
     return False
 
@@ -144,3 +152,86 @@ def get_image_size(fname):
         else:
             raise RuntimeError("Unsupported format")
         return width, height
+
+
+def resize_image(fname):
+    from math import ceil
+    try:
+        from PIL import Image, ExifTags
+    except ImportError as e:
+        print("ERROR: {}".format(e))
+        print("Required module `PIL` not installed\n"
+              "Install with `pip install Pillow` and retry")
+        return False
+    print("Analizing `{}`".format(fname))
+    h_lim = {'w': 90., 'h': 47.}
+    v_lim = {'w': 4., 'h': 5.}
+    img = Image.open(fname)
+    (w, h) = img.size
+    deg = 0
+    try:
+        for orientation in ExifTags.TAGS.keys():
+            if ExifTags.TAGS[orientation] == 'Orientation':
+                break
+        exif = dict(img._getexif().items())
+        o = exif[orientation]
+        if o == 3:
+            deg = 180
+        if o == 6:
+            deg = 270
+        if o == 8:
+            deg = 90
+        if deg != 0:
+            print("Rotating by {d} degrees".format(d=deg))
+            img = img.rotate(deg, expand=True)
+            (w, h) = img.size
+    except (AttributeError, KeyError, IndexError) as e:
+        print("No exif info found (ERR: {})".format(e))
+        pass
+    img = img.convert("RGBA")
+    ratio = w * 1. / h * 1.
+    print("FOUND w:{w}, h:{h}, ratio={r}".format(w=w, h=h, r=ratio))
+    if w > h:
+        print("Horizontal image")
+        if ratio > (h_lim['w'] / h_lim['h']):
+            print("Cropping image")
+            cut = int(ceil((w - h * h_lim['w'] / h_lim['h']) / 2))
+            left = cut
+            right = w - cut
+            top = 0
+            bottom = h
+            img = img.crop((left, top, right, bottom))
+            (w, h) = img.size
+        if w > 1080:
+            print("Resizing image")
+            nw = 1080
+            nh = int(ceil(1080. * h / w))
+            img = img.resize((nw, nh), Image.ANTIALIAS)
+    elif w < h:
+        print("Vertical image")
+        if ratio < (v_lim['w'] / v_lim['h']):
+            print("Cropping image")
+            cut = int(ceil((h - w * v_lim['h'] / v_lim['w']) / 2))
+            left = 0
+            right = w
+            top = cut
+            bottom = h - cut
+            img = img.crop((left, top, right, bottom))
+            (w, h) = img.size
+        if h > 1080:
+            print("Resizing image")
+            nw = int(ceil(1080. * w / h))
+            nh = 1080
+            img = img.resize((nw, nh), Image.ANTIALIAS)
+    else:
+        print("Square image")
+        if w > 1080:
+            print("Resizing image")
+            img = img.resize((1080, 1080), Image.ANTIALIAS)
+    (w, h) = img.size
+    new_fname = "{}.CONVERTED.jpg".format(fname)
+    print("Saving new image w:{w} h:{h} to `{f}`".format(w=w, h=h, f=new_fname))
+    new = Image.new("RGB", img.size, (255, 255, 255))
+    new.paste(img, (0, 0, w, h), img)
+    new.save(new_fname, quality=95)
+    return new_fname
