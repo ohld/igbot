@@ -343,3 +343,107 @@ class TestBotGet(TestBot):
 
         broken_items = self.bot.like_user(user_id)
         assert [] == broken_items
+
+    @responses.activate
+    @pytest.mark.parametrize('user_ids', [['1234567890'], [1234567890]])
+    @patch('time.sleep', return_value=None)
+    def test_like_users(self, patched_time_sleep, user_ids):
+
+        self.bot._following = [1]
+
+        TEST_USERNAME_INFO_ITEM['biography'] = 'instabot'
+
+        response_data = {
+            'status': 'ok',
+            'user': TEST_SEARCH_USERNAME_ITEM
+        }
+        responses.add(
+            responses.GET, '{api_url}users/{username}/usernameinfo/'.format(
+                api_url=API_URL, username=user_ids[0]
+            ), status=200, json=response_data)
+
+        response_data = {
+            'status': 'ok',
+            'user': TEST_USERNAME_INFO_ITEM
+        }
+        responses.add(
+            responses.GET, '{api_url}users/{user_id}/info/'.format(
+                api_url=API_URL, user_id=user_ids[0]
+            ), status=200, json=response_data)
+
+        response_data = {
+            'status': 'ok',
+            'user': TEST_USERNAME_INFO_ITEM
+        }
+        responses.add(
+            responses.GET, '{api_url}users/{user_id}/info/'.format(
+                api_url=API_URL, user_id=user_ids[0]
+            ), status=200, json=response_data)
+
+        results_1 = 5
+        response_data = {
+            "auto_load_more_enabled": True,
+            "num_results": results_1,
+            "status": "ok",
+            "more_available": False,
+            "items": [TEST_PHOTO_ITEM for _ in range(results_1)]
+        }
+        responses.add(
+            responses.GET, '{api_url}feed/user/{user_id}/?max_id={max_id}&min_timestamp={min_timestamp}&rank_token={rank_token}&ranked_content=true'.format(
+                api_url=API_URL, user_id=user_ids[0], max_id='',
+                min_timestamp=None, rank_token=self.bot.api.rank_token),
+            json=response_data, status=200)
+
+        responses.add(
+            responses.GET, "{api_url}media/{media_id}/info/".format(
+                api_url=API_URL, media_id=TEST_PHOTO_ITEM['pk']),
+            json={
+                "auto_load_more_enabled": True,
+                "num_results": 1,
+                "status": "ok",
+                "more_available": False,
+                "items": [TEST_PHOTO_ITEM]
+            }, status=200)
+
+        results_2 = 2
+        response_data = {
+            "caption": TEST_CAPTION_ITEM,
+            "caption_is_edited": False,
+            "comment_count": results_2,
+            "comment_likes_enabled": True,
+            "comments": [TEST_COMMENT_ITEM for _ in range(results_2)],
+            "has_more_comments": False,
+            "has_more_headload_comments": False,
+            "media_header_display": "none",
+            "preview_comments": [],
+            "status": "ok"
+        }
+        responses.add(
+            responses.GET, '{api_url}media/{media_id}/comments/?'.format(
+                api_url=API_URL, media_id=TEST_PHOTO_ITEM['pk']), json=response_data, status=200)
+
+        response_data = {
+            'status': 'ok',
+            'user': TEST_USERNAME_INFO_ITEM
+        }
+        responses.add(
+            responses.GET, '{api_url}users/{user_id}/info/'.format(
+                api_url=API_URL, user_id=TEST_PHOTO_ITEM['user']['pk']
+            ), status=200, json=response_data)
+
+        response_data = {
+            'status': 'ok',
+            'user': TEST_USERNAME_INFO_ITEM
+        }
+        responses.add(
+            responses.GET, '{api_url}users/{user_id}/info/'.format(
+                api_url=API_URL, user_id=TEST_PHOTO_ITEM['user']['pk']
+            ), status=200, json=response_data)
+
+        responses.add(
+            responses.POST, '{api_url}media/{media_id}/like/'.format(
+                api_url=API_URL, media_id=TEST_PHOTO_ITEM['pk']
+            ), status=200, json={'status': 'ok'})
+
+        self.bot.like_users(user_ids)
+        assert self.bot.total['likes'] == results_1
