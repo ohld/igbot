@@ -467,13 +467,13 @@ class Bot(object):
     def download_photos(self, medias, folder='photos', save_description=False):
         return download_photos(self, medias, folder, save_description)
 
-    def upload_photo(self, photo, caption=None, upload_id=None):
-        return upload_photo(self, photo, caption, upload_id)
+    def upload_photo(self, photo, caption=None, upload_id=None, from_video=False):
+        return upload_photo(self, photo, caption, upload_id, from_video)
 
     # video
 
-    def upload_video(self, video, thumbnail, caption=''):
-        return upload_video(self, video, thumbnail, caption)
+    def upload_video(self, video, caption=''):
+        return upload_video(self, video, caption)
 
     # follow
 
