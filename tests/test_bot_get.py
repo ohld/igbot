@@ -18,7 +18,8 @@ from .test_variables import (TEST_CAPTION_ITEM, TEST_COMMENT_ITEM,
                              TEST_USER_ITEM, TEST_USERNAME_INFO_ITEM,
                              TEST_TIMELINE_PHOTO_ITEM, TEST_USER_TAG_ITEM,
                              TEST_MEDIA_LIKER, TEST_FOLLOWER_ITEM, TEST_FOLLOWING_ITEM,
-                             TEST_COMMENT_LIKER_ITEM, TEST_LOCATION_ITEM)
+                             TEST_COMMENT_LIKER_ITEM, TEST_LOCATION_ITEM,
+                             TEST_MOST_RECENT_INVITER_ITEM, TEST_INBOX_THREAD_ITEM)
 
 
 class TestBotGet(TestBot):
@@ -899,3 +900,24 @@ class TestBotGet(TestBot):
         locations = self.bot.get_locations_from_coordinates(latitude, longitude)
         assert locations == [TEST_LOCATION_ITEM for _ in range(results)]
         assert len(locations) == results
+
+    @responses.activate
+    def test_get_messages(self):
+        results = 5
+        response_data = {u'status': 'ok',
+                         u'pending_requests_total': 2,
+                         u'seq_id': 182,
+                         u'snapshot_at_ms': 1547815538244,
+                         u'most_recent_inviter': TEST_MOST_RECENT_INVITER_ITEM,
+                         u'inbox': {u'blended_inbox_enabled': True,
+                                    u'has_older': False,
+                                    u'unseen_count': 1,
+                                    u'unseen_count_ts': 1547815538242025,
+                                    u'threads': [TEST_INBOX_THREAD_ITEM for _ in range(results)]
+                                    }
+                         }
+        responses.add(
+            responses.GET, '{api_url}direct_v2/inbox/?'.format(
+                api_url=API_URL), json=response_data, status=200)
+        inbox = self.bot.get_messages()
+        assert inbox == response_data
