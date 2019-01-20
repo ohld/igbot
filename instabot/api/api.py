@@ -258,8 +258,8 @@ class API(object):
         })
         return self.send_request('qe/expose/', data)
 
-    def upload_photo(self, photo, caption=None, upload_id=None):
-        return upload_photo(self, photo, caption, upload_id)
+    def upload_photo(self, photo, caption=None, upload_id=None, from_video=False):
+        return upload_photo(self, photo, caption, upload_id, from_video)
 
     def download_photo(self, media_id, filename, media=False, folder='photos'):
         return download_photo(self, media_id, filename, media, folder)
@@ -273,8 +273,8 @@ class API(object):
     def download_video(self, media_id, filename, media=False, folder='video'):
         return download_video(self, media_id, filename, media, folder)
 
-    def configure_video(self, upload_id, video, thumbnail, caption=''):
-        return configure_video(self, upload_id, video, thumbnail, caption)
+    def configure_video(self, upload_id, video, thumbnail, width, height, duration, caption=''):
+        return configure_video(self, upload_id, video, thumbnail, width, height, duration, caption)
 
     def edit_media(self, media_id, captionText=''):
         data = self.json_data({'caption_text': captionText})
