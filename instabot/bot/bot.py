@@ -263,7 +263,7 @@ class Bot(object):
     def prepare(self):
         storage = load_checkpoint(self)
         if storage is not None:
-                        self.total, self.blocked_actions, self.api.total_requests, self.start_time = storage
+            self.total, self.blocked_actions, self.api.total_requests, self.start_time = storage
 
     def print_counters(self):
         for key, val in self.total.items():
