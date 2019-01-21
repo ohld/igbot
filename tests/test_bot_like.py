@@ -448,3 +448,31 @@ class TestBotGet(TestBot):
 
         self.bot.like_users(user_ids)
         assert self.bot.total['likes'] == results_1
+
+    @responses.activate
+    @pytest.mark.parametrize('blocked_actions_protection,blocked_actions', [
+        (True, True),
+        (True, False),
+        (False, True),
+        (False, True)])
+    @patch('time.sleep', return_value=None)
+    def test_like_feedback(self, patched_time_sleep, blocked_actions_protection, blocked_actions):
+        self.bot.blocked_actions_protection = blocked_actions_protection
+        self.bot.blocked_actions['likes'] = blocked_actions
+        media_id = 1234567890
+        response_data = {
+            u'status': u'fail',
+            u'feedback_title': u'You\u2019re Temporarily Blocked',
+            u'feedback_message': u'It looks like you were misusing this feature by going too fast. You\u2019ve been temporarily blocked from using it. We restrict certain content and actions to protect our community. Tell us if you think we made a mistake.',
+            u'spam': True,
+            u'feedback_action': u'report_problem',
+            u'feedback_appeal_label': u'Report problem',
+            u'feedback_ignore_label': u'OK',
+            u'message': u'feedback_required',
+            u'feedback_url': u'repute/report_problem/instagram_like_add/'}
+        responses.add(
+            responses.POST, '{api_url}media/{media_id}/like/'.format(
+                api_url=API_URL, media_id=media_id
+            ), json=response_data, status=400
+        )
+        assert not self.bot.like(media_id, check_media=False)

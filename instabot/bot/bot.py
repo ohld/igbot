@@ -90,6 +90,7 @@ class Bot(object):
                  message_delay=60,
                  stop_words=('shop', 'store', 'free'),
                  blacklist_hashtags=['#shop', '#store', '#free'],
+                 blocked_actions_protection=True,
                  verbosity=True,
                  device=None
                  ):
@@ -135,6 +136,17 @@ class Bot(object):
                             'blocks': max_blocks_per_day,
                             'unblocks': max_unblocks_per_day,
                             'messages': max_messages_per_day}
+
+        self.blocked_actions_protection = blocked_actions_protection
+
+        self.blocked_actions = {'likes': False,
+                                'unlikes': False,
+                                'follows': False,
+                                'unfollows': False,
+                                'comments': False,
+                                'blocks': False,
+                                'unblocks': False,
+                                'messages': False}
 
         self.max_likes_to_like = max_likes_to_like
         self.min_likes_to_like = min_likes_to_like
@@ -251,13 +263,16 @@ class Bot(object):
     def prepare(self):
         storage = load_checkpoint(self)
         if storage is not None:
-            self.total, self.api.total_requests, self.start_time = storage
+                        self.total, self.blocked_actions, self.api.total_requests, self.start_time = storage
 
     def print_counters(self):
         for key, val in self.total.items():
             if val > 0:
                 self.logger.info("Total {}: {}{}".format(key, val,
                                                          "/" + str(self.max_per_day[key]) if self.max_per_day.get(key) else ""))
+        for key, val in self.blocked_actions.items():
+            if val:
+                self.logger.info("Blocked {}".format(key))
         self.logger.info("Total requests: {}".format(self.api.total_requests))
 
     def delay(self, key):
@@ -288,6 +303,8 @@ class Bot(object):
     def reset_counters(self):
         for k in self.total:
             self.total[k] = 0
+        for k in self.blocked_actions:
+            self.blocked_actions[k] = False
         self.start_time = datetime.datetime.now()
 
     # getters

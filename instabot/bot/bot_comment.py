@@ -16,6 +16,11 @@ def comment(self, media_id, comment_text):
     if self.is_commented(media_id):
         return True
     if not self.reached_limit('comments'):
+        if self.blocked_actions['comments']:
+            self.logger.warn('YOUR `COMMENT` ACTION IS BLOCKED')
+            if self.blocked_actions_protection:
+                self.logger.warn('blocked_actions_protection ACTIVE. Skipping `comment` action.')
+                return False
         self.delay('comment')
         _r = self.api.comment(media_id, comment_text)
         if _r == 'feedback_required':
@@ -34,6 +39,11 @@ def reply_to_comment(self, media_id, comment_text, parent_comment_id):
         self.logger.info("Media is not commented yet, nothing to answer to...")
         return False
     if not self.reached_limit('comments'):
+        if self.blocked_actions['comments']:
+            self.logger.warn('YOUR `COMMENT` ACTION IS BLOCKED')
+            if self.blocked_actions_protection:
+                self.logger.warn('blocked_actions_protection ACTIVE. Skipping `comment` action.')
+                return False
         self.delay('comment')
         if comment_text[0] != '@':
             self.logger.error("A reply must start with mention, so '@' must be the 1st char, followed by the username you're replying to")
@@ -46,6 +56,7 @@ def reply_to_comment(self, media_id, comment_text, parent_comment_id):
             self.logger.error("`Comment` action has been BLOCKED...!!!")
             return False
         if _r:
+            self.logger.info('Replied to comment {} of media {}'.format(parent_comment_id, media_id))
             self.total['comments'] += 1
             return True
     else:
