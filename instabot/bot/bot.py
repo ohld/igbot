@@ -256,7 +256,8 @@ class Bot(object):
     def print_counters(self):
         for key, val in self.total.items():
             if val > 0:
-                self.logger.info("Total {}: {}/{}".format(key, val, self.max_per_day[key]))
+                self.logger.info("Total {}: {}{}".format(key, val,
+                                                         "/" + self.max_per_day[key] if self.max_per_day.get(key) else ""))
         self.logger.info("Total requests: {}".format(self.api.total_requests))
 
     def delay(self, key):
