@@ -30,7 +30,9 @@ def like_comment(self, comment_id):
         if self.blocked_actions['likes']:
             self.logger.warn('YOUR `LIKE` ACTION IS BLOCKED')
             if self.blocked_actions_protection:
-                self.logger.warn('blocked_actions_protection ACTIVE. Skipping `like` action.')
+                from datetime import timedelta
+                next_reset = (self.start_time.date() + timedelta(days=1)).strftime("%Y-%m-%d %H:%M:%S")
+                self.logger.warn('blocked_actions_protection ACTIVE. Skipping `like` action till, at least, {}.'.format(next_reset))
                 return False
         self.delay('like')
         _r = self.api.like_comment(comment_id)
