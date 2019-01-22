@@ -8,5 +8,5 @@ pysocks==1.6.8
 pytest==4.1.1
 responses==0.10.5
 future==0.17.1
-six
+six==1.12.0
 huepy
