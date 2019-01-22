@@ -436,7 +436,8 @@ class TestBotGet(TestBot):
     @pytest.mark.parametrize('user_id', [
         1234, '1234'
     ])
-    def test_get_username_from_user_id(self, user_id):
+    @patch('time.sleep', return_value=None)
+    def test_get_username_from_user_id(self, patched_time_sleep, user_id):
         response_data = {
             'status': 'ok',
             'user': TEST_USERNAME_INFO_ITEM
@@ -456,7 +457,8 @@ class TestBotGet(TestBot):
     @pytest.mark.parametrize('user_id', [
         '123231231231234', 123231231231234
     ])
-    def test_get_username_from_user_id_404(self, user_id):
+    @patch('time.sleep', return_value=None)
+    def test_get_username_from_user_id_404(self, patched_time_sleep, user_id):
         response_data = {
             'status': 'fail',
             'message': 'User not found'
@@ -472,7 +474,8 @@ class TestBotGet(TestBot):
     @pytest.mark.parametrize('username', [
         '@test', 'test', '1234'
     ])
-    def test_get_user_id_from_username(self, username):
+    @patch('time.sleep', return_value=None)
+    def test_get_user_id_from_username(self, patched_time_sleep, username):
         response_data = {
             'status': 'ok',
             'user': TEST_SEARCH_USERNAME_ITEM
@@ -493,7 +496,8 @@ class TestBotGet(TestBot):
     @pytest.mark.parametrize('username', [
         'usernotfound', 'nottexisteduser', '123231231231234'
     ])
-    def test_get_user_id_from_username_404(self, username):
+    @patch('time.sleep', return_value=None)
+    def test_get_user_id_from_username_404(self, patched_time_sleep, username):
         response_data = {
             'status': 'fail',
             'message': 'User not found'
