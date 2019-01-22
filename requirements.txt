@@ -9,4 +9,4 @@ pytest==4.1.1
 responses==0.10.5
 future==0.17.1
 six==1.12.0
-huepy
+huepy==0.9.8.1
