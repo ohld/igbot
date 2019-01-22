@@ -1,7 +1,7 @@
 tqdm==4.29.1
 requests==2.21.0
 requests-toolbelt==0.8.0
-pycodestyle
+pycodestyle==2.4.0
 pyflakes
 schedule
 pysocks
