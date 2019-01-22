@@ -7,11 +7,11 @@ try:
 except ImportError:
     from mock import patch
 
-from instabot.api.config import API_URL
+from instabot.api.config import API_URL, SIG_KEY_VERSION
 
 from .test_bot import TestBot
 from .test_variables import (TEST_USERNAME_INFO_ITEM, TEST_PHOTO_ITEM, TEST_CAPTION_ITEM, TEST_COMMENT_ITEM,
-                             TEST_SEARCH_USERNAME_ITEM)
+                             TEST_SEARCH_USERNAME_ITEM, TEST_FOLLOWER_ITEM, TEST_FOLLOWING_ITEM)
 
 
 class TestBotGet(TestBot):
@@ -448,3 +448,432 @@ class TestBotGet(TestBot):
 
         self.bot.like_users(user_ids)
         assert self.bot.total['likes'] == results_1
+
+    @responses.activate
+    @pytest.mark.parametrize('medias', [[1234567890, 9876543210]])
+    @patch('time.sleep', return_value=None)
+    def test_like_medias(self, patched_time_sleep, medias):
+        self.bot._following = [1]
+
+        for media in medias:
+            TEST_PHOTO_ITEM['pk'] = media
+            responses.add(
+                responses.GET, "{api_url}media/{media_id}/info/".format(
+                    api_url=API_URL, media_id=media),
+                json={
+                    "auto_load_more_enabled": True,
+                    "num_results": 1,
+                    "status": "ok",
+                    "more_available": False,
+                    "items": [TEST_PHOTO_ITEM]
+                }, status=200)
+
+            results = 2
+            response_data = {
+                "caption": TEST_CAPTION_ITEM,
+                "caption_is_edited": False,
+                "comment_count": 4,
+                "comment_likes_enabled": True,
+                "comments": [TEST_COMMENT_ITEM for _ in range(results)],
+                "has_more_comments": False,
+                "has_more_headload_comments": False,
+                "media_header_display": "none",
+                "preview_comments": [],
+                "status": "ok"
+            }
+            responses.add(
+                responses.GET, '{api_url}media/{media_id}/comments/?'.format(
+                    api_url=API_URL, media_id=TEST_PHOTO_ITEM['pk']), json=response_data, status=200)
+
+            response_data = {
+                'status': 'ok',
+                'user': TEST_USERNAME_INFO_ITEM
+            }
+            responses.add(
+                responses.GET, '{api_url}users/{user_id}/info/'.format(
+                    api_url=API_URL, user_id=TEST_PHOTO_ITEM['user']['pk']
+                ), status=200, json=response_data)
+
+            response_data = {
+                'status': 'ok',
+                'user': TEST_USERNAME_INFO_ITEM
+            }
+            responses.add(
+                responses.GET, '{api_url}users/{user_id}/info/'.format(
+                    api_url=API_URL, user_id=TEST_PHOTO_ITEM['user']['pk']
+                ), status=200, json=response_data)
+
+            responses.add(
+                responses.POST, '{api_url}media/{media_id}/like/'.format(
+                    api_url=API_URL, media_id=TEST_PHOTO_ITEM['pk']
+                ), status=200, json={'status': 'ok'})
+
+        broken_items = self.bot.like_medias(medias)
+        assert [] == broken_items
+
+    @responses.activate
+    @pytest.mark.parametrize('hashtag', ['like_hashtag1', 'like_hashtag2'])
+    @patch('time.sleep', return_value=None)
+    def test_like_hashtag(self, patche_time_sleep, hashtag):
+        self.bot._following = [1]
+        liked_at_start = self.bot.total['likes']
+        results_1 = 10
+        my_test_photo_item = TEST_PHOTO_ITEM.copy()
+        my_test_photo_item["like_count"] = self.bot.min_likes_to_like + 1
+        my_test_photo_item["has_liked"] = False
+        response_data = {
+            "auto_load_more_enabled": True,
+            "num_results": results_1,
+            "status": "ok",
+            "more_available": True,
+            "next_max_id": my_test_photo_item['id'],
+            "items": [my_test_photo_item for _ in range(results_1)]
+        }
+        responses.add(
+            responses.GET, '{api_url}feed/tag/{hashtag}/?max_id={max_id}&rank_token={rank_token}&ranked_content=true&'.format(
+                api_url=API_URL, hashtag=hashtag, max_id='',
+                rank_token=self.bot.api.rank_token),
+            json=response_data, status=200)
+
+        responses.add(
+            responses.GET, "{api_url}media/{media_id}/info/".format(
+                api_url=API_URL, media_id=my_test_photo_item['pk']),
+            json={
+                "auto_load_more_enabled": True,
+                "num_results": 1,
+                "status": "ok",
+                "more_available": False,
+                "items": [my_test_photo_item]
+            }, status=200)
+
+        results_2 = 2
+        response_data = {
+            "caption": TEST_CAPTION_ITEM,
+            "caption_is_edited": False,
+            "comment_count": results_2,
+            "comment_likes_enabled": True,
+            "comments": [TEST_COMMENT_ITEM for _ in range(results_2)],
+            "has_more_comments": False,
+            "has_more_headload_comments": False,
+            "media_header_display": "none",
+            "preview_comments": [],
+            "status": "ok"
+        }
+        responses.add(
+            responses.GET, '{api_url}media/{media_id}/comments/?'.format(
+                api_url=API_URL, media_id=TEST_PHOTO_ITEM['pk']), json=response_data, status=200)
+
+        response_data = {
+            'status': 'ok',
+            'user': TEST_USERNAME_INFO_ITEM
+        }
+        responses.add(
+            responses.GET, '{api_url}users/{user_id}/info/'.format(
+                api_url=API_URL, user_id=my_test_photo_item['user']['pk']
+            ), status=200, json=response_data)
+
+        response_data = {
+            'status': 'ok',
+            'user': TEST_USERNAME_INFO_ITEM
+        }
+        responses.add(
+            responses.GET, '{api_url}users/{user_id}/info/'.format(
+                api_url=API_URL, user_id=my_test_photo_item['user']['pk']
+            ), status=200, json=response_data)
+
+        responses.add(
+            responses.POST, '{api_url}media/{media_id}/like/'.format(
+                api_url=API_URL, media_id=my_test_photo_item['pk']
+            ), status=200, json={'status': 'ok'})
+
+        broken_items = self.bot.like_hashtag(hashtag)
+        assert [] == broken_items
+        assert self.bot.total['likes'] == liked_at_start + results_1
+
+    @responses.activate
+    @pytest.mark.parametrize('username', [
+        '1234567890', 1234567890
+    ])
+    @patch('time.sleep', return_value=None)
+    def test_like_followers(self, patched_time_sleep, username):
+
+        liked_at_start = self.bot.total['likes']
+
+        test_username = 'test.username'
+
+        response_data_1 = {
+            'status': 'ok',
+            'user': TEST_SEARCH_USERNAME_ITEM
+        }
+        responses.add(
+            responses.GET, '{api_url}users/{username}/usernameinfo/'.format(
+                api_url=API_URL, username=test_username
+            ), status=200, json=response_data_1)
+
+        response_data_2 = {
+            'status': 'ok',
+            'user': TEST_USERNAME_INFO_ITEM
+        }
+        responses.add(
+            responses.GET, '{api_url}users/{user_id}/info/'.format(
+                api_url=API_URL, user_id=username
+            ), status=200, json=response_data_2)
+
+        results_3 = 2
+        response_data_3 = {
+            'status': 'ok',
+            'big_list': False,
+            'next_max_id': None,
+            'sections': None,
+            'users': [TEST_FOLLOWER_ITEM for _ in range(results_3)]
+        }
+        responses.add(
+            responses.GET, "{api_url}friendships/{user_id}/followers/?rank_token={rank_token}".format(
+                api_url=API_URL, user_id=username, rank_token=self.bot.api.rank_token
+            ), json=response_data_3, status=200)
+
+        self.bot._following = [1]
+
+        TEST_USERNAME_INFO_ITEM['biography'] = 'instabot'
+        my_test_photo_item = TEST_PHOTO_ITEM.copy()
+        my_test_photo_item["like_count"] = self.bot.min_likes_to_like + 1
+        my_test_photo_item["has_liked"] = False
+
+        response_data = {
+            'status': 'ok',
+            'user': TEST_SEARCH_USERNAME_ITEM
+        }
+        responses.add(
+            responses.GET, '{api_url}users/{username}/usernameinfo/'.format(
+                api_url=API_URL, username=username
+            ), status=200, json=response_data)
+
+        response_data = {
+            'status': 'ok',
+            'user': TEST_USERNAME_INFO_ITEM
+        }
+        responses.add(
+            responses.GET, '{api_url}users/{user_id}/info/'.format(
+                api_url=API_URL, user_id=username
+            ), status=200, json=response_data)
+
+        response_data = {
+            'status': 'ok',
+            'user': TEST_USERNAME_INFO_ITEM
+        }
+        responses.add(
+            responses.GET, '{api_url}users/{user_id}/info/'.format(
+                api_url=API_URL, user_id=username
+            ), status=200, json=response_data)
+
+        results_4 = 3
+        response_data = {
+            "auto_load_more_enabled": True,
+            "num_results": results_4,
+            "status": "ok",
+            "more_available": False,
+            "items": [my_test_photo_item for _ in range(results_4)]
+        }
+        responses.add(
+            responses.GET, '{api_url}feed/user/{user_id}/?max_id={max_id}&min_timestamp={min_timestamp}&rank_token={rank_token}&ranked_content=true'.format(
+                api_url=API_URL, user_id=username, max_id='',
+                min_timestamp=None, rank_token=self.bot.api.rank_token),
+            json=response_data, status=200)
+
+        responses.add(
+            responses.GET, "{api_url}media/{media_id}/info/".format(
+                api_url=API_URL, media_id=my_test_photo_item['pk']),
+            json={
+                "auto_load_more_enabled": True,
+                "num_results": 1,
+                "status": "ok",
+                "more_available": False,
+                "items": [my_test_photo_item]
+            }, status=200)
+
+        results_5 = 2
+        response_data = {
+            "caption": TEST_CAPTION_ITEM,
+            "caption_is_edited": False,
+            "comment_count": results_5,
+            "comment_likes_enabled": True,
+            "comments": [TEST_COMMENT_ITEM for _ in range(results_5)],
+            "has_more_comments": False,
+            "has_more_headload_comments": False,
+            "media_header_display": "none",
+            "preview_comments": [],
+            "status": "ok"
+        }
+        responses.add(
+            responses.GET, '{api_url}media/{media_id}/comments/?'.format(
+                api_url=API_URL, media_id=my_test_photo_item['pk']), json=response_data, status=200)
+
+        response_data = {
+            'status': 'ok',
+            'user': TEST_USERNAME_INFO_ITEM
+        }
+        responses.add(
+            responses.GET, '{api_url}users/{user_id}/info/'.format(
+                api_url=API_URL, user_id=my_test_photo_item['user']['pk']
+            ), status=200, json=response_data)
+
+        response_data = {
+            'status': 'ok',
+            'user': TEST_USERNAME_INFO_ITEM
+        }
+        responses.add(
+            responses.GET, '{api_url}users/{user_id}/info/'.format(
+                api_url=API_URL, user_id=my_test_photo_item['user']['pk']
+            ), status=200, json=response_data)
+
+        responses.add(
+            responses.POST, '{api_url}media/{media_id}/like/'.format(
+                api_url=API_URL, media_id=my_test_photo_item['pk']
+            ), status=200, json={'status': 'ok'})
+
+        self.bot.like_followers(username)
+        assert self.bot.total['likes'] == liked_at_start + results_3 * results_4
+
+    @responses.activate
+    @pytest.mark.parametrize('username', [
+        '1234567890', 1234567890
+    ])
+    @patch('time.sleep', return_value=None)
+    def test_like_following(self, patched_time_sleep, username):
+
+        liked_at_start = self.bot.total['likes']
+
+        test_username = 'test.username'
+
+        response_data_1 = {
+            'status': 'ok',
+            'user': TEST_SEARCH_USERNAME_ITEM
+        }
+        responses.add(
+            responses.GET, '{api_url}users/{username}/usernameinfo/'.format(
+                api_url=API_URL, username=test_username
+            ), status=200, json=response_data_1)
+
+        response_data_2 = {
+            'status': 'ok',
+            'user': TEST_USERNAME_INFO_ITEM
+        }
+        responses.add(
+            responses.GET, '{api_url}users/{user_id}/info/'.format(
+                api_url=API_URL, user_id=username
+            ), status=200, json=response_data_2)
+
+        results_3 = 5
+        response_data_3 = {
+            'status': 'ok',
+            'big_list': False,
+            'next_max_id': None,
+            'sections': None,
+            'users': [TEST_FOLLOWING_ITEM for _ in range(results_3)]
+        }
+        responses.add(
+            responses.GET, "{api_url}friendships/{user_id}/following/?max_id={max_id}&ig_sig_key_version={sig_key}&rank_token={rank_token}".format(
+                api_url=API_URL, user_id=username, rank_token=self.bot.api.rank_token, sig_key=SIG_KEY_VERSION, max_id=''
+            ), json=response_data_3, status=200)
+
+        self.bot._following = [1]
+
+        TEST_USERNAME_INFO_ITEM['biography'] = 'instabot'
+        my_test_photo_item = TEST_PHOTO_ITEM.copy()
+        my_test_photo_item["like_count"] = self.bot.min_likes_to_like + 1
+        my_test_photo_item["has_liked"] = False
+
+        response_data = {
+            'status': 'ok',
+            'user': TEST_SEARCH_USERNAME_ITEM
+        }
+        responses.add(
+            responses.GET, '{api_url}users/{username}/usernameinfo/'.format(
+                api_url=API_URL, username=username
+            ), status=200, json=response_data)
+
+        response_data = {
+            'status': 'ok',
+            'user': TEST_USERNAME_INFO_ITEM
+        }
+        responses.add(
+            responses.GET, '{api_url}users/{user_id}/info/'.format(
+                api_url=API_URL, user_id=username
+            ), status=200, json=response_data)
+
+        response_data = {
+            'status': 'ok',
+            'user': TEST_USERNAME_INFO_ITEM
+        }
+        responses.add(
+            responses.GET, '{api_url}users/{user_id}/info/'.format(
+                api_url=API_URL, user_id=username
+            ), status=200, json=response_data)
+
+        results_4 = 3
+        response_data = {
+            "auto_load_more_enabled": True,
+            "num_results": results_4,
+            "status": "ok",
+            "more_available": False,
+            "items": [my_test_photo_item for _ in range(results_4)]
+        }
+        responses.add(
+            responses.GET, '{api_url}feed/user/{user_id}/?max_id={max_id}&min_timestamp={min_timestamp}&rank_token={rank_token}&ranked_content=true'.format(
+                api_url=API_URL, user_id=username, max_id='',
+                min_timestamp=None, rank_token=self.bot.api.rank_token),
+            json=response_data, status=200)
+
+        responses.add(
+            responses.GET, "{api_url}media/{media_id}/info/".format(
+                api_url=API_URL, media_id=my_test_photo_item['pk']),
+            json={
+                "auto_load_more_enabled": True,
+                "num_results": 1,
+                "status": "ok",
+                "more_available": False,
+                "items": [my_test_photo_item]
+            }, status=200)
+
+        results_5 = 2
+        response_data = {
+            "caption": TEST_CAPTION_ITEM,
+            "caption_is_edited": False,
+            "comment_count": results_5,
+            "comment_likes_enabled": True,
+            "comments": [TEST_COMMENT_ITEM for _ in range(results_5)],
+            "has_more_comments": False,
+            "has_more_headload_comments": False,
+            "media_header_display": "none",
+            "preview_comments": [],
+            "status": "ok"
+        }
+        responses.add(
+            responses.GET, '{api_url}media/{media_id}/comments/?'.format(
+                api_url=API_URL, media_id=my_test_photo_item['pk']), json=response_data, status=200)
+
+        response_data = {
+            'status': 'ok',
+            'user': TEST_USERNAME_INFO_ITEM
+        }
+        responses.add(
+            responses.GET, '{api_url}users/{user_id}/info/'.format(
+                api_url=API_URL, user_id=my_test_photo_item['user']['pk']
+            ), status=200, json=response_data)
+
+        response_data = {
+            'status': 'ok',
+            'user': TEST_USERNAME_INFO_ITEM
+        }
+        responses.add(
+            responses.GET, '{api_url}users/{user_id}/info/'.format(
+                api_url=API_URL, user_id=my_test_photo_item['user']['pk']
+            ), status=200, json=response_data)
+
+        responses.add(
+            responses.POST, '{api_url}media/{media_id}/like/'.format(
+                api_url=API_URL, media_id=my_test_photo_item['pk']
+            ), status=200, json={'status': 'ok'})
+
+        self.bot.like_following(username)
+        assert self.bot.total['likes'] == liked_at_start + results_3 * results_4
