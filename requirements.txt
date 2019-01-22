@@ -4,7 +4,7 @@ requests-toolbelt==0.8.0
 pycodestyle==2.4.0
 pyflakes==2.0.0
 schedule==0.5.0
-pysocks
+pysocks==1.6.8
 pytest
 responses
 future
