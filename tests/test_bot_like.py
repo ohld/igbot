@@ -11,7 +11,7 @@ from instabot.api.config import API_URL, SIG_KEY_VERSION
 
 from .test_bot import TestBot
 from .test_variables import (TEST_USERNAME_INFO_ITEM, TEST_PHOTO_ITEM, TEST_CAPTION_ITEM, TEST_COMMENT_ITEM,
-                             TEST_SEARCH_USERNAME_ITEM, TEST_FOLLOWER_ITEM, TEST_FOLLOWING_ITEM)
+                             TEST_SEARCH_USERNAME_ITEM, TEST_FOLLOWER_ITEM, TEST_FOLLOWING_ITEM, TEST_TIMELINE_PHOTO_ITEM)
 
 
 class TestBotGet(TestBot):
@@ -877,3 +877,35 @@ class TestBotGet(TestBot):
 
         self.bot.like_following(username)
         assert self.bot.total['likes'] == liked_at_start + results_3 * results_4
+
+    @responses.activate
+    @patch('time.sleep', return_value=None)
+    def test_like_timeline(self, patched_time_sleep):
+
+        my_test_timelime_photo_item = TEST_TIMELINE_PHOTO_ITEM.copy()
+        my_test_timelime_photo_item['media_or_ad']["like_count"] = self.bot.max_likes_to_like - 1
+        my_test_timelime_photo_item['media_or_ad']["has_liked"] = False
+
+        liked_at_start = self.bot.total['likes']
+
+        results_1 = 8
+        responses.add(
+            responses.GET, "{api_url}feed/timeline/".format(api_url=API_URL),
+            json={
+                "auto_load_more_enabled": True,
+                "num_results": results_1,
+                "is_direct_v2_enabled": True,
+                "status": "ok",
+                "next_max_id": None,
+                "more_available": False,
+                "feed_items": [my_test_timelime_photo_item for _ in range(results_1)]
+            }, status=200)
+
+        responses.add(
+            responses.POST, '{api_url}media/{media_id}/like/'.format(
+                api_url=API_URL, media_id=my_test_timelime_photo_item['media_or_ad']['pk']
+            ), status=200, json={'status': 'ok'})
+
+        broken_items = self.bot.like_timeline()
+        assert [] == broken_items
+        assert self.bot.total['likes'] == liked_at_start + results_1
