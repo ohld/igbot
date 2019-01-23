@@ -7,10 +7,11 @@ try:
 except ImportError:
     from mock import patch
 
-from instabot.api.config import API_URL
+from instabot.api.config import API_URL, SIG_KEY_VERSION
 
 from .test_bot import TestBot
-from .test_variables import (TEST_SEARCH_USERNAME_ITEM, TEST_USERNAME_INFO_ITEM)
+from .test_variables import (TEST_SEARCH_USERNAME_ITEM, TEST_USERNAME_INFO_ITEM, TEST_FOLLOWER_ITEM,
+                             TEST_FOLLOWING_ITEM)
 
 
 def reset_files(_bot):
