@@ -8,8 +8,6 @@ import time
 import uuid
 from random import uniform
 
-PY2 = sys.version_info[0] == 2
-
 try:
     from json.decoder import JSONDecodeError
 except ImportError:
@@ -24,6 +22,8 @@ from . import config, devices
 from .api_photo import configure_photo, download_photo, upload_photo
 from .api_video import configure_video, download_video, upload_video
 from .prepare import delete_credentials, get_credentials
+
+PY2 = sys.version_info[0] == 2
 
 
 class API(object):
