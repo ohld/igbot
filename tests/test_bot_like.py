@@ -477,6 +477,7 @@ class TestBotGet(TestBot):
         )
         assert not self.bot.like(media_id, check_media=False)
 
+    @responses.activate
     @pytest.mark.parametrize('medias', [[1234567890, 9876543210]])
     @patch('time.sleep', return_value=None)
     def test_like_medias(self, patched_time_sleep, medias):
