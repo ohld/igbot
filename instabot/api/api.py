@@ -3,6 +3,7 @@ import hmac
 import json
 import logging
 import os
+import sys
 import time
 import uuid
 from random import uniform
@@ -21,6 +22,8 @@ from . import config, devices
 from .api_photo import configure_photo, download_photo, upload_photo
 from .api_video import configure_video, download_video, upload_video
 from .prepare import delete_credentials, get_credentials
+
+PY2 = sys.version_info[0] == 2
 
 
 class API(object):
@@ -109,9 +112,7 @@ class API(object):
 
     def load_cookie(self, fname):
         # Python2 compatibility
-        try:
-            FileNotFoundError
-        except NameError:
+        if PY2:
             FileNotFoundError = IOError
 
         try:
