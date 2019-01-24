@@ -3,9 +3,12 @@ import hmac
 import json
 import logging
 import os
+import sys
 import time
 import uuid
 from random import uniform
+
+PY2 = sys.version_info[0] == 2
 
 try:
     from json.decoder import JSONDecodeError
@@ -109,9 +112,7 @@ class API(object):
 
     def load_cookie(self, fname):
         # Python2 compatibility
-        try:
-            FileNotFoundError
-        except NameError:
+        if PY2:
             FileNotFoundError = IOError
 
         try:
