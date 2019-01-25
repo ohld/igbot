@@ -21,7 +21,6 @@ setup(
     license='Apache Software License 2.0',
 
     url='https://github.com/instagrambot/instabot',
-    download_url='https://github.com/instagrambot/instabot/tarball/0.5.0',
     keywords=['instagram', 'bot', 'api', 'wrapper'],
     classifiers=[
         # How mature is this project? Common values are
