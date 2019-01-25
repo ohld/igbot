@@ -10,7 +10,6 @@ with open(path.join(here, 'README.md'), encoding='utf-8') as f:
 
 setup(
     name='instabot',
-    packages=['instabot', 'instabot.bot', 'instabot.api'],
     version='0.7.0',
 
     description='Instagram bot scripts for promotion and API python wrapper.',
