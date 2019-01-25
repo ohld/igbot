@@ -23,6 +23,11 @@ script:
  - py.test --cov=instabot --cov-report=xml
  - codecov
 
+after_success:
+ - bumpversion --verbose minor
+ - git add .
+ - git push
+
 branches:
   only:
     - master
