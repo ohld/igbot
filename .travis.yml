@@ -25,6 +25,8 @@ install:
 
 after_success:
  - bumpversion --verbose minor
+ - git add .
+ - git push
 
 branches:
   only:
