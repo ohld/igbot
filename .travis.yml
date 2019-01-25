@@ -16,12 +16,15 @@ install:
   - pip install pytest-cov
   - pip install codecov
 
-script:
+  script:
  - pyflakes instabot tests examples
  - pycodestyle --ignore=E501 instabot tests
  - pycodestyle --ignore=E402,E501 examples
  - py.test --cov=instabot --cov-report=xml
  - codecov
+
+after_success:
+ - bumpversion --verbose minor
 
 branches:
   only:
