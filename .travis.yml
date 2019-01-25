@@ -24,7 +24,7 @@ script:
  - codecov
 
 after_success:
- - if [ "$TRAVIS_PULL_REQUEST" = "false" ] && [ "$TRAVIS_BRANCH" = "master" ]; then bumpversion --verbose minor && git add . && git push HEAD:master
+ - if [ "$TRAVIS_PULL_REQUEST" = "false" ] && [ "$TRAVIS_BRANCH" = "master" ]; then bumpversion --verbose minor && git add . && git push HEAD:master; fi
 
 branches:
   only:
