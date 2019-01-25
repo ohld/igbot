@@ -78,7 +78,7 @@ class TestBotFilter(TestBot):
     def test_unlike_media_comments(self, patched_time_sleep):
         my_test_comment_items = []
         results = 5
-        for i, _ in enumerate(range(results)):
+        for i in range(results):
             my_test_comment_items.append(TEST_COMMENT_ITEM.copy())
             my_test_comment_items[i]['pk'] = TEST_COMMENT_ITEM['pk'] + i
             if i % 2:
