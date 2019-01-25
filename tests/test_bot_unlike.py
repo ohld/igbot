@@ -125,7 +125,7 @@ class TestBotFilter(TestBot):
             ), status=200, json=response_data)
         my_test_photo_items = []
         results = 5
-        for i, _ in enumerate(range(results)):
+        for i in range(results):
             my_test_photo_items.append(TEST_PHOTO_ITEM.copy())
             my_test_photo_items[i]['pk'] = TEST_PHOTO_ITEM['pk'] + i
             if i % 2:
