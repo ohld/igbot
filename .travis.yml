@@ -16,7 +16,7 @@ install:
   - pip install pytest-cov
   - pip install codecov
 
-  script:
+script:
  - pyflakes instabot tests examples
  - pycodestyle --ignore=E501 instabot tests
  - pycodestyle --ignore=E402,E501 examples
