@@ -1,9 +1,10 @@
+import time
+
 import hashlib
 import hmac
 import json
 import logging
 import os
-import time
 import uuid
 from random import uniform
 
@@ -181,7 +182,8 @@ class API(object):
         else:
             self.logger.error("Request returns {} error!".format(response.status_code))
             response_data = json.loads(response.text)
-            if "feedback_required" in str(response_data.get('message')) and response_data.get('spam') == True:
+            if "feedback_required" in str(response_data.get('message')) and response_data.get('spam') and response_data[
+                'spam'] == True :
                 self.logger.error("ATTENTION!: `feedback_required`, your action could have been blocked")
                 return "feedback_required"
             if response.status_code == 429:
