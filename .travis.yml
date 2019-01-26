@@ -23,6 +23,9 @@ script:
  - py.test --cov=instabot --cov-report=xml
  - codecov
 
+after_success:
+ - if [ "$TRAVIS_PULL_REQUEST" = "false" ] && [ "$TRAVIS_BRANCH" = "master" ]; then bumpversion --verbose minor && bash push.sh; fi
+
 branches:
   only:
     - master
@@ -34,4 +37,4 @@ deploy:
   password: $PYPI_PASSWORD
   on:
     branch: master
-    tags: true
+    tags: false
