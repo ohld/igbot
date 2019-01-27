@@ -12,3 +12,5 @@ responses==0.10.5
 future==0.17.1
 six==1.12.0
 huepy==0.9.8.1
+moviepy==0.2.3.5
+Pillow==5.4.1
