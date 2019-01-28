@@ -10,8 +10,7 @@ with open(path.join(here, 'README.md'), encoding='utf-8') as f:
 
 setup(
     name='instabot',
-    packages=['instabot', 'instabot.bot', 'instabot.api'],
-    version='0.5.0',
+    version='0.10.0',
 
     description='Instagram bot scripts for promotion and API python wrapper.',
     long_description=long_description,
@@ -21,7 +20,6 @@ setup(
     license='Apache Software License 2.0',
 
     url='https://github.com/instagrambot/instabot',
-    download_url='https://github.com/instagrambot/instabot/tarball/0.5.0',
     keywords=['instagram', 'bot', 'api', 'wrapper'],
     classifiers=[
         # How mature is this project? Common values are

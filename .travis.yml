@@ -24,9 +24,7 @@ script:
  - codecov
 
 after_success:
- - bumpversion --verbose minor
- - git add .
- - git push
+ - if [ "$TRAVIS_PULL_REQUEST" = "false" ] && [ "$TRAVIS_BRANCH" = "master" ]; then bumpversion --verbose minor && bash push.sh; fi
 
 branches:
   only:
@@ -39,4 +37,4 @@ deploy:
   password: $PYPI_PASSWORD
   on:
     branch: master
-    tags: true
+    tags: false
