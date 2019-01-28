@@ -7,4 +7,6 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
+VOLUME /app/examples/autopost/pics/
+
 CMD [ "python3", "example/multi_script_CLI.py" ]
