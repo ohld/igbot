@@ -3,12 +3,18 @@ from tqdm import tqdm
 
 def like(self, media_id, check_media=True):
     if not self.reached_limit('likes'):
+        if self.blocked_actions['likes']:
+            self.logger.warn('YOUR `LIKE` ACTION IS BLOCKED')
+            if self.blocked_actions_protection:
+                self.logger.warn('blocked_actions_protection ACTIVE. Skipping `like` action.')
+                return False
         self.delay('like')
         if check_media and not self.check_media(media_id):
             return False
         _r = self.api.like(media_id)
         if _r == 'feedback_required':
             self.logger.error("`Like` action has been BLOCKED...!!!")
+            self.blocked_actions['likes'] = True
             return False
         if _r:
             self.logger.info("Liked media %d." % media_id)
@@ -20,15 +26,34 @@ def like(self, media_id, check_media=True):
 
 
 def like_comment(self, comment_id):
-    if self.api.like_comment(comment_id):
-        return True
+    if not self.reached_limit('likes'):
+        if self.blocked_actions['likes']:
+            self.logger.warn('YOUR `LIKE` ACTION IS BLOCKED')
+            if self.blocked_actions_protection:
+                from datetime import timedelta
+                next_reset = (self.start_time.date() + timedelta(days=1)).strftime("%Y-%m-%d %H:%M:%S")
+                self.logger.warn('blocked_actions_protection ACTIVE. Skipping `like` action till, at least, {}.'.format(next_reset))
+                return False
+        self.delay('like')
+        _r = self.api.like_comment(comment_id)
+        if _r == 'feedback_required':
+            self.logger.error("`Like` action has been BLOCKED...!!!")
+            self.blocked_actions['likes'] = True
+            return False
+        if _r:
+            self.logger.info("Liked comment {}.".format(comment_id))
+            self.total['likes'] += 1
+            return True
+    else:
+        self.logger.info("Out of likes for today.")
     return False
 
 
 def like_media_comments(self, media_id):
     broken_items = []
     media_comments = self.get_media_comments(media_id)
-    comment_ids = [item["pk"] for item in media_comments if not item["has_liked_comment"]]
+    self.logger.info('Found {} comments'.format(len(media_comments)))
+    comment_ids = [item["pk"] for item in media_comments if not item.get('has_liked_comment') or not item["has_liked_comment"]]
 
     if not comment_ids:
         self.logger.info("None comments received: comments not found or comments have been filtered.")
