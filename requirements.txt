@@ -1,4 +1,4 @@
-bumpversion
+bumpversion==0.5.3
 
 tqdm==4.30.0
 requests==2.21.0
