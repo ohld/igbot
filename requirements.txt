@@ -2,7 +2,7 @@ bumpversion==0.5.3
 
 tqdm==4.30.0
 requests==2.21.0
-requests-toolbelt==0.8.0
+requests-toolbelt==0.9.0
 pycodestyle==2.4.0
 pyflakes==2.1.0
 schedule==0.6.0
