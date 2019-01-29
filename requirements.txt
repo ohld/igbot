@@ -1,6 +1,6 @@
-bumpversion
+bumpversion==0.5.3
 
-tqdm==4.29.1
+tqdm==4.30.0
 requests==2.21.0
 requests-toolbelt==0.8.0
 pycodestyle==2.4.0
