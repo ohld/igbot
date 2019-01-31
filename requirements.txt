@@ -2,12 +2,12 @@ bumpversion==0.5.3
 
 tqdm==4.30.0
 requests==2.21.0
-requests-toolbelt==0.8.0
-pycodestyle==2.4.0
+pycodestyle==2.5.0
+requests-toolbelt==0.9.1
 pyflakes==2.1.0
 schedule==0.6.0
 pysocks==1.6.8
-pytest==4.1.1
+pytest==4.2.0
 responses==0.10.5
 future==0.17.1
 six==1.12.0
