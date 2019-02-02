@@ -691,34 +691,6 @@ class API(object):
                 return user_feed
             next_max_id = last_json.get("next_max_id", "")
 
-    def get_total_location_feed(self, location_id, amount=100):
-        location_feed = []
-        next_max_id = ''
-
-        with tqdm(total=amount, desc="Getting hashtag media.", leave=False) as pbar:
-            while True:
-                self.get_location_feed(location_id, next_max_id)
-                last_json = self.last_json
-                with open('last_json.json', 'w') as f:
-                    f.write(json.dumps(last_json, indent=4, sort_keys=True))
-                # if 'ranked_items' not in last_json:
-                #     return location_feed[:amount]
-                items = last_json['items']
-                if len(items) == 0:
-                    try:
-                        items = last_json['ranked_items']
-                    except:
-                        pass
-
-                try:
-                    pbar.update(len(items))
-                    location_feed += items
-                    if len(location_feed) >= amount:
-                        return location_feed[:amount]
-                except Exception:
-                    return location_feed[:amount]
-                next_max_id = last_json.get("next_max_id", "")
-
     def get_total_hashtag_feed(self, hashtag_str, amount=100):
         hashtag_feed = []
         next_max_id = ''
