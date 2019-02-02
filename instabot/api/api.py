@@ -58,7 +58,7 @@ class API(object):
         self.uuid = self.generate_UUID(uuid_type=True)
 
     def login(self, username=None, password=None, force=False, proxy=None,
-              use_cookie=True, cookie_fname='cookie.txt'):
+              use_cookie=False, cookie_fname='cookie.txt'):
         if password is None:
             username, password = get_credentials(username=username)
 
@@ -181,7 +181,8 @@ class API(object):
         else:
             self.logger.error("Request returns {} error!".format(response.status_code))
             response_data = json.loads(response.text)
-            if "feedback_required" in str(response_data.get('message')) and response_data.get('spam') and response_data['spam'] == True:
+            if "feedback_required" in str(response_data.get('message')) and response_data.get('spam') and response_data[
+                'spam']:
                 self.logger.error("ATTENTION!: `feedback_required`, your action could have been blocked")
                 return "feedback_required"
             if response.status_code == 429:
@@ -689,6 +690,34 @@ class API(object):
             if not last_json.get("more_available"):
                 return user_feed
             next_max_id = last_json.get("next_max_id", "")
+
+    def get_total_location_feed(self, location_id, amount=100):
+        location_feed = []
+        next_max_id = ''
+
+        with tqdm(total=amount, desc="Getting hashtag media.", leave=False) as pbar:
+            while True:
+                self.get_location_feed(location_id, next_max_id)
+                last_json = self.last_json
+                with open('last_json.json', 'w') as f:
+                    f.write(json.dumps(last_json, indent=4, sort_keys=True))
+                # if 'ranked_items' not in last_json:
+                #     return location_feed[:amount]
+                items = last_json['items']
+                if len(items) == 0:
+                    try:
+                        items = last_json['ranked_items']
+                    except:
+                        pass
+
+                try:
+                    pbar.update(len(items))
+                    location_feed += items
+                    if len(location_feed) >= amount:
+                        return location_feed[:amount]
+                except Exception:
+                    return location_feed[:amount]
+                next_max_id = last_json.get("next_max_id", "")
 
     def get_total_hashtag_feed(self, hashtag_str, amount=100):
         hashtag_feed = []
