@@ -31,4 +31,4 @@ else:
 bot.login(username=args.u, password=args.p,
           proxy=args.proxy)
 
-bot.like_users(users_to_like, nlike=1)
+bot.like_users(users_to_like, nlikes=1)

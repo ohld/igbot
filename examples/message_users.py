@@ -71,7 +71,7 @@ for users in pages_to_scrape:
     medias = bot.get_user_medias(users, filtration=False)
     getlikers = bot.get_media_likers(medias[0])
     for likers in getlikers:
-            f.write(likers + "\n")
+        f.write(likers + "\n")
 print("succesfully written latest medialikers of" + str(pages_to_scrape))
 f.close()
 

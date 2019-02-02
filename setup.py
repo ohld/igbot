@@ -10,7 +10,7 @@ with open(path.join(here, 'README.md'), encoding='utf-8') as f:
 
 setup(
     name='instabot',
-    version='0.8.0',
+    version='0.17.0',
 
     description='Instagram bot scripts for promotion and API python wrapper.',
     long_description=long_description,
@@ -21,6 +21,19 @@ setup(
 
     url='https://github.com/instagrambot/instabot',
     keywords=['instagram', 'bot', 'api', 'wrapper'],
+    install_requires=[
+        'tqdm>=4.30.0',
+        'requests>=2.21.0',
+        'requests-toolbelt>=0.8.0',
+        'itsdangerous>=0.24',
+        'click>=5.1',
+        'schedule>=0.6.0',
+        'pysocks>=1.6.8',
+        'responses>=0.10.5',
+        'future>=0.17.1',
+        'six>=1.12.0',
+        'huepy>=0.9.8.1',
+    ],
     classifiers=[
         # How mature is this project? Common values are
         'Development Status :: 5 - Production/Stable',
