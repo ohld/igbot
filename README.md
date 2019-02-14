@@ -12,7 +12,7 @@ Forever free. Written in Python.
 [![PyPI version](https://badge.fury.io/py/instabot.svg)](https://badge.fury.io/py/instabot)
 [![Build Status](https://travis-ci.org/instagrambot/instabot.svg?branch=master)](https://travis-ci.org/instagrambot/instabot)
 [![codecov](https://codecov.io/gh/instagrambot/instabot/branch/master/graph/badge.svg)](https://codecov.io/gh/instagrambot/instabot)
-<span class="badge-bitcoin"><a href="https://github.com/instagrambot/instabot/blob/master/.github/DONATE_BITCOIN.md" title="Donate once-off to this project using Bitcoin"><img src="https://img.shields.io/badge/bitcoin-donate-yellow.svg" alt="Bitcoin donate button" /></a></span>
+<a href="https://www.buymeacoffee.com/okhlopkov" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/yellow_img.png" alt="Buy Me A Coffee" style="height: auto !important;width: auto !important;" ></a>
 
 ### Installation
 Install `instabot` with:
