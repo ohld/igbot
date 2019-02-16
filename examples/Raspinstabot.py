@@ -48,25 +48,27 @@ def unfollow_from_bottom():
     #pass
 
 #################################################################################
+filename = "vetfolname.txt"
 def like_and_follow(): #file contain username
-    with open("vetfolname.txt","r") as f:
-        for username in islice(f, 0, 2):
-            user_id = username.strip()
-            # bot.like_user(user_id, amount=2)
-            # bot.follow(user_id)
+    if os.path.getsize(filename):
+        with open(filename,"r") as f:
+            for username in islice(f, 0, 2):
+                user_id = username.strip()
+                # bot.like_user(user_id, amount=2)
+                # bot.follow(user_id)
 
-            print(username)
-            print("second",username)
-
+                print(user_id)
+                print("second",user_id)
+    else:
+        print(filename, "empty")
 
 def new_list():
-    with open("vetfolname.txt","r") as f:
+    with open(filename,"r") as f:
         lines = f.readlines()
-        open("vetfolname.txt", "w").writelines(lines[2:])
+        open(filename, "w").writelines(lines[2:])
 
 
-# returned_user = like_and_follow()
-# print(returned_user)
+
 like_and_follow()
 new_list()
-like_and_follow()
+# like_and_follow()
