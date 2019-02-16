@@ -13,6 +13,7 @@ import sys
 import time
 import random
 from tqdm import tqdm
+from itertools import islice
 
 sys.path.append(os.path.join(sys.path[0], '../'))
 from instabot import Bot
@@ -33,8 +34,8 @@ def unfollow_from_bottom():
     pass
 
 
-bot = Bot()
-bot.login(username="bromalayabro", password="subhanallah")
+# bot = Bot()
+# bot.login(username="bromalayabro", password="subhanallah")
 
 # required arguments
 # username = str(input("enter username whose followers or followings you want to get")).strip()
@@ -49,13 +50,23 @@ bot.login(username="bromalayabro", password="subhanallah")
 #################################################################################
 def like_and_follow(): #file contain username
     with open("vetfolname.txt","r") as f:
-        for username in f:
+        for username in islice(f, 0, 2):
             user_id = username.strip()
+            # bot.like_user(user_id, amount=2)
+            # bot.follow(user_id)
 
-            bot.like_user(user_id, amount=2)
-            bot.follow(user_id)
+            print(username)
+            print("second",username)
 
+
+def new_list():
+    with open("vetfolname.txt","r") as f:
+        lines = f.readlines()
+        open("vetfolname.txt", "w").writelines(lines[2:])
+
+
+# returned_user = like_and_follow()
+# print(returned_user)
 like_and_follow()
-
-
-
+new_list()
+like_and_follow()
