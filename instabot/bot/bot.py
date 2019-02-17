@@ -44,17 +44,18 @@ from .bot_unfollow import (unfollow, unfollow_everyone, unfollow_non_followers,
 from .bot_unlike import (unlike, unlike_comment, unlike_media_comments,
                          unlike_medias, unlike_user)
 from .bot_video import upload_video
+from .bot_files import (whitelist, blacklist, comments, followed, unfollowed, skipped, friends)
 
 
 class Bot(object):
     def __init__(self,
-                 whitelist_file='whitelist.txt',
-                 blacklist_file='blacklist.txt',
-                 comments_file='comments.txt',
-                 followed_file='followed.txt',
-                 unfollowed_file='unfollowed.txt',
-                 skipped_file='skipped.txt',
-                 friends_file='friends.txt',
+                 whitelist_file=whitelist,
+                 blacklist_file=blacklist,
+                 comments_file=comments,
+                 followed_file=followed,
+                 unfollowed_file=unfollowed,
+                 skipped_file=skipped,
+                 friends_file=friends,
                  proxy=None,
                  max_likes_per_day=1000,
                  max_unlikes_per_day=1000,
@@ -170,13 +171,13 @@ class Bot(object):
         self._usernames = {}  # `username` to `user_id` mapping
 
         # Database files
-        self.followed_file = utils.file(followed_file)
-        self.unfollowed_file = utils.file(unfollowed_file)
-        self.skipped_file = utils.file(skipped_file)
-        self.friends_file = utils.file(friends_file)
-        self.comments_file = utils.file(comments_file)
-        self.blacklist_file = utils.file(blacklist_file)
-        self.whitelist_file = utils.file(whitelist_file)
+        self.followed_file = followed_file
+        self.unfollowed_file = unfollowed_file
+        self.skipped_file = skipped_file
+        self.friends_file = friends_file
+        self.comments_file = comments_file
+        self.blacklist_file = blacklist_file
+        self.whitelist_file = whitelist_file
 
         self.proxy = proxy
         self.verbosity = verbosity
@@ -258,6 +259,15 @@ class Bot(object):
         self.prepare()
         signal.signal(signal.SIGTERM, self.logout)
         atexit.register(self.logout)
+
+        self.followed_file = self.followed_file(self)
+        self.unfollowed_file = self.unfollowed_file(self)
+        self.skipped_file = self.skipped_file(self)
+        self.friends_file = self.friends_file(self)
+        self.comments_file = self.comments_file(self)
+        self.blacklist_file = self.blacklist_file(self)
+        self.whitelist_file = self.whitelist_file(self)
+
         return True
 
     def prepare(self):
