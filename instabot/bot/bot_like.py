@@ -4,9 +4,9 @@ from tqdm import tqdm
 def like(self, media_id, check_media=True):
     if not self.reached_limit('likes'):
         if self.blocked_actions['likes']:
-            self.logger.warn('YOUR `LIKE` ACTION IS BLOCKED')
+            self.logger.warning('YOUR `LIKE` ACTION IS BLOCKED')
             if self.blocked_actions_protection:
-                self.logger.warn('blocked_actions_protection ACTIVE. Skipping `like` action.')
+                self.logger.warning('blocked_actions_protection ACTIVE. Skipping `like` action.')
                 return False
         self.delay('like')
         if check_media and not self.check_media(media_id):
@@ -28,11 +28,11 @@ def like(self, media_id, check_media=True):
 def like_comment(self, comment_id):
     if not self.reached_limit('likes'):
         if self.blocked_actions['likes']:
-            self.logger.warn('YOUR `LIKE` ACTION IS BLOCKED')
+            self.logger.warning('YOUR `LIKE` ACTION IS BLOCKED')
             if self.blocked_actions_protection:
                 from datetime import timedelta
                 next_reset = (self.start_time.date() + timedelta(days=1)).strftime("%Y-%m-%d %H:%M:%S")
-                self.logger.warn('blocked_actions_protection ACTIVE. Skipping `like` action till, at least, {}.'.format(next_reset))
+                self.logger.warning('blocked_actions_protection ACTIVE. Skipping `like` action till, at least, {}.'.format(next_reset))
                 return False
         self.delay('like')
         _r = self.api.like_comment(comment_id)

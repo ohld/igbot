@@ -45,7 +45,7 @@ else:
 videos = list(set(videos) - set(posted_video_list))
 if len(videos) == 0:
     if not args.video:
-        bot.logger.warn("NO MORE VIDEO TO UPLOAD")
+        bot.logger.warning("NO MORE VIDEO TO UPLOAD")
         exit()
     else:
         bot.logger.error("The video `{}` has already been posted".format(videos[0]))
