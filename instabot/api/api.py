@@ -61,13 +61,16 @@ class API(object):
         self.uuid = self.generate_UUID(uuid_type=True)
 
     def login(self, username=None, password=None, force=False, proxy=None,
-              use_cookie=False, cookie_fname='cookie.txt'):
+              use_cookie=True, cookie_fname=None):
         if password is None:
             username, password = get_credentials(username=username)
 
         self.device_id = self.generate_device_id(self.get_seed(username, password))
         self.proxy = proxy
         self.set_user(username, password)
+
+        if not cookie_fname:
+            cookie_fname = "{username}_cookie.txt".format(username=username)
 
         cookie_is_loaded = False
         if use_cookie:
