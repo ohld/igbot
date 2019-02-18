@@ -17,6 +17,9 @@ class TestBot:
         self.FULLNAME = 'test_full_name'
         self.TOKEN = 'abcdef123456'
         self.bot = Bot()
+        self.followed_file = self.bot.followed_file(self)
+        self.unfollowed_file = self.bot.unfollowed_file(self)
+        self.skipped_file = self.bot.skipped_file(self)
         self.prepare_api(self.bot)
 
     def prepare_api(self, bot):
