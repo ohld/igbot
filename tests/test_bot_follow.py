@@ -15,13 +15,12 @@ from .test_variables import (TEST_SEARCH_USERNAME_ITEM, TEST_USERNAME_INFO_ITEM,
 
 
 def reset_files(_bot):
-    if _bot.login(load_cookie_mock):
-        for x in _bot.followed_file.list:
-            _bot.followed_file.remove(x)
-        for x in _bot.unfollowed_file.list:
-            _bot.unfollowed_file.remove(x)
-        for x in _bot.skipped_file.list:
-            _bot.skipped_file.remove(x)
+    for x in _bot.followed_file.list:
+        _bot.followed_file.remove(x)
+    for x in _bot.unfollowed_file.list:
+        _bot.unfollowed_file.remove(x)
+    for x in _bot.skipped_file.list:
+        _bot.skipped_file.remove(x)
 
 
 class TestBotFilter(TestBot):
@@ -32,6 +31,8 @@ class TestBotFilter(TestBot):
                                           str(TEST_SEARCH_USERNAME_ITEM['pk'])])
     @patch('time.sleep', return_value=None)
     def test_follow(self, patched_time_sleep, username):
+        self.unfollowed_file = unfollowed_file(self)
+        self.skipped_file = skipped_file(self)
         follows_at_start = self.bot.total['follows']
         self.bot._following = [1]
         reset_files(self.bot)
