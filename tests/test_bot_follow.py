@@ -15,7 +15,7 @@ from .test_variables import (TEST_SEARCH_USERNAME_ITEM, TEST_USERNAME_INFO_ITEM,
 
 
 def reset_files(_bot):
-    if _bot.login():
+    if _bot.test_login(load_cookie_mock):
         for x in _bot.followed_file.list:
             _bot.followed_file.remove(x)
         for x in _bot.unfollowed_file.list:
