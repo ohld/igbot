@@ -4,7 +4,6 @@ import random
 import signal
 import time
 
-from .. import utils
 from ..api import API
 from .bot_archive import archive, archive_medias, unarchive_medias
 from .bot_block import block, block_bots, block_users, unblock, unblock_users
