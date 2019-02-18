@@ -15,11 +15,11 @@ from .test_variables import (TEST_SEARCH_USERNAME_ITEM, TEST_USERNAME_INFO_ITEM,
 
 
 def reset_files(_bot):
-    for x in _bot.followed_file(_bot.self).list:
+    for x in _bot.followed_file.list:
         _bot.followed_file.remove(x)
-    for x in _bot.unfollowed_file(_bot.self).list:
+    for x in _bot.unfollowed_file.list:
         _bot.unfollowed_file.remove(x)
-    for x in _bot.skipped_file(_bot.self).list:
+    for x in _bot.skipped_file.list:
         _bot.skipped_file.remove(x)
 
 
