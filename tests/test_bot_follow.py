@@ -24,7 +24,6 @@ def reset_files(_bot):
 
 
 class TestBotFilter(TestBot):
-    
 
     @responses.activate
     @pytest.mark.parametrize('username', [TEST_SEARCH_USERNAME_ITEM['username'],
