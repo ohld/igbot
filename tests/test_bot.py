@@ -17,9 +17,6 @@ class TestBot:
         self.FULLNAME = 'test_full_name'
         self.TOKEN = 'abcdef123456'
         self.bot = Bot()
-        self.followed_file = self.bot.followed_file(self)
-        self.unfollowed_file = self.bot.unfollowed_file(self)
-        self.skipped_file = self.bot.skipped_file(self)
         self.prepare_api(self.bot)
 
     def prepare_api(self, bot):
@@ -39,6 +36,9 @@ class TestBotAPI(TestBot):
     @patch('instabot.API.load_cookie')
     def test_login(self, load_cookie_mock):
         self.bot = Bot()
+        self.followed_file = self.bot.followed_file(self)
+        self.unfollowed_file = self.bot.unfollowed_file(self)
+        self.skipped_file = self.bot.skipped_file(self)
 
         load_cookie_mock.side_effect = Exception()
 
