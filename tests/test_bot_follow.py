@@ -24,6 +24,8 @@ def reset_files(_bot):
 
 
 class TestBotFilter(TestBot):
+    
+    self.default_files = True
 
     @responses.activate
     @pytest.mark.parametrize('username', [TEST_SEARCH_USERNAME_ITEM['username'],
@@ -31,9 +33,9 @@ class TestBotFilter(TestBot):
                                           str(TEST_SEARCH_USERNAME_ITEM['pk'])])
     @patch('time.sleep', return_value=None)
     def test_follow(self, patched_time_sleep, username):
-        self.bot.followed_file = self.bot.followed_file(self)
-        self.bot.unfollowed_file = self.bot.unfollowed_file(self)
-        self.bot.skipped_file = self.bot.skipped_file(self)
+        self.followed_file = self.bot.followed_file(self)
+        self.unfollowed_file = self.bot.unfollowed_file(self)
+        self.skipped_file = self.bot.skipped_file(self)
         follows_at_start = self.bot.total['follows']
         self.bot._following = [1]
         reset_files(self.bot)
