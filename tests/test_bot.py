@@ -35,10 +35,7 @@ class TestBot:
 class TestBotAPI(TestBot):
     @patch('instabot.API.load_cookie')
     def test_login(self, load_cookie_mock):
-        self.bot = Bot(default_files = True)
-        self.followed_file = self.bot.followed_file(self)
-        self.unfollowed_file = self.bot.unfollowed_file(self)
-        self.skipped_file = self.bot.skipped_file(self)
+        self.bot = Bot()
 
         load_cookie_mock.side_effect = Exception()
 
