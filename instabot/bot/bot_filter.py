@@ -149,8 +149,8 @@ def check_user(self, user_id, unfollowing=False):
         following=following_count
     ))
 
-    skipped = self.skipped_file
-    followed = self.followed_file
+    skipped = self.skipped_file(self)
+    followed = self.followed_file(self)
 
     if not unfollowing:
         if self.filter_previously_followed and user_id in followed.list:
