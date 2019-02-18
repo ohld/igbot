@@ -61,7 +61,7 @@ class API(object):
         self.uuid = self.generate_UUID(uuid_type=True)
 
     def login(self, username=None, password=None, force=False, proxy=None,
-              use_cookie=True, cookie_fname=None):
+              use_cookie=False, cookie_fname=None):
         if password is None:
             username, password = get_credentials(username=username)
 
