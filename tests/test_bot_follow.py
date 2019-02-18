@@ -34,7 +34,7 @@ class TestBotFilter(TestBot):
     def test_follow(self, patched_time_sleep, username):
         follows_at_start = self.bot.total['follows']
         self.bot._following = [1]
-        reset_files(self.bot)
+#        reset_files(self.bot)
         user_id = TEST_SEARCH_USERNAME_ITEM['pk']
         my_test_search_username_item = TEST_SEARCH_USERNAME_ITEM.copy()
         my_test_username_info_item = TEST_USERNAME_INFO_ITEM.copy()
