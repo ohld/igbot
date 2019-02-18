@@ -31,8 +31,8 @@ class TestBotFilter(TestBot):
                                           str(TEST_SEARCH_USERNAME_ITEM['pk'])])
     @patch('time.sleep', return_value=None)
     def test_follow(self, patched_time_sleep, username):
-        self.unfollowed_file = unfollowed_file(self)
-        self.skipped_file = skipped_file(self)
+        self.unfollowed_file = bot.unfollowed_file(self)
+        self.skipped_file = bot.skipped_file(self)
         follows_at_start = self.bot.total['follows']
         self.bot._following = [1]
         reset_files(self.bot)
