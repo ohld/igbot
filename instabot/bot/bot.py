@@ -44,18 +44,20 @@ from .bot_unfollow import (unfollow, unfollow_everyone, unfollow_non_followers,
 from .bot_unlike import (unlike, unlike_comment, unlike_media_comments,
                          unlike_medias, unlike_user)
 from .bot_video import upload_video
-from .bot_files import (whitelist, blacklist, comments, followed, unfollowed, skipped, friends)
+from .bot_files import (set_whitelist, set_blacklist, set_comments, set_followed,
+                        set_unfollowed, set_skipped, set_friends)
 
 
 class Bot(object):
     def __init__(self,
-                 whitelist_file=whitelist,
-                 blacklist_file=blacklist,
-                 comments_file=comments,
-                 followed_file=followed,
-                 unfollowed_file=unfollowed,
-                 skipped_file=skipped,
-                 friends_file=friends,
+                 default_files=True,
+                 whitelist_file=set_whitelist,
+                 blacklist_file=set_blacklist,
+                 comments_file=set_comments,
+                 followed_file=set_followed,
+                 unfollowed_file=set_unfollowed,
+                 skipped_file=set_skipped,
+                 friends_file=set_friends,
                  proxy=None,
                  max_likes_per_day=1000,
                  max_unlikes_per_day=1000,
@@ -171,6 +173,7 @@ class Bot(object):
         self._usernames = {}  # `username` to `user_id` mapping
 
         # Database files
+        self.default_files = default_files
         self.followed_file = followed_file
         self.unfollowed_file = unfollowed_file
         self.skipped_file = skipped_file
@@ -208,13 +211,13 @@ class Bot(object):
     @property
     def blacklist(self):
         # This is a fast operation because `get_user_id_from_username` is cached.
-        return [self.convert_to_user_id(i) for i in self.blacklist_file.list
+        return [self.convert_to_user_id(i) for i in self.blacklist_file().list
                 if i is not None]
 
     @property
     def whitelist(self):
         # This is a fast operation because `get_user_id_from_username` is cached.
-        return [self.convert_to_user_id(i) for i in self.whitelist_file.list
+        return [self.convert_to_user_id(i) for i in self.whitelist_file().list
                 if i is not None]
 
     @property
@@ -654,3 +657,4 @@ class Bot(object):
 
     def save_user_stats(self, username, path=""):
         return save_user_stats(self, username, path=path)
+
