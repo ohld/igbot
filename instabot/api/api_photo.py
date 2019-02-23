@@ -95,12 +95,13 @@ def upload_photo(self, photo, caption=None, upload_id=None, from_video=False):
         self.logger.info('Photo does not have a compatible '
                          'photo aspect ratio.')
         return False
+    photoFile =open(photo, 'rb')
     data = {
         'upload_id': upload_id,
         '_uuid': self.uuid,
         '_csrftoken': self.token,
         'image_compression': '{"lib_name":"jt","lib_version":"1.3.0","quality":"87"}',
-        'photo': ('pending_media_%s.jpg' % upload_id, open(photo, 'rb'), 'application/octet-stream', {'Content-Transfer-Encoding': 'binary'})
+        'photo': ('pending_media_%s.jpg' % upload_id, photoFile, 'application/octet-stream', {'Content-Transfer-Encoding': 'binary'})
     }
     m = MultipartEncoder(data, boundary=self.uuid)
     self.session.headers.update({'X-IG-Capabilities': '3Q4=',
@@ -113,6 +114,7 @@ def upload_photo(self, photo, caption=None, upload_id=None, from_video=False):
                                  'User-Agent': self.user_agent})
     response = self.session.post(
         config.API_URL + "upload/photo/", data=m.to_string())
+    photoFile.close()
     if response.status_code == 200:
         if self.configure_photo(upload_id, photo, caption):
             self.expose()
