@@ -261,7 +261,6 @@ class Bot(object):
         self.prepare()
         signal.signal(signal.SIGTERM, self.logout)
         atexit.register(self.logout)
-
         return True
 
     def prepare(self):
