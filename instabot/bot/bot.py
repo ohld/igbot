@@ -5,6 +5,7 @@ import signal
 import time
 
 from ..api import API
+from .. import utils
 from .bot_archive import archive, archive_medias, unarchive_medias
 from .bot_block import block, block_bots, block_users, unblock, unblock_users
 from .bot_checkpoint import load_checkpoint, save_checkpoint
@@ -43,20 +44,18 @@ from .bot_unfollow import (unfollow, unfollow_everyone, unfollow_non_followers,
 from .bot_unlike import (unlike, unlike_comment, unlike_media_comments,
                          unlike_medias, unlike_user)
 from .bot_video import upload_video
-from .bot_files import (set_whitelist, set_blacklist, set_comments, set_followed,
-                        set_unfollowed, set_skipped, set_friends)
 
 
 class Bot(object):
     def __init__(self,
                  default_files=True,
-                 whitelist_file=set_whitelist,
-                 blacklist_file=set_blacklist,
-                 comments_file=set_comments,
-                 followed_file=set_followed,
-                 unfollowed_file=set_unfollowed,
-                 skipped_file=set_skipped,
-                 friends_file=set_friends,
+                 whitelist_file='whitelist.txt',
+                 blacklist_file='blacklist.txt',
+                 comments_file='comments.txt',
+                 followed_file='followed.txt',
+                 unfollowed_file='unfollowed.txt',
+                 skipped_file='skipped.txt',
+                 friends_file='friends.txt',
                  proxy=None,
                  max_likes_per_day=1000,
                  max_unlikes_per_day=1000,
@@ -173,13 +172,13 @@ class Bot(object):
 
         # Database files
         self.default_files = default_files
-        self.followed_file = followed_file(self)
-        self.unfollowed_file = unfollowed_file(self)
-        self.skipped_file = skipped_file(self)
-        self.friends_file = friends_file(self)
-        self.comments_file = comments_file(self)
-        self.blacklist_file = blacklist_file(self)
-        self.whitelist_file = whitelist_file(self)
+        self.followed_file = utils.file(followed_file)
+        self.unfollowed_file = utils.file(unfollowed_file)
+        self.skipped_file = utils.file(skipped_file)
+        self.friends_file = utils.file(friends_file)
+        self.comments_file = utils.file(comments_file)
+        self.blacklist_file = utils.file(blacklist_file)
+        self.whitelist_file = utils.file(whitelist_file)
 
         self.proxy = proxy
         self.verbosity = verbosity
@@ -261,6 +260,14 @@ class Bot(object):
         self.prepare()
         signal.signal(signal.SIGTERM, self.logout)
         atexit.register(self.logout)
+        if not self.default_files:
+            self.followed_file = utils.file(self.username + '_followed.txt')
+            self.unfollowed_file = utils.file(self.username + '_unfollowed.txt')
+            self.skipped_file = utils.file(self.username + '_skipped.txt')
+            self.friends_file = utils.file(self.username + '_friends.txt')
+            self.comments_file = utils.file(self.username + '_comments.txt')
+            self.blacklist_file = utils.file(self.username + '_blacklist.txt')
+            self.whitelist_file = utils.file(self.username + '_whitelist.txt')
         return True
 
     def prepare(self):
