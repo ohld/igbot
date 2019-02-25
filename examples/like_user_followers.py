@@ -16,7 +16,7 @@ parser = argparse.ArgumentParser(add_help=True)
 parser.add_argument('-u', type=str, help="username")
 parser.add_argument('-p', type=str, help="password")
 parser.add_argument('-proxy', type=str, help="proxy")
-parser.add_argument('users', type=str, nargs='+', help='users')
+parser.add_argument('-users', type=str, nargs='+', help='users')
 args = parser.parse_args()
 
 bot = Bot()
@@ -25,3 +25,6 @@ bot.login(username=args.u, password=args.p,
 
 for username in args.users:
     bot.like_followers(username, nlikes=3)
+
+
+
