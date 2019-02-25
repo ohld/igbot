@@ -173,13 +173,13 @@ class Bot(object):
 
         # Database files
         self.default_files = default_files
-        self.followed_file = followed_file
-        self.unfollowed_file = unfollowed_file
-        self.skipped_file = skipped_file
-        self.friends_file = friends_file
-        self.comments_file = comments_file
-        self.blacklist_file = blacklist_file
-        self.whitelist_file = whitelist_file
+        self.followed_file = followed_file(self)
+        self.unfollowed_file = unfollowed_file(self)
+        self.skipped_file = skipped_file(self)
+        self.friends_file = friends_file(self)
+        self.comments_file = comments_file(self)
+        self.blacklist_file = blacklist_file(self)
+        self.whitelist_file = whitelist_file(self)
 
         self.proxy = proxy
         self.verbosity = verbosity
@@ -210,13 +210,13 @@ class Bot(object):
     @property
     def blacklist(self):
         # This is a fast operation because `get_user_id_from_username` is cached.
-        return [self.convert_to_user_id(i) for i in self.blacklist_file(self).list
+        return [self.convert_to_user_id(i) for i in self.blacklist_file.list
                 if i is not None]
 
     @property
     def whitelist(self):
         # This is a fast operation because `get_user_id_from_username` is cached.
-        return [self.convert_to_user_id(i) for i in self.whitelist_file(self).list
+        return [self.convert_to_user_id(i) for i in self.whitelist_file.list
                 if i is not None]
 
     @property
@@ -261,14 +261,6 @@ class Bot(object):
         self.prepare()
         signal.signal(signal.SIGTERM, self.logout)
         atexit.register(self.logout)
-
-        self.followed_file = self.followed_file(self)
-        self.unfollowed_file = self.unfollowed_file(self)
-        self.skipped_file = self.skipped_file(self)
-        self.friends_file = self.friends_file(self)
-        self.comments_file = self.comments_file(self)
-        self.blacklist_file = self.blacklist_file(self)
-        self.whitelist_file = self.whitelist_file(self)
 
         return True
 
