@@ -1,4 +1,4 @@
-#python like_user_followers.py -u bromalayabro -p subhanallah -users newkhai.my
+ #python like_user_followers.py -u bromalayabro -p subhanallah -users newkhai.my
 """
 get username
 get all following
@@ -11,6 +11,8 @@ comment following
 import argparse
 import os
 import sys
+import time
+import random
 
 sys.path.append(os.path.join(sys.path[0], '../'))
 from instabot import Bot
@@ -33,4 +35,6 @@ for username in followers_list_id:
     new_user_id = username.strip()
     bot.like_user(new_user_id, amount=3)
     bot.follow(new_user_id)
+    time.sleep(10 + 20 * random.random())
+
 
