@@ -44,13 +44,13 @@ def like_and_follow_followers():
         bot.follow(new_user_id)
         time.sleep(10 + 20 * random.random())
 
-def unfollow_nod_followers():
+def unfollow_non_followers():
     bot.unfollow_non_followers(n_to_unfollows=700)
 
 
 
 run_threaded(like_and_follow_followers)
-schedule.every().day.at("01:30").do(run_threaded, like_and_follow_followers)
+schedule.every().day.at("01:30").do(run_threaded, unfollow_non_followers)
 
 while True:
     schedule.run_pending()
