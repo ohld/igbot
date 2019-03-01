@@ -17,11 +17,11 @@ def comment(self, media_id, comment_text):
         return True
     if not self.reached_limit('comments'):
         if self.blocked_actions['comments']:
-            self.logger.warn('YOUR `COMMENT` ACTION IS BLOCKED')
+            self.logger.warning('YOUR `COMMENT` ACTION IS BLOCKED')
             if self.blocked_actions_protection:
                 from datetime import timedelta
                 next_reset = (self.start_time.date() + timedelta(days=1)).strftime("%Y-%m-%d %H:%M:%S")
-                self.logger.warn('blocked_actions_protection ACTIVE. Skipping `comment` action till, at least, {}.'.format(next_reset))
+                self.logger.warning('blocked_actions_protection ACTIVE. Skipping `comment` action till, at least, {}.'.format(next_reset))
                 return False
         self.delay('comment')
         _r = self.api.comment(media_id, comment_text)
@@ -42,9 +42,9 @@ def reply_to_comment(self, media_id, comment_text, parent_comment_id):
         return False
     if not self.reached_limit('comments'):
         if self.blocked_actions['comments']:
-            self.logger.warn('YOUR `COMMENT` ACTION IS BLOCKED')
+            self.logger.warning('YOUR `COMMENT` ACTION IS BLOCKED')
             if self.blocked_actions_protection:
-                self.logger.warn('blocked_actions_protection ACTIVE. Skipping `comment` action.')
+                self.logger.warning('blocked_actions_protection ACTIVE. Skipping `comment` action.')
                 return False
         self.delay('comment')
         if comment_text[0] != '@':
