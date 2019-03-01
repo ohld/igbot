@@ -19,19 +19,23 @@ import threading
 sys.path.append(os.path.join(sys.path[0], '../'))
 from instabot import Bot
 
-parser = argparse.ArgumentParser(add_help=True)
-parser.add_argument('-u', type=str, help="username")
-parser.add_argument('-p', type=str, help="password")
-parser.add_argument('-proxy', type=str, help="proxy")
-parser.add_argument('-users', type=str, help='users')
-args = parser.parse_args()
+# parser = argparse.ArgumentParser(add_help=True)
+# parser.add_argument('-u', type=str, help="username")
+# parser.add_argument('-p', type=str, help="password")
+# parser.add_argument('-proxy', type=str, help="proxy")
+# parser.add_argument('-users', type=str, help='users')
+# args = parser.parse_args()
+#
+# bot = Bot()
+# bot.login(username=args.u, password=args.p,
+#           proxy=args.proxy)
+# user_id = bot.get_user_id_from_username(args.users)
 
 bot = Bot()
-bot.login(username=args.u, password=args.p,
-          proxy=args.proxy)
+bot.login(username="bromalayabro", password="subhanallah")
+user_id = bot.get_user_id_from_username("neelofa")
 
-user_id = bot.get_user_id_from_username(args.users)
-followers_list_id = bot.get_user_followers(user_id)
+followers_list_id = bot.get_user_followers(user_id,nfollows=20000)
 
 def run_threaded(job_fn):
     job_thread = threading.Thread(target=job_fn)
