@@ -12,18 +12,20 @@ def delete_media(self, media_id):
 
 
 def delete_medias(self, medias):
-    broken_items = []
+    inx = 0
     if not medias:
         self.logger.info("Nothing to delete.")
-        return broken_items
+        return False
     self.logger.info("Going to delete %d medias." % (len(medias)))
     for media in tqdm(medias):
-        if not self.delete_media(media):
+        try:
+            self.delete_media(media)
+        except Exception as e:
+            self.logger.error(str(e))
+            inx += 1
             self.error_delay()
-            broken_items = medias[medias.index(media):]
-            break
-    self.logger.info("DONE: Total deleted %d medias." % (len(medias) - len(broken_items)))
-    return broken_items
+    self.logger.info("DONE: Total deleted %d medias." % (len(medias) - inx))
+    return
 
 
 def delete_comment(self, media_id, comment_id):

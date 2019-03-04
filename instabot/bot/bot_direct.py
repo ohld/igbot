@@ -35,17 +35,17 @@ def send_message(self, text, user_ids, thread_id=None):
 
 
 def send_messages(self, text, user_ids):
-    broken_items = []
     if not user_ids:
         self.logger.info("User must be at least one.")
-        return broken_items
+        return False
     self.logger.info("Going to send %d messages." % (len(user_ids)))
     for user in tqdm(user_ids):
-        if not self.send_message(text, user):
+        try:
+            self.send_message(text, user)
+        except Exception as e:
+            self.logger.error(str(e))
             self.error_delay()
-            broken_items = user_ids[user_ids.index(user):]
-            break
-    return broken_items
+    return
 
 
 def send_media(self, media_id, user_ids, text='', thread_id=None):
@@ -84,17 +84,17 @@ def send_media(self, media_id, user_ids, text='', thread_id=None):
 
 
 def send_medias(self, media_id, user_ids, text):
-    broken_items = []
     if not user_ids:
         self.logger.info("User must be at least one.")
-        return broken_items
+        return False
     self.logger.info("Going to send %d messages." % (len(user_ids)))
     for user in tqdm(user_ids):
-        if not self.send_media(media_id, user, text):
+        try:
+            self.send_media(media_id, user, text)
+        except Exception as e:
+            self.logger.error(str(e))
             self.error_delay()
-            broken_items = user_ids[user_ids.index(user):]
-            break
-    return broken_items
+    return
 
 
 def send_hashtag(self, hashtag, user_ids, text='', thread_id=None):

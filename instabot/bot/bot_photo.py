@@ -32,13 +32,14 @@ def download_photo(self, media_id, folder='photos', filename=None, save_descript
 
 
 def download_photos(self, medias, folder, save_description=False):
-    broken_items = []
     if not medias:
         self.logger.info("Nothing to downloads.")
-        return broken_items
+        return False
     self.logger.info("Going to download {} medias.".format(len(medias)))
     for media in tqdm(medias):
-        if not self.download_photo(media, folder, save_description=save_description):
+        try:
+            self.download_photo(media, folder, save_description=save_description)
+        except Exception as e:
+            self.logger.error(str(e))
             self.error_delay()
-            broken_items = medias[medias.index(media):]
-    return broken_items
+    return
