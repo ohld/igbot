@@ -25,7 +25,6 @@ def unfollow(self, user_id):
 
 
 def unfollow_users(self, user_ids):
-    broken_items = []
     self.logger.info("Going to unfollow {} users.".format(len(user_ids)))
     user_ids = set(map(str, user_ids))
     filtered_user_ids = list(set(user_ids) - set(self.whitelist))
@@ -33,13 +32,13 @@ def unfollow_users(self, user_ids):
         self.logger.info(
             "After filtration by whitelist {} users left.".format(len(filtered_user_ids)))
     for user_id in tqdm(filtered_user_ids, desc='Processed users'):
-        if not self.unfollow(user_id):
+        try:
+            self.unfollow(user_id)
+        except Exception as e:
+            self.logger.error(str(e))
             self.error_delay()
-            i = filtered_user_ids.index(user_id)
-            broken_items = filtered_user_ids[i:]
-            break
     self.logger.info("DONE: Total unfollowed {} users.".format(self.total['unfollows']))
-    return broken_items
+    return
 
 
 def unfollow_non_followers(self, n_to_unfollows=None):

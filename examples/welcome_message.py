@@ -26,7 +26,7 @@ parser.add_argument('-users', type=str, nargs='?', help='a path to already notif
 parser.add_argument('-message', type=str, nargs='?', help='message text')
 args = parser.parse_args()
 
-bot = Bot()
+bot = Bot(default_files=False)
 bot.login(username=args.u, password=args.p,
           proxy=args.proxy)
 
