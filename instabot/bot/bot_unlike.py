@@ -19,38 +19,36 @@ def unlike_comment(self, comment_id):
 
 
 def unlike_media_comments(self, media_id):
-    inx = 0
+    broken_items = []
     media_comments = self.get_media_comments(media_id)
     comment_ids = [item["pk"] for item in media_comments if item["has_liked_comment"]]
 
     if not comment_ids:
         self.logger.info("None comments received: comments not found or comments have been filtered.")
-        return False
+        return broken_items
 
     self.logger.info("Going to unlike %d comments." % (len(comment_ids)))
 
     for comment in tqdm(comment_ids):
-        try:
-            self.unlike_comment(comment)
-        except Exception as e:
-            self.logger.error(str(e))
-            inx += 1
+        if not self.unlike_comment(comment):
             self.error_delay()
+            broken_items = comment_ids[comment_ids.index(comment):]
     self.logger.info("DONE: Unliked {count} comments.".format(
-        count=len(comment_ids) - inx))
-    return
+        count=len(comment_ids) - len(broken_items)
+    ))
+    return broken_items
 
 
 def unlike_medias(self, medias):
+    broken_items = []
     self.logger.info("Going to unlike %d medias." % (len(medias)))
     for media in tqdm(medias):
-        try:
-            self.unlike(media)
-        except Exception as e:
-            self.logger.error(str(e))
+        if not self.unlike(media):
             self.error_delay()
+            broken_items = medias[medias.index(media):]
+            break
     self.logger.info("DONE: Total unliked %d medias." % self.total['unlikes'])
-    return
+    return broken_items
 
 
 def unlike_user(self, user_id):

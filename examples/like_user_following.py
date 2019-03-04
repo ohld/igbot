@@ -19,7 +19,7 @@ parser.add_argument('-proxy', type=str, help="proxy")
 parser.add_argument('users', type=str, nargs='+', help='users')
 args = parser.parse_args()
 
-bot = Bot(filter_users=False)
+bot = Bot()
 bot.login(username=args.u, password=args.p,
           proxy=args.proxy)
 

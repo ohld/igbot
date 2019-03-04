@@ -14,30 +14,30 @@ def archive(self, media_id, undo=False):
 
 
 def archive_medias(self, medias):
+    broken_items = []
     if not medias:
         self.logger.info("Nothing to archive.")
-        return False
+        return broken_items
     self.logger.info("Going to archive %d medias." % (len(medias)))
     for media in tqdm(medias):
-        try:
-            self.archive(media)
-        except Exception as e:
-            self.logger.error(str(e))
+        if not self.archive(media):
             self.error_delay()
+            broken_items = medias[medias.index(media):]
+            break
     self.logger.info("DONE: Total archived %d medias." % self.total['archived'])
-    return
+    return broken_items
 
 
 def unarchive_medias(self, medias):
+    broken_items = []
     if not medias:
         self.logger.info("Nothing to unarchive.")
-        return False
+        return broken_items
     self.logger.info("Going to unarchive %d medias." % (len(medias)))
     for media in tqdm(medias):
-        try:
-            self.unarchive(media)
-        except Exception as e:
-            self.logger.error(str(e))
+        if not self.unarchive(media):
             self.error_delay()
+            broken_items = medias[medias.index(media):]
+            break
     self.logger.info("DONE: Total unarchived %d medias." % self.total['unarchived'])
-    return 
+    return broken_items

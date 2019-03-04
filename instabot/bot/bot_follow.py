@@ -25,6 +25,7 @@ def follow(self, user_id):
 
 
 def follow_users(self, user_ids):
+    broken_items = []
     if self.reached_limit('follows'):
         self.logger.info("Out of follows for today.")
         return
@@ -44,14 +45,32 @@ def follow_users(self, user_ids):
         if self.reached_limit('follows'):
             self.logger.info("Out of follows for today.")
             break
-        try:
-            self.follow(user_id)
-        except Exception as e:
-            self.logger.error(str(e))
-            self.error_delay()
+        if not self.follow(user_id):
+            if self.api.last_response.status_code == 404:
+                self.console_print("404 error user {user_id} doesn't exist.", 'red')
+                broken_items.append(user_id)
+
+            elif self.api.last_response.status_code == 200:
+                broken_items.append(user_id)
+
+            elif self.api.last_response.status_code not in (400, 429):
+                # 400 (block to follow) and 429 (many request error)
+                # which is like the 500 error.
+                try_number = 3
+                error_pass = False
+                for _ in range(try_number):
+                    time.sleep(60)
+                    error_pass = self.follow(user_id)
+                    if error_pass:
+                        break
+                if not error_pass:
+                    self.error_delay()
+                    i = user_ids.index(user_id)
+                    broken_items += user_ids[i:]
+                    break
 
     self.logger.info("DONE: Now following {} users in total.".format(self.total['follows']))
-    return
+    return broken_items
 
 
 def follow_followers(self, user_id, nfollows=None):

@@ -67,19 +67,19 @@ def reply_to_comment(self, media_id, comment_text, parent_comment_id):
 
 
 def comment_medias(self, medias):
+    broken_items = []
     self.logger.info("Going to comment %d medias." % (len(medias)))
     for media in tqdm(medias):
         if not self.is_commented(media):
             text = self.get_comment()
             self.logger.info("Commented with text: %s" % text)
-            try:
-                self.comment(media, text)
-            except Exception as e:
-                self.logger.error(str(e))
-                self.error_delay()
+            if not self.comment(media, text):
+                self.delay('comment')
+                broken_items = medias[medias.index(media):]
+                break
     self.logger.info("DONE: Total commented on %d medias. " %
                      self.total['comments'])
-    return
+    return broken_items
 
 
 def comment_hashtag(self, hashtag, amount=None):

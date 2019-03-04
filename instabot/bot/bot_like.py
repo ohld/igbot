@@ -50,42 +50,39 @@ def like_comment(self, comment_id):
 
 
 def like_media_comments(self, media_id):
-    inx = 0
+    broken_items = []
     media_comments = self.get_media_comments(media_id)
     self.logger.info('Found {} comments'.format(len(media_comments)))
     comment_ids = [item["pk"] for item in media_comments if not item.get('has_liked_comment') or not item["has_liked_comment"]]
 
     if not comment_ids:
         self.logger.info("None comments received: comments not found or comments have been filtered.")
-        return False
+        return broken_items
 
     self.logger.info("Going to like %d comments." % (len(comment_ids)))
 
     for comment in tqdm(comment_ids):
-        try:
-            self.like_comment(comment)
-        except Exception as e:
-            self.logger.error(str(e))
-            inx += 1
+        if not self.like_comment(comment):
             self.error_delay()
+            broken_items = comment_ids[comment_ids.index(comment):]
     self.logger.info("DONE: Liked {count} comments.".format(
-        count=len(comment_ids) - inx))
-    return
+        count=len(comment_ids) - len(broken_items)
+    ))
+    return broken_items
 
 
 def like_medias(self, medias, check_media=True):
+    broken_items = []
     if not medias:
         self.logger.info("Nothing to like.")
-        return False
+        return broken_items
     self.logger.info("Going to like %d medias." % (len(medias)))
     for media in tqdm(medias):
-        try:
-            self.like(media, check_media)
-        except Exception as e:
-            self.logger.error(str(e))
+        if not self.like(media, check_media):
             self.error_delay()
+            broken_items.append(media)
     self.logger.info("DONE: Total liked %d medias." % self.total['likes'])
-    return
+    return broken_items
 
 
 def like_timeline(self, amount=None):

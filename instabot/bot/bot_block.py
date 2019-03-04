@@ -30,27 +30,26 @@ def unblock(self, user_id):
 
 
 def block_users(self, user_ids):
+    broken_items = []
     self.logger.info("Going to block %d users." % len(user_ids))
     for user_id in tqdm(user_ids):
-        try:
-            self.block(user_id)
-        except Exception as e:
-            self.logger.error(str(e))
+        if not self.block(user_id):
             self.error_delay()
+            broken_items = user_ids[user_ids.index(user_id):]
+            break
     self.logger.info("DONE: Total blocked %d users." % self.total['blocks'])
-    return
+    return broken_items
 
 
 def unblock_users(self, user_ids):
+    broken_items = []
     self.logger.info("Going to unblock %d users." % len(user_ids))
     for user_id in tqdm(user_ids):
-        try:
-            self.unblock(user_id)
-        except Exception as e:
-            self.logger.error(str(e))
+        if not self.unblock(user_id):
             self.error_delay()
+            broken_items.append(user_id)
     self.logger.info("DONE: Total unblocked %d users." % self.total['unblocks'])
-    return
+    return broken_items
 
 
 def block_bots(self):
