@@ -80,7 +80,7 @@ class Bot(object):
                  max_following_to_followers_ratio=2,
                  min_media_count_to_follow=3,
                  max_following_to_block=2000,
-                 like_delay=10,
+                 like_delay=20,
                  unlike_delay=10,
                  follow_delay=30,
                  unfollow_delay=30,

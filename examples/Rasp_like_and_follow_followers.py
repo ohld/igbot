@@ -32,8 +32,8 @@ from instabot import Bot
 # user_id = bot.get_user_id_from_username(args.users)
 
 bot = Bot()
-bot.login(username="bromalayabro", password="subhanallah")
-user_id = bot.get_user_id_from_username("neelofa")
+bot.login(username="vicode.co", password="vicode.co98")
+user_id = bot.get_user_id_from_username("kingbach")
 
 followers_list_id = bot.get_user_followers(user_id,nfollows=20000)
 
