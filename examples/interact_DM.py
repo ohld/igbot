@@ -9,7 +9,6 @@
 import argparse
 import os
 import sys
-import time
 
 sys.path.append(os.path.join(sys.path[0], '../'))
 from instabot import Bot
@@ -25,6 +24,7 @@ parser.add_argument('-p', type=str, help="password")
 parser.add_argument('-proxy', type=str, help="proxy")
 args = parser.parse_args()
 
+
 def choice(message):
     get_choice = input(message)
     if get_choice == 'y':
@@ -32,7 +32,7 @@ def choice(message):
     elif get_choice == 'n':
         return False
     else:
-        print ("Invalid Input")
+        print("Invalid Input")
         return choice(message)
 
 
