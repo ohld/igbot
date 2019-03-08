@@ -50,7 +50,7 @@ if bot.api.getv2Inbox():
         if item_type == 'text':
             print(last_item['text'])
             if choice('Do you want to reply to this message?(y/n)'):
-                text = input('write you message: ')
+                text = input('write your message: ')
                 if choice('send message?(y/n)'):
                     bot.send_message(text, user_id, thread_id=item['thread_id'])
                 continue
