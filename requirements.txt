@@ -4,7 +4,7 @@ tqdm==4.31.1
 requests==2.21.0
 pycodestyle==2.5.0
 requests-toolbelt==0.9.1
-pyflakes==2.1.0
+pyflakes==2.1.1
 schedule==0.6.0
 pysocks==1.6.8
 pytest==4.3.0
