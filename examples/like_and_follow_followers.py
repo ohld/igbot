@@ -32,8 +32,9 @@ from instabot import Bot
 # user_id = bot.get_user_id_from_username(args.users)
 
 bot = Bot()
-bot.login(username="vicode.co", password="vicode.co98")
-user_id = bot.get_user_id_from_username("kingbach")
+#bot.login(username="vicode.co", password="vicode.co98")
+bot.login(username="bromalayabro", password="subhanallah")
+user_id = bot.get_user_id_from_username("neelofa")
 
 followers_list_id = bot.get_user_followers(user_id,nfollows=20000)
 
@@ -46,7 +47,7 @@ def like_and_follow_followers():
         new_user_id = username.strip()
         bot.like_user(new_user_id, amount=3)
         bot.follow(new_user_id)
-        time.sleep(10 + 20 * random.random())
+        time.sleep(30 + 20 * random.random())
 
 def unfollow_non_followers():
     bot.unfollow_non_followers(n_to_unfollows=700)
