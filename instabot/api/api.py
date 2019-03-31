@@ -1,4 +1,4 @@
-import hashlib
+    import hashlib
 import hmac
 import json
 import logging
@@ -231,10 +231,10 @@ class API(object):
                         return False
                 # End of Interactive Two-Factor Authentication
                 else:
-                msg = "Instagram's error message: {}"
-                self.logger.info(msg.format(response_data.get('message')))
-                if 'error_type' in response_data:
-                    msg = 'Error type: {}'.format(response_data['error_type'])
+                    msg = "Instagram's error message: {}"
+                    self.logger.info(msg.format(response_data.get('message')))
+                    if 'error_type' in response_data:
+                        msg = 'Error type: {}'.format(response_data['error_type'])
                     self.logger.info(msg)
 
             # For debugging
