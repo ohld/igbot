@@ -190,6 +190,7 @@ def get_user_info(self, user_id, use_cache=True):
 
 
 def get_user_followers(self, user_id, nfollows):
+    self.logger.info("Getting user followers for: %s", user_id)
     user_id = self.convert_to_user_id(user_id)
     followers = self.api.get_total_followers(user_id, nfollows)
     return [str(item['pk']) for item in followers][::-1] if followers else []
@@ -324,6 +325,7 @@ def get_messages(self):
 
 
 def convert_to_user_id(self, x):
+    self.logger.info("Converting to user ID: %s", x)
     x = str(x)
     if not x.isdigit():
         x = x.lstrip('@')
