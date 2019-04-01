@@ -428,6 +428,7 @@ class API(object):
         return self.send_request(url.format(rank_token=self.rank_token))
 
     def get_user_feed(self, user_id, max_id='', min_timestamp=None):
+        self.logger.info("Getting the feed for user: %s".format(user_id))
         url = 'feed/user/{user_id}/?max_id={max_id}&min_timestamp={min_timestamp}&rank_token={rank_token}&ranked_content=true'
         url = url.format(
             user_id=user_id,
