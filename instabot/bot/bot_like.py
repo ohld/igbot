@@ -2,6 +2,7 @@ from tqdm import tqdm
 
 
 def like(self, media_id, check_media=True):
+    self.logger.info("Attempting to like media: %s", media_id)
     if not self.reached_limit('likes'):
         if self.blocked_actions['likes']:
             self.logger.warning('YOUR `LIKE` ACTION IS BLOCKED')
