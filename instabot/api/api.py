@@ -203,7 +203,7 @@ class API(object):
 
                 # PERFORM Interactive Two-Factor Authentication
                 if response_data.get('two_factor_required'):
-                    self.logger.error("Two-factor authentication required")
+                    self.logger.info("Two-factor authentication required")
                     two_factor_code = input("Enter 2FA verification code: ")
                     two_factor_id = response_data['two_factor_info']['two_factor_identifier']
 
