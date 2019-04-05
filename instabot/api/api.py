@@ -27,11 +27,12 @@ PY2 = sys.version_info[0] == 2
 
 
 class API(object):
-    def __init__(self, device=None):
+    def __init__(self, device=None, base_path=''):
         # Setup device and user_agent
         device = device or devices.DEFAULT_DEVICE
         self.device_settings = devices.DEVICES[device]
         self.user_agent = config.USER_AGENT_BASE.format(**self.device_settings)
+        self.base_path = base_path
 
         self.is_logged_in = False
         self.last_response = None
@@ -40,7 +41,8 @@ class API(object):
         # Setup logging
         self.logger = logging.getLogger('[instabot_{}]'.format(id(self)))
 
-        fh = logging.FileHandler(filename='instabot.log')
+        log_filename = os.path.join(base_path, 'instabot.log')
+        fh = logging.FileHandler(filename=log_filename)
         fh.setLevel(logging.INFO)
         fh.setFormatter(logging.Formatter('%(asctime)s %(message)s'))
 
@@ -71,6 +73,7 @@ class API(object):
 
         if not cookie_fname:
             cookie_fname = "{username}_cookie.txt".format(username=username)
+            cookie_fname = os.path.join(self.base_path, cookie_fname)
 
         cookie_is_loaded = False
         if use_cookie:
