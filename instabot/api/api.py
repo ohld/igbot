@@ -906,3 +906,13 @@ class API(object):
         data = self.json_data(data_dict)
         url = 'friendships/mute_posts_or_story_from_follow/'
         return self.send_request(url, data)
+
+    def unmute_user(self, user, unmute_posts=False, unmute_stories=False):
+        data_dict = {}
+        if unmute_posts:
+            data_dict['target_posts_author_id'] = user
+        if unmute_stories:
+            data_dict['target_reel_author_id'] = user
+        data = self.json_data(data_dict)
+        url = 'friendships/unmute_posts_or_story_from_follow/'
+        return self.send_request(url, data)
