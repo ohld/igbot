@@ -226,11 +226,14 @@ class API(object):
                             if 'message' in resp_json:
                                 self.logger.error("Login error: {}".format(resp_json['message']))
                             else:
-                                self.logger.error("Login error: \"{}\" status and message {}.".format(resp_json['status'], login.text))
+                                self.logger.error(
+                                    "Login error: \"{}\" status and message {}.".format(resp_json['status'],
+                                                                                        login.text))
                             return False
                         return True
                     else:
-                        self.logger.error("Two-factor authentication request returns {} error with message {} !".format(login.status_code, login.text))
+                        self.logger.error("Two-factor authentication request returns {} error with message {} !".format(
+                            login.status_code, login.text))
                         return False
                 # End of Interactive Two-Factor Authentication
                 else:
@@ -893,3 +896,13 @@ class API(object):
     def get_saved_medias(self):
         url = 'feed/saved/'
         return self.send_request(url)
+
+    def mute_user(self, user, mute_story=False, mute_posts=False):
+        data_dict = {}
+        if mute_posts:
+            data_dict['target_posts_author_id'] = user
+        if mute_story:
+            data_dict['target_reel_author_id'] = user
+        data = self.json_data(data_dict)
+        url = 'friendships/mute_posts_or_story_from_follow/'
+        return self.send_request(url, data)
