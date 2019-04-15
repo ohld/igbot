@@ -1,3 +1,4 @@
+import os
 import atexit
 import datetime
 import random
@@ -55,6 +56,7 @@ class Bot(object):
                  unfollowed_file='unfollowed.txt',
                  skipped_file='skipped.txt',
                  friends_file='friends.txt',
+                 base_path='',
                  proxy=None,
                  max_likes_per_day=1000,
                  max_unlikes_per_day=1000,
@@ -94,7 +96,8 @@ class Bot(object):
                  verbosity=True,
                  device=None
                  ):
-        self.api = API(device=device)
+        self.api = API(device=device, base_path=base_path)
+        self.base_path = base_path
 
         self.total = {'likes': 0,
                       'unlikes': 0,
@@ -168,6 +171,15 @@ class Bot(object):
         self._followers = None
         self._user_infos = {}  # User info cache
         self._usernames = {}  # `username` to `user_id` mapping
+
+        # Adjust file paths
+        followed_file = os.path.join(base_path, followed_file)
+        unfollowed_file = os.path.join(base_path, unfollowed_file)
+        skipped_file = os.path.join(base_path, skipped_file)
+        friends_file = os.path.join(base_path, friends_file)
+        comments_file = os.path.join(base_path, comments_file)
+        blacklist_file = os.path.join(base_path, blacklist_file)
+        whitelist_file = os.path.join(base_path, whitelist_file)
 
         # Database files
         self.followed_file = utils.file(followed_file)

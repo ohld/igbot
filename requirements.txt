@@ -4,11 +4,11 @@ tqdm==4.31.1
 requests==2.21.0
 pycodestyle==2.5.0
 requests-toolbelt==0.9.1
-pyflakes==2.1.0
+pyflakes==2.1.1
 schedule==0.6.0
 pysocks==1.6.8
-pytest==4.3.0
-responses==0.10.5
+pytest==4.4.0
+responses==0.10.6
 future==0.17.1
 six==1.12.0
 huepy==0.9.8.1

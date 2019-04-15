@@ -27,11 +27,12 @@ PY2 = sys.version_info[0] == 2
 
 
 class API(object):
-    def __init__(self, device=None):
+    def __init__(self, device=None, base_path=''):
         # Setup device and user_agent
         device = device or devices.DEFAULT_DEVICE
         self.device_settings = devices.DEVICES[device]
         self.user_agent = config.USER_AGENT_BASE.format(**self.device_settings)
+        self.base_path = base_path
 
         self.is_logged_in = False
         self.last_response = None
@@ -40,7 +41,8 @@ class API(object):
         # Setup logging
         self.logger = logging.getLogger('[instabot_{}]'.format(id(self)))
 
-        fh = logging.FileHandler(filename='instabot.log')
+        log_filename = os.path.join(base_path, 'instabot.log')
+        fh = logging.FileHandler(filename=log_filename)
         fh.setLevel(logging.INFO)
         fh.setFormatter(logging.Formatter('%(asctime)s %(message)s'))
 
@@ -71,6 +73,7 @@ class API(object):
 
         if not cookie_fname:
             cookie_fname = "{username}_cookie.txt".format(username=username)
+            cookie_fname = os.path.join(self.base_path, cookie_fname)
 
         cookie_is_loaded = False
         if use_cookie:
@@ -184,10 +187,14 @@ class API(object):
                 return False
         else:
             self.logger.error("Request returns {} error!".format(response.status_code))
-            response_data = json.loads(response.text)
-            if "feedback_required" in str(response_data.get('message')):
-                self.logger.error("ATTENTION!: `feedback_required`, your action could have been blocked")
-                return "feedback_required"
+            try:
+                response_data = json.loads(response.text)
+                if "feedback_required" in str(response_data.get('message')):
+                    self.logger.error("ATTENTION!: `feedback_required`, your action could have been blocked")
+                    return "feedback_required"
+            except ValueError:
+                self.logger.error("Error checking for `feedback_required`, response text is not JSON")
+
             if response.status_code == 429:
                 sleep_minutes = 5
                 self.logger.warning(
@@ -196,10 +203,44 @@ class API(object):
                 time.sleep(sleep_minutes * 60)
             elif response.status_code == 400:
                 response_data = json.loads(response.text)
-                msg = "Instagram's error message: {}"
-                self.logger.info(msg.format(response_data.get('message')))
-                if 'error_type' in response_data:
-                    msg = 'Error type: {}'.format(response_data['error_type'])
+
+                # PERFORM Interactive Two-Factor Authentication
+                if response_data.get('two_factor_required'):
+                    self.logger.info("Two-factor authentication required")
+                    two_factor_code = input("Enter 2FA verification code: ")
+                    two_factor_id = response_data['two_factor_info']['two_factor_identifier']
+
+                    login = self.session.post(config.API_URL + 'accounts/two_factor_login/',
+                                              data={'username': self.username,
+                                                    'verification_code': two_factor_code,
+                                                    'two_factor_identifier': two_factor_id,
+                                                    'password': self.password,
+                                                    'device_id': self.device_id,
+                                                    'ig_sig_key_version': 4
+                                                    },
+                                              allow_redirects=True)
+
+                    if login.status_code == 200:
+                        resp_json = json.loads(login.text)
+                        if resp_json['status'] != 'ok':
+                            if 'message' in resp_json:
+                                self.logger.error("Login error: {}".format(resp_json['message']))
+                            else:
+                                self.logger.error(
+                                    "Login error: \"{}\" status and message {}.".format(resp_json['status'],
+                                                                                        login.text))
+                            return False
+                        return True
+                    else:
+                        self.logger.error("Two-factor authentication request returns {} error with message {} !".format(
+                            login.status_code, login.text))
+                        return False
+                # End of Interactive Two-Factor Authentication
+                else:
+                    msg = "Instagram's error message: {}"
+                    self.logger.info(msg.format(response_data.get('message')))
+                    if 'error_type' in response_data:
+                        msg = 'Error type: {}'.format(response_data['error_type'])
                     self.logger.info(msg)
 
             # For debugging
@@ -855,3 +896,23 @@ class API(object):
     def get_saved_medias(self):
         url = 'feed/saved/'
         return self.send_request(url)
+
+    def mute_user(self, user, mute_story=False, mute_posts=False):
+        data_dict = {}
+        if mute_posts:
+            data_dict['target_posts_author_id'] = user
+        if mute_story:
+            data_dict['target_reel_author_id'] = user
+        data = self.json_data(data_dict)
+        url = 'friendships/mute_posts_or_story_from_follow/'
+        return self.send_request(url, data)
+
+    def unmute_user(self, user, unmute_posts=False, unmute_stories=False):
+        data_dict = {}
+        if unmute_posts:
+            data_dict['target_posts_author_id'] = user
+        if unmute_stories:
+            data_dict['target_reel_author_id'] = user
+        data = self.json_data(data_dict)
+        url = 'friendships/unmute_posts_or_story_from_follow/'
+        return self.send_request(url, data)
