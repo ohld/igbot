@@ -33,7 +33,6 @@ def download_video(self, media_id, filename=None, media=False, folder='videos'):
     if os.path.exists(fname):
         return os.path.abspath(fname)
 
-    logging.info('video_urls {}'.format(video_urls))
     for counter, video_url in enumerate(video_urls):
         response = self.session.get(video_url, stream=True)
         if response.status_code == 200:
