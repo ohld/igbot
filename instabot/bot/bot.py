@@ -44,7 +44,7 @@ from .bot_unfollow import (unfollow, unfollow_everyone, unfollow_non_followers,
                            unfollow_users)
 from .bot_unlike import (unlike, unlike_comment, unlike_media_comments,
                          unlike_medias, unlike_user)
-from .bot_video import upload_video
+from .bot_video import upload_video, download_video
 
 
 class Bot(object):
@@ -504,6 +504,9 @@ class Bot(object):
 
     def upload_video(self, video, caption=''):
         return upload_video(self, video, caption)
+
+    def download_video(self, media_id, folder='videos', filename=None, save_description=False):
+        return download_video(self, media_id, folder, filename, save_description)
 
     # follow
 
