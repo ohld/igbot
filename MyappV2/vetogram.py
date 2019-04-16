@@ -21,7 +21,7 @@ from instabot import Bot
 class MainWindow_class(QtWidgets.QMainWindow):
     def __init__(self):
         QtWidgets.QMainWindow.__init__(self)
-        uic.loadUi("UI/MainWindow.ui", self)
+        uic.loadUi("ui/MainWindow.ui", self)
 
         # CLICK RUN BUTTON TRIGGER LOGIN FUNCTION
         self.pushButton_run.clicked.connect(self.login_instagram)
