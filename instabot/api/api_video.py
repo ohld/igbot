@@ -24,7 +24,6 @@ def download_video(self, media_id, filename=None, media=False, folder='videos'):
         video_urls.append(clips[0]['url'])
     except KeyError:
         carousels = media.get('carousel_media', [])
-        logging.info('carousels len {}'.format(len(carousels)))
         for carousel in carousels:
             video_urls.append(carousel['video_versions'][0]['url'])
     except Exception:
