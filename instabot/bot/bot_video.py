@@ -1,3 +1,5 @@
+import os
+
 
 def upload_video(self, video, caption=''):
     self.small_delay()
