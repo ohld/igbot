@@ -12,24 +12,36 @@ from requests_toolbelt import MultipartEncoder
 from . import config
 
 
-def download_video(self, media_id, filename, media=False, folder='videos'):
+def download_video(self, media_id, filename=None, media=False, folder='videos'):
+    video_urls = []
     if not media:
         self.media_info(media_id)
         media = self.last_json['items'][0]
     filename = '{0}_{1}.mp4'.format(media['user']['username'], media_id) if not filename else '{0}.mp4'.format(filename)
+
     try:
         clips = media['video_versions']
+        video_urls.append(clips[0]['url'])
+    except KeyError:
+        carousels = media.get('carousel_media', [])
+        logging.info('carousels len {}'.format(len(carousels)))
+        for carousel in carousels:
+            video_urls.append(carousel['video_versions'][0]['url'])
     except Exception:
         return False
+
     fname = os.path.join(folder, filename)
     if os.path.exists(fname):
         return os.path.abspath(fname)
-    response = self.session.get(clips[0]['url'], stream=True)
-    if response.status_code == 200:
-        with open(fname, 'wb') as f:
-            response.raw.decode_content = True
-            shutil.copyfileobj(response.raw, f)
-        return os.path.abspath(fname)
+
+    logging.info('video_urls {}'.format(video_urls))
+    for counter, video_url in enumerate(video_urls):
+        response = self.session.get(video_url, stream=True)
+        if response.status_code == 200:
+            fname = os.path.join(folder, '{}_{}'.format(counter, filename))
+            with open(fname, 'wb') as f:
+                response.raw.decode_content = True
+                shutil.copyfileobj(response.raw, f)
 
 
 # leaving here function used by old upload_video, no more used now
