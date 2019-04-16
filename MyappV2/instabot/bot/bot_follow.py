@@ -5,7 +5,9 @@ from tqdm import tqdm
 
 def follow(self, user_id):
     user_id = self.convert_to_user_id(user_id)
-    msg = ' ===> Going to follow `user_id`: {}.'.format(user_id)
+    user_info = self.get_user_info(user_id)
+    username = user_info["username"]
+    msg = 'follow: {}.'.format(username)
     self.console_print(msg)
     if not self.check_user(user_id):
         return False

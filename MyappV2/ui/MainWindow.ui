@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>996</width>
-    <height>766</height>
+    <width>970</width>
+    <height>591</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -23,8 +23,8 @@
    <widget class="QPushButton" name="pushButton_run">
     <property name="geometry">
      <rect>
-      <x>900</x>
-      <y>70</y>
+      <x>420</x>
+      <y>10</y>
       <width>93</width>
       <height>28</height>
      </rect>
@@ -36,8 +36,8 @@
    <widget class="QGroupBox" name="groupBox_follow_from_hashtag">
     <property name="geometry">
      <rect>
-      <x>20</x>
-      <y>130</y>
+      <x>40</x>
+      <y>140</y>
       <width>891</width>
       <height>64</height>
      </rect>
@@ -127,203 +127,252 @@ background-color: rgb(204, 204, 204);
    <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
-      <x>11</x>
-      <y>11</y>
-      <width>345</width>
+      <x>40</x>
+      <y>340</y>
+      <width>430</width>
       <height>24</height>
+     </rect>
+    </property>
+    <layout class="QHBoxLayout" name="horizontalLayout_4">
+     <item>
+      <widget class="QLabel" name="label_7">
+       <property name="text">
+        <string>Like</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="comboBox_2">
+       <item>
+        <property name="text">
+         <string>follower</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>following</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="label_8">
+       <property name="text">
+        <string>of </string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLineEdit" name="lineEdit_2">
+       <property name="placeholderText">
+        <string>username1,username2</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="label_9">
+       <property name="text">
+        <string>amount like</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QSpinBox" name="spinBox_4"/>
+     </item>
+    </layout>
+   </widget>
+   <widget class="QWidget" name="layoutWidget_2">
+    <property name="geometry">
+     <rect>
+      <x>40</x>
+      <y>400</y>
+      <width>430</width>
+      <height>24</height>
+     </rect>
+    </property>
+    <layout class="QHBoxLayout" name="horizontalLayout_6">
+     <item>
+      <widget class="QLabel" name="label_12">
+       <property name="text">
+        <string>Unfollow</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="comboBox_3">
+       <item>
+        <property name="text">
+         <string>non follower</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>everyone</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="label_14">
+       <property name="text">
+        <string>amount unfollow</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QSpinBox" name="spinBox_5"/>
+     </item>
+    </layout>
+   </widget>
+   <widget class="QLineEdit" name="lineEdit_username">
+    <property name="geometry">
+     <rect>
+      <x>75</x>
+      <y>12</y>
+      <width>136</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="placeholderText">
+     <string>username</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label">
+    <property name="geometry">
+     <rect>
+      <x>12</x>
+      <y>12</y>
+      <width>56</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Vetogram</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="lineEdit_password">
+    <property name="geometry">
+     <rect>
+      <x>218</x>
+      <y>12</y>
+      <width>137</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="inputMethodHints">
+     <set>Qt::ImhHiddenText|Qt::ImhNoAutoUppercase|Qt::ImhNoPredictiveText|Qt::ImhSensitiveData</set>
+    </property>
+    <property name="echoMode">
+     <enum>QLineEdit::Password</enum>
+    </property>
+    <property name="placeholderText">
+     <string>password</string>
+    </property>
+   </widget>
+   <widget class="QWidget" name="">
+    <property name="geometry">
+     <rect>
+      <x>30</x>
+      <y>70</y>
+      <width>191</width>
+      <height>22</height>
      </rect>
     </property>
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
-      <widget class="QLabel" name="label">
+      <widget class="QLabel" name="label_2">
        <property name="text">
-        <string>Vetogram</string>
+        <string>Maximum Follow Per Day</string>
+       </property>
+       <property name="buddy">
+        <cstring>spinBox</cstring>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QLineEdit" name="lineEdit_username">
-       <property name="placeholderText">
-        <string>username</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QLineEdit" name="lineEdit_password">
-       <property name="inputMethodHints">
-        <set>Qt::ImhHiddenText|Qt::ImhNoAutoUppercase|Qt::ImhNoPredictiveText|Qt::ImhSensitiveData</set>
-       </property>
-       <property name="echoMode">
-        <enum>QLineEdit::Password</enum>
-       </property>
-       <property name="placeholderText">
-        <string>password</string>
-       </property>
-      </widget>
+      <widget class="QSpinBox" name="spinBox"/>
      </item>
     </layout>
    </widget>
    <widget class="QWidget" name="">
     <property name="geometry">
      <rect>
-      <x>27</x>
-      <y>43</y>
-      <width>848</width>
-      <height>53</height>
+      <x>250</x>
+      <y>80</y>
+      <width>119</width>
+      <height>22</height>
      </rect>
     </property>
-    <layout class="QHBoxLayout" name="horizontalLayout_7">
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
      <item>
-      <layout class="QHBoxLayout" name="horizontalLayout_2">
-       <item>
-        <layout class="QVBoxLayout" name="verticalLayout_2">
-         <item>
-          <widget class="QLabel" name="label_2">
-           <property name="text">
-            <string>Max Follow Per Day</string>
-           </property>
-           <property name="buddy">
-            <cstring>spinBox</cstring>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QLabel" name="label_9">
-           <property name="text">
-            <string>max following to follow</string>
-           </property>
-           <property name="buddy">
-            <cstring>spinBox_7</cstring>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </item>
-       <item>
-        <layout class="QVBoxLayout" name="verticalLayout">
-         <item>
-          <widget class="QSpinBox" name="spinBox"/>
-         </item>
-         <item>
-          <widget class="QSpinBox" name="spinBox_7"/>
-         </item>
-        </layout>
-       </item>
-      </layout>
+      <widget class="QLabel" name="label_3">
+       <property name="text">
+        <string>Follow Delay</string>
+       </property>
+       <property name="buddy">
+        <cstring>spinBox_2</cstring>
+       </property>
+      </widget>
      </item>
      <item>
-      <layout class="QHBoxLayout" name="horizontalLayout_3">
-       <item>
-        <layout class="QVBoxLayout" name="verticalLayout_3">
-         <item>
-          <widget class="QLabel" name="label_3">
-           <property name="text">
-            <string>Follow Delay</string>
-           </property>
-           <property name="buddy">
-            <cstring>spinBox_2</cstring>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QLabel" name="label_6">
-           <property name="text">
-            <string>min following to follow</string>
-           </property>
-           <property name="buddy">
-            <cstring>spinBox_5</cstring>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </item>
-       <item>
-        <layout class="QVBoxLayout" name="verticalLayout_4">
-         <item>
-          <widget class="QSpinBox" name="spinBox_2"/>
-         </item>
-         <item>
-          <widget class="QSpinBox" name="spinBox_5"/>
-         </item>
-        </layout>
-       </item>
-      </layout>
+      <widget class="QSpinBox" name="spinBox_2"/>
+     </item>
+    </layout>
+   </widget>
+   <widget class="QWidget" name="">
+    <property name="geometry">
+     <rect>
+      <x>40</x>
+      <y>270</y>
+      <width>430</width>
+      <height>24</height>
+     </rect>
+    </property>
+    <layout class="QHBoxLayout" name="horizontalLayout_3">
+     <item>
+      <widget class="QLabel" name="label_4">
+       <property name="text">
+        <string>Follow</string>
+       </property>
+      </widget>
      </item>
      <item>
-      <layout class="QHBoxLayout" name="horizontalLayout_4">
+      <widget class="QComboBox" name="comboBox">
        <item>
-        <layout class="QVBoxLayout" name="verticalLayout_7">
-         <item>
-          <widget class="QLabel" name="label_5">
-           <property name="text">
-            <string>max followers to follow</string>
-           </property>
-           <property name="buddy">
-            <cstring>spinBox_4</cstring>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QLabel" name="label_8">
-           <property name="text">
-            <string>max followers to following ratio</string>
-           </property>
-           <property name="buddy">
-            <cstring>spinBox_8</cstring>
-           </property>
-          </widget>
-         </item>
-        </layout>
+        <property name="text">
+         <string>follower</string>
+        </property>
        </item>
        <item>
-        <layout class="QVBoxLayout" name="verticalLayout_8">
-         <item>
-          <widget class="QSpinBox" name="spinBox_4"/>
-         </item>
-         <item>
-          <widget class="QSpinBox" name="spinBox_8"/>
-         </item>
-        </layout>
+        <property name="text">
+         <string>following</string>
+        </property>
        </item>
-      </layout>
+      </widget>
      </item>
      <item>
-      <layout class="QHBoxLayout" name="horizontalLayout_6">
-       <item>
-        <layout class="QVBoxLayout" name="verticalLayout_9">
-         <item>
-          <widget class="QLabel" name="label_4">
-           <property name="text">
-            <string>min followers to follow</string>
-           </property>
-           <property name="buddy">
-            <cstring>spinBox_3</cstring>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QLabel" name="label_7">
-           <property name="text">
-            <string>max following to followers ratio</string>
-           </property>
-           <property name="buddy">
-            <cstring>spinBox_6</cstring>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </item>
-       <item>
-        <layout class="QVBoxLayout" name="verticalLayout_10">
-         <item>
-          <widget class="QSpinBox" name="spinBox_3"/>
-         </item>
-         <item>
-          <widget class="QSpinBox" name="spinBox_6"/>
-         </item>
-        </layout>
-       </item>
-      </layout>
+      <widget class="QLabel" name="label_5">
+       <property name="text">
+        <string>of </string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLineEdit" name="lineEdit">
+       <property name="placeholderText">
+        <string>username1,username2</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="label_6">
+       <property name="text">
+        <string>amount follow</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QSpinBox" name="spinBox_3"/>
      </item>
     </layout>
    </widget>
@@ -333,7 +382,7 @@ background-color: rgb(204, 204, 204);
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>996</width>
+     <width>970</width>
      <height>26</height>
     </rect>
    </property>
