@@ -24,7 +24,8 @@ from instabot import Bot
 #           proxy=args.proxy)
 
 bot = Bot()
-bot.login(username="vicode.co", password="vicode.co98")
+# bot.login(username="vicode.co", password="vicode.co98")
+
 hashtag = "cats"
 
 

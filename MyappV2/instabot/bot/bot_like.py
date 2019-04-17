@@ -18,11 +18,12 @@ def like(self, media_id, check_media=True):
             self.blocked_actions['likes'] = True
             return False
         if _r:
-            self.logger.info("Liked media %d." % media_id)
+            msg = "LIKED: {}".format(media_link)
+            self.console_print(msg)
             self.total['likes'] += 1
             return True
     else:
-        self.logger.info("Out of likes for today.")
+        self.logger.info("Reach like limit for today.")
     return False
 
 
@@ -46,7 +47,7 @@ def like_comment(self, comment_id):
             self.total['likes'] += 1
             return True
     else:
-        self.logger.info("Out of likes for today.")
+        self.logger.info("Reach like limit for today.")
     return False
 
 
@@ -75,13 +76,13 @@ def like_media_comments(self, media_id):
 def like_medias(self, medias, check_media=True):
     broken_items = []
     if not medias:
-        self.logger.info("Nothing to like.")
+        # self.logger.info("Nothing to like.")
         return broken_items
-    self.logger.info("Going to like %d medias." % (len(medias)))
+    # self.logger.info("Going to like %d medias." % (len(medias)))
     for media in tqdm(medias):
-        media_link = self.get_link_from_media_id(media)
-        msg = "LIKED: {}".format(media_link)
-        self.console_print(msg)
+        # media_link = self.get_link_from_media_id(media)
+        # msg = "LIKED: {}".format(media_link)
+        # self.console_print(msg)
         if not self.like(media, check_media):
             self.error_delay()
             broken_items.append(media)
@@ -97,15 +98,17 @@ def like_timeline(self, amount=None):
 
 def like_user(self, user_id, amount=None, filtration=True):
     """ Likes last user_id's medias """
+    user_info = self.get_user_info(user_id)
+    username = user_info["username"]
     if filtration:
         if not self.check_user(user_id):
             return False
-    self.logger.info("Liking user_%s's feed:" % user_id)
-    user_id = self.convert_to_user_id(user_id)
+    self.logger.info("Liking %s's feed:" % username)
+    # user_id = self.convert_to_user_id(user_id)
     medias = self.get_user_medias(user_id, filtration=filtration)
     if not medias:
-        self.logger.info(
-            "None medias received: account is closed or medias have been filtered.")
+        # self.logger.info(
+        #     "None medias received: account is private or medias have been filtered.")
         return False
     return self.like_medias(medias[:amount])
 
@@ -113,7 +116,7 @@ def like_user(self, user_id, amount=None, filtration=True):
 def like_users(self, user_ids, nlikes=None, filtration=True):
     for user_id in user_ids:
         if self.reached_limit('likes'):
-            self.logger.info("Out of likes for today.")
+            self.logger.info("Reach like limit for today.")
             return
         self.like_user(user_id, amount=nlikes, filtration=filtration)
 
@@ -131,30 +134,37 @@ def like_geotag(self, geotag, amount=None):
 
 
 def like_followers(self, user_id, nlikes=None, nfollows=None):
-    self.logger.info("Like followers of: %s." % user_id)
+    user_info = self.get_user_info(user_id)
+    username = user_info["username"]
+    self.logger.info("Like followers of: %s." % username)
     if self.reached_limit('likes'):
-        self.logger.info("Out of likes for today.")
+        self.logger.info("Reach like limit for today.")
         return
     if not user_id:
         self.logger.info("User not found.")
         return
     follower_ids = self.get_user_followers(user_id, nfollows)
     if not follower_ids:
-        self.logger.info("%s not found / closed / has no followers." % user_id)
+        # self.logger.info("%s not found or private account." % user_id)
+        pass
     else:
         self.like_users(follower_ids[:nfollows], nlikes)
 
 
 def like_following(self, user_id, nlikes=None, nfollows=None):
-    self.logger.info("Like following of: %s." % user_id)
+    user_info = self.get_user_info(user_id)
+    username = user_info["username"]
+    self.logger.info("Like following of: %s." % username)
     if self.reached_limit('likes'):
         self.logger.info("Out of likes for today.")
         return
     if not user_id:
-        self.logger.info("User not found.")
+        # self.logger.info("User not found.")
         return
     following_ids = self.get_user_following(user_id, nfollows)
     if not following_ids:
-        self.logger.info("%s not found / closed / has no following." % user_id)
+        # self.logger.info("%s not found or private account." % user_id)
+        pass
     else:
         self.like_users(following_ids, nlikes)
+
