@@ -30,8 +30,9 @@ def unfollow_users(self, user_ids):
     user_ids = set(map(str, user_ids))
     filtered_user_ids = list(set(user_ids) - set(self.whitelist))
     if len(filtered_user_ids) != len(user_ids):
-        self.logger.info(
-            "After filtration {} users left.".format(len(filtered_user_ids)))
+        # self.logger.info(
+        #     "After filtration {} users left.".format(len(filtered_user_ids)))
+        pass
     for user_id in tqdm(filtered_user_ids, desc='Processed users'):
         if not self.unfollow(user_id):
             self.error_delay()
