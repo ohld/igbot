@@ -141,7 +141,7 @@ def like_followers(self, user_id, nlikes=None, nfollows=None):
         self.logger.info("Reach like limit for today.")
         return
     if not user_id:
-        self.logger.info("User not found.")
+        # self.logger.info("User not found.")
         return
     follower_ids = self.get_user_followers(user_id, nfollows)
     if not follower_ids:
