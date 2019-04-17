@@ -23,4 +23,4 @@ bot = Bot()
 bot.login(username="vicode.co", password="vicode.co98")
 username = "bromalayabro"
 
-bot.follow_followers(username)
+bot.follow_followers(username,nfollows=50)

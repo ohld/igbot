@@ -194,7 +194,7 @@ class Bot(object):
         self.verbosity = verbosity
 
         self.logger = self.api.logger
-        self.logger.info('Instabot Started')
+        self.logger.info('Starting Vetogram')
 
     @property
     def user_id(self):
@@ -233,7 +233,7 @@ class Bot(object):
         now = time.time()
         last = self.last.get('updated_following', now)
         if self._following is None or now - last > 7200:
-            self.console_print('`bot.following` is empty, will download.', 'green')
+            # self.console_print('`bot.following` is empty, will download.', 'green')
             self._following = self.get_user_following(self.user_id)
             self.last['updated_following'] = now
         return self._following
@@ -243,7 +243,7 @@ class Bot(object):
         now = time.time()
         last = self.last.get('updated_followers', now)
         if self._followers is None or now - last > 7200:
-            self.console_print('`bot.followers` is empty, will download.', 'green')
+            # self.console_print('`bot.followers` is empty, will download.', 'green')
             self._followers = self.get_user_followers(self.user_id)
             self.last['updated_followers'] = now
         return self._followers
@@ -258,7 +258,7 @@ class Bot(object):
     def logout(self, *args, **kwargs):
         save_checkpoint(self)
         self.api.logout()
-        self.logger.info("Bot stopped. "
+        self.logger.info("Vetogram stopped. "
                          "Worked: %s", datetime.datetime.now() - self.start_time)
         self.print_counters()
 

@@ -56,7 +56,7 @@ def get_user_medias(self, user_id, filtration=True, is_comment=False):
     user_id = self.convert_to_user_id(user_id)
     self.api.get_user_feed(user_id)
     if self.api.last_json["status"] == 'fail':
-        self.logger.warning("This is a closed account.")
+        self.logger.warning("This is a private account.")
         return []
     return self.filter_medias(self.api.last_json["items"], filtration, is_comment=is_comment)
 
@@ -65,7 +65,7 @@ def get_total_user_medias(self, user_id):
     user_id = self.convert_to_user_id(user_id)
     medias = self.api.get_total_user_feed(user_id)
     if self.api.last_json["status"] == 'fail':
-        self.logger.warning("This is a closed account.")
+        self.logger.warning("This is a private account.")
         return []
     return self.filter_medias(medias, filtration=False)
 
@@ -74,19 +74,21 @@ def get_last_user_medias(self, user_id, amount):
     user_id = self.convert_to_user_id(user_id)
     medias = self.api.get_last_user_feed(user_id, amount)
     if self.api.last_json["status"] == 'fail':
-        self.logger.warning("This is a closed account.")
+        self.logger.warning("This is a private account.")
         return []
     return self.filter_medias(medias, filtration=False)
 
 
 def get_user_likers(self, user_id, media_count=10):
+    user_info = self.get_user_info(user_id)
+    username = user_info["username"]
     your_likers = set()
     media_items = self.get_user_medias(user_id, filtration=False)
     if not media_items:
-        self.logger.warning("Can't get %s medias." % user_id)
+        self.logger.warning("Can't get %s medias." % username)
         return []
     for media_id in tqdm(media_items[:media_count],
-                         desc="Getting %s media likers" % user_id):
+                         desc="Getting %s media likers" % username):
         media_likers = self.get_media_likers(media_id)
         your_likers |= set(media_likers)
     return list(your_likers)

@@ -7,49 +7,50 @@ def follow(self, user_id):
     user_id = self.convert_to_user_id(user_id)
     user_info = self.get_user_info(user_id)
     username = user_info["username"]
-    msg = 'follow: {}.'.format(username)
-    self.console_print(msg)
+    # msg = 'follow: https://instagram.com/{}.'.format(username)
+    # self.console_print(msg)
+    # self.logger.info('follow: https://instagram.com/{}.'.format(username))
     if not self.check_user(user_id):
         return False
     if not self.reached_limit('follows'):
         self.delay('follow')
         if self.api.follow(user_id):
-            msg = '===> FOLLOWED <==== `user_id`: {}.'.format(user_id)
-            self.console_print(msg, 'green')
+            msg = 'FOLLOWING: https://instagram.com/{}.'.format(username)
+            self.console_print(msg)
             self.total['follows'] += 1
             self.followed_file.append(user_id)
             if user_id not in self.following:
                 self.following.append(user_id)
             return True
     else:
-        self.logger.info("Out of follows for today.")
+        self.logger.info("Reach follow limit for today.")
     return False
 
 
 def follow_users(self, user_ids):
     broken_items = []
     if self.reached_limit('follows'):
-        self.logger.info("Out of follows for today.")
+        self.logger.info("Reach follow limit for today.")
         return
     msg = "Going to follow {} users.".format(len(user_ids))
-    self.logger.info(msg)
+    # self.logger.info(msg)
     skipped = self.skipped_file
     followed = self.followed_file
     unfollowed = self.unfollowed_file
-    self.console_print(msg, 'green')
+    self.console_print(msg)
 
     # Remove skipped and already followed and unfollowed list from user_ids
     user_ids = list(set(user_ids) - skipped.set - followed.set - unfollowed.set)
-    msg = 'After filtering followed, unfollowed and `{}`, {} user_ids left to follow.'
-    msg = msg.format(skipped.fname, len(user_ids))
-    self.console_print(msg, 'green')
+    # msg = 'After filtering followed, unfollowed and `{}`, {} user_ids left to follow.'
+    # msg = msg.format(skipped.fname, len(user_ids))
+    # self.console_print(msg)
     for user_id in tqdm(user_ids, desc='Processed users'):
         if self.reached_limit('follows'):
-            self.logger.info("Out of follows for today.")
+            self.logger.info("Reach follow limit for today.")
             break
         if not self.follow(user_id):
             if self.api.last_response.status_code == 404:
-                self.console_print("404 error user {user_id} doesn't exist.", 'red')
+                self.console_print("404 error user {user_id} doesn't exist.")
                 broken_items.append(user_id)
 
             elif self.api.last_response.status_code == 200:
@@ -71,14 +72,16 @@ def follow_users(self, user_ids):
                     broken_items += user_ids[i:]
                     break
 
-    self.logger.info("DONE: Now following {} users in total.".format(self.total['follows']))
+    self.logger.info("DONE: follow {} total users.".format(self.total['follows']))
     return broken_items
 
 
 def follow_followers(self, user_id, nfollows=None):
-    self.logger.info("Follow followers of: {}".format(user_id))
+    user_info = self.get_user_info(user_id)
+    username = user_info["username"]
+    self.logger.info("Follow followers of: {}".format(username))
     if self.reached_limit('follows'):
-        self.logger.info("Out of follows for today.")
+        self.logger.info("Reach follow limit for today.")
         return
     if not user_id:
         self.logger.info("User not found.")
@@ -86,21 +89,23 @@ def follow_followers(self, user_id, nfollows=None):
     followers = self.get_user_followers(user_id, nfollows)
     followers = list(set(followers) - set(self.blacklist))
     if not followers:
-        self.logger.info("{} not found / closed / has no followers.".format(user_id))
+        self.logger.info("{} not found or a private account".format(username))
     else:
         self.follow_users(followers[:nfollows])
 
 
 def follow_following(self, user_id, nfollows=None):
-    self.logger.info("Follow following of: {}".format(user_id))
+    user_info = self.get_user_info(user_id)
+    username = user_info["username"]
+    self.logger.info("Follow following of: {}".format(username))
     if self.reached_limit('follows'):
-        self.logger.info("Out of follows for today.")
+        self.logger.info("Reach follow limit for today.")
         return
     if not user_id:
         self.logger.info("User not found.")
         return
     followings = self.get_user_following(user_id)
     if not followings:
-        self.logger.info("{} not found / closed / has no following.".format(user_id))
+        self.logger.info("{} not found or a private account.".format(username))
     else:
         self.follow_users(followings[:nfollows])

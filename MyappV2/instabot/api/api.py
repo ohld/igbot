@@ -39,9 +39,9 @@ class API(object):
         self.total_requests = 0
 
         # Setup logging
-        self.logger = logging.getLogger('[instabot_{}]'.format(id(self)))
+        self.logger = logging.getLogger('[Vetogram_{}]'.format(id(self)))
 
-        log_filename = os.path.join(base_path, 'instabot.log')
+        log_filename = os.path.join(base_path, 'Vetogram.log')
         fh = logging.FileHandler(filename=log_filename)
         fh.setLevel(logging.INFO)
         fh.setFormatter(logging.Formatter('%(asctime)s %(message)s'))
@@ -82,11 +82,11 @@ class API(object):
                 cookie_is_loaded = True
                 self.is_logged_in = True
                 self.set_proxy()  # Only happens if `self.proxy`
-                self.logger.info("Logged-in successfully as '{}' using the cookie!".format(self.username))
+                self.logger.info("Logged in as '{}'!".format(self.username))
                 return True
             except Exception:
-                print("The cookie is not found, but don't worry `instabot`"
-                      " will create it for you using your login details.")
+                print("The cookie is not found,"
+                      " Vetogram will create using your login details.")
 
         if not cookie_is_loaded and (not self.is_logged_in or force):
             self.session = requests.Session()
@@ -106,7 +106,7 @@ class API(object):
 
                 if self.send_request('accounts/login/', data, True):
                     self.is_logged_in = True
-                    self.logger.info("Logged-in successfully as '{}'!".format(self.username))
+                    self.logger.info("Logged in as '{}'!".format(self.username))
                     if use_cookie:
                         self.save_cookie(cookie_fname)
                         self.logger.info("Saved cookie!")
@@ -196,7 +196,7 @@ class API(object):
                 self.logger.error("Error checking for `feedback_required`, response text is not JSON")
 
             if response.status_code == 429:
-                sleep_minutes = 5
+                sleep_minutes = 15
                 self.logger.warning(
                     "That means 'too many requests'. I'll go to sleep "
                     "for {} minutes.".format(sleep_minutes))
@@ -649,12 +649,11 @@ class API(object):
             total = amount or username_info["user"][key]
 
             if total > 200000:
-                print("Consider temporarily saving the result of this big "
-                      "operation. This will take a while.\n")
+                print("please wait while we get this data.\n")
         else:
             return False
         if filter_business:
-            print("--> You are going to filter business accounts. This will take time! <--")
+            print("filtering business accounts!")
             from random import random
         if to_file is not None:
             if os.path.isfile(to_file):

@@ -30,12 +30,13 @@ class file(object):
 
     def append(self, item, allow_duplicates=False):
         if self.verbose:
-            msg = "Adding '{}' to `{}`.".format(item, self.fname)
-            print(bold(green(msg)))
+            # msg = "Adding '{}' to `{}`.".format(item, self.fname)
+            # print(bold(green(msg)))
+            pass
 
         if not allow_duplicates and str(item) in self.list:
-            msg = "'{}' already in `{}`.".format(item, self.fname)
-            print(bold(orange(msg)))
+            # msg = "'{}' already in `{}`.".format(item, self.fname)
+            # print(bold(orange(msg)))
             return
 
         with open(self.fname, 'a') as f:
