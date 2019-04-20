@@ -26,7 +26,7 @@ def unfollow(self, user_id):
 
 def unfollow_users(self, user_ids):
     broken_items = []
-    self.logger.info("Will unfollow {} users.".format(len(user_ids)))
+    # self.logger.info("Will unfollow {} users.".format(len(user_ids)))
     user_ids = set(map(str, user_ids))
     filtered_user_ids = list(set(user_ids) - set(self.whitelist))
     if len(filtered_user_ids) != len(user_ids):

@@ -17,13 +17,14 @@
    <bool>false</bool>
   </property>
   <property name="styleSheet">
-   <string notr="true">background-color: rgb(255, 255, 255);</string>
+   <string notr="true">background-color: rgb(255, 255, 255);
+</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QPushButton" name="pushButton_run">
     <property name="geometry">
      <rect>
-      <x>420</x>
+      <x>470</x>
       <y>10</y>
       <width>93</width>
       <height>28</height>
@@ -39,7 +40,7 @@
       <x>30</x>
       <y>120</y>
       <width>891</width>
-      <height>64</height>
+      <height>91</height>
      </rect>
     </property>
     <property name="focusPolicy">
@@ -127,8 +128,8 @@ background-color: rgb(204, 204, 204);
    <widget class="QLineEdit" name="lineEdit_username">
     <property name="geometry">
      <rect>
-      <x>75</x>
-      <y>12</y>
+      <x>120</x>
+      <y>10</y>
       <width>136</width>
       <height>22</height>
      </rect>
@@ -142,9 +143,12 @@ background-color: rgb(204, 204, 204);
      <rect>
       <x>12</x>
       <y>12</y>
-      <width>56</width>
-      <height>16</height>
+      <width>91</width>
+      <height>31</height>
      </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">font: 12pt &quot;Times New Roman&quot;;</string>
     </property>
     <property name="text">
      <string>Vetogram</string>
@@ -153,8 +157,8 @@ background-color: rgb(204, 204, 204);
    <widget class="QLineEdit" name="lineEdit_password">
     <property name="geometry">
      <rect>
-      <x>218</x>
-      <y>12</y>
+      <x>290</x>
+      <y>10</y>
       <width>137</width>
       <height>22</height>
      </rect>
@@ -174,8 +178,8 @@ background-color: rgb(204, 204, 204);
      <rect>
       <x>30</x>
       <y>70</y>
-      <width>191</width>
-      <height>22</height>
+      <width>264</width>
+      <height>28</height>
      </rect>
     </property>
     <layout class="QHBoxLayout" name="horizontalLayout">
@@ -197,10 +201,10 @@ background-color: rgb(204, 204, 204);
    <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
-      <x>250</x>
-      <y>80</y>
-      <width>119</width>
-      <height>22</height>
+      <x>350</x>
+      <y>70</y>
+      <width>164</width>
+      <height>28</height>
      </rect>
     </property>
     <layout class="QHBoxLayout" name="horizontalLayout_2">

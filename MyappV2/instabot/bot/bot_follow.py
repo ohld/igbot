@@ -32,12 +32,12 @@ def follow_users(self, user_ids):
     if self.reached_limit('follows'):
         self.logger.info("Reach follow limit for today.")
         return
-    msg = "Going to follow {} users.".format(len(user_ids))
+    # msg = "Going to follow {} users.".format(len(user_ids))
     # self.logger.info(msg)
     skipped = self.skipped_file
     followed = self.followed_file
     unfollowed = self.unfollowed_file
-    self.console_print(msg)
+    # self.console_print(msg)
 
     # Remove skipped and already followed and unfollowed list from user_ids
     user_ids = list(set(user_ids) - skipped.set - followed.set - unfollowed.set)

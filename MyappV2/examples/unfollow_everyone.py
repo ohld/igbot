@@ -23,5 +23,5 @@ from instabot import Bot
 # bot.login(username=args.u, password=args.p,
 #           proxy=args.proxy)
 bot = Bot()
-bot.login(username="vicode.co", password="vicode.co98")
+bot.login(username="bromalayabro", password="subhanallah")
 bot.unfollow_everyone()
