@@ -12,25 +12,64 @@ import schedule
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5 import uic
-from PyQt5.QtCore import QSettings
+from PyQt5.QtCore import QSettings, QFileInfo
+from PyQt5.QtWidgets import qApp, QApplication, QMainWindow, QFormLayout, QLineEdit, QTabWidget, QWidget, QAction
 
 from ui import MainWindow
 
 sys.path.append(os.path.join(sys.path[0], '../'))
 from instabot import Bot
 
+# SAVE AND RESTORE LAST USER INPUT
+# FUNC ( restore, save, Mainwindow_class.setting, closeEvent)
+def restore(settings):
+    finfo = QtCore.QFileInfo(settings.fileName())
+    if finfo.exists() and finfo.isFile():
+        for w in QtWidgets.qApp.allWidgets():
+            mo = w.metaObject()
+            if w.objectName() and not w.objectName().startswith("qt_"):
+                settings.beginGroup(w.objectName())
+                for i in range( mo.propertyCount(), mo.propertyOffset()-1, -1):
+                    prop = mo.property(i)
+                    if prop.isWritable():
+                        name = prop.name()
+                        val = settings.value(name, w.property(name))
+                        if str(val).isdigit():
+                            val = int(val)
+                        w.setProperty(name, val)
+                settings.endGroup()
+
+def save(settings):
+    for w in QtWidgets.qApp.allWidgets():
+        mo = w.metaObject()
+        if w.objectName() and not w.objectName().startswith("qt_"):
+            settings.beginGroup(w.objectName())
+            for i in range(mo.propertyCount()):
+                prop = mo.property(i)
+                name = prop.name()
+                if prop.isWritable():
+                    settings.setValue(name, w.property(name))
+            settings.endGroup()
+
+
 # UI FORMAT
-# class MainWindow_class(QtWidgets.QMainWindow):
-    # def __init__(self, *args, **kwargs):
-    #     QtWidgets.QMainWindow.__init__(*args, **kwargs)
-    #     uic.loadUi("ui/MainWindow.ui", self)
+class MainWindow_class(QtWidgets.QMainWindow):
+    #RESTORE FILE LOCATION NAME
+    settings = QSettings("gui.ini", QSettings.IniFormat)
 
-class MainWindow_class(QtWidgets.QMainWindow,MainWindow.Ui_MainWindow):
+    def __init__(self):
+        QtWidgets.QMainWindow.__init__(self)
+        uic.loadUi("ui/MainWindow.ui", self)
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.setupUi(self)
-        self.settings = QtCore.QSettings()
+# PY FORMAT
+# class MainWindow_class(MainWindow.Ui_MainWindow,QtWidgets.QMainWindow):
+#     def __init__(self):
+#         super(MainWindow.Ui_MainWindow, self).__init__()
+#         self.setupUi(self)
+
+
+        restore(self.settings)
+
 
         # CLICK RUN BUTTON TRIGGER LOGIN FUNCTION
         # self.pushButton_run.clicked.connect(self.login_instagram)
@@ -41,6 +80,10 @@ class MainWindow_class(QtWidgets.QMainWindow,MainWindow.Ui_MainWindow):
         # PASS UI OBJECT NAME TO WORKTHREAD CLASS
         self.workThread = workThread(lineEdit_follow_from_hashtag=self.lineEdit_follow_from_hashtag,
                                      groupBox_follow_from_hashtag=self.groupBox_follow_from_hashtag,)
+
+    def closeEvent(self, event):
+        save(self.settings)
+        QtWidgets.QMainWindow.closeEvent(self,event)
 
     def login_instagram(self):
         global bot
