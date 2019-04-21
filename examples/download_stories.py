@@ -35,4 +35,4 @@ def download_stories(username):
                 handle.write(data)
 
 
-download_stories("")
+download_stories("") #INSERT USERNAME HERE
