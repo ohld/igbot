@@ -6,6 +6,39 @@
 from tqdm import tqdm
 
 
+#STORY
+
+def get_user_stories(self, user_id):
+    self.api.get_user_stories(user_id)
+    try:
+        if int(self.api.last_json["reel"]["media_count"]) <= 0:
+            return []
+        else:
+            urls = []
+            for item in self.api.last_json["reel"]["items"]:
+                if int (item["media_type"]) == 1 : #photo
+                    img = item["image_versions2"]["candidates"][0]["url"]
+                    urls.append(img)
+                elif int(item["media_type"]) == 2: #video
+                    video = item["video_versions"][0]["url"]
+                    urls.append(video)
+            return urls
+    except:
+        return []
+        
+
+
+
+def get_self_story_viewers(self, story_id):
+    self.api.get_self_story_viewers(story_id)
+    return self.api.last_json
+
+
+def get_user_reel(self, user_id):
+    self.api.get_user_reel(user_id)
+    return self.api.last_json
+
+
 def get_media_owner(self, media_id):
     self.api.media_info(media_id)
     try:
