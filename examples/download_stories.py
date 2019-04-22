@@ -1,6 +1,7 @@
 from instabot import Bot
 import requests
-import os, sys
+import os
+import sys
 import argparse
 sys.path.append(os.path.join(sys.path[0], '../'))
 parser = argparse.ArgumentParser(add_help=True)
@@ -12,4 +13,4 @@ if args.username[0] != "@":  # if first character isn't "@"
 bot = Bot()
 bot.login()
 
-bot.download_stories("") #INSERT USERNAME HERE
+bot.download_stories("")  # INSERT USERNAME HERE

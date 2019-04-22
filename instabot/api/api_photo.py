@@ -10,6 +10,7 @@ from requests_toolbelt import MultipartEncoder
 from . import config
 
 def download_photo(self, media_id, filename, media=False, folder='photos'):
+    
     if not media:
         self.media_info(media_id)
         if not self.last_json.get('items'):

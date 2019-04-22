@@ -322,20 +322,17 @@ class Bot(object):
         self.start_time = datetime.datetime.now()
 
     # getters
-
     def get_user_stories(self, user_id):
         """
         Returns array of stories links
         """
         return get_user_stories(self, user_id)
 
-
     def get_user_reel(self, user_id):
         return get_user_reel(self, user_id)
 
     def get_self_story_viewers(self, story_id):
         return get_self_story_viewers(self, story_id)
-
 
     def get_your_medias(self, as_dict=False):
         """
@@ -505,13 +502,11 @@ class Bot(object):
     def unlike_user(self, user):
         return unlike_user(self, user)
 
-    #story
-
+    # story
     def download_stories(self, username):
         return download_stories(self, username)
 
     # photo
-
     def download_photo(self, media_id, folder='photos', filename=None, save_description=False):
         return download_photo(self, media_id, folder, filename, save_description)
 

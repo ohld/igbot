@@ -4,6 +4,7 @@ from tqdm import tqdm
 import requests
 
 def download_stories(self, username):
+    
     user_id = self.get_user_id_from_username(username)
     list_image, list_video = self.get_user_stories(user_id)
 

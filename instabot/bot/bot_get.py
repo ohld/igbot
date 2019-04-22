@@ -6,28 +6,23 @@
 from tqdm import tqdm
 
 
-#STORY
+# STORY
 
 def get_user_stories(self, user_id):
     self.api.get_user_stories(user_id)
-    try:
-        if int(self.api.last_json["reel"]["media_count"]) > 0:
-            list_image = []
-            list_video = []
-            for item in self.api.last_json["reel"]["items"]:
-                if int(item["media_type"]) == 1:  # photo
-                    img = item["image_versions2"]["candidates"][0]["url"]
-                    list_image.append(img)
-                elif int(item["media_type"]) == 2:  # video
-                    video = item["video_versions"][0]["url"]
-                    list_video.append(video)
-            return list_image, list_video
-        else:
-            return [],[]
-    except:
+    if int(self.api.last_json["reel"]["media_count"]) > 0:
+        list_image = []
+        list_video = []
+        for item in self.api.last_json["reel"]["items"]:
+            if int(item["media_type"]) == 1:  # photo
+                img = item["image_versions2"]["candidates"][0]["url"]
+                list_image.append(img)
+            elif int(item["media_type"]) == 2:  # video
+                video = item["video_versions"][0]["url"]
+                list_video.append(video)
+        return list_image, list_video
+    else:
         return [], []
-        
-
 
 
 def get_self_story_viewers(self, story_id):
