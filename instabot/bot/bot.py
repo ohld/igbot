@@ -46,6 +46,7 @@ from .bot_unfollow import (unfollow, unfollow_everyone, unfollow_non_followers,
 from .bot_unlike import (unlike, unlike_comment, unlike_media_comments,
                          unlike_medias, unlike_user)
 from .bot_video import upload_video, download_video
+from .bot_story import download_stories
 
 
 class Bot(object):
@@ -503,6 +504,11 @@ class Bot(object):
 
     def unlike_user(self, user):
         return unlike_user(self, user)
+
+    #story
+
+    def download_stories(self, username):
+        return download_stories(self, username)
 
     # photo
 
