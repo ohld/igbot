@@ -846,13 +846,15 @@ class API(object):
         """
         url = 'feed/reels_media/'
         res = self.send_request(
-            url, 
+            url,
             post=self.json_data({
                 'user_ids': [str(x) for x in user_ids]
             })
         )
-        if "reels" in self.last_json:
-            return self.last_json["reels"]
+        if res:
+            if "reels" in self.last_json:
+                return self.last_json["reels"]
+            return []
         return []
 
     def see_reels(self, reels):
@@ -862,7 +864,7 @@ class API(object):
         """
         if not isinstance(reels, list):
             reels = [reels]
-            
+
         story_seen = {}
         now = int(time.time())
         for i, story in enumerate(sorted(reels, key=lambda m: m['taken_at'], reverse=True)):
