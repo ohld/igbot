@@ -6,7 +6,7 @@ import os
 import sys
 import time
 import uuid
-from random import uniform
+import random
 
 try:
     from json.decoder import JSONDecodeError
@@ -696,7 +696,7 @@ class API(object):
                             pbar.update(1)
                             sleep_track += 1
                             if sleep_track >= 20000:
-                                sleep_time = uniform(120, 180)
+                                sleep_time = random.uniform(120, 180)
                                 msg = "\nWaiting {:.2f} min. due to too many requests."
                                 print(msg.format(sleep_time / 60))
                                 time.sleep(sleep_time)
@@ -841,6 +841,52 @@ class API(object):
     def get_user_reel(self, user_id):
         url = 'feed/user/{}/reel_media/'.format(user_id)
         return self.send_request(url)
+
+    def get_users_reel(self, user_ids):
+        """
+        Input: user_ids - a list of user_id
+        Output: dictionary: user_id - stories data.
+        Basically, for each user output the same as after self.get_user_reel
+        """
+        url = 'feed/reels_media/'
+        res = self.send_request(
+            url,
+            post=self.json_data({
+                'user_ids': [str(x) for x in user_ids]
+            })
+        )
+        if res:
+            if "reels" in self.last_json:
+                return self.last_json["reels"]
+            return []
+        return []
+
+    def see_reels(self, reels):
+        """
+            Input - the list of reels jsons
+            They can be aquired by using get_users_reel() or get_user_reel() methods
+        """
+        if not isinstance(reels, list):
+            reels = [reels]
+
+        story_seen = {}
+        now = int(time.time())
+        for i, story in enumerate(sorted(reels, key=lambda m: m['taken_at'], reverse=True)):
+            story_seen_at = now - min(i + 1 + random.randint(0, 2), max(0, now - story['taken_at']))
+            story_seen[
+                '{0!s}_{1!s}'.format(story['id'], story['user']['pk'])
+            ] = [
+                '{0!s}_{1!s}'.format(story['taken_at'], story_seen_at)
+            ]
+
+        data = self.json_data({
+            'reels': story_seen,
+            '_csrftoken': self.token,
+            '_uuid': self.uuid,
+            '_uid': self.user_id
+        })
+        data = self.generate_signature(data)
+        return self.session.post('https://i.instagram.com/api/v2/' + 'media/seen/', data=data).ok
 
     def get_user_stories(self, user_id):
         url = 'feed/user/{}/story/'.format(user_id)
