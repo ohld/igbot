@@ -1,13 +1,6 @@
 from __future__ import unicode_literals
-import imghdr
 import os
 import shutil
-import struct
-import time
-
-from requests_toolbelt import MultipartEncoder
-
-from . import config
 
 def download_story(self, filename, story_url, username):
 

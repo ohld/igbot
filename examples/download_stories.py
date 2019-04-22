@@ -1,9 +1,10 @@
-from instabot import Bot
-import requests
 import os
 import sys
 import argparse
+
 sys.path.append(os.path.join(sys.path[0], '../'))
+from instabot import Bot
+
 parser = argparse.ArgumentParser(add_help=True)
 parser.add_argument('username', type=str, help='@username')
 args = parser.parse_args()
