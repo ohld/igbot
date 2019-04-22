@@ -15,7 +15,7 @@ def download_story(self, filename, story_url, username):
         os.makedirs(p)
     fname = os.path.join(p, filename)
     if os.path.exists(fname): #already exists
-        self.bot.logger.info("No new stories available.")
+        print("Stories already downloaded...")
         return os.path.abspath(fname)
     response = self.session.get(story_url, stream=True)
     if response.status_code == 200:

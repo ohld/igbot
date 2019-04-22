@@ -1,4 +1,4 @@
-# coding=utf-8
+w# coding=utf-8
 """
     instabot example
 
