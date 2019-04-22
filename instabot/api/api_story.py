@@ -2,6 +2,7 @@ from __future__ import unicode_literals
 import os
 import shutil
 
+
 def download_story(self, filename, story_url, username):
     p = "stories/" + username
     if not os.path.exists(p):
