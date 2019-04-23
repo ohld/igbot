@@ -258,8 +258,7 @@ class Bot(object):
     def logout(self, *args, **kwargs):
         save_checkpoint(self)
         self.api.logout()
-        self.logger.info("Vetogram stopped. "
-                         "Worked: %s", datetime.datetime.now() - self.start_time)
+        self.logger.info("Logout: %s", datetime.datetime.now() - self.start_time)
         self.print_counters()
 
     def login(self, **args):
@@ -285,7 +284,7 @@ class Bot(object):
         for key, val in self.blocked_actions.items():
             if val:
                 self.logger.info("Blocked {}".format(key))
-        self.logger.info("Total requests: {}".format(self.api.total_requests))
+        # self.logger.info("Total requests: {}".format(self.api.total_requests))
 
     def delay(self, key):
         """Sleep only if elapsed time since `self.last[key]` < `self.delay[key]`."""

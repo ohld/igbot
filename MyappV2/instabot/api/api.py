@@ -82,11 +82,12 @@ class API(object):
                 cookie_is_loaded = True
                 self.is_logged_in = True
                 self.set_proxy()  # Only happens if `self.proxy`
-                self.logger.info("Logged in as '{}'!".format(self.username))
+                self.logger.info("Logged in succcess {}".format(self.username))
                 return True
             except Exception:
-                print("The cookie is not found,"
-                      " Vetogram will create using your login details.")
+                # print("The cookie is not found,"
+                #       " Vetogram will create using your login details.")
+                pass
 
         if not cookie_is_loaded and (not self.is_logged_in or force):
             self.session = requests.Session()
@@ -106,7 +107,7 @@ class API(object):
 
                 if self.send_request('accounts/login/', data, True):
                     self.is_logged_in = True
-                    self.logger.info("Logged in as '{}'!".format(self.username))
+                    self.logger.info("Logged in success {}".format(self.username))
                     if use_cookie:
                         self.save_cookie(cookie_fname)
                         self.logger.info("Saved cookie!")
@@ -198,7 +199,7 @@ class API(object):
             if response.status_code == 429:
                 sleep_minutes = 15
                 self.logger.warning(
-                    "That means 'too many requests'. I'll go to sleep "
+                    "Too many requests'. Going to rest "
                     "for {} minutes.".format(sleep_minutes))
                 time.sleep(sleep_minutes * 60)
             elif response.status_code == 400:
@@ -239,9 +240,9 @@ class API(object):
                 else:
                     msg = "Instagram's error message: {}"
                     self.logger.info(msg.format(response_data.get('message')))
-                    if 'error_type' in response_data:
-                        msg = 'Error type: {}'.format(response_data['error_type'])
-                    self.logger.info(msg)
+                    # if 'error_type' in response_data:
+                    #     msg = 'Error type: {}'.format(response_data['error_type'])
+                    # self.logger.info(msg)
 
             # For debugging
             try:
@@ -649,19 +650,20 @@ class API(object):
             total = amount or username_info["user"][key]
 
             if total > 200000:
-                print("please wait while we get this data.\n")
+                print("Loading data.\n")
         else:
             return False
         if filter_business:
-            print("filtering business accounts!")
+            # print("filtering business accounts!")
             from random import random
         if to_file is not None:
             if os.path.isfile(to_file):
                 if not overwrite:
-                    print("File `{}` already exists. Not overwriting.".format(to_file))
+                    # print("File `{}` already exists. Not overwriting.".format(to_file))
                     return False
                 else:
-                    print("Overwriting file `{}`".format(to_file))
+                    # print("Overwriting file `{}`".format(to_file))
+                    pass
             with open(to_file, 'w'):
                 pass
         desc = "Getting {} of {}".format(which, user_id)
@@ -692,7 +694,7 @@ class API(object):
                             sleep_track += 1
                             if sleep_track >= 20000:
                                 sleep_time = uniform(120, 180)
-                                msg = "\nWaiting {:.2f} min. due to too many requests."
+                                msg = "\nWaiting {:.2f} min. too many requests."
                                 print(msg.format(sleep_time / 60))
                                 time.sleep(sleep_time)
                                 sleep_track = 0

@@ -2,7 +2,7 @@
 import random
 from collections import OrderedDict
 
-from huepy import bold, green, orange
+# from huepy import bold, green, orange
 
 
 class file(object):
@@ -48,7 +48,7 @@ class file(object):
         if x in items:
             items.remove(x)
             msg = "Removing '{}' from `{}`.".format(x, self.fname)
-            print(bold(green(msg)))
+            # print(bold(green(msg)))
             self.save_list(items)
 
     def random(self):
