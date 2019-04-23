@@ -58,7 +58,7 @@ def save(settings):
 # UI FORMAT
 class MainWindow_class(QtWidgets.QMainWindow):
     #RESTORE FILE LOCATION NAME
-    settings = QSettings("gui.ini", QSettings.IniFormat)
+    # settings = QSettings("gui.ini", QSettings.IniFormat)
 
     def __init__(self):
         QtCore.QCoreApplication.processEvents()
@@ -72,6 +72,7 @@ class MainWindow_class(QtWidgets.QMainWindow):
 #         super(MainWindow.Ui_MainWindow, self).__init__()
 #         self.setupUi(self)
 
+        self.settings = QSettings(path + "gui.ini", QSettings.IniFormat)
 
         restore(self.settings)
 
@@ -80,7 +81,7 @@ class MainWindow_class(QtWidgets.QMainWindow):
         # self.comboBox_follow.currentIndexChanged.connect(self.update_label_follow)
 
         #   TESTING
-        self.pushButton_run.clicked.connect(self.create_path)
+        self.pushButton_run.clicked.connect(self.click_start)
 
         # PASS UI OBJECT NAME TO WORKTHREAD CLASS
         self.workThread = workThread(groupBox_follow=self.groupBox_follow,
@@ -106,7 +107,7 @@ class MainWindow_class(QtWidgets.QMainWindow):
 
     def return_base_path(self):
         username = str(self.lineEdit_username.text()).lower().strip()
-        base_path = path + username
+        base_path = path + username + "\\"
         return base_path
 
 #todo setting
@@ -170,8 +171,7 @@ class MainWindow_class(QtWidgets.QMainWindow):
 
     # TESTING
     def click_start(self):
-        print(self.username)
-        self.workThread.start()
+        print(self.return_base_path() + "gui.ini")
 
     def update_label_follow(self):
         combobox = self.comboBox_follow.currentText()
