@@ -73,11 +73,14 @@ class MainWindow_class(QtWidgets.QMainWindow):
 
         self.settings = QSettings(path + "gui.ini", QSettings.IniFormat)
 
-        restore(self.settings)
+        # restore(self.settings)
 
         # OFFICIAL
         self.pushButton_run.clicked.connect(self.login_instagram)
         self.comboBox_follow.currentIndexChanged.connect(self.update_label_follow)
+        self.groupBox_free.clicked.connect(lambda checked: self.groupBox_standard.setChecked(False) or self.groupBox_fast.setChecked(False) or self.gBox_free())
+        self.groupBox_standard.clicked.connect(lambda checked: self.groupBox_free.setChecked(False) or self.groupBox_fast.setChecked(False) or self.gBox_standard())
+        self.groupBox_fast.clicked .connect(lambda checked: self.groupBox_free.setChecked(False) or self.groupBox_standard.setChecked(False) or self.gBox_fast())
 
         #   TESTING
         # self.pushButton_run.clicked.connect(self.click_start)
@@ -181,6 +184,17 @@ class MainWindow_class(QtWidgets.QMainWindow):
         else:
             self.label_follow.setText("of username")
             self.lineEdit_follow.setPlaceholderText("username1,username2,username3")
+
+    def gBox_free(self):
+        print("free")
+
+    def gBox_standard(self):
+        print("standard")
+
+    def gBox_fast(self):
+        print("fast")
+
+
 
 
 # MAKE THREAD SO THAT UI DIDNT FREEZE
