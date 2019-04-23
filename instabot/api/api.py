@@ -188,6 +188,7 @@ class API(object):
                 return False
         else:
             self.logger.error("Request returns {} error!".format(response.status_code))
+            print(response.text)
             try:
                 response_data = json.loads(response.text)
                 if "feedback_required" in str(response_data.get('message')):

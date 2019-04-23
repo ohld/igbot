@@ -9,7 +9,7 @@ def download_story(self, filename, story_url, username):
         os.makedirs(p)
     fname = os.path.join(p, filename)
     if os.path.exists(fname):  # already exists
-        print("Stories already downloaded...")
+        self.logger.info("Stories already downloaded...")
         return os.path.abspath(fname)
     response = self.session.get(story_url, stream=True)
     if response.status_code == 200:
