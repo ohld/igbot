@@ -42,6 +42,9 @@ class API(object):
         # Setup logging
         self.logger = logging.getLogger('[instabot_{}]'.format(id(self)))
 
+        if not os.path.exists("./config/"):
+            os.makedirs("./config/")  # create base_path if not exists
+
         log_filename = os.path.join(base_path, 'instabot.log')
         fh = logging.FileHandler(filename=log_filename)
         fh.setLevel(logging.INFO)
