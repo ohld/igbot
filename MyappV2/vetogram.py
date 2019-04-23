@@ -58,7 +58,6 @@ def save(settings):
 # UI FORMAT
 class MainWindow_class(QtWidgets.QMainWindow):
     #RESTORE FILE LOCATION NAME
-    # settings = QSettings("gui.ini", QSettings.IniFormat)
 
     def __init__(self):
         QtCore.QCoreApplication.processEvents()
@@ -77,11 +76,11 @@ class MainWindow_class(QtWidgets.QMainWindow):
         restore(self.settings)
 
         # OFFICIAL
-        # self.pushButton_run.clicked.connect(self.login_instagram)
-        # self.comboBox_follow.currentIndexChanged.connect(self.update_label_follow)
+        self.pushButton_run.clicked.connect(self.login_instagram)
+        self.comboBox_follow.currentIndexChanged.connect(self.update_label_follow)
 
         #   TESTING
-        self.pushButton_run.clicked.connect(self.click_start)
+        # self.pushButton_run.clicked.connect(self.click_start)
 
         # PASS UI OBJECT NAME TO WORKTHREAD CLASS
         self.workThread = workThread(groupBox_follow=self.groupBox_follow,
@@ -95,7 +94,6 @@ class MainWindow_class(QtWidgets.QMainWindow):
 
     def create_path(self):
         base_path = self.return_base_path()
-
         if not os.path.exists(base_path):
             if not os.path.exists(path):
                 os.mkdir(path)
@@ -114,7 +112,7 @@ class MainWindow_class(QtWidgets.QMainWindow):
     def setting(self):
         global bot
         bot = Bot(
-                 base_path='',
+                 base_path=self.return_base_path(),
                  # proxy=None,
                  max_likes_per_day=1000,
                  # max_unlikes_per_day=1000,
@@ -157,8 +155,9 @@ class MainWindow_class(QtWidgets.QMainWindow):
 
     def login_instagram(self):
         QtCore.QCoreApplication.processEvents()
+        self.create_path()
         self.setting()
-        global username
+
         username = str(self.lineEdit_username.text()).lower().strip()
         password = str(self.lineEdit_password.text()).strip()
 
