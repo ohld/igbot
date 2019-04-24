@@ -88,19 +88,35 @@ import os
 #
 # make_file()
 
-username = "broamalabro__2.co"
-path = os.path.expanduser("~\Testing\\")
-base_path = os.path.expanduser("~\Testing\\" + username)
-print(path)
-def create_path():
-    if not os.path.exists(base_path):
-        if not os.path.exists(path):
-            os.mkdir(path)
-            os.mkdir(base_path)
-        else:
-            os.mkdir(base_path)
-            print(" base path not exist just created")
-    else:
-        print("dir exist")
 
-create_path()
+#CREATE PATH
+# username = "broamalabro__2.co"
+# path = os.path.expanduser("~\Testing\\")
+# base_path = os.path.expanduser("~\Testing\\" + username)
+# print(path)
+# def create_path():
+#     if not os.path.exists(base_path):
+#         if not os.path.exists(path):
+#             os.mkdir(path)
+#             os.mkdir(base_path)
+#         else:
+#             os.mkdir(base_path)
+#             print(" base path not exist just created")
+#     else:
+#         print("dir exist")
+#
+# create_path()
+
+# #INSERT NEW VALUE
+# old_value = 0
+# while 1:
+#     new_value = int(input("insert new value"))
+#     if new_value <= 85:
+#
+#         total_value = old_value + new_value
+#         old_value += new_value
+#     else:
+#         break
+#
+#     print(total_value)
+

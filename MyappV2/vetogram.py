@@ -67,7 +67,6 @@ class MainWindow_class(QtWidgets.QMainWindow):
 
 # PY FORMAT
 # class MainWindow_class(MainWindow.Ui_MainWindow,QtWidgets.QMainWindow):
-#     settings = QSettings("gui.ini", QSettings.IniFormat)
 #     def __init__(self):
 #         super(MainWindow.Ui_MainWindow, self).__init__()
 #         self.setupUi(self)
@@ -77,14 +76,14 @@ class MainWindow_class(QtWidgets.QMainWindow):
         # restore(self.settings)
 
         # OFFICIAL
-        self.pushButton_run.clicked.connect(self.login_instagram)
+        # self.pushButton_run.clicked.connect(self.login_instagram)
         self.comboBox_follow.currentIndexChanged.connect(self.update_label_follow)
-        self.groupBox_free.clicked.connect(lambda checked: self.groupBox_standard.setChecked(False) or self.groupBox_fast.setChecked(False) or self.gBox_free())
-        self.groupBox_standard.clicked.connect(lambda checked: self.groupBox_free.setChecked(False) or self.groupBox_fast.setChecked(False) or self.gBox_standard())
-        self.groupBox_fast.clicked .connect(lambda checked: self.groupBox_free.setChecked(False) or self.groupBox_standard.setChecked(False) or self.gBox_fast())
+        self.radioButton_slow.clicked.connect(self.rButton_slow)
+        self.radioButton_standard.clicked.connect(self.rButton_standard)
+        self.radioButton_fast.clicked.connect(self.rButton_fast)
 
         #   TESTING
-        # self.pushButton_run.clicked.connect(self.click_start)
+        self.pushButton_run.clicked.connect(self.click_start)
 
         # PASS UI OBJECT NAME TO WORKTHREAD CLASS
         self.workThread = workThread(groupBox_follow=self.groupBox_follow,
@@ -112,7 +111,7 @@ class MainWindow_class(QtWidgets.QMainWindow):
         base_path = path + username + "\\"
         return base_path
 
-#todo get setting
+
     def get_setting(self):
         if self.groupBox_free.isChecked() == 1:
             pass
@@ -121,28 +120,27 @@ class MainWindow_class(QtWidgets.QMainWindow):
         if self.groupBox_fast.isChecked() == 1:
             pass
 
-#todo setting
     def setting(self):
         global bot
         bot = Bot(
                  base_path=self.return_base_path(),
                  # proxy=None,
-                 max_likes_per_day=1000,
+                 max_likes_per_day=self.spinBox_like.value(),
                  # max_unlikes_per_day=1000,
-                 max_follows_per_day=1000,
-                 max_unfollows_per_day=1000,
-                 max_comments_per_day=100,
+                 max_follows_per_day=self.spinBox_follow.value(),
+                 max_unfollows_per_day=self.spinBox_unfollow.value(),
+                 max_comments_per_day=self.spinBox_comment.value(),
                  # max_blocks_per_day=100,
                  # max_unblocks_per_day=100,
                  # max_likes_to_like=10000,
                  # min_likes_to_like=2,
                  # max_messages_per_day=300,
                  filter_users=False,
-                 filter_private_users=True,
-                 filter_users_without_profile_photo=True,
+                 filter_private_users=False,
+                 filter_users_without_profile_photo=False,
                  filter_previously_followed=False,
-                 filter_business_accounts=True,
-                 filter_verified_accounts=True,
+                 filter_business_accounts=False,
+                 filter_verified_accounts=False,
                  # max_followers_to_follow=2000,
                  # min_followers_to_follow=10,
                  # max_following_to_follow=2000,
@@ -151,14 +149,14 @@ class MainWindow_class(QtWidgets.QMainWindow):
                  # max_following_to_followers_ratio=2,
                  # min_media_count_to_follow=3,
                  # max_following_to_block=2000,
-                 like_delay=20,
+                 like_delay=40,
                  # unlike_delay=10,
-                 follow_delay=30,
-                 unfollow_delay=30,
-                 comment_delay=60,
+                 follow_delay=60,
+                 unfollow_delay=60,
+                 comment_delay=120,
                  # block_delay=30,
                  # unblock_delay=30,
-                 message_delay=60,
+                 message_delay=90,
                  # stop_words=('shop', 'store', 'free'),
                  # blacklist_hashtags=['#shop', '#store', '#free'],
                  # blocked_actions_protection=True,
@@ -183,7 +181,7 @@ class MainWindow_class(QtWidgets.QMainWindow):
 
     # TESTING
     def click_start(self):
-        print(self.return_base_path() + "gui.ini")
+        print(type(self.spinBox_follow.value()))
 
     def update_label_follow(self):
         combobox = self.comboBox_follow.currentText()
@@ -195,29 +193,51 @@ class MainWindow_class(QtWidgets.QMainWindow):
             self.label_follow.setText("of username")
             self.lineEdit_follow.setPlaceholderText("username1,username2,username3")
 
-    def gBox_free(self):
+    def rButton_slow(self):
         if package == 0:
-            QtWidgets.QMessageBox.information(self, "Info", "To grow your instagram fastly you need\n"
-                                                            "to purchase full package to use other setting")
+            QtWidgets.QMessageBox.information(self, "Info", "Grow your instagram fastly just\n"
+                                                            "purchase full package to customize your setting")
         else:
-            pass
+            self.spinBox_follow.setValue(50)
+            self.spinBox_unfollow.setValue(30)
+            self.spinBox_like.setValue(50)
+            self.spinBox_comment.setValue(7)
+            self.spinBox_getfollowers.setValue(100)
+            self.spinBox_getfollowing.setValue(100)
 
-    def gBox_standard(self):
+    def rButton_standard(self):
         if package == 0:
-            self.groupBox_standard.setChecked(False)
+            self.radioButton_slow.setChecked(True)
+            QtWidgets.QMessageBox.information(self, "Info", "To use this setting you need\n"
+                                                              "to purchase full package")
+
+        else:
+            self.spinBox_follow.setValue(500)
+            self.spinBox_unfollow.setValue(500)
+            self.spinBox_like.setValue(750)
+            self.spinBox_comment.setValue(50)
+            self.spinBox_getfollowers.setValue(1000)
+            self.spinBox_getfollowing.setValue(1000)
+
+    def rButton_fast(self):
+        if package == 0:
+            self.radioButton_slow.setChecked(True)
             QtWidgets.QMessageBox.information(self, "Info", "To use this setting you need\n"
                                                               "to purchase full package")
         else:
-            pass
+            self.spinBox_follow.setValue(1000)
+            self.spinBox_unfollow.setValue(1000)
+            self.spinBox_like.setValue(1500)
+            self.spinBox_comment.setValue(100)
+            self.spinBox_getfollowers.setValue(10000)
+            self.spinBox_getfollowing.setValue(10000)
 
-    def gBox_fast(self):
-        if package == 0:
-            self.groupBox_fast.setChecked(False)
-            QtWidgets.QMessageBox.information(self, "Info", "To use this setting you need\n"
-                                                              "to purchase full package")
-        else:
-            pass
-
+            self.spinBox_follow.setReadOnly(False)
+            self.spinBox_unfollow.setReadOnly(False)
+            self.spinBox_like.setReadOnly(False)
+            self.spinBox_comment.setReadOnly(False)
+            self.spinBox_getfollowers.setReadOnly(False)
+            self.spinBox_getfollowing.setReadOnly(False)
 
 
 
