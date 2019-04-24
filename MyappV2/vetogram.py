@@ -112,6 +112,15 @@ class MainWindow_class(QtWidgets.QMainWindow):
         base_path = path + username + "\\"
         return base_path
 
+#todo get setting
+    def get_setting(self):
+        if self.groupBox_free.isChecked() == 1:
+            pass
+        if self.groupBox_standard.isChecked() == 1:
+            pass
+        if self.groupBox_fast.isChecked() == 1:
+            pass
+
 #todo setting
     def setting(self):
         global bot
