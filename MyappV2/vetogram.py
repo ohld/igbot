@@ -21,7 +21,7 @@ sys.path.append(os.path.join(sys.path[0], '../'))
 from instabot import Bot
 
 path = os.path.expanduser("~\Testing\\")
-package = 1
+package = 0 #0=free 1=purchased
 
 
 # SAVE AND RESTORE LAST USER INPUT
@@ -187,7 +187,11 @@ class MainWindow_class(QtWidgets.QMainWindow):
             self.lineEdit_follow.setPlaceholderText("username1,username2,username3")
 
     def gBox_free(self):
-        print("free")
+        if package == 0:
+            QtWidgets.QMessageBox.information(self, "Info", "To grow your instagram fastly you need\n"
+                                                            "to purchase full package to use other setting")
+        else:
+            pass
 
     def gBox_standard(self):
         if package == 0:
