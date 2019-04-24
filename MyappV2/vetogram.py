@@ -89,6 +89,8 @@ class MainWindow_class(QtWidgets.QMainWindow):
         self.workThread = workThread(groupBox_follow=self.groupBox_follow,
                                      comboBox_follow=self.comboBox_follow,
                                      lineEdit_follow=self.lineEdit_follow,
+                                     spinBox_getfollowers=self.spinBox_getfollowers,
+                                     spinBox_getfollowing=self.spinBox_getfollowing,
                                      )
 
     def closeEvent(self, event):
@@ -181,7 +183,7 @@ class MainWindow_class(QtWidgets.QMainWindow):
 
     # TESTING
     def click_start(self):
-        print(type(self.spinBox_follow.value()))
+        self.workThread.start()
 
     def update_label_follow(self):
         combobox = self.comboBox_follow.currentText()
@@ -249,6 +251,8 @@ class workThread(QtCore.QThread):
                  groupBox_follow,
                  comboBox_follow,
                  lineEdit_follow,
+                 spinBox_getfollowers,
+                 spinBox_getfollowing,
                  parent=None):
 
         super(workThread, self).__init__(parent)
@@ -256,34 +260,38 @@ class workThread(QtCore.QThread):
         self.groupBox_follow = groupBox_follow
         self.comboBox_follow = comboBox_follow
         self.lineEdit_follow = lineEdit_follow
+        self.spinBox_getfollowers = spinBox_getfollowers
+        self.spinBox_getfollowing = spinBox_getfollowing
 
-    def follow_from_hastags(self):
+    def follow(self):
         # IF THE GROUPBOX IS CHECK, FOLLOW USER WITH THAT #
         if self.groupBox_follow.isChecked() == 1:
             if self.comboBox_follow.currentText() == "hashtags":
                 hashtags = str(self.lineEdit_follow.text()).strip().split(",")
                 for hashtag in hashtags:
-                    print("Begin hahstag: " + hashtag)
-                    # users = bot.get_hashtag_users(hashtag)
-                    # bot.follow_users(users)
+                    # print("Begin hahstag: " + hashtag)
+                    users = bot.get_hashtag_users(hashtag)
+                    bot.follow_users(users)
 
             if self.comboBox_follow.currentText() == "followers":
                 usernames = str(self.lineEdit_follow.text()).strip().split(",")
                 for username in usernames:
-                    print("Begin followers: " + username)
+                    # print("Begin followers: " + username)
+                    bot.follow_followers(username, nfollows=self.spinBox_getfollowers.value())
 
             if self.comboBox_follow.currentText() == "following":
                 usernames = str(self.lineEdit_follow.text()).strip().split(",")
                 for username in usernames:
-                    print("Begin following: " + username)
+                    # print("Begin following: " + username)
+                    bot.follow_following(username,nfollows=self.spinBox_getfollowing.value())
         else:
             print("groupBox_follow_from_hashtag not check")
             pass
 
     # ALL FUNCTION IN WORKTHREAD START HERE
     def run(self):
-        self.follow_from_hastags()
-
+        # self.follow()
+        print(self.spinBox_getfollowers.value())
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
