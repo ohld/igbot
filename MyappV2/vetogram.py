@@ -21,6 +21,7 @@ sys.path.append(os.path.join(sys.path[0], '../'))
 from instabot import Bot
 
 path = os.path.expanduser("~\Testing\\")
+package = 1
 
 
 # SAVE AND RESTORE LAST USER INPUT
@@ -189,10 +190,20 @@ class MainWindow_class(QtWidgets.QMainWindow):
         print("free")
 
     def gBox_standard(self):
-        print("standard")
+        if package == 0:
+            self.groupBox_standard.setChecked(False)
+            QtWidgets.QMessageBox.information(self, "Info", "To use this setting you need\n"
+                                                              "to purchase full package")
+        else:
+            pass
 
     def gBox_fast(self):
-        print("fast")
+        if package == 0:
+            self.groupBox_fast.setChecked(False)
+            QtWidgets.QMessageBox.information(self, "Info", "To use this setting you need\n"
+                                                              "to purchase full package")
+        else:
+            pass
 
 
 
