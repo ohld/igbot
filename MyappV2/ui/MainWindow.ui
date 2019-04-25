@@ -85,10 +85,10 @@
    <widget class="QGroupBox" name="groupBox_follow">
     <property name="geometry">
      <rect>
-      <x>110</x>
-      <y>520</y>
-      <width>120</width>
-      <height>80</height>
+      <x>40</x>
+      <y>280</y>
+      <width>881</width>
+      <height>64</height>
      </rect>
     </property>
     <property name="title">
@@ -97,66 +97,190 @@
     <property name="checkable">
      <bool>true</bool>
     </property>
-   </widget>
-   <widget class="QWidget" name="layoutWidget">
-    <property name="geometry">
-     <rect>
-      <x>290</x>
-      <y>550</y>
-      <width>581</width>
-      <height>24</height>
-     </rect>
-    </property>
-    <layout class="QHBoxLayout" name="horizontalLayout_2">
+    <layout class="QHBoxLayout" name="horizontalLayout_4">
      <item>
-      <widget class="QLabel" name="label_2">
-       <property name="text">
-        <string>Follow</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QComboBox" name="comboBox_follow">
+      <layout class="QHBoxLayout" name="horizontalLayout_2">
        <item>
-        <property name="text">
-         <string>followers</string>
-        </property>
+        <widget class="QLabel" name="label_2">
+         <property name="text">
+          <string>Follow</string>
+         </property>
+        </widget>
        </item>
        <item>
-        <property name="text">
-         <string>following</string>
-        </property>
+        <widget class="QComboBox" name="comboBox_follow">
+         <item>
+          <property name="text">
+           <string>followers</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>following</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>hashtags</string>
+          </property>
+         </item>
+        </widget>
        </item>
        <item>
-        <property name="text">
-         <string>hashtags</string>
-        </property>
+        <widget class="QLabel" name="label_follow">
+         <property name="text">
+          <string>of username</string>
+         </property>
+        </widget>
        </item>
-      </widget>
-     </item>
-     <item>
-      <widget class="QLabel" name="label_follow">
-       <property name="text">
-        <string>of username</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QLineEdit" name="lineEdit_follow">
-       <property name="placeholderText">
-        <string>username1,username2,username3</string>
-       </property>
-      </widget>
+       <item>
+        <widget class="QLineEdit" name="lineEdit_follow">
+         <property name="placeholderText">
+          <string>username1,username2,username3</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
      </item>
     </layout>
+   </widget>
+   <widget class="QGroupBox" name="groupBox">
+    <property name="geometry">
+     <rect>
+      <x>730</x>
+      <y>70</y>
+      <width>240</width>
+      <height>168</height>
+     </rect>
+    </property>
+    <property name="title">
+     <string>Filter Account</string>
+    </property>
+    <layout class="QHBoxLayout" name="horizontalLayout_5">
+     <item>
+      <layout class="QVBoxLayout" name="verticalLayout_9">
+       <item>
+        <widget class="QLabel" name="label_3">
+         <property name="text">
+          <string>Tick the box to not follow the account</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <layout class="QVBoxLayout" name="verticalLayout_3">
+         <item>
+          <widget class="QCheckBox" name="checkBox_private">
+           <property name="text">
+            <string>Private Account</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="checkBox_no_profilePic">
+           <property name="text">
+            <string>Account Without Profile Picture</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="checkBox_business">
+           <property name="text">
+            <string>Business Account</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="checkBox_verified">
+           <property name="text">
+            <string>Verified Account</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </item>
+    </layout>
+   </widget>
+   <widget class="QTabWidget" name="tabWidget">
+    <property name="geometry">
+     <rect>
+      <x>140</x>
+      <y>400</y>
+      <width>401</width>
+      <height>171</height>
+     </rect>
+    </property>
+    <property name="currentIndex">
+     <number>0</number>
+    </property>
+    <widget class="QWidget" name="tab">
+     <attribute name="title">
+      <string>Tab 1</string>
+     </attribute>
+     <widget class="QPushButton" name="pushButton">
+      <property name="geometry">
+       <rect>
+        <x>30</x>
+        <y>60</y>
+        <width>93</width>
+        <height>28</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>PushButton</string>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="tab_2">
+     <attribute name="title">
+      <string>Tab 2</string>
+     </attribute>
+     <widget class="QRadioButton" name="radioButton">
+      <property name="geometry">
+       <rect>
+        <x>110</x>
+        <y>50</y>
+        <width>95</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>RadioButton</string>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="lineEdit">
+      <property name="geometry">
+       <rect>
+        <x>90</x>
+        <y>90</y>
+        <width>113</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>this is content in tab 2</string>
+      </property>
+     </widget>
+    </widget>
+   </widget>
+   <widget class="QTextEdit" name="textEdit">
+    <property name="geometry">
+     <rect>
+      <x>670</x>
+      <y>430</y>
+      <width>241</width>
+      <height>141</height>
+     </rect>
+    </property>
    </widget>
    <widget class="QGroupBox" name="groupBox_4">
     <property name="geometry">
      <rect>
       <x>30</x>
-      <y>80</y>
-      <width>761</width>
-      <height>211</height>
+      <y>60</y>
+      <width>591</width>
+      <height>201</height>
      </rect>
     </property>
     <property name="title">

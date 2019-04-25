@@ -15,6 +15,8 @@ from PyQt5 import uic
 from PyQt5.QtCore import QSettings, QFileInfo
 from PyQt5.QtWidgets import qApp, QApplication, QMainWindow, QFormLayout, QLineEdit, QTabWidget, QWidget, QAction
 
+from dashboard import Dashboard_class
+
 from ui import MainWindow
 
 sys.path.append(os.path.join(sys.path[0], '../'))
@@ -77,13 +79,26 @@ class MainWindow_class(QtWidgets.QMainWindow):
 
         # OFFICIAL
         # self.pushButton_run.clicked.connect(self.login_instagram)
+
         self.comboBox_follow.currentIndexChanged.connect(self.update_label_follow)
+
         self.radioButton_slow.clicked.connect(self.rButton_slow)
         self.radioButton_standard.clicked.connect(self.rButton_standard)
         self.radioButton_fast.clicked.connect(self.rButton_fast)
 
+        self.checkBox_private.clicked.connect(self.coming_soon)
+        self.checkBox_no_profilePic.clicked.connect(self.coming_soon)
+        self.checkBox_business.clicked.connect(self.coming_soon)
+        self.checkBox_verified.clicked.connect(self.coming_soon)
+
         #   TESTING
         self.pushButton_run.clicked.connect(self.click_start)
+
+        #  SHOW OUTPUT IN QTextEdit
+        stdout = OutputWrapper(self, True)
+        stdout.outputWritten.connect(self.handleOutput)
+        stderr = OutputWrapper(self, False)
+        stderr.outputWritten.connect(self.handleOutput)
 
         # PASS UI OBJECT NAME TO WORKTHREAD CLASS
         self.workThread = workThread(groupBox_follow=self.groupBox_follow,
@@ -183,7 +198,17 @@ class MainWindow_class(QtWidgets.QMainWindow):
 
     # TESTING
     def click_start(self):
-        self.workThread.start()
+        # self.workThread.start()
+        QtCore.QCoreApplication.processEvents()
+        try:
+            self.tabWidget.setTabEnabled(1,False)
+        except:
+            pass
+        # time.sleep(2)
+        print(self.lineEdit.text())
+
+    def coming_soon(self):
+        QtWidgets.QMessageBox.information(self, "info", "Coming Soon don't forget to purchase full package")
 
     def update_label_follow(self):
         combobox = self.comboBox_follow.currentText()
@@ -241,7 +266,14 @@ class MainWindow_class(QtWidgets.QMainWindow):
             self.spinBox_getfollowers.setReadOnly(False)
             self.spinBox_getfollowing.setReadOnly(False)
 
+    def handleOutput(self, text, stdout):
+        self.textEdit.moveCursor(QtGui.QTextCursor.End)
+        self.textEdit.insertPlainText(text)
 
+"### OPEN WIDGETS ###"
+# def open_Limit_Setting(self):
+#     self. = Limit_Setting_class()
+#     self.Limit_Setting.show()
 
 # MAKE THREAD SO THAT UI DIDNT FREEZE
 class workThread(QtCore.QThread):
@@ -290,8 +322,38 @@ class workThread(QtCore.QThread):
 
     # ALL FUNCTION IN WORKTHREAD START HERE
     def run(self):
-        # self.follow()
-        print(self.spinBox_getfollowers.value())
+        #todo check expired date
+        self.follow()
+
+class OutputWrapper(QtCore.QObject):
+    """ to show all output in ui text edit"""
+    outputWritten = QtCore.pyqtSignal(object, object)
+
+    def __init__(self, parent, stdout=True):
+        QtCore.QObject.__init__(self, parent)
+        if stdout:
+            self._stream = sys.stdout
+            sys.stdout = self
+        else:
+            self._stream = sys.stderr
+            sys.stderr = self
+        self._stdout = stdout
+
+    def write(self, text):
+        self._stream.write(text)
+        self.outputWritten.emit(text, self._stdout)
+
+    def __getattr__(self, name):
+        return getattr(self._stream, name)
+
+    def __del__(self):
+        try:
+            if self._stdout:
+                sys.stdout = self._stream
+            else:
+                sys.stderr = self._stream
+        except AttributeError:
+            pass
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
