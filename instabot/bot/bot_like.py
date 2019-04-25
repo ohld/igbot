@@ -183,7 +183,7 @@ def like_location_feed(self, place, amount):
                 self.like_medias(medias)
                 counter += 1
                 if location_feed.get('next_max_id'):
-                        max_id = location_feed['next_max_id']
+                    max_id = location_feed['next_max_id']
                 else:
                     return False
                 self.api.get_location_feed(finded_location, max_id)
@@ -191,8 +191,3 @@ def like_location_feed(self, place, amount):
         else:
             self.logger.error(" '{}' does not seem to have pictures. Select a different location.".format(place))
             return False
-
-            
-
-            
-
