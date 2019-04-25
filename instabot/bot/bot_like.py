@@ -166,13 +166,13 @@ def like_location_feed(self, place, amount):
         finded_location = self.api.last_json['items'][0]['location']['pk']
         self.api.get_location_feed(finded_location)
         location_feed = self.api.last_json
-        if location_feed.get('story'):  # stories
+        if location_feed.get('story'):
             self.logger.info("Liking users from stories...")
             location_to_filter = location_feed["story"]["items"][:amount]
             for i in range(0, len(location_to_filter)):
                 user = location_to_filter[i]["user"]["pk"]
                 self.like_user(user_id=user, amount=1, filtration=False)
-        elif location_feed.get('items'):  #  images
+        elif location_feed.get('items'):
             self.logger.info("Liking users from images...")
             max_id = ''
             counter = 0
