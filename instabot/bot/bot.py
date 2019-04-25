@@ -36,7 +36,7 @@ from .bot_get import (convert_to_user_id, get_archived_medias, get_comment,
                       get_user_stories, get_user_reel, get_self_story_viewers)
 from .bot_like import (like, like_comment, like_followers, like_following,
                        like_geotag, like_hashtag, like_media_comments,
-                       like_medias, like_timeline, like_user, like_users)
+                       like_medias, like_timeline, like_user, like_users, like_location_feed)
 from .bot_photo import download_photo, download_photos, upload_photo
 from .bot_stats import save_user_stats
 from .bot_support import (check_if_file_exists, console_print, extract_urls,
@@ -478,6 +478,9 @@ class Bot(object):
 
     def like_users(self, user_ids, nlikes=None, filtration=True):
         return like_users(self, user_ids, nlikes, filtration)
+
+    def like_location_feed(self, place, amount):
+        return like_location_feed(self, place, amount)
 
     def like_followers(self, user_id, nlikes=None, nfollows=None):
         return like_followers(self, user_id, nlikes, nfollows)

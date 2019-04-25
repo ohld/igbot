@@ -154,3 +154,45 @@ def like_following(self, user_id, nlikes=None, nfollows=None):
         self.logger.info("%s not found / closed / has no following." % user_id)
     else:
         self.like_users(following_ids, nlikes)
+
+
+def like_location_feed(self, place, amount):
+    self.logger.info("Searching location: {}".format(place))
+    self.api.search_location(place)
+    if not self.api.last_json['items']:
+        self.logger.error("{} not found.".format(place))
+        return False
+    else:
+        finded_location = self.api.last_json['items'][0]['location']['pk']
+        self.api.get_location_feed(finded_location)
+        location_feed = self.api.last_json
+        if location_feed.get('story'):  # stories
+            self.logger.info("Liking users from stories...")
+            location_to_filter = location_feed["story"]["items"][:amount]
+            for i in range(0, len(location_to_filter)):
+                user = location_to_filter[i]["user"]["pk"]
+                self.like_user(user_id=user, amount=1, filtration=False)
+        elif location_feed.get('items'):  #  images
+            self.logger.info("Liking users from images...")
+            max_id = ''
+            counter = 0
+            while counter < amount:
+                location_to_filter = location_feed["items"][:amount]
+                medias = self.filter_medias(
+                    location_to_filter, filtration=False)
+                self.like_medias(medias)
+                counter += 1
+                if location_feed.get('next_max_id'):
+                        max_id = location_feed['next_max_id']
+                else:
+                    return False
+                self.api.get_location_feed(finded_location, max_id)
+                location_feed = self.api.last_json
+        else:
+            self.logger.error(" '{}' does not seem to have pictures. Select a different location.".format(place))
+            return False
+
+            
+
+            
+

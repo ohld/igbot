@@ -190,8 +190,8 @@ class API(object):
             except JSONDecodeError:
                 return False
         else:
-            self.logger.error("Request returns {} error!".format(response.status_code))
-            print(response.text)
+            if response.status_code != 404:
+                self.logger.error("Request returns {} error!".format(response.status_code))
             try:
                 response_data = json.loads(response.text)
                 if "feedback_required" in str(response_data.get('message')):

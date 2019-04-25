@@ -1,4 +1,4 @@
-# Instabot with Stories support
+# Instabot with Stories and Location support
 
 Instagram promotion and SMM scripts.
 Forever free. Written in Python.
