@@ -13,7 +13,7 @@ Instagram promotion and SMM scripts. Forever free. Written in Python.
 
 - Like location feed, using `bot.like_location_feed("location name", amount)`
 
-- Approve or Reject pending follow requests on private accounts, using `bot.approve_pending_follow_requests(amount=None)` and `bot.reject_pending_follow_requests(amount=None)`
+- Approve or Reject pending follow requests on private accounts, using `bot.approve_pending_follow_requests()` and `bot.reject_pending_follow_requests()`
 
     
 
