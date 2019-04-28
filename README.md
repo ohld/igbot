@@ -9,13 +9,11 @@ Instagram promotion and SMM scripts. Forever free. Written in Python.
 </p>
 #### This fork of the original **Instabot** library includes many additional great features:
 
-- Stories download, using `bot.download_stories("username")`
-
-- Like location feed, using `bot.like_location_feed("location name", amount)`
-
-- Approve or Reject pending follow requests on private accounts, using `bot.approve_pending_follow_requests()` and `bot.reject_pending_follow_requests()`
-
-    
+|                         Description                          |                           Function                           |                           Example                            |
+| :----------------------------------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: |
+|                       Stories download                       |              `bot.download_stories("username")`              | [download_stories.py](https://github.com/marco2012/instabot/blob/master/examples/download_stories.py) |
+|                      Like location feed                      |      `bot.like_location_feed("location name", amount)`       | [like_location_feed.py](https://github.com/marco2012/instabot/blob/master/examples/like_location_feed.py) |
+| Approve or Reject pending follow requests<br />(for private accounts) | `bot.approve_pending_follow_requests()`<br />`bot.reject_pending_follow_requests()` | [follow_requests.py](https://github.com/marco2012/instabot/blob/master/examples/follow_requests.py) |
 
 
 ### Installation and usage
