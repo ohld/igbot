@@ -115,6 +115,8 @@ def approve_pending_follow_requests(self):
                 self.logger.info("Approved: {}".format(username))
             else:
                 self.logger.error("Could not approve {}".format(username))
+        self.logger.info("DONE: {} people approved.".format(len(pending)))
+        return True
 
 
 def reject_pending_follow_requests(self):
@@ -128,3 +130,5 @@ def reject_pending_follow_requests(self):
                 self.logger.info("Rejected: {}".format(username))
             else:
                 self.logger.error("Could not reject {}".format(username))
+        self.logger.info("DONE: {} people rejected.".format(len(pending)))
+        return True
