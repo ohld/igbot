@@ -7,13 +7,14 @@ Instagram promotion and SMM scripts. Forever free. Written in Python.
 <p align="center">
 <img src="https://raw.githubusercontent.com/instagrambot/docs/master/img/instabot_3_bots.png" alt="Instabot is better than other open-source bots!" width="300" />
 </p>
-#### This fork of the original **Instabot** library includes many additional great features:
+
+### This fork of the original **Instabot** library includes many additional great features:
 
 |                         Description                          |                           Function                           |                           Example                            |
 | :----------------------------------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: |
 |                       Stories download                       |              `bot.download_stories("username")`              | [download_stories.py](https://github.com/marco2012/instabot/blob/master/examples/download_stories.py) |
 |                      Like location feed                      |      `bot.like_location_feed("location name", amount)`       | [like_location_feed.py](https://github.com/marco2012/instabot/blob/master/examples/like_location_feed.py) |
-| Approve or Reject pending follow requests<br />(for private accounts) | `bot.approve_pending_follow_requests()`<br />`bot.reject_pending_follow_requests()` | [follow_requests.py](https://github.com/marco2012/instabot/blob/master/examples/follow_requests.py) |
+| Approve or Reject<br />pending follow requests<br />(for private accounts) | `bot.approve_pending_follow_requests()`<br />`bot.reject_pending_follow_requests()` | [follow_requests.py](https://github.com/marco2012/instabot/blob/master/examples/follow_requests.py) |
 
 
 ### Installation and usage
