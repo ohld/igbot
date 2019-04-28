@@ -363,3 +363,12 @@ def convert_to_user_id(self, x):
         x = self.get_user_id_from_username(x)
     # if type is not str than it is int so user_id passed
     return x
+
+
+def get_pending_follow_requests(self):
+    self.api.get_pending_friendships()
+    if self.api.last_json.get("users"):
+        return self.api.last_json.get("users")
+    else:
+        self.logger.info("There isn't any pending request.")
+        return []

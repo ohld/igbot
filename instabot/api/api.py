@@ -970,3 +970,28 @@ class API(object):
         data = self.json_data(data_dict)
         url = 'friendships/unmute_posts_or_story_from_follow/'
         return self.send_request(url, data)
+
+    def get_pending_friendships(self):
+        """Get pending follow requests"""
+        url = 'friendships/pending/'
+        return self.send_request(url)
+
+    def approve_pending_friendship(self, user_id):
+        data = self.json_data({
+            '_uuid': self.uuid,
+            '_uid': self.user_id,
+            'user_id': user_id,
+            '_csrftoken': self.token
+        })
+        url = 'friendships/approve/{}/'.format(user_id)
+        return self.send_request(url, post=data)
+
+    def reject_pending_friendship(self, user_id):
+        data = self.json_data({
+            '_uuid': self.uuid,
+            '_uid': self.user_id,
+            'user_id': user_id,
+            '_csrftoken': self.token
+        })
+        url = 'friendships/ignore/{}/'.format(user_id)
+        return self.send_request(url, post=data)
