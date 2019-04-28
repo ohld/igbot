@@ -46,4 +46,4 @@ def save_user_stats(self, username, path=""):
         file_path = os.path.join(path, "%s.tsv" % username)
         dump_data(data_to_save, file_path)
         self.logger.info("Stats saved at %s." % data_to_save["date"])
-    return False
+    return data_to_save

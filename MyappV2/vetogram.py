@@ -1,3 +1,12 @@
+
+from PyQt5.QtWidgets import QDialog, QApplication, QPushButton, QVBoxLayout
+from PyQt5.uic.properties import QtWidgets, QtCore
+
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
+from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
+import matplotlib.pyplot as plt
+
+
 import os
 import random
 import shutil
@@ -9,13 +18,12 @@ import queue
 import requests
 import webbrowser
 import schedule
+import csv
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5 import uic
 from PyQt5.QtCore import QSettings, QFileInfo
 from PyQt5.QtWidgets import qApp, QApplication, QMainWindow, QFormLayout, QLineEdit, QTabWidget, QWidget, QAction
-
-from dashboard import Dashboard_class
 
 from ui import MainWindow
 
@@ -75,10 +83,11 @@ class MainWindow_class(QtWidgets.QMainWindow):
 
         self.settings = QSettings(path + "gui.ini", QSettings.IniFormat)
 
-        # restore(self.settings)
+
+        restore(self.settings)
 
         # OFFICIAL
-        # self.pushButton_run.clicked.connect(self.login_instagram)
+        self.pushButton_run.clicked.connect(self.login_instagram)
 
         self.comboBox_follow.currentIndexChanged.connect(self.update_label_follow)
 
@@ -92,7 +101,10 @@ class MainWindow_class(QtWidgets.QMainWindow):
         self.checkBox_verified.clicked.connect(self.coming_soon)
 
         #   TESTING
-        self.pushButton_run.clicked.connect(self.click_start)
+        # self.pushButton_run.clicked.connect(self.append_csv)
+        # self.pushButton.clicked.connect(self.enable_tab)
+        # self.pushButton_stop.clicked.connect(self.plot_graph)
+        self.pushButton_upadate_status.clicked.connect(self.update_task_status)
 
         #  SHOW OUTPUT IN QTextEdit
         stdout = OutputWrapper(self, True)
@@ -107,6 +119,8 @@ class MainWindow_class(QtWidgets.QMainWindow):
                                      spinBox_getfollowers=self.spinBox_getfollowers,
                                      spinBox_getfollowing=self.spinBox_getfollowing,
                                      )
+
+        self.Canvas = Canvas(groupBox_2=self.groupBox_2,)
 
     def closeEvent(self, event):
         save(self.settings)
@@ -124,18 +138,16 @@ class MainWindow_class(QtWidgets.QMainWindow):
             pass
 
     def return_base_path(self):
-        username = str(self.lineEdit_username.text()).lower().strip()
-        base_path = path + username + "\\"
+        base_path = path + self.username() + "\\"
         return base_path
 
+    def username(self):
+        username = str(self.lineEdit_username.text()).lower().strip()
+        return username
 
-    def get_setting(self):
-        if self.groupBox_free.isChecked() == 1:
-            pass
-        if self.groupBox_standard.isChecked() == 1:
-            pass
-        if self.groupBox_fast.isChecked() == 1:
-            pass
+    def csv_file_path(self):
+        csv_file = str(self.return_base_path() + "{}.csv".format(self.username()))
+        return csv_file
 
     def setting(self):
         global bot
@@ -186,11 +198,11 @@ class MainWindow_class(QtWidgets.QMainWindow):
         self.create_path()
         self.setting()
 
-        username = str(self.lineEdit_username.text()).lower().strip()
         password = str(self.lineEdit_password.text()).strip()
 
-        if bot.login(username=username, password=password) == 1:
+        if bot.login(username=self.username(), password=password) == 1:
             # ALL TASK START HERE AFTER LOGIN
+            self.append_csv()
             self.workThread.start()
 
         else:
@@ -198,14 +210,36 @@ class MainWindow_class(QtWidgets.QMainWindow):
 
     # TESTING
     def click_start(self):
-        # self.workThread.start()
-        QtCore.QCoreApplication.processEvents()
-        try:
-            self.tabWidget.setTabEnabled(1,False)
-        except:
-            pass
-        # time.sleep(2)
-        print(self.lineEdit.text())
+        # # self.workThread.start()
+        # QtCore.QCoreApplication.processEvents()
+        # try:
+        #     self.tabWidget.setTabEnabled(1,False)
+        # except:
+        #     pass
+        # # time.sleep(2)
+        # print(self.lineEdit.text())
+        print(self.csv_file_path())
+    def enable_tab(self):
+        self.tabWidget.setTabEnabled(1, True)
+
+
+    def csv_check(self): #success create csv file
+        if not os.path.exists(self.csv_file_path()):
+            with open(self.csv_file_path(), "w") as csvFile:
+                writer = csv.writer(csvFile)
+                writer.writerow(['dateTime', 'followers'])
+        else:
+            self.csv_append()
+
+    def csv_append(self):
+        with open(self.csv_file_path(), "a") as csvFile:
+            writer = csv.writer(csvFile)
+            data = bot.save_user_stats(self.username())
+            user_followers = str(data['followers'])
+            user_dateTime = str(data['date'])
+            writer.writerow([user_dateTime, user_followers])
+
+
 
     def coming_soon(self):
         QtWidgets.QMessageBox.information(self, "info", "Coming Soon don't forget to purchase full package")
@@ -270,10 +304,82 @@ class MainWindow_class(QtWidgets.QMainWindow):
         self.textEdit.moveCursor(QtGui.QTextCursor.End)
         self.textEdit.insertPlainText(text)
 
-"### OPEN WIDGETS ###"
-# def open_Limit_Setting(self):
-#     self. = Limit_Setting_class()
-#     self.Limit_Setting.show()
+    # TAB DASHBOARD
+    #todo
+    def update_account_status(self):
+        data = bot.save_user_stats(username)
+        user_following = str(data['following'])
+        user_followers = str(data['followers'])
+
+        self.lineEdit_following.setText(user_following)
+        self.lineEdit_followers.setText(user_followers)
+
+    #todo
+    def update_task_status(self):
+        likes = str(bot.total['likes'])
+        # follow = str(bot.total['follows'])
+        # unfollow = str(bot.total['unfollows'])
+        # comment = str(bot.total['comments'])
+
+        # self.lineEdit_total_follow.setText(follow)
+        # self.lineEdit_total_unfollow.setText(unfollow)
+        # self.lineEdit_total_likes.setText(likes)
+        # self.lineEdit_total_comment.setText(comment)
+
+        print(likes)
+
+class Canvas(FigureCanvas):
+    def __init__(self,groupBox_2, parent=None):
+        self.figure = plt.figure()
+        FigureCanvas.__init__(self, self.figure)
+
+        self.groupBox_2 = groupBox_2
+
+        # a figure instance to plot on
+        self.figure = plt.figure()
+
+        # this is the Canvas Widget that displays the `figure`
+        # it takes the `figure` instance as a parameter to __init__
+        self.canvas = FigureCanvas(self.figure)
+
+        # this is the Navigation widget
+        # it takes the Canvas widget and a parent
+        self.toolbar = NavigationToolbar(self.canvas, self)
+
+        # Just some button connected to `plot` method
+        self.button = QPushButton('Plot')
+        self.button.clicked.connect(self.plot)
+
+        # set the layout
+        layout = QVBoxLayout()
+        layout.addWidget(self.toolbar)
+        layout.addWidget(self.canvas)
+        layout.addWidget(self.button)
+        self.groupBox_2.setLayout(layout) #put the layout in groupbox
+
+    def plot(self):
+        import pandas as pd
+
+        # read data from file
+        data = pd.read_csv('testing.csv')
+
+        # instead of ax.hold(False)
+        self.figure.clear()
+
+        # create an axis
+        ax = self.figure.add_subplot(111)
+
+        # plot data
+        ax.plot(data.Date,data.Open, '*-')
+        plt.title("followers over time")
+        plt.xlabel("date and time")
+        plt.ylabel("followers growth")
+
+        _ = plt.xticks(rotation=45)
+
+        # refresh canvas
+        self.canvas.draw()
+
 
 # MAKE THREAD SO THAT UI DIDNT FREEZE
 class workThread(QtCore.QThread):
@@ -323,7 +429,12 @@ class workThread(QtCore.QThread):
     # ALL FUNCTION IN WORKTHREAD START HERE
     def run(self):
         #todo check expired date
-        self.follow()
+        #OFFICIAL
+        # self.follow()
+
+        #TESTING
+        print("follow task running")
+
 
 class OutputWrapper(QtCore.QObject):
     """ to show all output in ui text edit"""
