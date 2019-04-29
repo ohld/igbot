@@ -88,6 +88,7 @@ class MainWindow_class(QtWidgets.QMainWindow):
 
         # OFFICIAL
         self.pushButton_run.clicked.connect(self.login_instagram)
+        self.pushButton_update_status.connect(self.update_account_status)
 
         self.comboBox_follow.currentIndexChanged.connect(self.update_label_follow)
 
@@ -104,7 +105,6 @@ class MainWindow_class(QtWidgets.QMainWindow):
         # self.pushButton_run.clicked.connect(self.append_csv)
         # self.pushButton.clicked.connect(self.enable_tab)
         # self.pushButton_stop.clicked.connect(self.plot_graph)
-        self.pushButton_upadate_status.clicked.connect(self.update_task_status)
 
         #  SHOW OUTPUT IN QTextEdit
         stdout = OutputWrapper(self, True)
@@ -202,7 +202,8 @@ class MainWindow_class(QtWidgets.QMainWindow):
 
         if bot.login(username=self.username(), password=password) == 1:
             # ALL TASK START HERE AFTER LOGIN
-            self.append_csv()
+            self.csv_check()
+            self.update_account_status()
             self.workThread.start()
 
         else:
@@ -305,7 +306,6 @@ class MainWindow_class(QtWidgets.QMainWindow):
         self.textEdit.insertPlainText(text)
 
     # TAB DASHBOARD
-    #todo
     def update_account_status(self):
         data = bot.save_user_stats(self.username())
         user_following = str(data['following'])
