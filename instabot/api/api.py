@@ -21,6 +21,7 @@ from tqdm import tqdm
 from . import config, devices
 from .api_photo import configure_photo, download_photo, upload_photo
 from .api_video import configure_video, download_video, upload_video
+from .api_story import download_story
 from .prepare import delete_credentials, get_credentials
 
 PY2 = sys.version_info[0] == 2
@@ -40,6 +41,9 @@ class API(object):
 
         # Setup logging
         self.logger = logging.getLogger('[instabot_{}]'.format(id(self)))
+
+        if not os.path.exists("./config/"):
+            os.makedirs("./config/")  # create base_path if not exists
 
         log_filename = os.path.join(base_path, 'instabot.log')
         fh = logging.FileHandler(filename=log_filename)
@@ -186,7 +190,8 @@ class API(object):
             except JSONDecodeError:
                 return False
         else:
-            self.logger.error("Request returns {} error!".format(response.status_code))
+            if response.status_code != 404 and response.status_code != "404":
+                self.logger.error("Request returns {} error!".format(response.status_code))
             try:
                 response_data = json.loads(response.text)
                 if "feedback_required" in str(response_data.get('message')):
@@ -311,6 +316,9 @@ class API(object):
 
     def configure_photo(self, upload_id, photo, caption=''):
         return configure_photo(self, upload_id, photo, caption)
+
+    def download_story(self, filename, story_url, username):
+        return download_story(self, filename, story_url, username)
 
     def upload_video(self, photo, caption=None, upload_id=None):
         return upload_video(self, photo, caption, upload_id)
@@ -962,3 +970,28 @@ class API(object):
         data = self.json_data(data_dict)
         url = 'friendships/unmute_posts_or_story_from_follow/'
         return self.send_request(url, data)
+
+    def get_pending_friendships(self):
+        """Get pending follow requests"""
+        url = 'friendships/pending/'
+        return self.send_request(url)
+
+    def approve_pending_friendship(self, user_id):
+        data = self.json_data({
+            '_uuid': self.uuid,
+            '_uid': self.user_id,
+            'user_id': user_id,
+            '_csrftoken': self.token
+        })
+        url = 'friendships/approve/{}/'.format(user_id)
+        return self.send_request(url, post=data)
+
+    def reject_pending_friendship(self, user_id):
+        data = self.json_data({
+            '_uuid': self.uuid,
+            '_uid': self.user_id,
+            'user_id': user_id,
+            '_csrftoken': self.token
+        })
+        url = 'friendships/ignore/{}/'.format(user_id)
+        return self.send_request(url, post=data)

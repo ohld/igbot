@@ -18,7 +18,7 @@ from .bot_direct import (send_hashtag, send_like, send_media, send_medias,
                          send_message, send_messages, send_profile)
 from .bot_filter import check_media, check_not_bot, check_user, filter_medias
 from .bot_follow import (follow, follow_followers, follow_following,
-                         follow_users)
+                         follow_users, approve_pending_follow_requests, reject_pending_follow_requests)
 from .bot_get import (convert_to_user_id, get_archived_medias, get_comment,
                       get_comment_likers, get_geotag_medias, get_geotag_users,
                       get_hashtag_medias, get_hashtag_users,
@@ -32,10 +32,12 @@ from .bot_get import (convert_to_user_id, get_archived_medias, get_comment,
                       get_user_followers, get_user_following,
                       get_user_id_from_username, get_user_info,
                       get_user_likers, get_user_medias, get_user_tags_medias,
-                      get_username_from_user_id, get_your_medias, search_users)
+                      get_username_from_user_id, get_your_medias, search_users,
+                      get_user_stories, get_user_reel, get_self_story_viewers,
+                      get_pending_follow_requests)
 from .bot_like import (like, like_comment, like_followers, like_following,
                        like_geotag, like_hashtag, like_media_comments,
-                       like_medias, like_timeline, like_user, like_users)
+                       like_medias, like_timeline, like_user, like_users, like_location_feed)
 from .bot_photo import download_photo, download_photos, upload_photo
 from .bot_stats import save_user_stats
 from .bot_support import (check_if_file_exists, console_print, extract_urls,
@@ -45,6 +47,7 @@ from .bot_unfollow import (unfollow, unfollow_everyone, unfollow_non_followers,
 from .bot_unlike import (unlike, unlike_comment, unlike_media_comments,
                          unlike_medias, unlike_user)
 from .bot_video import upload_video, download_video
+from .bot_story import download_stories
 
 
 class Bot(object):
@@ -320,6 +323,20 @@ class Bot(object):
         self.start_time = datetime.datetime.now()
 
     # getters
+    def get_user_stories(self, user_id):
+        """
+        Returns array of stories links
+        """
+        return get_user_stories(self, user_id)
+
+    def get_user_reel(self, user_id):
+        return get_user_reel(self, user_id)
+
+    def get_self_story_viewers(self, story_id):
+        return get_self_story_viewers(self, story_id)
+
+    def get_pending_follow_requests(self):
+        return get_pending_follow_requests(self)
 
     def get_your_medias(self, as_dict=False):
         """
@@ -466,6 +483,9 @@ class Bot(object):
     def like_users(self, user_ids, nlikes=None, filtration=True):
         return like_users(self, user_ids, nlikes, filtration)
 
+    def like_location_feed(self, place, amount):
+        return like_location_feed(self, place, amount)
+
     def like_followers(self, user_id, nlikes=None, nfollows=None):
         return like_followers(self, user_id, nlikes, nfollows)
 
@@ -489,8 +509,11 @@ class Bot(object):
     def unlike_user(self, user):
         return unlike_user(self, user)
 
-    # photo
+    # story
+    def download_stories(self, username):
+        return download_stories(self, username)
 
+    # photo
     def download_photo(self, media_id, folder='photos', filename=None, save_description=False):
         return download_photo(self, media_id, folder, filename, save_description)
 
@@ -535,6 +558,12 @@ class Bot(object):
 
     def unfollow_everyone(self):
         return unfollow_everyone(self)
+
+    def approve_pending_follow_requests(self):
+        return approve_pending_follow_requests(self)
+
+    def reject_pending_follow_requests(self):
+        return reject_pending_follow_requests(self)
 
     # direct
 

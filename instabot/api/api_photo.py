@@ -24,6 +24,7 @@ def download_photo(self, media_id, filename, media=False, folder='photos'):
         images = media['image_versions2']['candidates']
         fname = os.path.join(folder, filename)
         if os.path.exists(fname):
+            self.logger.info("File already esists, skipping...")
             return os.path.abspath(fname)
         response = self.session.get(images[0]['url'], stream=True)
         if response.status_code == 200:
