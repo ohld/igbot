@@ -4,10 +4,10 @@ import shutil
 
 
 def download_story(self, filename, story_url, username):
-    p = "stories/" + username
-    if not os.path.exists(p):
-        os.makedirs(p)
-    fname = os.path.join(p, filename)
+    path = "stories/{}".format(username)
+    if not os.path.exists(path):
+        os.makedirs(path)
+    fname = os.path.join(path, filename)
     if os.path.exists(fname):  # already exists
         self.logger.info("Stories already downloaded...")
         return os.path.abspath(fname)

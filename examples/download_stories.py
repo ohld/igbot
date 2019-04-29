@@ -7,6 +7,7 @@ from instabot import Bot
 
 parser = argparse.ArgumentParser(add_help=True)
 parser.add_argument('username', type=str, help='@username')
+parser.add_argument('-story_username', type=str, help='story_username')
 args = parser.parse_args()
 if args.username[0] != "@":  # if first character isn't "@"
     args.username = "@" + args.username
@@ -14,4 +15,4 @@ if args.username[0] != "@":  # if first character isn't "@"
 bot = Bot()
 bot.login()
 
-bot.download_stories("")  # INSERT USERNAME HERE
+bot.download_stories(args.story_username)
