@@ -307,7 +307,7 @@ class MainWindow_class(QtWidgets.QMainWindow):
     # TAB DASHBOARD
     #todo
     def update_account_status(self):
-        data = bot.save_user_stats(username)
+        data = bot.save_user_stats(self.username())
         user_following = str(data['following'])
         user_followers = str(data['followers'])
 
@@ -325,8 +325,6 @@ class MainWindow_class(QtWidgets.QMainWindow):
         # self.lineEdit_total_unfollow.setText(unfollow)
         # self.lineEdit_total_likes.setText(likes)
         # self.lineEdit_total_comment.setText(comment)
-
-        print(likes)
 
 class Canvas(FigureCanvas):
     def __init__(self,groupBox_2, parent=None):
@@ -359,9 +357,11 @@ class Canvas(FigureCanvas):
 
     def plot(self):
         import pandas as pd
+        MainWindowClass = MainWindow_class()
+        path = MainWindowClass.csv_file_path()
 
         # read data from file
-        data = pd.read_csv('testing.csv')
+        data = pd.read_csv(path)
 
         # instead of ax.hold(False)
         self.figure.clear()
@@ -370,7 +370,7 @@ class Canvas(FigureCanvas):
         ax = self.figure.add_subplot(111)
 
         # plot data
-        ax.plot(data.Date,data.Open, '*-')
+        ax.plot(data.dateTime,data.followers, '*-')
         plt.title("followers over time")
         plt.xlabel("date and time")
         plt.ylabel("followers growth")
@@ -380,6 +380,10 @@ class Canvas(FigureCanvas):
         # refresh canvas
         self.canvas.draw()
 
+    #TESTING
+    def testing(self):
+        MainWindowClass = MainWindow_class()
+        print(MainWindowClass.csv_file_path())
 
 # MAKE THREAD SO THAT UI DIDNT FREEZE
 class workThread(QtCore.QThread):
