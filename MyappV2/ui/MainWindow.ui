@@ -205,10 +205,10 @@
    <widget class="QTabWidget" name="tabWidget">
     <property name="geometry">
      <rect>
-      <x>80</x>
-      <y>400</y>
-      <width>361</width>
-      <height>251</height>
+      <x>990</x>
+      <y>110</y>
+      <width>101</width>
+      <height>111</height>
      </rect>
     </property>
     <property name="tabPosition">
@@ -240,6 +240,48 @@
       </item>
      </layout>
     </widget>
+   </widget>
+   <widget class="QPushButton" name="pushButton_update_status">
+    <property name="geometry">
+     <rect>
+      <x>812</x>
+      <y>580</y>
+      <width>93</width>
+      <height>28</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Update Status</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton_stop">
+    <property name="geometry">
+     <rect>
+      <x>912</x>
+      <y>580</y>
+      <width>93</width>
+      <height>28</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Stop/Logout</string>
+    </property>
+   </widget>
+   <widget class="QProgressBar" name="progressBar">
+    <property name="geometry">
+     <rect>
+      <x>811</x>
+      <y>548</y>
+      <width>112</width>
+      <height>24</height>
+     </rect>
+    </property>
+    <property name="value">
+     <number>99</number>
+    </property>
+    <property name="format">
+     <string/>
+    </property>
    </widget>
    <widget class="QGroupBox" name="groupBox_4">
     <property name="geometry">
@@ -452,12 +494,77 @@
      </item>
     </layout>
    </widget>
+   <widget class="QGroupBox" name="groupBox_unfollow">
+    <property name="geometry">
+     <rect>
+      <x>50</x>
+      <y>370</y>
+      <width>422</width>
+      <height>60</height>
+     </rect>
+    </property>
+    <property name="title">
+     <string>Unfollow task</string>
+    </property>
+    <property name="checkable">
+     <bool>true</bool>
+    </property>
+    <layout class="QHBoxLayout" name="horizontalLayout_3">
+     <item>
+      <widget class="QRadioButton" name="radioButton_nonfollowers">
+       <property name="text">
+        <string>Unfollow Non Followers</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QRadioButton" name="radioButton_unfollowAll">
+       <property name="text">
+        <string>Unfollow All</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QRadioButton" name="radioButton_restoreFollowing">
+       <property name="text">
+        <string>Restore Following</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+   <widget class="QGroupBox" name="groupBox_2">
+    <property name="geometry">
+     <rect>
+      <x>811</x>
+      <y>469</y>
+      <width>309</width>
+      <height>72</height>
+     </rect>
+    </property>
+    <property name="title">
+     <string>Followers Growth</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_16">
+    <property name="geometry">
+     <rect>
+      <x>813</x>
+      <y>393</y>
+      <width>55</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Followers</string>
+    </property>
+   </widget>
    <widget class="QLineEdit" name="lineEdit_followers">
     <property name="geometry">
      <rect>
-      <x>520</x>
-      <y>400</y>
-      <width>148</width>
+      <x>813</x>
+      <y>416</y>
+      <width>137</width>
       <height>22</height>
      </rect>
     </property>
@@ -471,9 +578,9 @@
    <widget class="QLineEdit" name="lineEdit_following">
     <property name="geometry">
      <rect>
-      <x>890</x>
-      <y>400</y>
-      <width>241</width>
+      <x>959</x>
+      <y>416</y>
+      <width>137</width>
       <height>22</height>
      </rect>
     </property>
@@ -484,114 +591,18 @@
      <bool>true</bool>
     </property>
    </widget>
-   <widget class="QWidget" name="">
+   <widget class="QLabel" name="label_17">
     <property name="geometry">
      <rect>
-      <x>470</x>
-      <y>350</y>
-      <width>407</width>
-      <height>24</height>
+      <x>959</x>
+      <y>393</y>
+      <width>54</width>
+      <height>16</height>
      </rect>
     </property>
-    <layout class="QHBoxLayout" name="horizontalLayout_3">
-     <item>
-      <widget class="QLineEdit" name="lineEdit_2">
-       <property name="text">
-        <string/>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QLabel" name="label_22">
-       <property name="text">
-        <string>TextLabel</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QLineEdit" name="lineEdit_3"/>
-     </item>
-     <item>
-      <widget class="QLabel" name="label_23">
-       <property name="text">
-        <string>TextLabel</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </widget>
-   <widget class="QWidget" name="">
-    <property name="geometry">
-     <rect>
-      <x>680</x>
-      <y>450</y>
-      <width>311</width>
-      <height>261</height>
-     </rect>
+    <property name="text">
+     <string>Following</string>
     </property>
-    <layout class="QVBoxLayout" name="verticalLayout_8">
-     <item>
-      <layout class="QHBoxLayout" name="horizontalLayout_7">
-       <item>
-        <layout class="QVBoxLayout" name="verticalLayout_2">
-         <item>
-          <widget class="QLabel" name="label_16">
-           <property name="text">
-            <string>Followers</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </item>
-       <item>
-        <layout class="QVBoxLayout" name="verticalLayout_7">
-         <item>
-          <widget class="QLabel" name="label_17">
-           <property name="text">
-            <string>Following</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </item>
-      </layout>
-     </item>
-     <item>
-      <widget class="QGroupBox" name="groupBox_2">
-       <property name="title">
-        <string>Followers Growth</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QProgressBar" name="progressBar">
-       <property name="value">
-        <number>99</number>
-       </property>
-       <property name="format">
-        <string/>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <layout class="QHBoxLayout" name="horizontalLayout_8">
-       <item>
-        <widget class="QPushButton" name="pushButton_update_status">
-         <property name="text">
-          <string>Update Status</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="pushButton_stop">
-         <property name="text">
-          <string>Stop/Logout</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </item>
-    </layout>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">

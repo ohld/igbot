@@ -88,7 +88,7 @@ class MainWindow_class(QtWidgets.QMainWindow):
 
         # OFFICIAL
         self.pushButton_run.clicked.connect(self.login_instagram)
-        self.pushButton_update_status.connect(self.update_account_status)
+        self.pushButton_update_status.clicked.connect(self.csv_append)
 
         self.comboBox_follow.currentIndexChanged.connect(self.update_label_follow)
 
@@ -118,6 +118,7 @@ class MainWindow_class(QtWidgets.QMainWindow):
                                      lineEdit_follow=self.lineEdit_follow,
                                      spinBox_getfollowers=self.spinBox_getfollowers,
                                      spinBox_getfollowing=self.spinBox_getfollowing,
+                                     groupBox_unfollow=self.groupBox_unfollow,
                                      )
 
         self.Canvas = Canvas(groupBox_2=self.groupBox_2,)
@@ -203,7 +204,7 @@ class MainWindow_class(QtWidgets.QMainWindow):
         if bot.login(username=self.username(), password=password) == 1:
             # ALL TASK START HERE AFTER LOGIN
             self.csv_check()
-            self.update_account_status()
+            self.csv_append()
             self.workThread.start()
 
         else:
@@ -233,12 +234,18 @@ class MainWindow_class(QtWidgets.QMainWindow):
             self.csv_append()
 
     def csv_append(self):
+        data = bot.save_user_stats(self.username())
+        user_dateTime = str(data['date'])
+        user_following = str(data['following'])
+        user_followers = str(data['followers'])
+
+        self.lineEdit_following.setText(user_following)
+        self.lineEdit_followers.setText(user_followers)
+
         with open(self.csv_file_path(), "a") as csvFile:
             writer = csv.writer(csvFile)
-            data = bot.save_user_stats(self.username())
-            user_followers = str(data['followers'])
-            user_dateTime = str(data['date'])
             writer.writerow([user_dateTime, user_followers])
+
 
 
 
@@ -306,14 +313,6 @@ class MainWindow_class(QtWidgets.QMainWindow):
         self.textEdit.insertPlainText(text)
 
     # TAB DASHBOARD
-    def update_account_status(self):
-        data = bot.save_user_stats(self.username())
-        user_following = str(data['following'])
-        user_followers = str(data['followers'])
-
-        self.lineEdit_following.setText(user_following)
-        self.lineEdit_followers.setText(user_followers)
-
     #todo
     def update_task_status(self):
         likes = str(bot.total['likes'])
@@ -395,6 +394,7 @@ class workThread(QtCore.QThread):
                  lineEdit_follow,
                  spinBox_getfollowers,
                  spinBox_getfollowing,
+                 groupBox_unfollow,
                  parent=None):
 
         super(workThread, self).__init__(parent)
@@ -404,6 +404,8 @@ class workThread(QtCore.QThread):
         self.lineEdit_follow = lineEdit_follow
         self.spinBox_getfollowers = spinBox_getfollowers
         self.spinBox_getfollowing = spinBox_getfollowing
+
+        self.groupBox_unfollow = groupBox_unfollow
 
     def follow(self):
         # IF THE GROUPBOX IS CHECK, FOLLOW USER WITH THAT #
@@ -430,11 +432,16 @@ class workThread(QtCore.QThread):
             print("groupBox_follow_from_hashtag not check")
             pass
 
+    def unfollow(self):
+        if self.groupBox_unfollow.isChecked() == 1:
+            print("unfollow")
+
     # ALL FUNCTION IN WORKTHREAD START HERE
     def run(self):
         #todo check expired date
         #OFFICIAL
         # self.follow()
+        # self.unfollow()
 
         #TESTING
         print("follow task running")
