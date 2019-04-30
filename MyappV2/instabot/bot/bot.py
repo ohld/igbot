@@ -591,8 +591,8 @@ class Bot(object):
     def comment_hashtag(self, hashtag, amount=None):
         return comment_hashtag(self, hashtag, amount)
 
-    def comment_medias(self, medias):
-        return comment_medias(self, medias)
+    def comment_medias(self, medias, text):
+        return comment_medias(self, medias, text)
 
     def comment_user(self, user_id, amount=None):
         return comment_user(self, user_id, amount)
