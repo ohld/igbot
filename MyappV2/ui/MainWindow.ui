@@ -533,6 +533,94 @@
      </item>
     </layout>
    </widget>
+   <widget class="QPushButton" name="pushButton">
+    <property name="geometry">
+     <rect>
+      <x>720</x>
+      <y>10</y>
+      <width>93</width>
+      <height>28</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>save following</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="button_testing">
+    <property name="geometry">
+     <rect>
+      <x>580</x>
+      <y>10</y>
+      <width>93</width>
+      <height>28</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>testing</string>
+    </property>
+   </widget>
+   <widget class="QGroupBox" name="groupBox_like">
+    <property name="geometry">
+     <rect>
+      <x>30</x>
+      <y>470</y>
+      <width>731</width>
+      <height>64</height>
+     </rect>
+    </property>
+    <property name="title">
+     <string>Like Task</string>
+    </property>
+    <property name="checkable">
+     <bool>true</bool>
+    </property>
+    <layout class="QHBoxLayout" name="horizontalLayout_7">
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout_8">
+       <item>
+        <widget class="QLabel" name="label_10">
+         <property name="text">
+          <string>Like</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QComboBox" name="comboBox_like">
+         <item>
+          <property name="text">
+           <string>followers</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>following</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>hashtags</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="label_like">
+         <property name="text">
+          <string>of username</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLineEdit" name="lineEdit_like">
+         <property name="placeholderText">
+          <string>username1,username2,username3</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+    </layout>
+   </widget>
    <widget class="QGroupBox" name="groupBox_2">
     <property name="geometry">
      <rect>

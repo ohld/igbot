@@ -83,14 +83,14 @@ class MainWindow_class(QtWidgets.QMainWindow):
 
         self.settings = QSettings(path + "gui.ini", QSettings.IniFormat)
 
-
-        restore(self.settings)
+        # restore(self.settings)
 
         # OFFICIAL
         self.pushButton_run.clicked.connect(self.login_instagram)
         self.pushButton_update_status.clicked.connect(self.csv_append)
 
         self.comboBox_follow.currentIndexChanged.connect(self.update_label_follow)
+        self.comboBox_like.currentIndexChanged.connect(self.update_label_like)
 
         self.radioButton_slow.clicked.connect(self.rButton_slow)
         self.radioButton_standard.clicked.connect(self.rButton_standard)
@@ -102,7 +102,8 @@ class MainWindow_class(QtWidgets.QMainWindow):
         self.checkBox_verified.clicked.connect(self.coming_soon)
 
         #   TESTING
-        # self.pushButton_run.clicked.connect(self.append_csv)
+        self.button_testing.clicked.connect(self.click_testing)
+        # self.pushButton.clicked.connect(self.save_following)
         # self.pushButton.clicked.connect(self.enable_tab)
         # self.pushButton_stop.clicked.connect(self.plot_graph)
 
@@ -116,9 +117,20 @@ class MainWindow_class(QtWidgets.QMainWindow):
         self.workThread = workThread(groupBox_follow=self.groupBox_follow,
                                      comboBox_follow=self.comboBox_follow,
                                      lineEdit_follow=self.lineEdit_follow,
+
                                      spinBox_getfollowers=self.spinBox_getfollowers,
                                      spinBox_getfollowing=self.spinBox_getfollowing,
+
                                      groupBox_unfollow=self.groupBox_unfollow,
+                                     radioButton_nonfollowers=self.radioButton_nonfollowers,
+                                     radioButton_unfollowAll=self.radioButton_unfollowAll,
+                                     radioButton_restoreFollowing=self.radioButton_restoreFollowing,
+
+                                     groupBox_like=self.groupBox_like,
+                                     lineEdit_like=self.lineEdit_like,
+                                     comboBox_like=self.comboBox_like,
+
+                                     return_base_path=self.return_base_path()
                                      )
 
         self.Canvas = Canvas(groupBox_2=self.groupBox_2,)
@@ -139,6 +151,7 @@ class MainWindow_class(QtWidgets.QMainWindow):
             pass
 
     def return_base_path(self):
+        #C:\Users\khair\Testing\vicode.co\
         base_path = path + self.username() + "\\"
         return base_path
 
@@ -204,14 +217,13 @@ class MainWindow_class(QtWidgets.QMainWindow):
         if bot.login(username=self.username(), password=password) == 1:
             # ALL TASK START HERE AFTER LOGIN
             self.csv_check()
-            self.csv_append()
             self.workThread.start()
 
         else:
             QtWidgets.QMessageBox.warning(self, "Ooopps", "wrong username or password")
 
     # TESTING
-    def click_start(self):
+    def click_testing(self):
         # # self.workThread.start()
         # QtCore.QCoreApplication.processEvents()
         # try:
@@ -220,9 +232,11 @@ class MainWindow_class(QtWidgets.QMainWindow):
         #     pass
         # # time.sleep(2)
         # print(self.lineEdit.text())
-        print(self.csv_file_path())
+        # self.wait_message()
+        self.workThread.start()
     def enable_tab(self):
         self.tabWidget.setTabEnabled(1, True)
+
 
 
     def csv_check(self): #success create csv file
@@ -246,9 +260,6 @@ class MainWindow_class(QtWidgets.QMainWindow):
             writer = csv.writer(csvFile)
             writer.writerow([user_dateTime, user_followers])
 
-
-
-
     def coming_soon(self):
         QtWidgets.QMessageBox.information(self, "info", "Coming Soon don't forget to purchase full package")
 
@@ -261,6 +272,16 @@ class MainWindow_class(QtWidgets.QMainWindow):
         else:
             self.label_follow.setText("of username")
             self.lineEdit_follow.setPlaceholderText("username1,username2,username3")
+
+    def update_label_like(self):
+        combobox = self.comboBox_like.currentText()
+        if combobox == "hashtags":
+            self.label_like.setText("of hashtag")
+            self.lineEdit_like.setPlaceholderText("tag1,tag2,tag3")
+
+        else:
+            self.label_like.setText("of username")
+            self.lineEdit_like.setPlaceholderText("username1,username2,username3")
 
     def rButton_slow(self):
         if package == 0:
@@ -311,6 +332,12 @@ class MainWindow_class(QtWidgets.QMainWindow):
     def handleOutput(self, text, stdout):
         self.textEdit.moveCursor(QtGui.QTextCursor.End)
         self.textEdit.insertPlainText(text)
+
+    def save_following(self):
+        friends = bot.following
+        with open(self.return_base_path() + "friends.txt", "w") as file:  # writing to the file
+            for user_id in friends:
+                file.write(str(user_id) + "\n")
 
     # TAB DASHBOARD
     #todo
@@ -394,7 +421,17 @@ class workThread(QtCore.QThread):
                  lineEdit_follow,
                  spinBox_getfollowers,
                  spinBox_getfollowing,
+
                  groupBox_unfollow,
+                 radioButton_nonfollowers,
+                 radioButton_unfollowAll,
+                 radioButton_restoreFollowing,
+
+                 groupBox_like,
+                 lineEdit_like,
+                 comboBox_like,
+
+                 return_base_path,
                  parent=None):
 
         super(workThread, self).__init__(parent)
@@ -406,35 +443,74 @@ class workThread(QtCore.QThread):
         self.spinBox_getfollowing = spinBox_getfollowing
 
         self.groupBox_unfollow = groupBox_unfollow
+        self.radioButton_nonfollowers = radioButton_nonfollowers
+        self.radioButton_unfollowAll = radioButton_unfollowAll
+        self.radioButton_restoreFollowing = radioButton_restoreFollowing
+
+        self.groupBox_like = groupBox_like
+        self.lineEdit_like = lineEdit_like
+        self.comboBox_like = comboBox_like
+
+        self.return_base_path = return_base_path
 
     def follow(self):
         # IF THE GROUPBOX IS CHECK, FOLLOW USER WITH THAT #
-        if self.groupBox_follow.isChecked() == 1:
+        if self.groupBox_follow.isChecked():
+            lineEdit = str(self.lineEdit_follow.text()).strip().split(",")
+
             if self.comboBox_follow.currentText() == "hashtags":
-                hashtags = str(self.lineEdit_follow.text()).strip().split(",")
-                for hashtag in hashtags:
+                for hashtag in lineEdit:
                     # print("Begin hahstag: " + hashtag)
                     users = bot.get_hashtag_users(hashtag)
                     bot.follow_users(users)
 
             if self.comboBox_follow.currentText() == "followers":
-                usernames = str(self.lineEdit_follow.text()).strip().split(",")
-                for username in usernames:
+                for username in lineEdit:
                     # print("Begin followers: " + username)
                     bot.follow_followers(username, nfollows=self.spinBox_getfollowers.value())
 
             if self.comboBox_follow.currentText() == "following":
-                usernames = str(self.lineEdit_follow.text()).strip().split(",")
-                for username in usernames:
+                for username in lineEdit:
                     # print("Begin following: " + username)
-                    bot.follow_following(username,nfollows=self.spinBox_getfollowing.value())
+                    bot.follow_following(username, nfollows=self.spinBox_getfollowing.value())
         else:
             print("groupBox_follow_from_hashtag not check")
             pass
 
     def unfollow(self):
-        if self.groupBox_unfollow.isChecked() == 1:
-            print("unfollow")
+        if self.groupBox_unfollow.isChecked():
+            if self.radioButton_nonfollowers.isChecked():
+                bot.unfollow_non_followers()
+
+            if self.radioButton_unfollowAll.isChecked():
+                bot.unfollow_everyone()
+
+            if self.radioButton_restoreFollowing.isChecked():
+                friends = bot.read_list_from_file(self.return_base_path + "friends.txt")  # getting the list of friends
+                your_following = bot.following
+                unfollow = list(set(your_following) - set(friends))  # removing your friends from the list to unfollow
+                bot.unfollow_users(unfollow)
+        else:
+            print("groupbox unfollow uncheck")
+
+    def like(self):
+        if self.groupBox_like.isChecked():
+            lineEdit = str(self.lineEdit_like.text()).strip().split(",")
+
+            if self.comboBox_like.currentText() == "hashtags":
+                for hashtag in lineEdit:
+                    print("Begin like#: " + hashtag)
+
+            if self.comboBox_like.currentText() == "followers":
+                for username in lineEdit:
+                    print("Begin likefollowers: " + username)
+
+            if self.comboBox_like.currentText() == "following":
+                for username in lineEdit:
+                    print("Begin following: " + username)
+        else:
+            print("groupBox_like not check")
+            pass
 
     # ALL FUNCTION IN WORKTHREAD START HERE
     def run(self):
@@ -442,9 +518,10 @@ class workThread(QtCore.QThread):
         #OFFICIAL
         # self.follow()
         # self.unfollow()
+        self.like()
 
         #TESTING
-        print("follow task running")
+        print("thread running")
 
 
 class OutputWrapper(QtCore.QObject):
