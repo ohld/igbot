@@ -88,6 +88,8 @@ class MainWindow_class(QtWidgets.QMainWindow):
         # OFFICIAL
         self.pushButton_run.clicked.connect(self.login_instagram)
         self.pushButton_update_status.clicked.connect(self.csv_append)
+        self.pushButton_addComment.clicked.connect(self.add_to_listWidget)
+        self.pushButton_delComment.clicked.connect(self.delete_line_listWidget)
 
         self.comboBox_follow.currentIndexChanged.connect(self.update_label_follow)
         self.comboBox_like.currentIndexChanged.connect(self.update_label_like)
@@ -234,11 +236,17 @@ class MainWindow_class(QtWidgets.QMainWindow):
         # # time.sleep(2)
         # print(self.lineEdit.text())
         # self.wait_message()
-        self.workThread.start()
+        self.add_to_listWidget()
     def enable_tab(self):
         self.tabWidget.setTabEnabled(1, True)
 
+    def add_to_listWidget(self):
+        self.listWidget.addItem(self.lineEdit_commentText.text())
+        self.lineEdit_commentText.setText("")
+        self.lineEdit_commentText.setFocus()
 
+    def delete_line_listWidget(self):
+        self.listWidget.takeItem(self.listWidget.currentRow())
 
     def csv_check(self): #success create csv file
         if not os.path.exists(self.csv_file_path()):
