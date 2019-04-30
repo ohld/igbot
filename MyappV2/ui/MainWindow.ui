@@ -641,42 +641,54 @@
    <widget class="QListWidget" name="listWidget">
     <property name="geometry">
      <rect>
-      <x>660</x>
-      <y>640</y>
-      <width>241</width>
-      <height>121</height>
+      <x>720</x>
+      <y>620</y>
+      <width>256</width>
+      <height>192</height>
      </rect>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::StyledPanel</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Plain</enum>
+    </property>
+    <property name="movement">
+     <enum>QListView::Static</enum>
+    </property>
+    <property name="sortingEnabled">
+     <bool>true</bool>
     </property>
     <item>
      <property name="text">
-      <string>this is line one </string>
+      <string>line one</string>
      </property>
     </item>
     <item>
      <property name="text">
-      <string>this is line two </string>
+      <string>line two</string>
      </property>
     </item>
     <item>
      <property name="text">
-      <string>this is line three</string>
+      <string>line three</string>
      </property>
     </item>
     <item>
      <property name="text">
-      <string>these is line four </string>
+      <string>line four</string>
      </property>
     </item>
-    <item>
-     <property name="text">
-      <string>this is line five</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>this is line six</string>
-     </property>
-    </item>
+   </widget>
+   <widget class="QTextEdit" name="textEdit_2">
+    <property name="geometry">
+     <rect>
+      <x>340</x>
+      <y>690</y>
+      <width>191</width>
+      <height>101</height>
+     </rect>
+    </property>
    </widget>
    <widget class="QGroupBox" name="groupBox_2">
     <property name="geometry">

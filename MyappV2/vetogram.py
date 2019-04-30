@@ -133,7 +133,8 @@ class MainWindow_class(QtWidgets.QMainWindow):
                                      comboBox_like=self.comboBox_like,
                                      spinBox_nlikes=self.spinBox_nlikes,
 
-                                     return_base_path=self.return_base_path()
+                                     return_base_path=self.return_base_path(),
+                                     comment_list=self.comment_list(),
                                      )
 
         self.Canvas = Canvas(groupBox_2=self.groupBox_2,)
@@ -236,9 +237,18 @@ class MainWindow_class(QtWidgets.QMainWindow):
         # # time.sleep(2)
         # print(self.lineEdit.text())
         # self.wait_message()
-        self.add_to_listWidget()
+        self.workThread.start()
+        # self.comment_list()
     def enable_tab(self):
         self.tabWidget.setTabEnabled(1, True)
+
+    def comment_list(self):
+        list = []
+        for i in range(self.listWidget.count()):
+            text = self.listWidget.item(i).text()
+            list.append(text)
+        return list
+
 
     def add_to_listWidget(self):
         self.listWidget.addItem(self.lineEdit_commentText.text())
@@ -442,6 +452,7 @@ class workThread(QtCore.QThread):
                  spinBox_nlikes,
 
                  return_base_path,
+                 comment_list,
                  parent=None):
 
         super(workThread, self).__init__(parent)
@@ -463,6 +474,7 @@ class workThread(QtCore.QThread):
         self.spinBox_nlikes = spinBox_nlikes
 
         self.return_base_path = return_base_path
+        self.comment_list = comment_list
 
     def follow(self):
         # IF THE GROUPBOX IS CHECK, FOLLOW USER WITH THAT #
@@ -527,7 +539,8 @@ class workThread(QtCore.QThread):
             pass
 
     def comment(self):
-        pass
+        comment_text = random.choice(self.comment_list)
+        print(comment_text)
 
     # ALL FUNCTION IN WORKTHREAD START HERE
     def run(self):
@@ -536,11 +549,11 @@ class workThread(QtCore.QThread):
         # self.follow()
         # self.unfollow()
         # self.like()
+        self.comment()
 
         #TESTING
-        # print("thread running")
-        print(self.spinBox_nlikes.value())
-        print(type(self.spinBox_nlikes.value()))
+        # print("thread running"
+        # print(random.choice(self.comment_list))
 
 class OutputWrapper(QtCore.QObject):
     """ to show all output in ui text edit"""
