@@ -129,6 +129,7 @@ class MainWindow_class(QtWidgets.QMainWindow):
                                      groupBox_like=self.groupBox_like,
                                      lineEdit_like=self.lineEdit_like,
                                      comboBox_like=self.comboBox_like,
+                                     spinBox_nlikes=self.spinBox_nlikes,
 
                                      return_base_path=self.return_base_path()
                                      )
@@ -278,7 +279,7 @@ class MainWindow_class(QtWidgets.QMainWindow):
         if combobox == "hashtags":
             self.label_like.setText("of hashtag")
             self.lineEdit_like.setPlaceholderText("tag1,tag2,tag3")
-
+            self.spinBox_nlikes.setValue(50)
         else:
             self.label_like.setText("of username")
             self.lineEdit_like.setPlaceholderText("username1,username2,username3")
@@ -430,6 +431,7 @@ class workThread(QtCore.QThread):
                  groupBox_like,
                  lineEdit_like,
                  comboBox_like,
+                 spinBox_nlikes,
 
                  return_base_path,
                  parent=None):
@@ -450,6 +452,7 @@ class workThread(QtCore.QThread):
         self.groupBox_like = groupBox_like
         self.lineEdit_like = lineEdit_like
         self.comboBox_like = comboBox_like
+        self.spinBox_nlikes = spinBox_nlikes
 
         self.return_base_path = return_base_path
 
@@ -499,18 +502,24 @@ class workThread(QtCore.QThread):
 
             if self.comboBox_like.currentText() == "hashtags":
                 for hashtag in lineEdit:
-                    print("Begin like#: " + hashtag)
+                    # print("Begin like#: " + hashtag)
+                    bot.like_hashtag(hashtag, amount=self.spinBox_nlikes.value())
 
             if self.comboBox_like.currentText() == "followers":
                 for username in lineEdit:
-                    print("Begin likefollowers: " + username)
+                    # print("Begin likefollowers: " + username)
+                    bot.like_followers(username, nlikes=self.spinBox_nlikes.value())
 
             if self.comboBox_like.currentText() == "following":
                 for username in lineEdit:
-                    print("Begin following: " + username)
+                    # print("Begin following: " + username)
+                    bot.like_following(username, nlikes=self.spinBox_nlikes.value())
         else:
             print("groupBox_like not check")
             pass
+
+    def comment(self):
+        pass
 
     # ALL FUNCTION IN WORKTHREAD START HERE
     def run(self):
@@ -518,11 +527,12 @@ class workThread(QtCore.QThread):
         #OFFICIAL
         # self.follow()
         # self.unfollow()
-        self.like()
+        # self.like()
 
         #TESTING
-        print("thread running")
-
+        # print("thread running")
+        print(self.spinBox_nlikes.value())
+        print(type(self.spinBox_nlikes.value()))
 
 class OutputWrapper(QtCore.QObject):
     """ to show all output in ui text edit"""

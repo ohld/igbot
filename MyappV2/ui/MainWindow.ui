@@ -580,7 +580,7 @@
        <item>
         <widget class="QLabel" name="label_10">
          <property name="text">
-          <string>Like</string>
+          <string>Like media from</string>
          </property>
         </widget>
        </item>
@@ -614,6 +614,23 @@
         <widget class="QLineEdit" name="lineEdit_like">
          <property name="placeholderText">
           <string>username1,username2,username3</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="label_11">
+         <property name="text">
+          <string>Amount media=</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QSpinBox" name="spinBox_nlikes">
+         <property name="maximum">
+          <number>100</number>
+         </property>
+         <property name="value">
+          <number>3</number>
          </property>
         </widget>
        </item>

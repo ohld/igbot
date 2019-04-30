@@ -66,12 +66,12 @@ def reply_to_comment(self, media_id, comment_text, parent_comment_id):
     return False
 
 
-def comment_medias(self, medias):
+def comment_medias(self, medias, text):
     broken_items = []
     self.logger.info("Going to comment %d medias." % (len(medias)))
     for media in tqdm(medias):
         if not self.is_commented(media):
-            text = self.get_comment()
+            # text = self.get_comment()
             self.logger.info("Commented with text: %s" % text)
             if not self.comment(media, text):
                 self.delay('comment')
