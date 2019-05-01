@@ -588,8 +588,8 @@ class Bot(object):
     def reply_to_comment(self, media_id, comment_text, parent_comment_id):
         return reply_to_comment(self, media_id, comment_text, parent_comment_id)
 
-    def comment_hashtag(self, hashtag, amount=None):
-        return comment_hashtag(self, hashtag, amount)
+    def comment_hashtag(self, hashtag, text, amount=None):
+        return comment_hashtag(self, hashtag, text, amount)
 
     def comment_medias(self, medias, text):
         return comment_medias(self, medias, text)

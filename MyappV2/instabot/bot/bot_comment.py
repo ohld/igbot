@@ -17,22 +17,22 @@ def comment(self, media_id, comment_text):
         return True
     if not self.reached_limit('comments'):
         if self.blocked_actions['comments']:
-            self.logger.warning('YOUR `COMMENT` ACTION IS BLOCKED')
+            self.logger.warning('your comment is blocked')
             if self.blocked_actions_protection:
                 from datetime import timedelta
                 next_reset = (self.start_time.date() + timedelta(days=1)).strftime("%Y-%m-%d %H:%M:%S")
-                self.logger.warning('blocked_actions_protection ACTIVE. Skipping `comment` action till, at least, {}.'.format(next_reset))
+                self.logger.warning('skip comment task untill {}.'.format(next_reset))
                 return False
         self.delay('comment')
         _r = self.api.comment(media_id, comment_text)
         if _r == 'feedback_required':
-            self.logger.error("`Comment` action has been BLOCKED...!!!")
+            # self.logger.error("`Comment` action has been BLOCKED...!!!")
             return False
         if _r:
             self.total['comments'] += 1
             return True
     else:
-        self.logger.info("Out of comments for today.")
+        self.logger.info("Reach comment limit for today.")
     return False
 
 
@@ -68,36 +68,36 @@ def reply_to_comment(self, media_id, comment_text, parent_comment_id):
 
 def comment_medias(self, medias, text):
     broken_items = []
-    self.logger.info("Going to comment %d medias." % (len(medias)))
+    # self.logger.info("Going to comment %d medias." % (len(medias)))
     for media in tqdm(medias):
         if not self.is_commented(media):
             # text = self.get_comment()
-            self.logger.info("Commented with text: %s" % text)
+            self.logger.info("write comment: %s" % text)
             if not self.comment(media, text):
                 self.delay('comment')
                 broken_items = medias[medias.index(media):]
                 break
-    self.logger.info("DONE: Total commented on %d medias. " %
+    self.logger.info("DONE:comment on %d medias. " %
                      self.total['comments'])
     return broken_items
 
 
-def comment_hashtag(self, hashtag, amount=None):
-    self.logger.info("Going to comment medias by %s hashtag" % hashtag)
+def comment_hashtag(self, hashtag, text, amount=None):
+    self.logger.info("comment by %s hashtag" % hashtag)
     medias = self.get_total_hashtag_medias(hashtag, amount)
-    return self.comment_medias(medias)
+    return self.comment_medias(medias, text)
 
 
 def comment_user(self, user_id, amount=None):
     """ Comments last user_id's medias """
     if not self.check_user(user_id, filter_closed_acc=True):
         return False
-    self.logger.info("Going to comment user_%s's feed:" % user_id)
+    self.logger.info("comment user_%s's media:" % user_id)
     user_id = self.convert_to_user_id(user_id)
     medias = self.get_user_medias(user_id, is_comment=True)
     if not medias:
         self.logger.info(
-            "None medias received: account is closed or medias have been filtered.")
+            "private account")
         return False
     return self.comment_medias(medias[:amount])
 
@@ -105,7 +105,7 @@ def comment_user(self, user_id, amount=None):
 def comment_users(self, user_ids, ncomments=None):
     for user_id in user_ids:
         if self.reached_limit('comments'):
-            self.logger.info("Out of comments for today.")
+            self.logger.info("reach comment limit for today.")
             return
         self.comment_user(user_id, amount=ncomments)
 

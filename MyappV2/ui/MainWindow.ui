@@ -241,32 +241,6 @@
      </layout>
     </widget>
    </widget>
-   <widget class="QPushButton" name="pushButton_update_status">
-    <property name="geometry">
-     <rect>
-      <x>812</x>
-      <y>580</y>
-      <width>93</width>
-      <height>28</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Update Status</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="pushButton_stop">
-    <property name="geometry">
-     <rect>
-      <x>912</x>
-      <y>580</y>
-      <width>93</width>
-      <height>28</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Stop/Logout</string>
-    </property>
-   </widget>
    <widget class="QProgressBar" name="progressBar">
     <property name="geometry">
      <rect>
@@ -562,10 +536,10 @@
    <widget class="QGroupBox" name="groupBox_like">
     <property name="geometry">
      <rect>
-      <x>30</x>
+      <x>40</x>
       <y>440</y>
-      <width>731</width>
-      <height>64</height>
+      <width>511</width>
+      <height>61</height>
      </rect>
     </property>
     <property name="title">
@@ -638,57 +612,114 @@
      </item>
     </layout>
    </widget>
-   <widget class="QListWidget" name="listWidget">
+   <widget class="QGroupBox" name="groupBox_comment">
     <property name="geometry">
      <rect>
-      <x>720</x>
-      <y>620</y>
-      <width>256</width>
-      <height>192</height>
+      <x>40</x>
+      <y>510</y>
+      <width>661</width>
+      <height>171</height>
      </rect>
     </property>
-    <property name="frameShape">
-     <enum>QFrame::StyledPanel</enum>
+    <property name="title">
+     <string>Comment Task</string>
     </property>
-    <property name="frameShadow">
-     <enum>QFrame::Plain</enum>
-    </property>
-    <property name="movement">
-     <enum>QListView::Static</enum>
-    </property>
-    <property name="sortingEnabled">
+    <property name="checkable">
      <bool>true</bool>
     </property>
-    <item>
-     <property name="text">
-      <string>line one</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>line two</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>line three</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>line four</string>
-     </property>
-    </item>
-   </widget>
-   <widget class="QTextEdit" name="textEdit_2">
-    <property name="geometry">
-     <rect>
-      <x>340</x>
-      <y>690</y>
-      <width>191</width>
-      <height>101</height>
-     </rect>
-    </property>
+    <layout class="QHBoxLayout" name="horizontalLayout_12">
+     <item>
+      <layout class="QVBoxLayout" name="verticalLayout_2">
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_9">
+         <item>
+          <widget class="QLabel" name="label_12">
+           <property name="text">
+            <string>Comment media from</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QComboBox" name="comboBox_comment">
+           <item>
+            <property name="text">
+             <string>my timeline</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>hashtags</string>
+            </property>
+           </item>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_comment">
+           <property name="text">
+            <string>of username</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="lineEdit_comment">
+           <property name="placeholderText">
+            <string>my username</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_10">
+         <item>
+          <widget class="QLabel" name="label_14">
+           <property name="text">
+            <string>Add Comments</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="lineEdit_commentText">
+           <property name="placeholderText">
+            <string>insert your comment</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="pushButton_addComment">
+           <property name="text">
+            <string>add</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="pushButton_delComment">
+           <property name="text">
+            <string>delete</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <widget class="QListWidget" name="listWidget">
+         <property name="frameShape">
+          <enum>QFrame::StyledPanel</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Plain</enum>
+         </property>
+         <property name="movement">
+          <enum>QListView::Static</enum>
+         </property>
+         <property name="sortingEnabled">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+    </layout>
    </widget>
    <widget class="QGroupBox" name="groupBox_2">
     <property name="geometry">
@@ -703,162 +734,87 @@
      <string>Followers Growth</string>
     </property>
    </widget>
-   <widget class="QLabel" name="label_16">
+   <widget class="QWidget" name="">
     <property name="geometry">
      <rect>
-      <x>813</x>
-      <y>393</y>
-      <width>55</width>
-      <height>16</height>
+      <x>812</x>
+      <y>580</y>
+      <width>195</width>
+      <height>30</height>
      </rect>
     </property>
-    <property name="text">
-     <string>Followers</string>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="lineEdit_followers">
-    <property name="geometry">
-     <rect>
-      <x>813</x>
-      <y>416</y>
-      <width>137</width>
-      <height>22</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string/>
-    </property>
-    <property name="readOnly">
-     <bool>true</bool>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="lineEdit_following">
-    <property name="geometry">
-     <rect>
-      <x>959</x>
-      <y>416</y>
-      <width>137</width>
-      <height>22</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string/>
-    </property>
-    <property name="readOnly">
-     <bool>true</bool>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_17">
-    <property name="geometry">
-     <rect>
-      <x>959</x>
-      <y>393</y>
-      <width>54</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Following</string>
-    </property>
+    <layout class="QHBoxLayout" name="horizontalLayout_11">
+     <item>
+      <widget class="QPushButton" name="pushButton_update_status">
+       <property name="text">
+        <string>Update Status</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pushButton_stop">
+       <property name="text">
+        <string>Stop/Logout</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </widget>
    <widget class="QWidget" name="">
     <property name="geometry">
      <rect>
-      <x>50</x>
-      <y>520</y>
-      <width>561</width>
-      <height>157</height>
+      <x>813</x>
+      <y>393</y>
+      <width>139</width>
+      <height>47</height>
      </rect>
     </property>
-    <layout class="QVBoxLayout" name="verticalLayout_2">
+    <layout class="QVBoxLayout" name="verticalLayout_7">
      <item>
-      <layout class="QHBoxLayout" name="horizontalLayout_9">
-       <item>
-        <widget class="QLabel" name="label_12">
-         <property name="text">
-          <string>Comment media from</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QComboBox" name="comboBox_comment">
-         <item>
-          <property name="text">
-           <string>followers</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>following</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>hashtags</string>
-          </property>
-         </item>
-        </widget>
-       </item>
-       <item>
-        <widget class="QLabel" name="label_like_">
-         <property name="text">
-          <string>of username</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QLineEdit" name="lineEdit_comment">
-         <property name="placeholderText">
-          <string>username1,username2,username3</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QLabel" name="label_13">
-         <property name="text">
-          <string>Amount media=</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QSpinBox" name="spinBox_nlikes_2">
-         <property name="maximum">
-          <number>100</number>
-         </property>
-         <property name="value">
-          <number>3</number>
-         </property>
-        </widget>
-       </item>
-      </layout>
+      <widget class="QLabel" name="label_16">
+       <property name="text">
+        <string>Followers</string>
+       </property>
+      </widget>
      </item>
      <item>
-      <layout class="QHBoxLayout" name="horizontalLayout_10">
-       <item>
-        <widget class="QLabel" name="label_14">
-         <property name="text">
-          <string>Add Comments</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QLineEdit" name="lineEdit_commentText"/>
-       </item>
-       <item>
-        <widget class="QPushButton" name="pushButton_addComment">
-         <property name="text">
-          <string>add</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="pushButton_delComment">
-         <property name="text">
-          <string>delete</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
+      <widget class="QLineEdit" name="lineEdit_followers">
+       <property name="text">
+        <string/>
+       </property>
+       <property name="readOnly">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+   <widget class="QWidget" name="">
+    <property name="geometry">
+     <rect>
+      <x>959</x>
+      <y>393</y>
+      <width>139</width>
+      <height>47</height>
+     </rect>
+    </property>
+    <layout class="QVBoxLayout" name="verticalLayout_8">
+     <item>
+      <widget class="QLabel" name="label_17">
+       <property name="text">
+        <string>Following</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLineEdit" name="lineEdit_following">
+       <property name="text">
+        <string/>
+       </property>
+       <property name="readOnly">
+        <bool>true</bool>
+       </property>
+      </widget>
      </item>
     </layout>
    </widget>

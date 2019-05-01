@@ -83,7 +83,7 @@ class MainWindow_class(QtWidgets.QMainWindow):
 
         self.settings = QSettings(path + "gui.ini", QSettings.IniFormat)
 
-        # restore(self.settings)
+        restore(self.settings)
 
         # OFFICIAL
         self.pushButton_run.clicked.connect(self.login_instagram)
@@ -93,6 +93,7 @@ class MainWindow_class(QtWidgets.QMainWindow):
 
         self.comboBox_follow.currentIndexChanged.connect(self.update_label_follow)
         self.comboBox_like.currentIndexChanged.connect(self.update_label_like)
+        self.comboBox_comment.currentIndexChanged.connect(self.update_label_comment)
 
         self.radioButton_slow.clicked.connect(self.rButton_slow)
         self.radioButton_standard.clicked.connect(self.rButton_standard)
@@ -133,8 +134,13 @@ class MainWindow_class(QtWidgets.QMainWindow):
                                      comboBox_like=self.comboBox_like,
                                      spinBox_nlikes=self.spinBox_nlikes,
 
+                                     groupBox_comment=self.groupBox_comment,
+                                     comboBox_comment=self.comboBox_comment,
+                                     lineEdit_comment=self.lineEdit_comment,
+                                     listWidget=self.listWidget,
+
                                      return_base_path=self.return_base_path(),
-                                     comment_list=self.comment_list(),
+
                                      )
 
         self.Canvas = Canvas(groupBox_2=self.groupBox_2,)
@@ -238,17 +244,9 @@ class MainWindow_class(QtWidgets.QMainWindow):
         # print(self.lineEdit.text())
         # self.wait_message()
         self.workThread.start()
-        # self.comment_list()
+        # print(self.comment_list())
     def enable_tab(self):
         self.tabWidget.setTabEnabled(1, True)
-
-    def comment_list(self):
-        list = []
-        for i in range(self.listWidget.count()):
-            text = self.listWidget.item(i).text()
-            list.append(text)
-        return list
-
 
     def add_to_listWidget(self):
         self.listWidget.addItem(self.lineEdit_commentText.text())
@@ -301,6 +299,18 @@ class MainWindow_class(QtWidgets.QMainWindow):
         else:
             self.label_like.setText("of username")
             self.lineEdit_like.setPlaceholderText("username1,username2,username3")
+
+    def update_label_comment(self):
+        combobox = self.comboBox_comment.currentText()
+        if combobox == "hashtags":
+            self.label_comment.setText("of hashtag")
+            self.lineEdit_comment.setPlaceholderText("tag1,tag2,tag3")
+        if combobox == "my timeline":
+            self.label_comment.setText("of username")
+            self.lineEdit_comment.setPlaceholderText("my username")
+        else:
+            self.label_comment.setText("of username")
+            self.lineEdit_comment.setPlaceholderText("username1,username2,username3")
 
     def rButton_slow(self):
         if package == 0:
@@ -451,8 +461,12 @@ class workThread(QtCore.QThread):
                  comboBox_like,
                  spinBox_nlikes,
 
+                 groupBox_comment,
+                 comboBox_comment,
+                 lineEdit_comment,
+                 listWidget,
+
                  return_base_path,
-                 comment_list,
                  parent=None):
 
         super(workThread, self).__init__(parent)
@@ -473,8 +487,12 @@ class workThread(QtCore.QThread):
         self.comboBox_like = comboBox_like
         self.spinBox_nlikes = spinBox_nlikes
 
+        self.groupBox_comment = groupBox_comment
+        self.comboBox_comment = comboBox_comment
+        self.lineEdit_comment = lineEdit_comment
+        self.listWidget = listWidget
+
         self.return_base_path = return_base_path
-        self.comment_list = comment_list
 
     def follow(self):
         # IF THE GROUPBOX IS CHECK, FOLLOW USER WITH THAT #
@@ -539,8 +557,28 @@ class workThread(QtCore.QThread):
             pass
 
     def comment(self):
-        comment_text = random.choice(self.comment_list)
-        print(comment_text)
+        comment_text = random.choice(self.comment_list())
+        lineEdit = str(self.lineEdit_comment.text()).strip().split(",")
+
+        if self.groupBox_comment.isChecked():
+            if self.comboBox_comment.currentText() == "hashtags":
+                for hashtag in lineEdit:
+                    bot.comment_hashtag(hashtag, text=comment_text)
+
+            if self.comboBox_comment.currentText() == "my timeline":
+                bot.comment_medias(bot.get_timeline_medias(), text=comment_text)
+        else:
+            print("groupbox comment no check")
+
+    def comment_list(self):
+        list = []
+        for i in range(self.listWidget.count()):
+            text = self.listWidget.item(i).text()
+            list.append(text)
+        return list
+
+    def combo(self):
+        
 
     # ALL FUNCTION IN WORKTHREAD START HERE
     def run(self):
@@ -549,11 +587,12 @@ class workThread(QtCore.QThread):
         # self.follow()
         # self.unfollow()
         # self.like()
-        self.comment()
+        # self.comment()
 
         #TESTING
         # print("thread running"
-        # print(random.choice(self.comment_list))
+        print(type(random.choice(self.comment_list())))
+        # print(self.comment_list())
 
 class OutputWrapper(QtCore.QObject):
     """ to show all output in ui text edit"""
