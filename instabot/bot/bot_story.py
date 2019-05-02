@@ -12,3 +12,12 @@ def download_stories(self, username):
     for story_url in list_video:
         filename = story_url.split('/')[-1].split('.')[0] + ".mp4"
         self.api.download_story(filename, story_url, username)
+
+
+def upload_story_photo(self, photo, upload_id=None):
+    self.small_delay()
+    if self.api.upload_story_photo(photo, upload_id):
+        self.logger.info("Photo '{}' is uploaded as Story.".format(photo))
+        return True
+    self.logger.info("Photo '{}' is not uploaded.".format(photo))
+    return False

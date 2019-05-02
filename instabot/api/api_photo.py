@@ -93,8 +93,7 @@ def upload_photo(self, photo, caption=None, upload_id=None, from_video=False):
     if not photo:
         return False
     if not compatible_aspect_ratio(get_image_size(photo)):
-        self.logger.info('Photo does not have a compatible '
-                         'photo aspect ratio.')
+        self.logger.error('Photo does not have a compatible photo aspect ratio.')
         return False
 
     with open(photo, 'rb') as f:
