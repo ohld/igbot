@@ -3,14 +3,17 @@ def download_stories(self, username):
     list_image, list_video = self.get_user_stories(user_id)
     if list_image == [] and list_video == []:
         self.logger.error(
-            "Make sure that '{}' is NOT private and that posted some stories".format(username))
+            "Make sure that '{}' is NOT private and that posted some stories".format(
+                username
+            )
+        )
         return False
     self.logger.info("Downloading stories...")
     for story_url in list_image:
-        filename = story_url.split('/')[-1].split('.')[0] + ".jpg"
+        filename = story_url.split("/")[-1].split(".")[0] + ".jpg"
         self.api.download_story(filename, story_url, username)
     for story_url in list_video:
-        filename = story_url.split('/')[-1].split('.')[0] + ".mp4"
+        filename = story_url.split("/")[-1].split(".")[0] + ".mp4"
         self.api.download_story(filename, story_url, username)
 
 

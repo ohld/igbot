@@ -24,7 +24,7 @@ def get_credentials(username=None):
             with open(SECRET_FILE, "r") as f:
                 lines = [line.strip().split(":", 2) for line in f.readlines()]
         except ValueError:
-            msg = 'Problem with opening `{}`, will remove the file.'
+            msg = "Problem with opening `{}`, will remove the file."
             raise Exception(msg.format(SECRET_FILE))
         if username is not None:
             for login, password in lines:
@@ -58,19 +58,22 @@ def check_secret():
                     login, password = f.readline().strip().split(":")
                     if len(login) < 4 or len(password) < 6:
 
-                        print("Data in `secret.txt` file is invalid. "
-                              "We will delete it and try again.")
+                        print(
+                            "Data in `secret.txt` file is invalid. "
+                            "We will delete it and try again."
+                        )
 
                         os.remove(SECRET_FILE)
                     else:
                         return True
                 except Exception:
-                    print("Your file is broken. We will delete it "
-                          "and try again.")
+                    print("Your file is broken. We will delete it " "and try again.")
                     os.remove(SECRET_FILE)
         else:
-            print("We need to create a text file '%s' where "
-                  "we will store your login and password from Instagram." % SECRET_FILE)
+            print(
+                "We need to create a text file '%s' where "
+                "we will store your login and password from Instagram." % SECRET_FILE
+            )
             print("Don't worry. It will be stored locally.")
             while True:
                 add_credentials()

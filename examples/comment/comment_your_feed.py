@@ -13,11 +13,12 @@
         You can change file and add there your comments.
 """
 
-import sys
 import os
+import sys
 
-sys.path.append(os.path.join(sys.path[0], '../../'))
 from instabot import Bot
+
+sys.path.append(os.path.join(sys.path[0], "../../"))
 
 if len(sys.argv) != 2:
     print("USAGE: Pass a path to the file with comments")
