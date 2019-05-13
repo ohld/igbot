@@ -1001,3 +1001,16 @@ class API(object):
         })
         url = 'friendships/ignore/{}/'.format(user_id)
         return self.send_request(url, post=data)
+
+    def get_pending_inbox(self):
+        url = 'direct_v2/pending_inbox/?persistentBadging=true&use_unified_inbox=true'
+        return self.send_request(url)
+
+    def approve_pending_thread(self, thread_id):
+        data = self.json_data({
+            '_uuid': self.uuid,
+            '_uid': self.user_id,
+            '_csrftoken': self.token
+        })
+        url = 'direct_v2/threads/{}/approve/'.format(thread_id)
+        return self.send_request(url, post=data)
