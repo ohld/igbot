@@ -41,6 +41,8 @@ def download_video(self, media_id, filename=None, media=False, folder='videos'):
                 response.raw.decode_content = True
                 shutil.copyfileobj(response.raw, f)
 
+    return os.path.abspath(fname)
+
 
 # leaving here function used by old upload_video, no more used now
 def get_video_info(filename):
