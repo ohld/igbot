@@ -70,10 +70,12 @@ def get_video_info(filename):
     return res
 
 
-def upload_video(self, video, caption=None, upload_id=None):
+def upload_video(self, video, caption=None, upload_id=None, thumbnail=None):
     if upload_id is None:
         upload_id = str(int(time.time() * 1000))
-    video, thumbnail, width, height, duration = resize_video(video)
+    video, thumbnail_path, width, height, duration = resize_video(video)
+    if not thumbnail:
+        thumbnail = thumbnail_path
     data = {
         'upload_id': upload_id,
         '_csrftoken': self.token,

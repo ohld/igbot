@@ -326,8 +326,8 @@ class API(object):
     def configure_story(self, upload_id, photo):
         return configure_story(self, upload_id, photo)
 
-    def upload_video(self, photo, caption=None, upload_id=None):
-        return upload_video(self, photo, caption, upload_id)
+    def upload_video(self, video, caption=None, upload_id=None, thumbnail=None):
+        return upload_video(self, video, caption, upload_id, thumbnail)
 
     def download_video(self, media_id, filename, media=False, folder='video'):
         return download_video(self, media_id, filename, media, folder)
