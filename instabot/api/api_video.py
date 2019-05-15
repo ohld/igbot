@@ -70,7 +70,7 @@ def get_video_info(filename):
     return res
 
 
-def upload_video(self, video, caption=None, upload_id=None, thumbnail=None):
+def upload_video(self, video, caption=None, upload_id=None, thumbnail=None, configure_video_timeout=15):
     if upload_id is None:
         upload_id = str(int(time.time() * 1000))
     video, thumbnail_path, width, height, duration = resize_video(video)
@@ -134,11 +134,14 @@ def upload_video(self, video, caption=None, upload_id=None, thumbnail=None):
         self.session.headers = headers
 
         if response.status_code == 200:
-            if self.configure_video(upload_id, video, thumbnail, width, height, duration, caption):
-                self.expose()
-                from os import rename
-                rename(video, "{}.REMOVE_ME".format(video))
-                return True
+            for attempt in range(4):
+                if configure_video_timeout:
+                    time.sleep(configure_video_timeout)
+                if self.configure_video(upload_id, video, thumbnail, width, height, duration, caption):
+                    self.expose()
+                    from os import rename
+                    rename(video, "{}.REMOVE_ME".format(video))
+                    return True
     return False
 
 
