@@ -7,7 +7,6 @@ import sys
 import time
 import uuid
 import random
-from mimetypes import guess_type
 
 from requests_toolbelt import MultipartEncoder
 
