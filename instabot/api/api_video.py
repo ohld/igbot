@@ -41,6 +41,8 @@ def download_video(self, media_id, filename=None, media=False, folder='videos'):
                 response.raw.decode_content = True
                 shutil.copyfileobj(response.raw, f)
 
+    return os.path.abspath(fname)
+
 
 # leaving here function used by old upload_video, no more used now
 def get_video_info(filename):
@@ -68,10 +70,12 @@ def get_video_info(filename):
     return res
 
 
-def upload_video(self, video, caption=None, upload_id=None):
+def upload_video(self, video, caption=None, upload_id=None, thumbnail=None, configure_video_timeout=15):
     if upload_id is None:
         upload_id = str(int(time.time() * 1000))
-    video, thumbnail, width, height, duration = resize_video(video)
+    video, thumbnail_path, width, height, duration = resize_video(video)
+    if not thumbnail:
+        thumbnail = thumbnail_path
     data = {
         'upload_id': upload_id,
         '_csrftoken': self.token,
@@ -130,11 +134,14 @@ def upload_video(self, video, caption=None, upload_id=None):
         self.session.headers = headers
 
         if response.status_code == 200:
-            if self.configure_video(upload_id, video, thumbnail, width, height, duration, caption):
-                self.expose()
-                from os import rename
-                rename(video, "{}.REMOVE_ME".format(video))
-                return True
+            for attempt in range(4):
+                if configure_video_timeout:
+                    time.sleep(configure_video_timeout)
+                if self.configure_video(upload_id, video, thumbnail, width, height, duration, caption):
+                    self.expose()
+                    from os import rename
+                    rename(video, "{}.REMOVE_ME".format(video))
+                    return True
     return False
 
 
