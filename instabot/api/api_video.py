@@ -136,10 +136,11 @@ def upload_video(self, video, caption=None, upload_id=None, thumbnail=None, conf
                 if configure_video_timeout:
                     time.sleep(configure_video_timeout)
                 if self.configure_video(upload_id, video, thumbnail, width, height, duration, caption):
+                    media = self.last_json.get('media')
                     self.expose()
                     from os import rename
                     rename(video, "{}.REMOVE_ME".format(video))
-                    return True
+                    return media
     return False
 
 
