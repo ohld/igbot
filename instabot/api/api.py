@@ -7,6 +7,9 @@ import sys
 import time
 import uuid
 import random
+from mimetypes import guess_type
+
+from requests_toolbelt import MultipartEncoder
 
 try:
     from json.decoder import JSONDecodeError
@@ -159,7 +162,7 @@ class API(object):
             self.session.proxies['http'] = scheme + self.proxy
             self.session.proxies['https'] = scheme + self.proxy
 
-    def send_request(self, endpoint, post=None, login=False, with_signature=True):
+    def send_request(self, endpoint, post=None, login=False, with_signature=True, headers=None):
         if (not self.is_logged_in and not login):
             msg = "Not logged in!"
             self.logger.critical(msg)
@@ -167,6 +170,8 @@ class API(object):
 
         self.session.headers.update(config.REQUEST_HEADERS)
         self.session.headers.update({'User-Agent': self.user_agent})
+        if headers:
+            self.session.headers.update(headers)
         try:
             self.total_requests += 1
             if post is not None:  # POST
@@ -575,6 +580,14 @@ class API(object):
             'client_context': self.generate_UUID(True),
             'action': 'send_item'
         }
+        headers = {}
+        recipients = self._prepare_recipients(users, options.get('thread'), use_quotes=False)
+        if not recipients:
+            return False
+        data['recipient_users'] = recipients.get('users')
+        if recipients.get('thread'):
+            data['thread_ids'] = recipients.get('thread')
+        data.update(self.default_data)
 
         url = 'direct_v2/threads/broadcast/{}/'.format(item_type)
         text = options.get('text', '')
@@ -593,15 +606,25 @@ class API(object):
         elif item_type == 'profile':
             data['text'] = text
             data['profile_user_id'] = options.get('profile_user_id')
+        elif item_type == 'photo':
+            url = 'direct_v2/threads/broadcast/upload_photo/'
+            filepath = options['filepath']
+            upload_id = str(int(time.time() * 1000))
+            with open(filepath, 'rb') as f:
+                photo = f.read()
 
-        recipients = self._prepare_recipients(users, options.get('thread'), use_quotes=False)
-        if not recipients:
-            return False
-        data['recipient_users'] = recipients.get('users')
-        if recipients.get('thread'):
-            data['thread_ids'] = recipients.get('thread')
-        data.update(self.default_data)
-        return self.send_request(url, data, with_signature=False)
+            data['photo'] = (
+                'direct_temp_photo_%s.jpg' % upload_id, photo,
+                'application/octet-stream',
+                {'Content-Transfer-Encoding': 'binary'})
+
+            m = MultipartEncoder(data, boundary=self.uuid)
+            data = m.to_string()
+            headers.update({
+                'Content-type': m.content_type,
+            })
+
+        return self.send_request(url, data, with_signature=False, headers=headers)
 
     @staticmethod
     def generate_signature(data):

@@ -15,7 +15,7 @@ from .bot_comment import (comment, comment_geotag, comment_hashtag,
                           is_commented, reply_to_comment)
 from .bot_delete import delete_comment, delete_media, delete_medias
 from .bot_direct import (send_hashtag, send_like, send_media, send_medias,
-                         send_message, send_messages, send_profile)
+                         send_message, send_messages, send_profile, send_photo)
 from .bot_filter import check_media, check_not_bot, check_user, filter_medias
 from .bot_follow import (follow, follow_followers, follow_following,
                          follow_users, approve_pending_follow_requests, reject_pending_follow_requests)
@@ -590,6 +590,9 @@ class Bot(object):
 
     def send_like(self, user_ids, thread_id=None):
         return send_like(self, user_ids, thread_id)
+
+    def send_photo(self, user_ids, filepath, thread_id=None):
+        return send_photo(self, user_ids, filepath, thread_id)
 
     # delete
 
