@@ -223,3 +223,15 @@ def _get_user_ids(self, user_ids):
         user_ids = self.convert_to_user_id(user_ids)
         return [user_ids]
     return [self.convert_to_user_id(user) for user in user_ids]
+
+
+def approve_pending_thread_requests(self):
+    pending = self.get_pending_thread_requests()
+    if pending:
+        for thread in pending:
+            thread_id = thread['thread_id']
+            self.api.approve_pending_thread()
+            if self.api.last_response.status_code == 200:
+                self.logger.info("Approved thread: {}".format(thread_id))
+            else:
+                self.logger.error("Could not approve thread {}".format(thread_id))

@@ -372,3 +372,11 @@ def get_pending_follow_requests(self):
     else:
         self.logger.info("There isn't any pending request.")
         return []
+
+
+def get_pending_thread_requests(self):
+    self.api.get_pending_inbox()
+    threads = self.api.last_json['inbox']['threads']
+    if not threads:
+        self.logger.info("There isn't any pending thread request.")
+    return threads
