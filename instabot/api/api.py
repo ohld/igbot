@@ -312,8 +312,8 @@ class API(object):
         })
         return self.send_request('qe/expose/', data)
 
-    def upload_photo(self, photo, caption=None, upload_id=None, from_video=False):
-        return upload_photo(self, photo, caption, upload_id, from_video)
+    def upload_photo(self, photo, caption=None, upload_id=None, from_video=False, configure_photo_timeout=15):
+        return upload_photo(self, photo, caption, upload_id, from_video, configure_photo_timeout)
 
     def download_photo(self, media_id, filename, media=False, folder='photos'):
         return download_photo(self, media_id, filename, media, folder)
