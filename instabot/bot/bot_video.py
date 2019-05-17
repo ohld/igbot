@@ -1,14 +1,15 @@
 import os
 
 
-def upload_video(self, video, caption=''):
+def upload_video(self, video, caption='', thumbnail=None):
     self.small_delay()
     self.logger.info("Started uploading '{video}'".format(video=video))
-    if not self.api.upload_video(video, caption):
+    result = self.api.upload_video(video, caption, thumbnail)
+    if not result:
         self.logger.info("Video '%s' is not %s ." % (video, 'uploaded'))
         return False
     self.logger.info("Video '{video}' uploaded".format(video=video))
-    return True
+    return result
 
 
 def download_video(self, media_id, folder='videos', filename=None, save_description=False):

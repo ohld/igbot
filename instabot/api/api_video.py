@@ -73,9 +73,7 @@ def get_video_info(filename):
 def upload_video(self, video, caption=None, upload_id=None, thumbnail=None, configure_video_timeout=15):
     if upload_id is None:
         upload_id = str(int(time.time() * 1000))
-    video, thumbnail_path, width, height, duration = resize_video(video)
-    if not thumbnail:
-        thumbnail = thumbnail_path
+    video, thumbnail, width, height, duration = resize_video(video, thumbnail)
     data = {
         'upload_id': upload_id,
         '_csrftoken': self.token,
@@ -138,10 +136,11 @@ def upload_video(self, video, caption=None, upload_id=None, thumbnail=None, conf
                 if configure_video_timeout:
                     time.sleep(configure_video_timeout)
                 if self.configure_video(upload_id, video, thumbnail, width, height, duration, caption):
+                    media = self.last_json.get('media')
                     self.expose()
                     from os import rename
                     rename(video, "{}.REMOVE_ME".format(video))
-                    return True
+                    return media
     return False
 
 
@@ -171,7 +170,7 @@ def configure_video(self, upload_id, video, thumbnail, width, height, duration, 
     return self.send_request('media/configure/?video=1', data)
 
 
-def resize_video(fname):
+def resize_video(fname, thumbnail=None):
     from math import ceil
     try:
         import moviepy.editor as mp
@@ -232,7 +231,8 @@ def resize_video(fname):
     new_fname = "{}.CONVERTED.mp4".format(fname)
     print("Saving new video w:{w} h:{h} to `{f}`".format(w=w, h=h, f=new_fname))
     vid.write_videofile(new_fname, codec="libx264", audio_codec="aac")
-    print("Generating thumbnail...")
-    thumbnail_name = "{}.jpg".format(fname)
-    vid.save_frame(thumbnail_name, t=(vid.duration / 2))
-    return new_fname, thumbnail_name, w, h, vid.duration
+    if not thumbnail:
+        print("Generating thumbnail...")
+        thumbnail = "{}.jpg".format(fname)
+        vid.save_frame(thumbnail, t=(vid.duration / 2))
+    return new_fname, thumbnail, w, h, vid.duration

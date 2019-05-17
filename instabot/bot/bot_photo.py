@@ -6,11 +6,12 @@ from tqdm import tqdm
 
 def upload_photo(self, photo, caption=None, upload_id=None, from_video=False):
     self.small_delay()
-    if self.api.upload_photo(photo, caption, upload_id, from_video):
-        self.logger.info("Photo '{}' is uploaded.".format(photo))
-        return True
-    self.logger.info("Photo '{}' is not uploaded.".format(photo))
-    return False
+    result = self.api.upload_photo(photo, caption, upload_id, from_video)
+    if not result:
+        self.logger.info("Photo '{}' is not uploaded.".format(photo))
+        return False
+    self.logger.info("Photo '{}' is uploaded.".format(photo))
+    return result
 
 
 def download_photo(self, media_id, folder='photos', filename=None, save_description=False):
