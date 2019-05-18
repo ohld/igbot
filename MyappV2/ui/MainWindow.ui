@@ -206,9 +206,9 @@
     <property name="geometry">
      <rect>
       <x>990</x>
-      <y>110</y>
-      <width>101</width>
-      <height>111</height>
+      <y>30</y>
+      <width>191</width>
+      <height>301</height>
      </rect>
     </property>
     <property name="tabPosition">
@@ -218,7 +218,7 @@
      <enum>QTabWidget::Rounded</enum>
     </property>
     <property name="currentIndex">
-     <number>0</number>
+     <number>2</number>
     </property>
     <widget class="QWidget" name="tab_home">
      <attribute name="title">
@@ -244,8 +244,8 @@
    <widget class="QProgressBar" name="progressBar">
     <property name="geometry">
      <rect>
-      <x>811</x>
-      <y>548</y>
+      <x>910</x>
+      <y>690</y>
       <width>112</width>
       <height>24</height>
      </rect>
@@ -721,24 +721,103 @@
      </item>
     </layout>
    </widget>
+   <widget class="QGroupBox" name="groupBox_combo">
+    <property name="geometry">
+     <rect>
+      <x>70</x>
+      <y>700</y>
+      <width>711</width>
+      <height>61</height>
+     </rect>
+    </property>
+    <property name="title">
+     <string>Combo Task</string>
+    </property>
+    <property name="checkable">
+     <bool>true</bool>
+    </property>
+    <layout class="QHBoxLayout" name="horizontalLayout_13">
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout_14">
+       <item>
+        <widget class="QLabel" name="label_13">
+         <property name="text">
+          <string>follow and like</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QSpinBox" name="spinBox_nlikes_combo">
+         <property name="maximum">
+          <number>100</number>
+         </property>
+         <property name="value">
+          <number>3</number>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="label_15">
+         <property name="text">
+          <string>media of</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QComboBox" name="comboBox_combo">
+         <item>
+          <property name="text">
+           <string>followers</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>following</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>likers</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="label_like_2">
+         <property name="text">
+          <string>of username</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLineEdit" name="lineEdit_combo">
+         <property name="placeholderText">
+          <string>only one username</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+    </layout>
+   </widget>
    <widget class="QGroupBox" name="groupBox_2">
     <property name="geometry">
      <rect>
-      <x>811</x>
-      <y>469</y>
-      <width>309</width>
-      <height>72</height>
+      <x>590</x>
+      <y>210</y>
+      <width>571</width>
+      <height>431</height>
      </rect>
     </property>
     <property name="title">
      <string>Followers Growth</string>
     </property>
    </widget>
-   <widget class="QWidget" name="">
+   <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
-      <x>812</x>
-      <y>580</y>
+      <x>870</x>
+      <y>740</y>
       <width>195</width>
       <height>30</height>
      </rect>
@@ -760,7 +839,7 @@
      </item>
     </layout>
    </widget>
-   <widget class="QWidget" name="">
+   <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
       <x>813</x>
@@ -789,7 +868,7 @@
      </item>
     </layout>
    </widget>
-   <widget class="QWidget" name="">
+   <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
       <x>959</x>

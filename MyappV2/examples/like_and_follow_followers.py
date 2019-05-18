@@ -36,9 +36,9 @@ from instabot import Bot
 bot = Bot()
 #bot.login(username="vicode.co", password="vicode.co98")
 bot.login(username="bromalayabro", password="subhanallah")
-user_id = bot.get_user_id_from_username("neelofa")
 
-followers_list_id = bot.get_user_followers(user_id, nfollows=20000)
+user_id = bot.get_user_id_from_username("khaiyaraya")
+followers_list_id = bot.get_user_followers(user_id, nfollows=15000)
 
 def run_threaded(job_fn):
     job_thread = threading.Thread(target=job_fn)

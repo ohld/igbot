@@ -28,7 +28,7 @@ bot.login(username=args.u, password=args.p,
 for username in args.users:
     medias = bot.get_user_medias(username, filtration=False)
     if len(medias):
-        likers = bot.get_media_likers(medias[0])
+        likers = bot.get_media_likers(medias)
         for liker in tqdm(likers):
             bot.like_user(liker, amount=2)
             bot.follow(liker)
