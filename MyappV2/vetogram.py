@@ -25,6 +25,7 @@ from PyQt5.QtWidgets import qApp, QApplication, QMainWindow, QFormLayout, QLineE
 from tqdm import tqdm
 
 from ui import MainWindow
+from credential import License_class
 
 sys.path.append(os.path.join(sys.path[0], '../'))
 from instabot import Bot
@@ -75,15 +76,15 @@ class MainWindow_class(QtWidgets.QMainWindow):
         QtWidgets.QMainWindow.__init__(self)
         uic.loadUi("ui/MainWindow.ui", self)
 
-        # PY FORMAT
-        # class MainWindow_class(MainWindow.Ui_MainWindow,QtWidgets.QMainWindow):
-        #     def __init__(self):
-        #         super(MainWindow.Ui_MainWindow, self).__init__()
-        #         self.setupUi(self)
+# PY FORMAT
+# class MainWindow_class(MainWindow.Ui_MainWindow,QtWidgets.QMainWindow):
+#     def __init__(self):
+#         super(MainWindow.Ui_MainWindow, self).__init__()
+#         self.setupUi(self)
 
         self.settings = QSettings(path + "gui.ini", QSettings.IniFormat)
 
-        # restore(self.settings)
+        restore(self.settings)
 
         # OFFICIAL
         self.pushButton_run.clicked.connect(self.login_instagram)
@@ -241,18 +242,7 @@ class MainWindow_class(QtWidgets.QMainWindow):
 
     # TESTING
     def click_testing(self):
-        # # self.workThread.start()
-        # QtCore.QCoreApplication.processEvents()
-        # try:
-        #     self.tabWidget.setTabEnabled(1,False)
-        # except:
-        #     pass
-        # # time.sleep(2)
-        # print(self.lineEdit.text())
-        # self.wait_message()
-        # self.workThread.start()
-        # print(self.comment_list())
-        print(self.csv_file_path())
+        self.open_license()
 
     def enable_tab(self):
         self.tabWidget.setTabEnabled(1, True)
@@ -377,6 +367,10 @@ class MainWindow_class(QtWidgets.QMainWindow):
             for user_id in friends:
                 file.write(str(user_id) + "\n")
 
+    def open_license(self):
+        self.license = License_class()
+        self.license.show()
+
     # TAB DASHBOARD
     # todo
     def update_task_status(self):
@@ -422,7 +416,7 @@ class Canvas(FigureCanvas):
         layout.addWidget(self.toolbar)
         layout.addWidget(self.canvas)
         layout.addWidget(self.button)
-        self.groupBox_2.setLayout(layout)  # put the layout in groupbox
+        self.groupBox_2.setLayout(layout)  # put the layout in groupbox2
 
     def plot(self):
         import pandas as pd
