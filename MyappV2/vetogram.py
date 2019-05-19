@@ -87,7 +87,7 @@ class MainWindow_class(QtWidgets.QMainWindow):
 
         self.settings = QSettings(path + "gui.ini", QSettings.IniFormat)
 
-        restore(self.settings)
+        # restore(self.settings)
 
         # OFFICIAL
         self.pushButton_run.clicked.connect(self.login_instagram)
@@ -638,10 +638,8 @@ class workThread(QtCore.QThread):
                             bot.like_user(liker, amount=self.spinBox_nlikes_combo.value())
                             bot.follow(liker)
                 print("complete combo task")
-    # else:
-    #     print("group combobox not check")
 
-    def run_threaded(job_func):
+    def run_threaded(self, job_func):
         job_thread = threading.Thread(target=job_func)
         job_thread.start()
 
@@ -653,7 +651,7 @@ class workThread(QtCore.QThread):
         self.unfollow()
 
     def test(self):
-        print("start combo")
+        print("start uncombo")
 
     # ALL FUNCTION IN WORKTHREAD START HERE
     # if combo selected run combo
@@ -664,12 +662,13 @@ class workThread(QtCore.QThread):
         if self.groupBox_combo.isChecked():
             self.combo()
         else:
+            self.job()
             start_time = datetime.now().strftime("%H:%M")
             schedule.every().day.at(start_time).do(self.run_threaded, self.job)
 
             while 1:
                 schedule.run_pending()
-                time.sleep(30)
+                time.sleep(1)
 
 
 class OutputWrapper(QtCore.QObject):

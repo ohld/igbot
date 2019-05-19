@@ -777,7 +777,15 @@
      </item>
     </layout>
    </widget>
-   <widget class="QWidget" name="">
+   <widget class="QWidget" name="layoutWidget">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>0</y>
+      <width>664</width>
+      <height>30</height>
+     </rect>
+    </property>
     <layout class="QHBoxLayout" name="horizontalLayout_17">
      <item>
       <widget class="QLabel" name="label">
@@ -854,12 +862,12 @@
    <slot>setChecked(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>45</x>
+     <x>60</x>
      <y>762</y>
     </hint>
     <hint type="destinationlabel">
-     <x>67</x>
-     <y>374</y>
+     <x>79</x>
+     <y>370</y>
     </hint>
    </hints>
   </connection>
