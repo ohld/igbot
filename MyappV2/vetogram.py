@@ -1,3 +1,6 @@
+from datetime import datetime
+
+import fuckit
 from PyQt5.QtWidgets import QDialog, QApplication, QPushButton, QVBoxLayout
 from PyQt5.uic.properties import QtWidgets, QtCore
 
@@ -68,19 +71,19 @@ def save(settings):
 
 
 # UI FORMAT
-# class MainWindow_class(QtWidgets.QMainWindow):
-#     # RESTORE FILE LOCATION NAME
-#
-#     def __init__(self):
-#         QtCore.QCoreApplication.processEvents()
-#         QtWidgets.QMainWindow.__init__(self)
-#         uic.loadUi("ui/MainWindow.ui", self)
+class MainWindow_class(QtWidgets.QMainWindow):
+    # RESTORE FILE LOCATION NAME
+
+    def __init__(self):
+        QtCore.QCoreApplication.processEvents()
+        QtWidgets.QMainWindow.__init__(self)
+        uic.loadUi("ui/MainWindow.ui", self)
 
 # PY FORMAT
-class MainWindow_class(MainWindow.Ui_MainWindow, QtWidgets.QMainWindow):
-    def __init__(self):
-        super(MainWindow.Ui_MainWindow, self).__init__()
-        self.setupUi(self)
+# class MainWindow_class(MainWindow.Ui_MainWindow, QtWidgets.QMainWindow):
+#     def __init__(self):
+#         super(MainWindow.Ui_MainWindow, self).__init__()
+#         self.setupUi(self)
 
         self.settings = QSettings(path + "gui.ini", QSettings.IniFormat)
 
@@ -242,7 +245,7 @@ class MainWindow_class(MainWindow.Ui_MainWindow, QtWidgets.QMainWindow):
 
     # TESTING
     def click_testing(self):
-        self.open_license()
+        self.workThread.start()
 
     def enable_tab(self):
         self.tabWidget.setTabEnabled(1, True)
@@ -597,54 +600,76 @@ class workThread(QtCore.QThread):
         return list
 
     def combo(self):
-        if self.groupBox_combo.isChecked():
-            usernames = str(self.lineEdit_combo.text()).strip().split(",")
-            for username in usernames:
-                user_id = bot.get_user_id_from_username(username)
+        # if self.groupBox_combo.isChecked():
+        start_time = datetime.now().strftime("%H:%M")
+        schedule.every().day.at(start_time).do(self.run_threaded, self.unfollow)
 
-                if self.comboBox_combo.currentText() == "followers":
-                    # print("combo followers")
-                    followers_list_id = bot.get_user_followers(user_id, nfollows=self.spinBox_getfollowers.value())
-                    for username_id in followers_list_id:
-                        new_user_id = username_id.strip()
-                        bot.like_user(new_user_id, amount=self.spinBox_nlikes_combo.value())
-                        bot.follow(new_user_id)
-                        time.sleep(30 + 20 * random.random())
+        usernames = str(self.lineEdit_combo.text()).strip().split(",")
+        for username in usernames:
+            user_id = bot.get_user_id_from_username(username)
 
-                if self.comboBox_combo.currentText() == "following":
-                    # print("combo following")
-                    following_list_id = bot.get_user_following(user_id, nfollows=self.spinBox_getfollowing.value())
-                    for username_id in following_list_id:
-                        new_user_id = username_id.strip()
-                        bot.like_user(new_user_id, amount=self.spinBox_nlikes_combo.value())
-                        bot.follow(new_user_id)
-                        time.sleep(30 + 20 * random.random())
+            if self.comboBox_combo.currentText() == "followers":
+                # print("combo followers")
+                followers_list_id = bot.get_user_followers(user_id, nfollows=self.spinBox_getfollowers.value())
+                for username_id in followers_list_id:
+                    new_user_id = username_id.strip()
+                    bot.like_user(new_user_id, amount=self.spinBox_nlikes_combo.value())
+                    bot.follow(new_user_id)
+                    time.sleep(30 + 20 * random.random())
+                print("complete combo task")
 
-                if self.comboBox_combo.currentText() == "likers":
-                    # print("combo likers")
-                    for username in usernames:
-                        medias = bot.get_user_medias(username, filtration=False)
-                        if len(medias):
-                            likers = bot.get_media_likers(medias)
-                            for liker in tqdm(likers):
-                                bot.like_user(liker, amount=self.spinBox_nlikes_combo.value())
-                                bot.follow(liker)
-        else:
-            print("group combobox not check")
+            if self.comboBox_combo.currentText() == "following":
+                # print("combo following")
+                following_list_id = bot.get_user_following(user_id, nfollows=self.spinBox_getfollowing.value())
+                for username_id in following_list_id:
+                    new_user_id = username_id.strip()
+                    bot.like_user(new_user_id, amount=self.spinBox_nlikes_combo.value())
+                    bot.follow(new_user_id)
+                    time.sleep(30 + 20 * random.random())
+                print("complete combo task")
+
+            if self.comboBox_combo.currentText() == "likers":
+                # print("combo likers")
+                for username in usernames:
+                    medias = bot.get_user_medias(username, filtration=False)
+                    if len(medias):
+                        likers = bot.get_media_likers(medias)
+                        for liker in tqdm(likers):
+                            bot.like_user(liker, amount=self.spinBox_nlikes_combo.value())
+                            bot.follow(liker)
+                print("complete combo task")
+    # else:
+    #     print("group combobox not check")
+
+    def run_threaded(job_func):
+        job_thread = threading.Thread(target=job_func)
+        job_thread.start()
+
+    @fuckit
+    def job(self):
+        self.follow()
+        self.like()
+        self.comment()
+        self.unfollow()
+
+    def test(self):
+        print("start combo")
 
     # ALL FUNCTION IN WORKTHREAD START HERE
+    # if combo selected run combo
+    # else run schedule
     def run(self):
         # todo check expired date
         # OFFICIAL
-        # self.follow()
-        # self.unfollow()
-        # self.like()
-        # self.comment()
-        self.combo()
+        if self.groupBox_combo.isChecked():
+            self.combo()
+        else:
+            start_time = datetime.now().strftime("%H:%M")
+            schedule.every().day.at(start_time).do(self.run_threaded, self.job)
 
-        # TESTING
-        # print("thread running"
-        # print(type(self.spinBox_getfollowers.value()))
+            while 1:
+                schedule.run_pending()
+                time.sleep(30)
 
 
 class OutputWrapper(QtCore.QObject):
