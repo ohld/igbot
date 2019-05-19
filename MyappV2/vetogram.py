@@ -25,7 +25,7 @@ from PyQt5.QtWidgets import qApp, QApplication, QMainWindow, QFormLayout, QLineE
 from tqdm import tqdm
 
 from ui import MainWindow
-from credential import License_class
+# from credential import License_class
 
 sys.path.append(os.path.join(sys.path[0], '../'))
 from instabot import Bot
@@ -68,19 +68,19 @@ def save(settings):
 
 
 # UI FORMAT
-class MainWindow_class(QtWidgets.QMainWindow):
-    # RESTORE FILE LOCATION NAME
-
-    def __init__(self):
-        QtCore.QCoreApplication.processEvents()
-        QtWidgets.QMainWindow.__init__(self)
-        uic.loadUi("ui/MainWindow.ui", self)
+# class MainWindow_class(QtWidgets.QMainWindow):
+#     # RESTORE FILE LOCATION NAME
+#
+#     def __init__(self):
+#         QtCore.QCoreApplication.processEvents()
+#         QtWidgets.QMainWindow.__init__(self)
+#         uic.loadUi("ui/MainWindow.ui", self)
 
 # PY FORMAT
-# class MainWindow_class(MainWindow.Ui_MainWindow,QtWidgets.QMainWindow):
-#     def __init__(self):
-#         super(MainWindow.Ui_MainWindow, self).__init__()
-#         self.setupUi(self)
+class MainWindow_class(MainWindow.Ui_MainWindow, QtWidgets.QMainWindow):
+    def __init__(self):
+        super(MainWindow.Ui_MainWindow, self).__init__()
+        self.setupUi(self)
 
         self.settings = QSettings(path + "gui.ini", QSettings.IniFormat)
 
@@ -367,9 +367,9 @@ class MainWindow_class(QtWidgets.QMainWindow):
             for user_id in friends:
                 file.write(str(user_id) + "\n")
 
-    def open_license(self):
-        self.license = License_class()
-        self.license.show()
+    # def open_license(self):
+    #     self.license = License_class()
+    #     self.license.show()
 
     # TAB DASHBOARD
     # todo
