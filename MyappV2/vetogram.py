@@ -600,7 +600,6 @@ class workThread(QtCore.QThread):
         return list
 
     def combo(self):
-        # if self.groupBox_combo.isChecked():
         start_time = datetime.now().strftime("%H:%M")
         schedule.every().day.at(start_time).do(self.run_threaded, self.unfollow)
 
@@ -649,9 +648,6 @@ class workThread(QtCore.QThread):
         self.like()
         self.comment()
         self.unfollow()
-
-    def test(self):
-        print("start uncombo")
 
     # ALL FUNCTION IN WORKTHREAD START HERE
     # if combo selected run combo
