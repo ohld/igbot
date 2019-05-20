@@ -110,6 +110,28 @@
          </layout>
         </item>
         <item>
+         <widget class="QGroupBox" name="groupBox_2">
+          <property name="title">
+           <string>Followers Growth</string>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout_11">
+           <item>
+            <spacer name="verticalSpacer">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>40</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
          <widget class="QProgressBar" name="progressBar">
           <property name="value">
            <number>99</number>
@@ -917,20 +939,6 @@
       </widget>
      </item>
     </layout>
-   </widget>
-   <widget class="QGroupBox" name="groupBox_2">
-    <property name="geometry">
-     <rect>
-      <x>810</x>
-      <y>310</y>
-      <width>341</width>
-      <height>441</height>
-     </rect>
-    </property>
-    <property name="title">
-     <string>Followers Growth</string>
-    </property>
-    <layout class="QVBoxLayout" name="verticalLayout_11"/>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
