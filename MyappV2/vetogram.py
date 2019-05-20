@@ -1,17 +1,12 @@
-<<<<<<< HEAD
 from datetime import datetime
 
 import fuckit
-=======
-
->>>>>>> parent of ac25171... draw graph from csv
 from PyQt5.QtWidgets import QDialog, QApplication, QPushButton, QVBoxLayout
 from PyQt5.uic.properties import QtWidgets, QtCore
 
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
 import matplotlib.pyplot as plt
-
 
 import os
 import random
@@ -30,6 +25,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5 import uic
 from PyQt5.QtCore import QSettings, QFileInfo
 from PyQt5.QtWidgets import qApp, QApplication, QMainWindow, QFormLayout, QLineEdit, QTabWidget, QWidget, QAction
+from tqdm import tqdm
 
 from ui import MainWindow
 # from credential import License_class
@@ -38,7 +34,7 @@ sys.path.append(os.path.join(sys.path[0], '../'))
 from instabot import Bot
 
 path = os.path.expanduser("~\Testing\\")
-package = 0 #0=free 1=purchased
+package = 0  # 0=free 1=purchased
 
 
 # SAVE AND RESTORE LAST USER INPUT
@@ -50,7 +46,7 @@ def restore(settings):
             mo = w.metaObject()
             if w.objectName() and not w.objectName().startswith("qt_"):
                 settings.beginGroup(w.objectName())
-                for i in range( mo.propertyCount(), mo.propertyOffset()-1, -1):
+                for i in range(mo.propertyCount(), mo.propertyOffset() - 1, -1):
                     prop = mo.property(i)
                     if prop.isWritable():
                         name = prop.name()
@@ -59,6 +55,7 @@ def restore(settings):
                             val = int(val)
                         w.setProperty(name, val)
                 settings.endGroup()
+
 
 def save(settings):
     for w in QtWidgets.qApp.allWidgets():
@@ -75,7 +72,7 @@ def save(settings):
 
 # UI FORMAT
 class MainWindow_class(QtWidgets.QMainWindow):
-    #RESTORE FILE LOCATION NAME
+    # RESTORE FILE LOCATION NAME
 
     def __init__(self):
         QtCore.QCoreApplication.processEvents()
@@ -83,18 +80,14 @@ class MainWindow_class(QtWidgets.QMainWindow):
         uic.loadUi("ui/MainWindow.ui", self)
 
 # PY FORMAT
-<<<<<<< HEAD
 # class MainWindow_class(MainWindow.Ui_MainWindow, QtWidgets.QMainWindow):
-=======
-# class MainWindow_class(MainWindow.Ui_MainWindow,QtWidgets.QMainWindow):
->>>>>>> parent of ac25171... draw graph from csv
 #     def __init__(self):
 #         super(MainWindow.Ui_MainWindow, self).__init__()
 #         self.setupUi(self)
 
         self.settings = QSettings(path + "gui.ini", QSettings.IniFormat)
 
-        restore(self.settings)
+        # restore(self.settings)
 
         # OFFICIAL
         self.pushButton_run.clicked.connect(self.login_instagram)
@@ -150,11 +143,18 @@ class MainWindow_class(QtWidgets.QMainWindow):
                                      lineEdit_comment=self.lineEdit_comment,
                                      listWidget=self.listWidget,
 
+                                     groupBox_combo=self.groupBox_combo,
+                                     spinBox_nlikes_combo=self.spinBox_nlikes_combo,
+                                     comboBox_combo=self.comboBox_combo,
+                                     lineEdit_combo=self.lineEdit_combo,
+
                                      return_base_path=self.return_base_path(),
 
                                      )
 
-        self.Canvas = Canvas(groupBox_2=self.groupBox_2,)
+        self.Canvas = Canvas(groupBox_2=self.groupBox_2,
+                             csv_file_path=self.csv_file_path,
+                             )
 
     def closeEvent(self, event):
         save(self.settings)
@@ -172,7 +172,7 @@ class MainWindow_class(QtWidgets.QMainWindow):
             pass
 
     def return_base_path(self):
-        #C:\Users\khair\Testing\vicode.co\
+        # C:\Users\khair\Testing\vicode.co\
         base_path = path + self.username() + "\\"
         return base_path
 
@@ -187,46 +187,46 @@ class MainWindow_class(QtWidgets.QMainWindow):
     def setting(self):
         global bot
         bot = Bot(
-                 base_path=self.return_base_path(),
-                 # proxy=None,
-                 max_likes_per_day=self.spinBox_like.value(),
-                 # max_unlikes_per_day=1000,
-                 max_follows_per_day=self.spinBox_follow.value(),
-                 max_unfollows_per_day=self.spinBox_unfollow.value(),
-                 max_comments_per_day=self.spinBox_comment.value(),
-                 # max_blocks_per_day=100,
-                 # max_unblocks_per_day=100,
-                 # max_likes_to_like=10000,
-                 # min_likes_to_like=2,
-                 # max_messages_per_day=300,
-                 filter_users=False,
-                 filter_private_users=False,
-                 filter_users_without_profile_photo=False,
-                 filter_previously_followed=False,
-                 filter_business_accounts=False,
-                 filter_verified_accounts=False,
-                 # max_followers_to_follow=2000,
-                 # min_followers_to_follow=10,
-                 # max_following_to_follow=2000,
-                 # min_following_to_follow=10,
-                 # max_followers_to_following_ratio=10,
-                 # max_following_to_followers_ratio=2,
-                 # min_media_count_to_follow=3,
-                 # max_following_to_block=2000,
-                 like_delay=40,
-                 # unlike_delay=10,
-                 follow_delay=60,
-                 unfollow_delay=60,
-                 comment_delay=120,
-                 # block_delay=30,
-                 # unblock_delay=30,
-                 message_delay=90,
-                 # stop_words=('shop', 'store', 'free'),
-                 # blacklist_hashtags=['#shop', '#store', '#free'],
-                 # blocked_actions_protection=True,
-                 # verbosity=True,
-                 # device=None)
-                )
+            base_path=self.return_base_path(),
+            # proxy=None,
+            max_likes_per_day=self.spinBox_like.value(),
+            # max_unlikes_per_day=1000,
+            max_follows_per_day=self.spinBox_follow.value(),
+            max_unfollows_per_day=self.spinBox_unfollow.value(),
+            max_comments_per_day=self.spinBox_comment.value(),
+            # max_blocks_per_day=100,
+            # max_unblocks_per_day=100,
+            # max_likes_to_like=10000,
+            # min_likes_to_like=2,
+            # max_messages_per_day=300,
+            filter_users=False,
+            filter_private_users=False,
+            filter_users_without_profile_photo=False,
+            filter_previously_followed=True,
+            filter_business_accounts=False,
+            filter_verified_accounts=False,
+            # max_followers_to_follow=2000,
+            # min_followers_to_follow=10,
+            # max_following_to_follow=2000,
+            # min_following_to_follow=10,
+            # max_followers_to_following_ratio=10,
+            # max_following_to_followers_ratio=2,
+            # min_media_count_to_follow=3,
+            # max_following_to_block=2000,
+            like_delay=40,
+            # unlike_delay=10,
+            follow_delay=60,
+            unfollow_delay=60,
+            comment_delay=120,
+            # block_delay=30,
+            # unblock_delay=30,
+            message_delay=90,
+            # stop_words=('shop', 'store', 'free'),
+            # blacklist_hashtags=['#shop', '#store', '#free'],
+            # blocked_actions_protection=True,
+            # verbosity=True,
+            # device=None)
+        )
 
     def login_instagram(self):
         QtCore.QCoreApplication.processEvents()
@@ -245,22 +245,8 @@ class MainWindow_class(QtWidgets.QMainWindow):
 
     # TESTING
     def click_testing(self):
-<<<<<<< HEAD
         self.workThread.start()
 
-=======
-        # # self.workThread.start()
-        # QtCore.QCoreApplication.processEvents()
-        # try:
-        #     self.tabWidget.setTabEnabled(1,False)
-        # except:
-        #     pass
-        # # time.sleep(2)
-        # print(self.lineEdit.text())
-        # self.wait_message()
-        self.workThread.start()
-        # print(self.comment_list())
->>>>>>> parent of ac25171... draw graph from csv
     def enable_tab(self):
         self.tabWidget.setTabEnabled(1, True)
 
@@ -272,7 +258,7 @@ class MainWindow_class(QtWidgets.QMainWindow):
     def delete_line_listWidget(self):
         self.listWidget.takeItem(self.listWidget.currentRow())
 
-    def csv_check(self): #success create csv file
+    def csv_check(self):  # success create csv file
         if not os.path.exists(self.csv_file_path()):
             with open(self.csv_file_path(), "w") as csvFile:
                 writer = csv.writer(csvFile)
@@ -344,7 +330,7 @@ class MainWindow_class(QtWidgets.QMainWindow):
         if package == 0:
             self.radioButton_slow.setChecked(True)
             QtWidgets.QMessageBox.information(self, "Info", "To use this setting you need\n"
-                                                              "to purchase full package")
+                                                            "to purchase full package")
 
         else:
             self.spinBox_follow.setValue(500)
@@ -358,7 +344,7 @@ class MainWindow_class(QtWidgets.QMainWindow):
         if package == 0:
             self.radioButton_slow.setChecked(True)
             QtWidgets.QMessageBox.information(self, "Info", "To use this setting you need\n"
-                                                              "to purchase full package")
+                                                            "to purchase full package")
         else:
             self.spinBox_follow.setValue(1000)
             self.spinBox_unfollow.setValue(1000)
@@ -389,7 +375,7 @@ class MainWindow_class(QtWidgets.QMainWindow):
     #     self.license.show()
 
     # TAB DASHBOARD
-    #todo
+    # todo
     def update_task_status(self):
         likes = str(bot.total['likes'])
         # follow = str(bot.total['follows'])
@@ -401,12 +387,17 @@ class MainWindow_class(QtWidgets.QMainWindow):
         # self.lineEdit_total_likes.setText(likes)
         # self.lineEdit_total_comment.setText(comment)
 
+
 class Canvas(FigureCanvas):
-    def __init__(self,groupBox_2, parent=None):
+    # 1) call function in mainwindowclass.csv_file_path to find csv file
+    # 2) draw graph based on csv file
+
+    def __init__(self, groupBox_2, csv_file_path, parent=None):
         self.figure = plt.figure()
         FigureCanvas.__init__(self, self.figure)
 
         self.groupBox_2 = groupBox_2
+        self.csv_file_path = csv_file_path
 
         # a figure instance to plot on
         self.figure = plt.figure()
@@ -421,23 +412,18 @@ class Canvas(FigureCanvas):
 
         # Just some button connected to `plot` method
         self.button = QPushButton('Plot')
-        self.button.clicked.connect(self.plot)
+        self.button.clicked.connect(self.plotgraph)
 
         # set the layout
         layout = QVBoxLayout()
         layout.addWidget(self.toolbar)
         layout.addWidget(self.canvas)
         layout.addWidget(self.button)
-<<<<<<< HEAD
         self.groupBox_2.setLayout(layout)  # put the layout in groupbox2
-=======
-        self.groupBox_2.setLayout(layout) #put the layout in groupbox
->>>>>>> parent of ac25171... draw graph from csv
 
     def plot(self):
         import pandas as pd
-        MainWindowClass = MainWindow_class()
-        path = MainWindowClass.csv_file_path()
+        path = self.csv_file_path()
 
         # read data from file
         data = pd.read_csv(path)
@@ -449,7 +435,7 @@ class Canvas(FigureCanvas):
         ax = self.figure.add_subplot(111)
 
         # plot data
-        ax.plot(data.dateTime,data.followers, '*-')
+        ax.plot(data.dateTime, data.followers, '*-')
         plt.title("followers over time")
         plt.xlabel("date and time")
         plt.ylabel("followers growth")
@@ -459,10 +445,12 @@ class Canvas(FigureCanvas):
         # refresh canvas
         self.canvas.draw()
 
-    #TESTING
-    def testing(self):
-        MainWindowClass = MainWindow_class()
-        print(MainWindowClass.csv_file_path())
+    def plotgraph(self):
+        try:
+            self.plot()
+        except:
+            print("insert username to find csv path")
+
 
 # MAKE THREAD SO THAT UI DIDNT FREEZE
 class workThread(QtCore.QThread):
@@ -490,6 +478,11 @@ class workThread(QtCore.QThread):
                  lineEdit_comment,
                  listWidget,
 
+                 groupBox_combo,
+                 spinBox_nlikes_combo,
+                 comboBox_combo,
+                 lineEdit_combo,
+
                  return_base_path,
                  parent=None):
 
@@ -515,6 +508,11 @@ class workThread(QtCore.QThread):
         self.comboBox_comment = comboBox_comment
         self.lineEdit_comment = lineEdit_comment
         self.listWidget = listWidget
+
+        self.groupBox_combo = groupBox_combo
+        self.spinBox_nlikes_combo = spinBox_nlikes_combo
+        self.comboBox_combo = comboBox_combo
+        self.lineEdit_combo = lineEdit_combo
 
         self.return_base_path = return_base_path
 
@@ -602,7 +600,6 @@ class workThread(QtCore.QThread):
         return list
 
     def combo(self):
-<<<<<<< HEAD
         start_time = datetime.now().strftime("%H:%M")
         schedule.every().day.at(start_time).do(self.run_threaded, self.unfollow)
 
@@ -651,15 +648,11 @@ class workThread(QtCore.QThread):
         self.like()
         self.comment()
         self.unfollow()
-=======
-        
->>>>>>> parent of ac25171... draw graph from csv
 
     # ALL FUNCTION IN WORKTHREAD START HERE
     # if combo selected run combo
     # else run schedule
     def run(self):
-<<<<<<< HEAD
         # todo check expired date
         # OFFICIAL
         if self.groupBox_combo.isChecked():
@@ -673,19 +666,6 @@ class workThread(QtCore.QThread):
                 schedule.run_pending()
                 time.sleep(1)
 
-=======
-        #todo check expired date
-        #OFFICIAL
-        # self.follow()
-        # self.unfollow()
-        # self.like()
-        # self.comment()
-
-        #TESTING
-        # print("thread running"
-        print(type(random.choice(self.comment_list())))
-        # print(self.comment_list())
->>>>>>> parent of ac25171... draw graph from csv
 
 class OutputWrapper(QtCore.QObject):
     """ to show all output in ui text edit"""
@@ -717,9 +697,9 @@ class OutputWrapper(QtCore.QObject):
         except AttributeError:
             pass
 
+
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
     MainWindow = MainWindow_class()
     MainWindow.show()
     sys.exit(app.exec_())
-
