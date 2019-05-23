@@ -1201,5 +1201,22 @@ border-radius: 4px;
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>groupBox_combo</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>groupBox_unfollow</receiver>
+   <slot>setChecked(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>95</x>
+     <y>775</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>90</x>
+     <y>424</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>
