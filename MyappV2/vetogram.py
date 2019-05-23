@@ -155,6 +155,7 @@ class MainWindow_class(QtWidgets.QMainWindow):
 
         self.Canvas = Canvas(groupBox_2=self.groupBox_2,
                              csv_file_path=self.csv_file_path,
+                             username=self.username,
                              )
 
     def closeEvent(self, event):
@@ -229,10 +230,10 @@ class MainWindow_class(QtWidgets.QMainWindow):
             # device=None)
         )
 
+    QtCore.QCoreApplication.processEvents()
     def login_instagram(self):
-        QtCore.QCoreApplication.processEvents()
+        self.pushButton_run.setEnabled(False)  # disable start button
         self.tabWidget.setTabEnabled(0, False) #disable tab home
-        self.pushButton_run.setEnabled(False) #disable start button
         self.create_path()
         self.setting()
 
@@ -259,8 +260,7 @@ class MainWindow_class(QtWidgets.QMainWindow):
 
     # TESTING
     def click_testing(self):
-        self.tabWidget.setTabEnabled(1, False)
-        self.pushButton_run.setEnabled(False)
+        pass
 
     def enable_tab(self):
         self.tabWidget.setTabEnabled(1, True)
@@ -418,12 +418,13 @@ class Canvas(FigureCanvas):
     # 1) call function in mainwindowclass.csv_file_path to find csv file
     # 2) draw graph based on csv file
 
-    def __init__(self, groupBox_2, csv_file_path, parent=None):
+    def __init__(self, groupBox_2, csv_file_path, username, parent=None):
         self.figure = plt.figure()
         FigureCanvas.__init__(self, self.figure)
 
         self.groupBox_2 = groupBox_2
         self.csv_file_path = csv_file_path
+        self.username = username
 
         # a figure instance to plot on
         self.figure = plt.figure()
@@ -439,6 +440,9 @@ class Canvas(FigureCanvas):
         # Just some button connected to `plot` method
         self.button = QPushButton('Plot')
         self.button.clicked.connect(self.plotgraph)
+
+        # TESTING
+        # self.button.clicked.connect(self.testing)
 
         # set the layout
         layout = QVBoxLayout()
@@ -462,11 +466,11 @@ class Canvas(FigureCanvas):
 
         # plot data
         ax.plot(data.dateTime, data.followers, '*-')
-        plt.title("followers over time")
+        plt.title("followers of @" + self.username())
         plt.xlabel("date and time")
         plt.ylabel("followers growth")
 
-        _ = plt.xticks(rotation=45)
+        # _ = plt.xticks(rotation=45)
 
         # refresh canvas
         self.canvas.draw()
@@ -476,6 +480,9 @@ class Canvas(FigureCanvas):
             self.plot()
         except:
             print("insert username to find csv path")
+
+    def testing(self):
+        print("name of @" + self.username())
 
 
 # MAKE THREAD SO THAT UI DIDNT FREEZE
@@ -625,9 +632,13 @@ class workThread(QtCore.QThread):
             list.append(text)
         return list
 
+
     def combo(self):
         start_time = datetime.now().strftime("%H:%M")
-        schedule.every().day.at(start_time).do(self.run_threaded, self.unfollow)
+        try:
+            schedule.every().day.at(start_time).do(self.run_threaded, self.unfollow)
+        except:
+            print("unfollow task error")
 
         usernames = str(self.lineEdit_combo.text()).strip().split(",")
         for username in usernames:
