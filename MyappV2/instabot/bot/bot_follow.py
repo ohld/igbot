@@ -15,7 +15,7 @@ def follow(self, user_id):
     if not self.reached_limit('follows'):
         self.delay('follow')
         if self.api.follow(user_id):
-            msg = 'FOLLOWING: https://instagram.com/{}.'.format(username)
+            msg = 'FOLLOWING: https://instagram.com/{}'.format(username)
             self.console_print(msg)
             self.total['follows'] += 1
             self.followed_file.append(user_id)
