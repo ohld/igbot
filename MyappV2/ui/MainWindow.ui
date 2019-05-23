@@ -185,641 +185,665 @@ border-radius: 4px;
         </property>
        </widget>
       </item>
-      <item>
-       <widget class="QPushButton" name="pushButton">
-        <property name="text">
-         <string>save following</string>
-        </property>
-       </widget>
-      </item>
      </layout>
     </item>
     <item>
      <layout class="QHBoxLayout" name="horizontalLayout_18">
       <item>
-       <layout class="QVBoxLayout" name="verticalLayout_10">
-        <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_16">
+       <widget class="QTabWidget" name="tabWidget">
+        <property name="tabPosition">
+         <enum>QTabWidget::West</enum>
+        </property>
+        <property name="tabShape">
+         <enum>QTabWidget::Rounded</enum>
+        </property>
+        <property name="currentIndex">
+         <number>0</number>
+        </property>
+        <widget class="QWidget" name="tab_home">
+         <attribute name="title">
+          <string>Home</string>
+         </attribute>
+         <layout class="QVBoxLayout" name="verticalLayout_14">
           <item>
-           <widget class="QGroupBox" name="groupBox_4">
-            <property name="styleSheet">
-             <string notr="true">background-color: rgb(209, 236, 241);
+           <widget class="QScrollArea" name="scrollArea">
+            <property name="widgetResizable">
+             <bool>true</bool>
+            </property>
+            <widget class="QWidget" name="scrollAreaWidgetContents_2">
+             <property name="geometry">
+              <rect>
+               <x>0</x>
+               <y>0</y>
+               <width>1092</width>
+               <height>756</height>
+              </rect>
+             </property>
+             <layout class="QVBoxLayout" name="verticalLayout_15">
+              <item>
+               <layout class="QVBoxLayout" name="verticalLayout_10">
+                <item>
+                 <layout class="QHBoxLayout" name="horizontalLayout_16">
+                  <item>
+                   <widget class="QGroupBox" name="groupBox_4">
+                    <property name="styleSheet">
+                     <string notr="true">background-color: rgb(209, 236, 241);
 </string>
-            </property>
-            <property name="title">
-             <string>Limit Setting Per Day</string>
-            </property>
-            <layout class="QVBoxLayout" name="verticalLayout_4">
-             <item>
-              <layout class="QHBoxLayout" name="horizontalLayout">
-               <item>
-                <layout class="QVBoxLayout" name="verticalLayout_5">
-                 <item>
-                  <widget class="QLabel" name="label_4">
-                   <property name="text">
-                    <string>How many account do you want to follow</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QLabel" name="label_6">
-                   <property name="text">
-                    <string>How many account do you want to unfollow</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QLabel" name="label_5">
-                   <property name="text">
-                    <string>How many media do you want to like</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QLabel" name="label_7">
-                   <property name="text">
-                    <string>How many media do you want to comment</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QLabel" name="label_8">
-                   <property name="text">
-                    <string>How many competitor Followers do you want to get </string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QLabel" name="label_9">
-                   <property name="text">
-                    <string>How many competitor Following do you want to get</string>
-                   </property>
-                  </widget>
-                 </item>
-                </layout>
-               </item>
-               <item>
-                <layout class="QVBoxLayout" name="verticalLayout">
-                 <item>
-                  <widget class="QSpinBox" name="spinBox_follow">
-                   <property name="styleSheet">
-                    <string notr="true"/>
-                   </property>
-                   <property name="readOnly">
-                    <bool>true</bool>
-                   </property>
-                   <property name="buttonSymbols">
-                    <enum>QAbstractSpinBox::NoButtons</enum>
-                   </property>
-                   <property name="minimum">
-                    <number>1</number>
-                   </property>
-                   <property name="maximum">
-                    <number>2000</number>
-                   </property>
-                   <property name="value">
-                    <number>50</number>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QSpinBox" name="spinBox_unfollow">
-                   <property name="readOnly">
-                    <bool>true</bool>
-                   </property>
-                   <property name="buttonSymbols">
-                    <enum>QAbstractSpinBox::NoButtons</enum>
-                   </property>
-                   <property name="minimum">
-                    <number>1</number>
-                   </property>
-                   <property name="maximum">
-                    <number>2000</number>
-                   </property>
-                   <property name="value">
-                    <number>30</number>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QSpinBox" name="spinBox_like">
-                   <property name="readOnly">
-                    <bool>true</bool>
-                   </property>
-                   <property name="buttonSymbols">
-                    <enum>QAbstractSpinBox::NoButtons</enum>
-                   </property>
-                   <property name="minimum">
-                    <number>1</number>
-                   </property>
-                   <property name="maximum">
-                    <number>2000</number>
-                   </property>
-                   <property name="value">
-                    <number>50</number>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QSpinBox" name="spinBox_comment">
-                   <property name="readOnly">
-                    <bool>true</bool>
-                   </property>
-                   <property name="buttonSymbols">
-                    <enum>QAbstractSpinBox::NoButtons</enum>
-                   </property>
-                   <property name="minimum">
-                    <number>1</number>
-                   </property>
-                   <property name="maximum">
-                    <number>2000</number>
-                   </property>
-                   <property name="value">
-                    <number>7</number>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QSpinBox" name="spinBox_getfollowers">
-                   <property name="readOnly">
-                    <bool>true</bool>
-                   </property>
-                   <property name="buttonSymbols">
-                    <enum>QAbstractSpinBox::NoButtons</enum>
-                   </property>
-                   <property name="minimum">
-                    <number>1</number>
-                   </property>
-                   <property name="maximum">
-                    <number>1000000</number>
-                   </property>
-                   <property name="value">
-                    <number>100</number>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QSpinBox" name="spinBox_getfollowing">
-                   <property name="readOnly">
-                    <bool>true</bool>
-                   </property>
-                   <property name="buttonSymbols">
-                    <enum>QAbstractSpinBox::NoButtons</enum>
-                   </property>
-                   <property name="minimum">
-                    <number>1</number>
-                   </property>
-                   <property name="maximum">
-                    <number>1000000</number>
-                   </property>
-                   <property name="value">
-                    <number>100</number>
-                   </property>
-                  </widget>
-                 </item>
-                </layout>
-               </item>
-               <item>
-                <layout class="QVBoxLayout" name="verticalLayout_6">
-                 <item>
-                  <widget class="QRadioButton" name="radioButton_slow">
-                   <property name="text">
-                    <string>Slow</string>
-                   </property>
-                   <property name="checked">
-                    <bool>true</bool>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QRadioButton" name="radioButton_standard">
-                   <property name="text">
-                    <string>Standard</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QRadioButton" name="radioButton_fast">
-                   <property name="text">
-                    <string>Fast</string>
-                   </property>
-                  </widget>
-                 </item>
-                </layout>
-               </item>
-              </layout>
-             </item>
-            </layout>
-           </widget>
-          </item>
-          <item>
-           <widget class="QGroupBox" name="groupBox">
-            <property name="styleSheet">
-             <string notr="true">background-color: rgb(209, 236, 241);</string>
-            </property>
-            <property name="title">
-             <string>Filter Account</string>
-            </property>
-            <layout class="QHBoxLayout" name="horizontalLayout_5">
-             <item>
-              <layout class="QVBoxLayout" name="verticalLayout_9">
-               <item>
-                <widget class="QLabel" name="label_3">
-                 <property name="text">
-                  <string>Tick the box to not follow the account</string>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <layout class="QVBoxLayout" name="verticalLayout_3">
-                 <item>
-                  <widget class="QCheckBox" name="checkBox_private">
-                   <property name="text">
-                    <string>Private Account</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QCheckBox" name="checkBox_no_profilePic">
-                   <property name="text">
-                    <string>Account Without Profile Picture</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QCheckBox" name="checkBox_business">
-                   <property name="text">
-                    <string>Business Account</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QCheckBox" name="checkBox_verified">
-                   <property name="text">
-                    <string>Verified Account</string>
-                   </property>
-                  </widget>
-                 </item>
-                </layout>
-               </item>
-              </layout>
-             </item>
-            </layout>
-           </widget>
-          </item>
-         </layout>
-        </item>
-        <item>
-         <widget class="QGroupBox" name="groupBox_follow">
-          <property name="styleSheet">
-           <string notr="true">#groupBox_follow:checked{
+                    </property>
+                    <property name="title">
+                     <string>Limit Setting Per Day</string>
+                    </property>
+                    <layout class="QVBoxLayout" name="verticalLayout_4">
+                     <item>
+                      <layout class="QHBoxLayout" name="horizontalLayout">
+                       <item>
+                        <layout class="QVBoxLayout" name="verticalLayout_5">
+                         <item>
+                          <widget class="QLabel" name="label_4">
+                           <property name="text">
+                            <string>How many account do you want to follow</string>
+                           </property>
+                          </widget>
+                         </item>
+                         <item>
+                          <widget class="QLabel" name="label_6">
+                           <property name="text">
+                            <string>How many account do you want to unfollow</string>
+                           </property>
+                          </widget>
+                         </item>
+                         <item>
+                          <widget class="QLabel" name="label_5">
+                           <property name="text">
+                            <string>How many media do you want to like</string>
+                           </property>
+                          </widget>
+                         </item>
+                         <item>
+                          <widget class="QLabel" name="label_7">
+                           <property name="text">
+                            <string>How many media do you want to comment</string>
+                           </property>
+                          </widget>
+                         </item>
+                         <item>
+                          <widget class="QLabel" name="label_8">
+                           <property name="text">
+                            <string>How many competitor Followers do you want to get </string>
+                           </property>
+                          </widget>
+                         </item>
+                         <item>
+                          <widget class="QLabel" name="label_9">
+                           <property name="text">
+                            <string>How many competitor Following do you want to get</string>
+                           </property>
+                          </widget>
+                         </item>
+                        </layout>
+                       </item>
+                       <item>
+                        <layout class="QVBoxLayout" name="verticalLayout">
+                         <item>
+                          <widget class="QSpinBox" name="spinBox_follow">
+                           <property name="styleSheet">
+                            <string notr="true"/>
+                           </property>
+                           <property name="readOnly">
+                            <bool>true</bool>
+                           </property>
+                           <property name="buttonSymbols">
+                            <enum>QAbstractSpinBox::NoButtons</enum>
+                           </property>
+                           <property name="minimum">
+                            <number>1</number>
+                           </property>
+                           <property name="maximum">
+                            <number>2000</number>
+                           </property>
+                           <property name="value">
+                            <number>50</number>
+                           </property>
+                          </widget>
+                         </item>
+                         <item>
+                          <widget class="QSpinBox" name="spinBox_unfollow">
+                           <property name="readOnly">
+                            <bool>true</bool>
+                           </property>
+                           <property name="buttonSymbols">
+                            <enum>QAbstractSpinBox::NoButtons</enum>
+                           </property>
+                           <property name="minimum">
+                            <number>1</number>
+                           </property>
+                           <property name="maximum">
+                            <number>2000</number>
+                           </property>
+                           <property name="value">
+                            <number>30</number>
+                           </property>
+                          </widget>
+                         </item>
+                         <item>
+                          <widget class="QSpinBox" name="spinBox_like">
+                           <property name="readOnly">
+                            <bool>true</bool>
+                           </property>
+                           <property name="buttonSymbols">
+                            <enum>QAbstractSpinBox::NoButtons</enum>
+                           </property>
+                           <property name="minimum">
+                            <number>1</number>
+                           </property>
+                           <property name="maximum">
+                            <number>2000</number>
+                           </property>
+                           <property name="value">
+                            <number>50</number>
+                           </property>
+                          </widget>
+                         </item>
+                         <item>
+                          <widget class="QSpinBox" name="spinBox_comment">
+                           <property name="readOnly">
+                            <bool>true</bool>
+                           </property>
+                           <property name="buttonSymbols">
+                            <enum>QAbstractSpinBox::NoButtons</enum>
+                           </property>
+                           <property name="minimum">
+                            <number>1</number>
+                           </property>
+                           <property name="maximum">
+                            <number>2000</number>
+                           </property>
+                           <property name="value">
+                            <number>7</number>
+                           </property>
+                          </widget>
+                         </item>
+                         <item>
+                          <widget class="QSpinBox" name="spinBox_getfollowers">
+                           <property name="readOnly">
+                            <bool>true</bool>
+                           </property>
+                           <property name="buttonSymbols">
+                            <enum>QAbstractSpinBox::NoButtons</enum>
+                           </property>
+                           <property name="minimum">
+                            <number>1</number>
+                           </property>
+                           <property name="maximum">
+                            <number>1000000</number>
+                           </property>
+                           <property name="value">
+                            <number>100</number>
+                           </property>
+                          </widget>
+                         </item>
+                         <item>
+                          <widget class="QSpinBox" name="spinBox_getfollowing">
+                           <property name="readOnly">
+                            <bool>true</bool>
+                           </property>
+                           <property name="buttonSymbols">
+                            <enum>QAbstractSpinBox::NoButtons</enum>
+                           </property>
+                           <property name="minimum">
+                            <number>1</number>
+                           </property>
+                           <property name="maximum">
+                            <number>1000000</number>
+                           </property>
+                           <property name="value">
+                            <number>100</number>
+                           </property>
+                          </widget>
+                         </item>
+                        </layout>
+                       </item>
+                       <item>
+                        <layout class="QVBoxLayout" name="verticalLayout_6">
+                         <item>
+                          <widget class="QRadioButton" name="radioButton_slow">
+                           <property name="text">
+                            <string>Slow</string>
+                           </property>
+                           <property name="checked">
+                            <bool>true</bool>
+                           </property>
+                          </widget>
+                         </item>
+                         <item>
+                          <widget class="QRadioButton" name="radioButton_standard">
+                           <property name="text">
+                            <string>Standard</string>
+                           </property>
+                          </widget>
+                         </item>
+                         <item>
+                          <widget class="QRadioButton" name="radioButton_fast">
+                           <property name="text">
+                            <string>Fast</string>
+                           </property>
+                          </widget>
+                         </item>
+                        </layout>
+                       </item>
+                      </layout>
+                     </item>
+                    </layout>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QGroupBox" name="groupBox">
+                    <property name="styleSheet">
+                     <string notr="true">background-color: rgb(209, 236, 241);</string>
+                    </property>
+                    <property name="title">
+                     <string>Filter Account</string>
+                    </property>
+                    <layout class="QHBoxLayout" name="horizontalLayout_5">
+                     <item>
+                      <layout class="QVBoxLayout" name="verticalLayout_9">
+                       <item>
+                        <widget class="QLabel" name="label_3">
+                         <property name="text">
+                          <string>Tick the box to not follow the account</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <layout class="QVBoxLayout" name="verticalLayout_3">
+                         <item>
+                          <widget class="QCheckBox" name="checkBox_private">
+                           <property name="text">
+                            <string>Private Account</string>
+                           </property>
+                          </widget>
+                         </item>
+                         <item>
+                          <widget class="QCheckBox" name="checkBox_no_profilePic">
+                           <property name="text">
+                            <string>Account Without Profile Picture</string>
+                           </property>
+                          </widget>
+                         </item>
+                         <item>
+                          <widget class="QCheckBox" name="checkBox_business">
+                           <property name="text">
+                            <string>Business Account</string>
+                           </property>
+                          </widget>
+                         </item>
+                         <item>
+                          <widget class="QCheckBox" name="checkBox_verified">
+                           <property name="text">
+                            <string>Verified Account</string>
+                           </property>
+                          </widget>
+                         </item>
+                        </layout>
+                       </item>
+                      </layout>
+                     </item>
+                    </layout>
+                   </widget>
+                  </item>
+                 </layout>
+                </item>
+                <item>
+                 <widget class="QGroupBox" name="groupBox_follow">
+                  <property name="styleSheet">
+                   <string notr="true">#groupBox_follow:checked{
 background-color: rgb(204, 229, 255);
 }</string>
-          </property>
-          <property name="title">
-           <string>Follow Task</string>
-          </property>
-          <property name="checkable">
-           <bool>true</bool>
-          </property>
-          <property name="checked">
-           <bool>false</bool>
-          </property>
-          <layout class="QHBoxLayout" name="horizontalLayout_4">
-           <item>
-            <layout class="QHBoxLayout" name="horizontalLayout_2">
-             <item>
-              <widget class="QLabel" name="label_2">
-               <property name="styleSheet">
-                <string notr="true">#label_2:enabled{
+                  </property>
+                  <property name="title">
+                   <string>Follow Task</string>
+                  </property>
+                  <property name="checkable">
+                   <bool>true</bool>
+                  </property>
+                  <property name="checked">
+                   <bool>false</bool>
+                  </property>
+                  <layout class="QHBoxLayout" name="horizontalLayout_4">
+                   <item>
+                    <layout class="QHBoxLayout" name="horizontalLayout_2">
+                     <item>
+                      <widget class="QLabel" name="label_2">
+                       <property name="styleSheet">
+                        <string notr="true">#label_2:enabled{
 background-color: rgb(204, 229, 255);
 }</string>
-               </property>
-               <property name="text">
-                <string>Follow</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QComboBox" name="comboBox_follow">
-               <item>
-                <property name="text">
-                 <string>followers</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>following</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>hashtags</string>
-                </property>
-               </item>
-              </widget>
-             </item>
-             <item>
-              <widget class="QLabel" name="label_follow">
-               <property name="styleSheet">
-                <string notr="true">#label_follow:enabled{
+                       </property>
+                       <property name="text">
+                        <string>Follow</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QComboBox" name="comboBox_follow">
+                       <item>
+                        <property name="text">
+                         <string>followers</string>
+                        </property>
+                       </item>
+                       <item>
+                        <property name="text">
+                         <string>following</string>
+                        </property>
+                       </item>
+                       <item>
+                        <property name="text">
+                         <string>hashtags</string>
+                        </property>
+                       </item>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QLabel" name="label_follow">
+                       <property name="styleSheet">
+                        <string notr="true">#label_follow:enabled{
 background-color: rgb(204, 229, 255);
 }</string>
-               </property>
-               <property name="text">
-                <string>of username</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QLineEdit" name="lineEdit_follow">
-               <property name="styleSheet">
-                <string notr="true">#lineEdit_follow{
+                       </property>
+                       <property name="text">
+                        <string>of username</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QLineEdit" name="lineEdit_follow">
+                       <property name="styleSheet">
+                        <string notr="true">#lineEdit_follow{
 border-radius: 4px;
 border: 1px solid grey;
 }</string>
-               </property>
-               <property name="placeholderText">
-                <string>username1,username2,username3</string>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </item>
-          </layout>
-         </widget>
-        </item>
-        <item>
-         <widget class="QGroupBox" name="groupBox_unfollow">
-          <property name="styleSheet">
-           <string notr="true">#groupBox_unfollow:checked{
+                       </property>
+                       <property name="placeholderText">
+                        <string>username1,username2,username3</string>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
+                   </item>
+                  </layout>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QGroupBox" name="groupBox_unfollow">
+                  <property name="styleSheet">
+                   <string notr="true">#groupBox_unfollow:checked{
 background-color: rgb(204, 229, 255);
 }</string>
-          </property>
-          <property name="title">
-           <string>Unfollow task</string>
-          </property>
-          <property name="checkable">
-           <bool>true</bool>
-          </property>
-          <property name="checked">
-           <bool>false</bool>
-          </property>
-          <layout class="QHBoxLayout" name="horizontalLayout_3">
-           <item>
-            <widget class="QRadioButton" name="radioButton_nonfollowers">
-             <property name="styleSheet">
-              <string notr="true">#radioButton_nonfollowers{
+                  </property>
+                  <property name="title">
+                   <string>Unfollow task</string>
+                  </property>
+                  <property name="checkable">
+                   <bool>true</bool>
+                  </property>
+                  <property name="checked">
+                   <bool>false</bool>
+                  </property>
+                  <layout class="QHBoxLayout" name="horizontalLayout_3">
+                   <item>
+                    <widget class="QRadioButton" name="radioButton_nonfollowers">
+                     <property name="styleSheet">
+                      <string notr="true">#radioButton_nonfollowers{
 border-radius: 4px;
 
 }</string>
-             </property>
-             <property name="text">
-              <string>Unfollow Non Followers</string>
-             </property>
-             <property name="checked">
-              <bool>true</bool>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QRadioButton" name="radioButton_unfollowAll">
-             <property name="styleSheet">
-              <string notr="true">#radioButton_unfollowAll{
+                     </property>
+                     <property name="text">
+                      <string>Unfollow Non Followers</string>
+                     </property>
+                     <property name="checked">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QRadioButton" name="radioButton_unfollowAll">
+                     <property name="styleSheet">
+                      <string notr="true">#radioButton_unfollowAll{
 border-radius: 4px;
 }</string>
-             </property>
-             <property name="text">
-              <string>Unfollow All</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QRadioButton" name="radioButton_restoreFollowing">
-             <property name="styleSheet">
-              <string notr="true">#radioButton_restoreFollowing{
+                     </property>
+                     <property name="text">
+                      <string>Unfollow All</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QRadioButton" name="radioButton_restoreFollowing">
+                     <property name="styleSheet">
+                      <string notr="true">#radioButton_restoreFollowing{
 border-radius: 4px;
 }</string>
-             </property>
-             <property name="text">
-              <string>Restore Following</string>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </widget>
-        </item>
-        <item>
-         <widget class="QGroupBox" name="groupBox_like">
-          <property name="styleSheet">
-           <string notr="true">#groupBox_like:checked{
+                     </property>
+                     <property name="text">
+                      <string>Restore Following</string>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QGroupBox" name="groupBox_like">
+                  <property name="styleSheet">
+                   <string notr="true">#groupBox_like:checked{
 background-color: rgb(204, 229, 255);
 }</string>
-          </property>
-          <property name="title">
-           <string>Like Task</string>
-          </property>
-          <property name="checkable">
-           <bool>true</bool>
-          </property>
-          <property name="checked">
-           <bool>false</bool>
-          </property>
-          <layout class="QHBoxLayout" name="horizontalLayout_7">
-           <item>
-            <layout class="QHBoxLayout" name="horizontalLayout_8">
-             <item>
-              <widget class="QLabel" name="label_10">
-               <property name="autoFillBackground">
-                <bool>false</bool>
-               </property>
-               <property name="styleSheet">
-                <string notr="true">#label_10:enabled{
+                  </property>
+                  <property name="title">
+                   <string>Like Task</string>
+                  </property>
+                  <property name="checkable">
+                   <bool>true</bool>
+                  </property>
+                  <property name="checked">
+                   <bool>false</bool>
+                  </property>
+                  <layout class="QHBoxLayout" name="horizontalLayout_7">
+                   <item>
+                    <layout class="QHBoxLayout" name="horizontalLayout_8">
+                     <item>
+                      <widget class="QLabel" name="label_10">
+                       <property name="autoFillBackground">
+                        <bool>false</bool>
+                       </property>
+                       <property name="styleSheet">
+                        <string notr="true">#label_10:enabled{
 background-color: rgb(204, 229, 255);
 }</string>
-               </property>
-               <property name="text">
-                <string>Like media from</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QComboBox" name="comboBox_like">
-               <item>
-                <property name="text">
-                 <string>followers</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>following</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>hashtags</string>
-                </property>
-               </item>
-              </widget>
-             </item>
-             <item>
-              <widget class="QLabel" name="label_like">
-               <property name="styleSheet">
-                <string notr="true">#label_like:enabled{
+                       </property>
+                       <property name="text">
+                        <string>Like media from</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QComboBox" name="comboBox_like">
+                       <item>
+                        <property name="text">
+                         <string>followers</string>
+                        </property>
+                       </item>
+                       <item>
+                        <property name="text">
+                         <string>following</string>
+                        </property>
+                       </item>
+                       <item>
+                        <property name="text">
+                         <string>hashtags</string>
+                        </property>
+                       </item>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QLabel" name="label_like">
+                       <property name="styleSheet">
+                        <string notr="true">#label_like:enabled{
 background-color: rgb(204, 229, 255);
 }</string>
-               </property>
-               <property name="text">
-                <string>of username</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QLineEdit" name="lineEdit_like">
-               <property name="styleSheet">
-                <string notr="true">#lineEdit_like{
+                       </property>
+                       <property name="text">
+                        <string>of username</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QLineEdit" name="lineEdit_like">
+                       <property name="styleSheet">
+                        <string notr="true">#lineEdit_like{
 border-radius: 4px;
 border: 1px solid grey;
 }</string>
-               </property>
-               <property name="placeholderText">
-                <string>username1,username2,username3</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QLabel" name="label_11">
-               <property name="styleSheet">
-                <string notr="true">#label_11:enabled{
+                       </property>
+                       <property name="placeholderText">
+                        <string>username1,username2,username3</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QLabel" name="label_11">
+                       <property name="styleSheet">
+                        <string notr="true">#label_11:enabled{
 background-color: rgb(204, 229, 255);
 }</string>
-               </property>
-               <property name="text">
-                <string>Amount media=</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QSpinBox" name="spinBox_nlikes">
-               <property name="maximum">
-                <number>100</number>
-               </property>
-               <property name="value">
-                <number>3</number>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </item>
-          </layout>
-         </widget>
-        </item>
-        <item>
-         <widget class="QGroupBox" name="groupBox_comment">
-          <property name="styleSheet">
-           <string notr="true">#groupBox_comment:checked{
+                       </property>
+                       <property name="text">
+                        <string>Amount media=</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QSpinBox" name="spinBox_nlikes">
+                       <property name="maximum">
+                        <number>100</number>
+                       </property>
+                       <property name="value">
+                        <number>3</number>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
+                   </item>
+                  </layout>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QGroupBox" name="groupBox_comment">
+                  <property name="styleSheet">
+                   <string notr="true">#groupBox_comment:checked{
 background-color: rgb(204, 229, 255);
 }</string>
-          </property>
-          <property name="title">
-           <string>Comment Task</string>
-          </property>
-          <property name="checkable">
-           <bool>true</bool>
-          </property>
-          <property name="checked">
-           <bool>false</bool>
-          </property>
-          <layout class="QHBoxLayout" name="horizontalLayout_12">
-           <item>
-            <layout class="QVBoxLayout" name="verticalLayout_2">
-             <item>
-              <layout class="QHBoxLayout" name="horizontalLayout_9">
-               <item>
-                <widget class="QLabel" name="label_12">
-                 <property name="styleSheet">
-                  <string notr="true">#label_12:enabled{
-background-color: rgb(204, 229, 255);
-}</string>
-                 </property>
-                 <property name="text">
-                  <string>Comment media from</string>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QComboBox" name="comboBox_comment">
-                 <item>
-                  <property name="text">
-                   <string>my timeline</string>
                   </property>
-                 </item>
-                 <item>
-                  <property name="text">
-                   <string>hashtags</string>
+                  <property name="title">
+                   <string>Comment Task</string>
                   </property>
-                 </item>
-                </widget>
-               </item>
-               <item>
-                <widget class="QLabel" name="label_comment">
-                 <property name="styleSheet">
-                  <string notr="true">#label_comment:enabled{
+                  <property name="checkable">
+                   <bool>true</bool>
+                  </property>
+                  <property name="checked">
+                   <bool>false</bool>
+                  </property>
+                  <layout class="QHBoxLayout" name="horizontalLayout_12">
+                   <item>
+                    <layout class="QVBoxLayout" name="verticalLayout_2">
+                     <item>
+                      <layout class="QHBoxLayout" name="horizontalLayout_9">
+                       <item>
+                        <widget class="QLabel" name="label_12">
+                         <property name="styleSheet">
+                          <string notr="true">#label_12:enabled{
+background-color: rgb(204, 229, 255);
+}</string>
+                         </property>
+                         <property name="text">
+                          <string>Comment media from</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QComboBox" name="comboBox_comment">
+                         <item>
+                          <property name="text">
+                           <string>my timeline</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>hashtags</string>
+                          </property>
+                         </item>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QLabel" name="label_comment">
+                         <property name="styleSheet">
+                          <string notr="true">#label_comment:enabled{
 background-color: rgb(204, 229, 255);
 }
 </string>
-                 </property>
-                 <property name="text">
-                  <string>of username</string>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QLineEdit" name="lineEdit_comment">
-                 <property name="styleSheet">
-                  <string notr="true">#lineEdit_comment{
+                         </property>
+                         <property name="text">
+                          <string>of username</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QLineEdit" name="lineEdit_comment">
+                         <property name="styleSheet">
+                          <string notr="true">#lineEdit_comment{
 border-radius: 4px;
 border: 1px solid grey;
 }</string>
-                 </property>
-                 <property name="placeholderText">
-                  <string>my username</string>
-                 </property>
-                </widget>
-               </item>
-              </layout>
-             </item>
-             <item>
-              <layout class="QHBoxLayout" name="horizontalLayout_10">
-               <item>
-                <widget class="QLabel" name="label_14">
-                 <property name="styleSheet">
-                  <string notr="true">#label_14:enabled{
+                         </property>
+                         <property name="placeholderText">
+                          <string>my username</string>
+                         </property>
+                        </widget>
+                       </item>
+                      </layout>
+                     </item>
+                     <item>
+                      <layout class="QHBoxLayout" name="horizontalLayout_10">
+                       <item>
+                        <widget class="QLabel" name="label_14">
+                         <property name="styleSheet">
+                          <string notr="true">#label_14:enabled{
 background-color: rgb(204, 229, 255);
 }</string>
-                 </property>
-                 <property name="text">
-                  <string>Add Comments</string>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QLineEdit" name="lineEdit_commentText">
-                 <property name="styleSheet">
-                  <string notr="true">#lineEdit_commentText{
+                         </property>
+                         <property name="text">
+                          <string>Add Comments</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QLineEdit" name="lineEdit_commentText">
+                         <property name="styleSheet">
+                          <string notr="true">#lineEdit_commentText{
 border-radius: 4px;
 border: 1px solid grey;
 }</string>
-                 </property>
-                 <property name="placeholderText">
-                  <string>insert your comment</string>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QPushButton" name="pushButton_addComment">
-                 <property name="styleSheet">
-                  <string notr="true">#pushButton_addComment {
+                         </property>
+                         <property name="placeholderText">
+                          <string>insert your comment</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QPushButton" name="pushButton_addComment">
+                         <property name="styleSheet">
+                          <string notr="true">#pushButton_addComment {
   border: none;
 border-radius: 4px;
   color: white;
@@ -849,16 +873,16 @@ border-radius: 4px;
 	border: 2px solid grey;
 }
 </string>
-                 </property>
-                 <property name="text">
-                  <string>add</string>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QPushButton" name="pushButton_delComment">
-                 <property name="styleSheet">
-                  <string notr="true">#pushButton_delComment {
+                         </property>
+                         <property name="text">
+                          <string>add</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QPushButton" name="pushButton_delComment">
+                         <property name="styleSheet">
+                          <string notr="true">#pushButton_delComment {
   border: none;
 border-radius: 4px;
   color: white;
@@ -888,171 +912,152 @@ border-radius: 4px;
 	border: 2px solid grey;
 }
 </string>
-                 </property>
-                 <property name="text">
-                  <string>delete</string>
-                 </property>
-                </widget>
-               </item>
-              </layout>
-             </item>
-             <item>
-              <widget class="QListWidget" name="listWidget">
-               <property name="frameShape">
-                <enum>QFrame::StyledPanel</enum>
-               </property>
-               <property name="frameShadow">
-                <enum>QFrame::Plain</enum>
-               </property>
-               <property name="movement">
-                <enum>QListView::Static</enum>
-               </property>
-               <property name="sortingEnabled">
-                <bool>true</bool>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </item>
-          </layout>
-         </widget>
-        </item>
-        <item>
-         <widget class="QGroupBox" name="groupBox_combo">
-          <property name="styleSheet">
-           <string notr="true">#groupBox_combo:checked{
+                         </property>
+                         <property name="text">
+                          <string>delete</string>
+                         </property>
+                        </widget>
+                       </item>
+                      </layout>
+                     </item>
+                     <item>
+                      <widget class="QListWidget" name="listWidget">
+                       <property name="frameShape">
+                        <enum>QFrame::StyledPanel</enum>
+                       </property>
+                       <property name="frameShadow">
+                        <enum>QFrame::Plain</enum>
+                       </property>
+                       <property name="movement">
+                        <enum>QListView::Static</enum>
+                       </property>
+                       <property name="sortingEnabled">
+                        <bool>true</bool>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
+                   </item>
+                  </layout>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QGroupBox" name="groupBox_combo">
+                  <property name="styleSheet">
+                   <string notr="true">#groupBox_combo:checked{
 background-color: rgb(204, 229, 255);
 }</string>
-          </property>
-          <property name="title">
-           <string>Combo Task (follow, like, unfollow)</string>
-          </property>
-          <property name="checkable">
-           <bool>true</bool>
-          </property>
-          <property name="checked">
-           <bool>false</bool>
-          </property>
-          <layout class="QHBoxLayout" name="horizontalLayout_13">
-           <item>
-            <layout class="QHBoxLayout" name="horizontalLayout_14">
-             <item>
-              <widget class="QLabel" name="label_13">
-               <property name="styleSheet">
-                <string notr="true">#label_13:enabled{
+                  </property>
+                  <property name="title">
+                   <string>Combo Task (follow, like, unfollow)</string>
+                  </property>
+                  <property name="checkable">
+                   <bool>true</bool>
+                  </property>
+                  <property name="checked">
+                   <bool>false</bool>
+                  </property>
+                  <layout class="QHBoxLayout" name="horizontalLayout_13">
+                   <item>
+                    <layout class="QHBoxLayout" name="horizontalLayout_14">
+                     <item>
+                      <widget class="QLabel" name="label_13">
+                       <property name="styleSheet">
+                        <string notr="true">#label_13:enabled{
 background-color: rgb(204, 229, 255);
 }</string>
-               </property>
-               <property name="text">
-                <string>follow and like</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QSpinBox" name="spinBox_nlikes_combo">
-               <property name="maximum">
-                <number>100</number>
-               </property>
-               <property name="value">
-                <number>1</number>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QLabel" name="label_15">
-               <property name="styleSheet">
-                <string notr="true">#label_15:enabled{
+                       </property>
+                       <property name="text">
+                        <string>follow and like</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QSpinBox" name="spinBox_nlikes_combo">
+                       <property name="maximum">
+                        <number>100</number>
+                       </property>
+                       <property name="value">
+                        <number>1</number>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QLabel" name="label_15">
+                       <property name="styleSheet">
+                        <string notr="true">#label_15:enabled{
 background-color: rgb(204, 229, 255);
 }</string>
-               </property>
-               <property name="text">
-                <string>media of</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QComboBox" name="comboBox_combo">
-               <item>
-                <property name="text">
-                 <string>followers</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>following</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>likers</string>
-                </property>
-               </item>
-              </widget>
-             </item>
-             <item>
-              <widget class="QLabel" name="label_like_2">
-               <property name="styleSheet">
-                <string notr="true">#label_like_2:enabled{
+                       </property>
+                       <property name="text">
+                        <string>media of</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QComboBox" name="comboBox_combo">
+                       <item>
+                        <property name="text">
+                         <string>followers</string>
+                        </property>
+                       </item>
+                       <item>
+                        <property name="text">
+                         <string>following</string>
+                        </property>
+                       </item>
+                       <item>
+                        <property name="text">
+                         <string>likers</string>
+                        </property>
+                       </item>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QLabel" name="label_like_2">
+                       <property name="styleSheet">
+                        <string notr="true">#label_like_2:enabled{
 background-color: rgb(204, 229, 255);
 }</string>
-               </property>
-               <property name="text">
-                <string>of username</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QLineEdit" name="lineEdit_combo">
-               <property name="styleSheet">
-                <string notr="true">#lineEdit_combo{
+                       </property>
+                       <property name="text">
+                        <string>of username</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QLineEdit" name="lineEdit_combo">
+                       <property name="styleSheet">
+                        <string notr="true">#lineEdit_combo{
 border-radius: 4px;
 border: 1px solid grey;
 }</string>
-               </property>
-               <property name="placeholderText">
-                <string>only one username</string>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </item>
-          </layout>
-         </widget>
-        </item>
-       </layout>
-      </item>
-      <item>
-       <widget class="QTabWidget" name="tabWidget">
-        <property name="tabPosition">
-         <enum>QTabWidget::West</enum>
-        </property>
-        <property name="tabShape">
-         <enum>QTabWidget::Rounded</enum>
-        </property>
-        <property name="currentIndex">
-         <number>0</number>
-        </property>
-        <widget class="QWidget" name="tab_home">
-         <attribute name="title">
-          <string>Home</string>
-         </attribute>
-         <layout class="QVBoxLayout" name="verticalLayout_14">
-          <item>
-           <widget class="QScrollArea" name="scrollArea">
-            <property name="widgetResizable">
-             <bool>true</bool>
-            </property>
-            <widget class="QWidget" name="scrollAreaWidgetContents_2">
-             <property name="geometry">
-              <rect>
-               <x>0</x>
-               <y>0</y>
-               <width>203</width>
-               <height>728</height>
-              </rect>
-             </property>
+                       </property>
+                       <property name="placeholderText">
+                        <string>only one username</string>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
+                   </item>
+                  </layout>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+             </layout>
             </widget>
            </widget>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QWidget" name="tab_3">
+         <attribute name="title">
+          <string>Log</string>
+         </attribute>
+         <layout class="QHBoxLayout" name="horizontalLayout_6">
+          <item>
+           <widget class="QTextEdit" name="textEdit"/>
           </item>
          </layout>
         </widget>
@@ -1177,16 +1182,6 @@ border-radius: 4px;
           </item>
          </layout>
         </widget>
-        <widget class="QWidget" name="tab_3">
-         <attribute name="title">
-          <string>Log</string>
-         </attribute>
-         <layout class="QHBoxLayout" name="horizontalLayout_6">
-          <item>
-           <widget class="QTextEdit" name="textEdit"/>
-          </item>
-         </layout>
-        </widget>
        </widget>
       </item>
      </layout>
@@ -1206,22 +1201,5 @@ border-radius: 4px;
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
  <resources/>
- <connections>
-  <connection>
-   <sender>groupBox_combo</sender>
-   <signal>clicked(bool)</signal>
-   <receiver>groupBox_unfollow</receiver>
-   <slot>setChecked(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>63</x>
-     <y>836</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>82</x>
-     <y>446</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
+ <connections/>
 </ui>
