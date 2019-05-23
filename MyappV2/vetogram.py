@@ -33,8 +33,8 @@ from ui import MainWindow
 sys.path.append(os.path.join(sys.path[0], '../'))
 from instabot import Bot
 
-path = os.path.expanduser("~\Testing\\")
-package = 0  # 0=free 1=purchased
+path = os.path.expanduser("~/Testing/")
+package = 0  # 0=free 1=purchased todo
 
 
 # SAVE AND RESTORE LAST USER INPUT
@@ -107,12 +107,13 @@ class MainWindow_class(QtWidgets.QMainWindow):
         self.checkBox_no_profilePic.clicked.connect(self.coming_soon)
         self.checkBox_business.clicked.connect(self.coming_soon)
         self.checkBox_verified.clicked.connect(self.coming_soon)
+        self.pushButton_stop.clicked.connect(self.logout)
 
         #   TESTING
         self.button_testing.clicked.connect(self.click_testing)
         # self.pushButton.clicked.connect(self.save_following)
         # self.pushButton.clicked.connect(self.enable_tab)
-        # self.pushButton_stop.clicked.connect(self.plot_graph)
+
 
         #  SHOW OUTPUT IN QTextEdit
         stdout = OutputWrapper(self, True)
@@ -173,7 +174,7 @@ class MainWindow_class(QtWidgets.QMainWindow):
 
     def return_base_path(self):
         # C:\Users\khair\Testing\vicode.co\
-        base_path = path + self.username() + "\\"
+        base_path = path + self.username() + "/"
         return base_path
 
     def username(self):
@@ -230,6 +231,8 @@ class MainWindow_class(QtWidgets.QMainWindow):
 
     def login_instagram(self):
         QtCore.QCoreApplication.processEvents()
+        self.tabWidget.setTabEnabled(0, False) #disable tab home
+        self.pushButton_run.setEnabled(False) #disable start button
         self.create_path()
         self.setting()
 
@@ -243,9 +246,18 @@ class MainWindow_class(QtWidgets.QMainWindow):
         else:
             QtWidgets.QMessageBox.warning(self, "Ooopps", "wrong username or password")
 
+    def logout(self):
+        try:
+            self.pushButton_run.setEnabled(True)
+            bot.logout()
+        except:
+            print("logout error")
+
+
     # TESTING
     def click_testing(self):
-        self.workThread.start()
+        self.tabWidget.setTabEnabled(1, False)
+        self.pushButton_run.setEnabled(False)
 
     def enable_tab(self):
         self.tabWidget.setTabEnabled(1, True)

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1206</width>
-    <height>842</height>
+    <width>1193</width>
+    <height>874</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -18,6 +18,9 @@
   </property>
   <property name="styleSheet">
    <string notr="true">background-color: rgb(255, 255, 255);
+font: 10pt &quot;Arial&quot;;
+
+
 </string>
   </property>
   <widget class="QWidget" name="centralwidget">
@@ -35,7 +38,26 @@
        </widget>
       </item>
       <item>
+       <spacer name="horizontalSpacer">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
        <widget class="QLineEdit" name="lineEdit_username">
+        <property name="styleSheet">
+         <string notr="true">#lineEdit_username{
+border-radius: 4px;
+border: 1px solid grey;
+}</string>
+        </property>
         <property name="placeholderText">
          <string>username</string>
         </property>
@@ -43,6 +65,12 @@
       </item>
       <item>
        <widget class="QLineEdit" name="lineEdit_password">
+        <property name="styleSheet">
+         <string notr="true">#lineEdit_password{
+border-radius: 4px;
+border: 1px solid grey;
+}</string>
+        </property>
         <property name="inputMethodHints">
          <set>Qt::ImhHiddenText|Qt::ImhNoAutoUppercase|Qt::ImhNoPredictiveText|Qt::ImhSensitiveData</set>
         </property>
@@ -56,15 +84,104 @@
       </item>
       <item>
        <widget class="QPushButton" name="pushButton_run">
+        <property name="styleSheet">
+         <string notr="true">#pushButton_run {
+  border: none;
+border-radius: 4px;
+  color: white;
+  padding: 2px 16px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  -webkit-transition-duration: 0.4s; /* Safari */
+  transition-duration: 0.4s;
+  cursor: pointer;
+}
+
+#pushButton_run {
+  background-color: white; 
+  color: #4CAF50; 
+  border: 2px solid #4CAF50;
+}
+
+#pushButton_run:hover {
+  background-color: #4CAF50;
+  color: white;
+}
+
+#pushButton_run:disabled {
+  background-color: grey;
+  color: white;
+	border: 2px solid grey;
+}
+</string>
+        </property>
         <property name="text">
-         <string>Run</string>
+         <string>Start</string>
+        </property>
+        <property name="default">
+         <bool>false</bool>
+        </property>
+        <property name="flat">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="pushButton_stop">
+        <property name="autoFillBackground">
+         <bool>false</bool>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">#pushButton_stop {
+  border: none;
+border-radius: 4px;
+  color: white;
+  padding: 2px 16px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  transition-duration: 0.4s;
+  cursor: pointer;
+}
+
+#pushButton_stop {
+  background-color: white; 
+  color: red; 
+  border: 2px solid red;
+}
+
+#pushButton_stop:hover {
+  background-color: red;
+  color: white;
+}
+
+#pushButton_stop:disabled {
+  background-color: grey;
+  color: white;
+	border: 2px solid grey;
+}
+</string>
+        </property>
+        <property name="text">
+         <string>Stop</string>
         </property>
        </widget>
       </item>
       <item>
        <widget class="QPushButton" name="button_testing">
+        <property name="styleSheet">
+         <string notr="true">text: balik</string>
+        </property>
         <property name="text">
          <string>testing</string>
+        </property>
+        <property name="checkable">
+         <bool>false</bool>
         </property>
        </widget>
       </item>
@@ -85,6 +202,10 @@
          <layout class="QHBoxLayout" name="horizontalLayout_16">
           <item>
            <widget class="QGroupBox" name="groupBox_4">
+            <property name="styleSheet">
+             <string notr="true">background-color: rgb(209, 236, 241);
+</string>
+            </property>
             <property name="title">
              <string>Limit Setting Per Day</string>
             </property>
@@ -141,6 +262,9 @@
                 <layout class="QVBoxLayout" name="verticalLayout">
                  <item>
                   <widget class="QSpinBox" name="spinBox_follow">
+                   <property name="styleSheet">
+                    <string notr="true"/>
+                   </property>
                    <property name="readOnly">
                     <bool>true</bool>
                    </property>
@@ -290,6 +414,9 @@
           </item>
           <item>
            <widget class="QGroupBox" name="groupBox">
+            <property name="styleSheet">
+             <string notr="true">background-color: rgb(209, 236, 241);</string>
+            </property>
             <property name="title">
              <string>Filter Account</string>
             </property>
@@ -344,6 +471,11 @@
         </item>
         <item>
          <widget class="QGroupBox" name="groupBox_follow">
+          <property name="styleSheet">
+           <string notr="true">#groupBox_follow:checked{
+background-color: rgb(204, 229, 255);
+}</string>
+          </property>
           <property name="title">
            <string>Follow Task</string>
           </property>
@@ -358,6 +490,11 @@
             <layout class="QHBoxLayout" name="horizontalLayout_2">
              <item>
               <widget class="QLabel" name="label_2">
+               <property name="styleSheet">
+                <string notr="true">#label_2:enabled{
+background-color: rgb(204, 229, 255);
+}</string>
+               </property>
                <property name="text">
                 <string>Follow</string>
                </property>
@@ -384,6 +521,11 @@
              </item>
              <item>
               <widget class="QLabel" name="label_follow">
+               <property name="styleSheet">
+                <string notr="true">#label_follow:enabled{
+background-color: rgb(204, 229, 255);
+}</string>
+               </property>
                <property name="text">
                 <string>of username</string>
                </property>
@@ -391,6 +533,12 @@
              </item>
              <item>
               <widget class="QLineEdit" name="lineEdit_follow">
+               <property name="styleSheet">
+                <string notr="true">#lineEdit_follow{
+border-radius: 4px;
+border: 1px solid grey;
+}</string>
+               </property>
                <property name="placeholderText">
                 <string>username1,username2,username3</string>
                </property>
@@ -403,6 +551,11 @@
         </item>
         <item>
          <widget class="QGroupBox" name="groupBox_unfollow">
+          <property name="styleSheet">
+           <string notr="true">#groupBox_unfollow:checked{
+background-color: rgb(204, 229, 255);
+}</string>
+          </property>
           <property name="title">
            <string>Unfollow task</string>
           </property>
@@ -415,6 +568,12 @@
           <layout class="QHBoxLayout" name="horizontalLayout_3">
            <item>
             <widget class="QRadioButton" name="radioButton_nonfollowers">
+             <property name="styleSheet">
+              <string notr="true">#radioButton_nonfollowers{
+border-radius: 4px;
+
+}</string>
+             </property>
              <property name="text">
               <string>Unfollow Non Followers</string>
              </property>
@@ -425,6 +584,11 @@
            </item>
            <item>
             <widget class="QRadioButton" name="radioButton_unfollowAll">
+             <property name="styleSheet">
+              <string notr="true">#radioButton_unfollowAll{
+border-radius: 4px;
+}</string>
+             </property>
              <property name="text">
               <string>Unfollow All</string>
              </property>
@@ -432,6 +596,11 @@
            </item>
            <item>
             <widget class="QRadioButton" name="radioButton_restoreFollowing">
+             <property name="styleSheet">
+              <string notr="true">#radioButton_restoreFollowing{
+border-radius: 4px;
+}</string>
+             </property>
              <property name="text">
               <string>Restore Following</string>
              </property>
@@ -442,6 +611,11 @@
         </item>
         <item>
          <widget class="QGroupBox" name="groupBox_like">
+          <property name="styleSheet">
+           <string notr="true">#groupBox_like:checked{
+background-color: rgb(204, 229, 255);
+}</string>
+          </property>
           <property name="title">
            <string>Like Task</string>
           </property>
@@ -456,6 +630,14 @@
             <layout class="QHBoxLayout" name="horizontalLayout_8">
              <item>
               <widget class="QLabel" name="label_10">
+               <property name="autoFillBackground">
+                <bool>false</bool>
+               </property>
+               <property name="styleSheet">
+                <string notr="true">#label_10:enabled{
+background-color: rgb(204, 229, 255);
+}</string>
+               </property>
                <property name="text">
                 <string>Like media from</string>
                </property>
@@ -482,6 +664,11 @@
              </item>
              <item>
               <widget class="QLabel" name="label_like">
+               <property name="styleSheet">
+                <string notr="true">#label_like:enabled{
+background-color: rgb(204, 229, 255);
+}</string>
+               </property>
                <property name="text">
                 <string>of username</string>
                </property>
@@ -489,6 +676,12 @@
              </item>
              <item>
               <widget class="QLineEdit" name="lineEdit_like">
+               <property name="styleSheet">
+                <string notr="true">#lineEdit_like{
+border-radius: 4px;
+border: 1px solid grey;
+}</string>
+               </property>
                <property name="placeholderText">
                 <string>username1,username2,username3</string>
                </property>
@@ -496,6 +689,11 @@
              </item>
              <item>
               <widget class="QLabel" name="label_11">
+               <property name="styleSheet">
+                <string notr="true">#label_11:enabled{
+background-color: rgb(204, 229, 255);
+}</string>
+               </property>
                <property name="text">
                 <string>Amount media=</string>
                </property>
@@ -518,6 +716,11 @@
         </item>
         <item>
          <widget class="QGroupBox" name="groupBox_comment">
+          <property name="styleSheet">
+           <string notr="true">#groupBox_comment:checked{
+background-color: rgb(204, 229, 255);
+}</string>
+          </property>
           <property name="title">
            <string>Comment Task</string>
           </property>
@@ -534,6 +737,11 @@
               <layout class="QHBoxLayout" name="horizontalLayout_9">
                <item>
                 <widget class="QLabel" name="label_12">
+                 <property name="styleSheet">
+                  <string notr="true">#label_12:enabled{
+background-color: rgb(204, 229, 255);
+}</string>
+                 </property>
                  <property name="text">
                   <string>Comment media from</string>
                  </property>
@@ -555,6 +763,12 @@
                </item>
                <item>
                 <widget class="QLabel" name="label_comment">
+                 <property name="styleSheet">
+                  <string notr="true">#label_comment:enabled{
+background-color: rgb(204, 229, 255);
+}
+</string>
+                 </property>
                  <property name="text">
                   <string>of username</string>
                  </property>
@@ -562,6 +776,12 @@
                </item>
                <item>
                 <widget class="QLineEdit" name="lineEdit_comment">
+                 <property name="styleSheet">
+                  <string notr="true">#lineEdit_comment{
+border-radius: 4px;
+border: 1px solid grey;
+}</string>
+                 </property>
                  <property name="placeholderText">
                   <string>my username</string>
                  </property>
@@ -573,6 +793,11 @@
               <layout class="QHBoxLayout" name="horizontalLayout_10">
                <item>
                 <widget class="QLabel" name="label_14">
+                 <property name="styleSheet">
+                  <string notr="true">#label_14:enabled{
+background-color: rgb(204, 229, 255);
+}</string>
+                 </property>
                  <property name="text">
                   <string>Add Comments</string>
                  </property>
@@ -580,6 +805,12 @@
                </item>
                <item>
                 <widget class="QLineEdit" name="lineEdit_commentText">
+                 <property name="styleSheet">
+                  <string notr="true">#lineEdit_commentText{
+border-radius: 4px;
+border: 1px solid grey;
+}</string>
+                 </property>
                  <property name="placeholderText">
                   <string>insert your comment</string>
                  </property>
@@ -587,6 +818,38 @@
                </item>
                <item>
                 <widget class="QPushButton" name="pushButton_addComment">
+                 <property name="styleSheet">
+                  <string notr="true">#pushButton_addComment {
+  border: none;
+border-radius: 4px;
+  color: white;
+  padding: 2px 16px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  transition-duration: 0.4s;
+  cursor: pointer;
+}
+
+#pushButton_addComment {
+  background-color: white; 
+  color: #4CAF50; 
+  border: 2px solid #4CAF50;
+}
+
+#pushButton_addComment:hover {
+  background-color: #4CAF50;
+  color: white;
+}
+
+#pushButton_addComment:disabled {
+  color: grey;
+	border: 2px solid grey;
+}
+</string>
+                 </property>
                  <property name="text">
                   <string>add</string>
                  </property>
@@ -594,6 +857,38 @@
                </item>
                <item>
                 <widget class="QPushButton" name="pushButton_delComment">
+                 <property name="styleSheet">
+                  <string notr="true">#pushButton_delComment {
+  border: none;
+border-radius: 4px;
+  color: white;
+  padding: 2px 16px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  transition-duration: 0.4s;
+  cursor: pointer;
+}
+
+#pushButton_delComment {
+  background-color: white; 
+  color: red; 
+  border: 2px solid red;
+}
+
+#pushButton_delComment:hover {
+  background-color: red;
+  color: white;
+}
+
+#pushButton_delComment:disabled {
+  color: grey;
+	border: 2px solid grey;
+}
+</string>
+                 </property>
                  <property name="text">
                   <string>delete</string>
                  </property>
@@ -624,6 +919,11 @@
         </item>
         <item>
          <widget class="QGroupBox" name="groupBox_combo">
+          <property name="styleSheet">
+           <string notr="true">#groupBox_combo:checked{
+background-color: rgb(204, 229, 255);
+}</string>
+          </property>
           <property name="title">
            <string>Combo Task (follow, like, unfollow)</string>
           </property>
@@ -638,6 +938,11 @@
             <layout class="QHBoxLayout" name="horizontalLayout_14">
              <item>
               <widget class="QLabel" name="label_13">
+               <property name="styleSheet">
+                <string notr="true">#label_13:enabled{
+background-color: rgb(204, 229, 255);
+}</string>
+               </property>
                <property name="text">
                 <string>follow and like</string>
                </property>
@@ -655,6 +960,11 @@
              </item>
              <item>
               <widget class="QLabel" name="label_15">
+               <property name="styleSheet">
+                <string notr="true">#label_15:enabled{
+background-color: rgb(204, 229, 255);
+}</string>
+               </property>
                <property name="text">
                 <string>media of</string>
                </property>
@@ -681,6 +991,11 @@
              </item>
              <item>
               <widget class="QLabel" name="label_like_2">
+               <property name="styleSheet">
+                <string notr="true">#label_like_2:enabled{
+background-color: rgb(204, 229, 255);
+}</string>
+               </property>
                <property name="text">
                 <string>of username</string>
                </property>
@@ -688,6 +1003,12 @@
              </item>
              <item>
               <widget class="QLineEdit" name="lineEdit_combo">
+               <property name="styleSheet">
+                <string notr="true">#lineEdit_combo{
+border-radius: 4px;
+border: 1px solid grey;
+}</string>
+               </property>
                <property name="placeholderText">
                 <string>only one username</string>
                </property>
@@ -709,13 +1030,31 @@
          <enum>QTabWidget::Rounded</enum>
         </property>
         <property name="currentIndex">
-         <number>1</number>
+         <number>0</number>
         </property>
         <widget class="QWidget" name="tab_home">
          <attribute name="title">
           <string>Home</string>
          </attribute>
-         <layout class="QVBoxLayout" name="verticalLayout_14"/>
+         <layout class="QVBoxLayout" name="verticalLayout_14">
+          <item>
+           <widget class="QScrollArea" name="scrollArea">
+            <property name="widgetResizable">
+             <bool>true</bool>
+            </property>
+            <widget class="QWidget" name="scrollAreaWidgetContents_2">
+             <property name="geometry">
+              <rect>
+               <x>0</x>
+               <y>0</y>
+               <width>203</width>
+               <height>728</height>
+              </rect>
+             </property>
+            </widget>
+           </widget>
+          </item>
+         </layout>
         </widget>
         <widget class="QWidget" name="tab_dashboard">
          <attribute name="title">
@@ -737,6 +1076,10 @@
                 </item>
                 <item>
                  <widget class="QLineEdit" name="lineEdit_followers">
+                  <property name="styleSheet">
+                   <string notr="true">border: 2px solid blue;
+border-radius: 4px;</string>
+                  </property>
                   <property name="text">
                    <string/>
                   </property>
@@ -758,6 +1101,10 @@
                 </item>
                 <item>
                  <widget class="QLineEdit" name="lineEdit_following">
+                  <property name="styleSheet">
+                   <string notr="true">border: 2px solid blue;
+border-radius: 4px;</string>
+                  </property>
                   <property name="text">
                    <string/>
                   </property>
@@ -791,15 +1138,36 @@
              <layout class="QHBoxLayout" name="horizontalLayout_11">
               <item>
                <widget class="QPushButton" name="pushButton_update_status">
+                <property name="styleSheet">
+                 <string notr="true">#pushButton_update_status {
+  border: none;
+border-radius: 4px;
+  color: white;
+  padding: 2px 16px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  transition-duration: 0.4s;
+  cursor: pointer;
+}
+
+#pushButton_update_status {
+  background-color: white; 
+  color: blue; 
+  border: 2px solid blue;
+}
+
+#pushButton_update_status:hover {
+  background-color: blue;
+  color: white;
+}
+
+</string>
+                </property>
                 <property name="text">
                  <string>Update Status</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QPushButton" name="pushButton_stop">
-                <property name="text">
-                 <string>Stop/Logout</string>
                 </property>
                </widget>
               </item>
@@ -830,8 +1198,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1206</width>
-     <height>26</height>
+     <width>1193</width>
+     <height>25</height>
     </rect>
    </property>
   </widget>
@@ -846,12 +1214,12 @@
    <slot>setChecked(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>60</x>
-     <y>762</y>
+     <x>63</x>
+     <y>836</y>
     </hint>
     <hint type="destinationlabel">
-     <x>79</x>
-     <y>370</y>
+     <x>82</x>
+     <y>446</y>
     </hint>
    </hints>
   </connection>
