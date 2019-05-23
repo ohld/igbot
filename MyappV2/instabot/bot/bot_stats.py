@@ -38,7 +38,7 @@ def save_user_stats(self, username, path=""):
     infodict = self.get_user_info(user_id, use_cache=False)
     if infodict:
         data_to_save = {
-            "date": str(datetime.date),
+            "date": str(datetime.date.today()),
             "followers": int(infodict["follower_count"]),
             "following": int(infodict["following_count"]),
             "medias": int(infodict["media_count"])
