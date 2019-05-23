@@ -34,7 +34,7 @@ sys.path.append(os.path.join(sys.path[0], '../'))
 from instabot import Bot
 
 path = os.path.expanduser("~/Testing/")
-package = 0  # 0=free 1=purchased todo
+package = 1  # 0=free 1=purchased todo
 
 
 # SAVE AND RESTORE LAST USER INPUT
@@ -241,6 +241,7 @@ class MainWindow_class(QtWidgets.QMainWindow):
         if bot.login(username=self.username(), password=password) == 1:
             # ALL TASK START HERE AFTER LOGIN
             self.csv_check()
+            self.ask_save_current_following()
             self.workThread.start()
 
         else:
@@ -248,6 +249,8 @@ class MainWindow_class(QtWidgets.QMainWindow):
 
     def logout(self):
         try:
+            self.workThread.terminate()
+            self.tabWidget.setTabEnabled(0, True)
             self.pushButton_run.setEnabled(True)
             bot.logout()
         except:
@@ -381,6 +384,17 @@ class MainWindow_class(QtWidgets.QMainWindow):
         with open(self.return_base_path() + "friends.txt", "w") as file:  # writing to the file
             for user_id in friends:
                 file.write(str(user_id) + "\n")
+
+    def ask_save_current_following(self):
+        reply = QtWidgets.QMessageBox.information(self, 'Dear user,', "Do you want to save your current following?",
+                                                  QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No,
+                                                  QtWidgets.QMessageBox.Yes)
+        if reply == QtWidgets.QMessageBox.Yes:
+            # IF "YES" DOWNLOAD AND EXECUTE FILE WITH PROGRESSBAR/ IMPORT PROGRESS.PY
+            self.save_following()
+        else:
+            # IF "NO" CLOSE MESSAGEBOX
+            pass
 
     # def open_license(self):
     #     self.license = License_class()
