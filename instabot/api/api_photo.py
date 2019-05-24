@@ -85,8 +85,11 @@ def configure_photo(self, upload_id, photo, caption=''):
     return self.send_request('media/configure/?', data)
 
 
-def upload_photo(self, photo, caption=None, upload_id=None, from_video=False,
-                 force_rezize=False, configure_photo_timeout=15):
+def upload_photo(self, photo, caption=None, upload_id=None, from_video=False, force_rezize=False, options={}):
+    options = dict({
+        'configure_timeout': 15,
+        'rename': True
+    }, **(options or {}))
     if upload_id is None:
         upload_id = str(int(time.time() * 1000))
     if not photo:
@@ -120,15 +123,17 @@ def upload_photo(self, photo, caption=None, upload_id=None, from_video=False,
     response = self.session.post(
         config.API_URL + "upload/photo/", data=m.to_string())
 
+    configure_timeout = options.get('configure_timeout')
     if response.status_code == 200:
         for attempt in range(4):
-            if configure_photo_timeout:
-                time.sleep(configure_photo_timeout)
+            if configure_timeout:
+                time.sleep(configure_timeout)
             if self.configure_photo(upload_id, photo, caption):
                 media = self.last_json.get('media')
                 self.expose()
-                from os import rename
-                rename(photo, "{}.REMOVE_ME".format(photo))
+                if options.get('rename'):
+                    from os import rename
+                    rename(photo, "{}.REMOVE_ME".format(photo))
                 return media
     return False
 

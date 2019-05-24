@@ -312,8 +312,8 @@ class API(object):
         })
         return self.send_request('qe/expose/', data)
 
-    def upload_photo(self, photo, caption=None, upload_id=None, from_video=False, configure_photo_timeout=15):
-        return upload_photo(self, photo, caption, upload_id, from_video, configure_photo_timeout)
+    def upload_photo(self, photo, caption=None, upload_id=None, from_video=False, options={}):
+        return upload_photo(self, photo, caption, upload_id, from_video, options)
 
     def download_photo(self, media_id, filename, media=False, folder='photos'):
         return download_photo(self, media_id, filename, media, folder)
@@ -330,14 +330,14 @@ class API(object):
     def configure_story(self, upload_id, photo):
         return configure_story(self, upload_id, photo)
 
-    def upload_video(self, video, caption=None, upload_id=None, thumbnail=None, configure_video_timeout=15):
-        return upload_video(self, video, caption, upload_id, thumbnail, configure_video_timeout)
+    def upload_video(self, video, caption=None, upload_id=None, thumbnail=None, options={}):
+        return upload_video(self, video, caption, upload_id, thumbnail, options)
 
     def download_video(self, media_id, filename, media=False, folder='video'):
         return download_video(self, media_id, filename, media, folder)
 
-    def configure_video(self, upload_id, video, thumbnail, width, height, duration, caption=''):
-        return configure_video(self, upload_id, video, thumbnail, width, height, duration, caption)
+    def configure_video(self, upload_id, video, thumbnail, width, height, duration, caption='', options={}):
+        return configure_video(self, upload_id, video, thumbnail, width, height, duration, caption, options={})
 
     def edit_media(self, media_id, captionText=''):
         data = self.json_data({'caption_text': captionText})

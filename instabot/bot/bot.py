@@ -527,13 +527,13 @@ class Bot(object):
     def download_photos(self, medias, folder='photos', save_description=False):
         return download_photos(self, medias, folder, save_description)
 
-    def upload_photo(self, photo, caption=None, upload_id=None, from_video=False):
-        return upload_photo(self, photo, caption, upload_id, from_video)
+    def upload_photo(self, photo, caption=None, upload_id=None, from_video=False, options={}):
+        return upload_photo(self, photo, caption, upload_id, from_video, options)
 
     # video
 
-    def upload_video(self, video, caption='', thumbnail=None):
-        return upload_video(self, video, caption, thumbnail)
+    def upload_video(self, video, caption='', thumbnail=None, options={}):
+        return upload_video(self, video, caption, thumbnail, options)
 
     def download_video(self, media_id, folder='videos', filename=None, save_description=False):
         return download_video(self, media_id, folder, filename, save_description)

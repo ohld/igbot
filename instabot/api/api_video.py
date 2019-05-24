@@ -70,7 +70,12 @@ def get_video_info(filename):
     return res
 
 
-def upload_video(self, video, caption=None, upload_id=None, thumbnail=None, configure_video_timeout=15):
+def upload_video(self, video, caption=None, upload_id=None, thumbnail=None, options={}):
+    options = dict({
+        'configure_timeout': 15,
+        'rename_thumbnail': True,
+        'rename': True
+    }, **(options or {}))
     if upload_id is None:
         upload_id = str(int(time.time() * 1000))
     video, thumbnail, width, height, duration = resize_video(video, thumbnail)
@@ -131,22 +136,27 @@ def upload_video(self, video, caption=None, upload_id=None, thumbnail=None, conf
             response = self.session.post(upload_url, data=video_data[start:start + length])
         self.session.headers = headers
 
+        configure_timeout = options.get('configure_timeout')
         if response.status_code == 200:
             for attempt in range(4):
-                if configure_video_timeout:
-                    time.sleep(configure_video_timeout)
-                if self.configure_video(upload_id, video, thumbnail, width, height, duration, caption):
+                if configure_timeout:
+                    time.sleep(configure_timeout)
+                if self.configure_video(upload_id, video, thumbnail, width, height, duration, caption, options=options):
                     media = self.last_json.get('media')
                     self.expose()
-                    from os import rename
-                    rename(video, "{}.REMOVE_ME".format(video))
+                    if options.get('rename'):
+                        from os import rename
+                        rename(video, "{}.REMOVE_ME".format(video))
                     return media
     return False
 
 
-def configure_video(self, upload_id, video, thumbnail, width, height, duration, caption=''):
+def configure_video(self, upload_id, video, thumbnail, width, height, duration, caption='', options={}):
     # clipInfo = get_video_info(video)
-    self.upload_photo(photo=thumbnail, caption=caption, upload_id=upload_id, from_video=True)
+    options = {
+        'rename': options.get('rename_thumbnail')
+    }
+    self.upload_photo(photo=thumbnail, caption=caption, upload_id=upload_id, from_video=True, options=options)
     data = self.json_data({
         'upload_id': upload_id,
         'source_type': 3,

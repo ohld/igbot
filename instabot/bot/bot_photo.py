@@ -4,9 +4,9 @@ from io import open
 from tqdm import tqdm
 
 
-def upload_photo(self, photo, caption=None, upload_id=None, from_video=False):
+def upload_photo(self, photo, caption=None, upload_id=None, from_video=False, options={}):
     self.small_delay()
-    result = self.api.upload_photo(photo, caption, upload_id, from_video)
+    result = self.api.upload_photo(photo, caption, upload_id, from_video, options=options)
     if not result:
         self.logger.info("Photo '{}' is not uploaded.".format(photo))
         return False
