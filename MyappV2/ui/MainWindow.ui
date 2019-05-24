@@ -26,7 +26,7 @@ font: 10pt &quot;Arial&quot;;
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout_11">
     <item>
-     <layout class="QHBoxLayout" name="horizontalLayout_17">
+     <layout class="QHBoxLayout" name="horizontalLayout_19">
       <item>
        <widget class="QLabel" name="label">
         <property name="styleSheet">
@@ -38,7 +38,7 @@ font: 10pt &quot;Arial&quot;;
        </widget>
       </item>
       <item>
-       <spacer name="horizontalSpacer">
+       <spacer name="horizontalSpacer_2">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>
@@ -49,38 +49,6 @@ font: 10pt &quot;Arial&quot;;
          </size>
         </property>
        </spacer>
-      </item>
-      <item>
-       <widget class="QLineEdit" name="lineEdit_username">
-        <property name="styleSheet">
-         <string notr="true">#lineEdit_username{
-border-radius: 4px;
-border: 1px solid grey;
-}</string>
-        </property>
-        <property name="placeholderText">
-         <string>username</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLineEdit" name="lineEdit_password">
-        <property name="styleSheet">
-         <string notr="true">#lineEdit_password{
-border-radius: 4px;
-border: 1px solid grey;
-}</string>
-        </property>
-        <property name="inputMethodHints">
-         <set>Qt::ImhHiddenText|Qt::ImhNoAutoUppercase|Qt::ImhNoPredictiveText|Qt::ImhSensitiveData</set>
-        </property>
-        <property name="echoMode">
-         <enum>QLineEdit::Password</enum>
-        </property>
-        <property name="placeholderText">
-         <string>password</string>
-        </property>
-       </widget>
       </item>
       <item>
        <widget class="QPushButton" name="pushButton_run">
@@ -216,10 +184,59 @@ border-radius: 4px;
                <x>0</x>
                <y>0</y>
                <width>1092</width>
-               <height>756</height>
+               <height>788</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_15">
+              <item>
+               <layout class="QHBoxLayout" name="horizontalLayout_17">
+                <item>
+                 <spacer name="horizontalSpacer">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+                <item>
+                 <widget class="QLineEdit" name="lineEdit_username">
+                  <property name="styleSheet">
+                   <string notr="true">#lineEdit_username{
+border-radius: 4px;
+border: 1px solid blue;
+}</string>
+                  </property>
+                  <property name="placeholderText">
+                   <string>username</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLineEdit" name="lineEdit_password">
+                  <property name="styleSheet">
+                   <string notr="true">#lineEdit_password{
+border-radius: 4px;
+border: 1px solid blue;
+}</string>
+                  </property>
+                  <property name="inputMethodHints">
+                   <set>Qt::ImhHiddenText|Qt::ImhNoAutoUppercase|Qt::ImhNoPredictiveText|Qt::ImhSensitiveData</set>
+                  </property>
+                  <property name="echoMode">
+                   <enum>QLineEdit::Password</enum>
+                  </property>
+                  <property name="placeholderText">
+                   <string>password</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
               <item>
                <layout class="QVBoxLayout" name="verticalLayout_10">
                 <item>
@@ -1057,7 +1074,11 @@ border: 1px solid grey;
          </attribute>
          <layout class="QHBoxLayout" name="horizontalLayout_6">
           <item>
-           <widget class="QTextEdit" name="textEdit"/>
+           <widget class="QTextEdit" name="textEdit">
+            <property name="readOnly">
+             <bool>true</bool>
+            </property>
+           </widget>
           </item>
          </layout>
         </widget>

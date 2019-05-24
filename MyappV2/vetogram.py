@@ -71,23 +71,23 @@ def save(settings):
 
 
 # UI FORMAT
-class MainWindow_class(QtWidgets.QMainWindow):
-    # RESTORE FILE LOCATION NAME
-
-    def __init__(self):
-        QtCore.QCoreApplication.processEvents()
-        QtWidgets.QMainWindow.__init__(self)
-        uic.loadUi("ui/MainWindow.ui", self)
+# class MainWindow_class(QtWidgets.QMainWindow):
+#     # RESTORE FILE LOCATION NAME
+#
+#     def __init__(self):
+#         QtCore.QCoreApplication.processEvents()
+#         QtWidgets.QMainWindow.__init__(self)
+#         uic.loadUi("ui/MainWindow.ui", self)
 
 # PY FORMAT
-# class MainWindow_class(MainWindow.Ui_MainWindow, QtWidgets.QMainWindow):
-#     def __init__(self):
-#         super(MainWindow.Ui_MainWindow, self).__init__()
-#         self.setupUi(self)
+class MainWindow_class(MainWindow.Ui_MainWindow, QtWidgets.QMainWindow):
+    def __init__(self):
+        super(MainWindow.Ui_MainWindow, self).__init__()
+        self.setupUi(self)
 
         self.settings = QSettings(path + "gui.ini", QSettings.IniFormat)
 
-        # restore(self.settings)
+        restore(self.settings)
 
         # OFFICIAL
         self.pushButton_run.clicked.connect(self.login_instagram)
