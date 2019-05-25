@@ -43,7 +43,7 @@ def save_user_stats(self, username, path=""):
             "following": int(infodict["following_count"]),
             "medias": int(infodict["media_count"])
         }
-        file_path = os.path.join(path, "%s.tsv" % username)
+        file_path = os.path.join(path, "%s.csv" % username)
         dump_data(data_to_save, file_path)
         self.logger.info("Stats saved at %s." % data_to_save["date"])
     return data_to_save
