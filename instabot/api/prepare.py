@@ -67,6 +67,7 @@ def check_secret():
                 except Exception:
                     print("Your file is broken. We will delete it "
                           "and try again.")
+                    f.close()
                     os.remove(SECRET_FILE)
         else:
             print("We need to create a text file '%s' where "
