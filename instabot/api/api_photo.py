@@ -260,15 +260,15 @@ def stories_shaper(fname):
     min_width = 1080
     min_height = 1920
     if img.size[1] != 1920:
-        height_percent = (min_height/float(img.size[1]))
-        width_size = int((float(img.size[0])*float(height_percent)))
+        height_percent = (min_height / float(img.size[1]))
+        width_size = int((float(img.size[0]) * float(height_percent)))
         img = img.resize((width_size, min_height), Image.ANTIALIAS)
     else:
         pass
     if img.size[0] < 1080:
-        width_percent = (min_width/float(img.size[0]))
-        height_size = int((float(img.size[1])*float(width_percent)))
-        img_bg = img.resize((min_width,height_size), Image.ANTIALIAS)
+        width_percent = (min_width / float(img.size[0]))
+        height_size = int((float(img.size[1]) * float(width_percent)))
+        img_bg = img.resize((min_width, height_size), Image.ANTIALIAS)
         img_bg = img_bg.crop((int((img.size[0] - 1080) / 2),
                               int((img.size[1] - 1920) / 2),
                               int(1080 + ((img.size[0] - 1080) / 2)),
@@ -280,20 +280,20 @@ def stories_shaper(fname):
                            int(1920 + ((img.size[1] - 1920) / 2)))).filter(ImageFilter.GaussianBlur(100))
         pass
     if img.size[1] > img.size[0]:
-        height_percent = (min_height/float(img.size[1]))
-        width_size = int((float(img.size[0])*float(height_percent)))
+        height_percent = (min_height / float(img.size[1]))
+        width_size = int((float(img.size[0]) * float(height_percent)))
         img = img.resize((width_size, min_height), Image.ANTIALIAS)
         if img.size[0] > 1080:
-            width_percent = (min_width/float(img.size[0]))
-            height_size = int((float(img.size[1])*float(width_percent)))
-            img = img.resize((min_width,height_size), Image.ANTIALIAS)
+            width_percent = (min_width / float(img.size[0]))
+            height_size = int((float(img.size[1]) * float(width_percent)))
+            img = img.resize((min_width, height_size), Image.ANTIALIAS)
             img_bg.paste(img, (int(540 - img.size[0] / 2), int(960 - img.size[1] / 2)))
         else:
             img_bg.paste(img, (int(540 - img.size[0] / 2), 0))
     else:
-        width_percent = (min_width/float(img.size[0]))
-        height_size = int((float(img.size[1])*float(width_percent)))
-        img = img.resize((min_width,height_size), Image.ANTIALIAS)
+        width_percent = (min_width / float(img.size[0]))
+        height_size = int((float(img.size[1]) * float(width_percent)))
+        img = img.resize((min_width, height_size), Image.ANTIALIAS)
         img_bg.paste(img, (int(540 - img.size[0] / 2), int(960 - img.size[1] / 2)))
     new_fname = "{}.STORIES.jpg".format(fname)
     print("Saving new image w:{w} h:{h} to `{f}`".format(w=img_bg.size[0], h=img_bg.size[1], f=new_fname))
