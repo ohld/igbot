@@ -8,6 +8,8 @@ import time
 import uuid
 from random import uniform
 
+import fuckit
+
 try:
     from json.decoder import JSONDecodeError
 except ImportError:
@@ -177,7 +179,7 @@ class API(object):
                     config.API_URL + endpoint)
         except Exception as e:
             self.logger.warning(str(e))
-            return False
+            # return False
 
         if response.status_code == 200:
             self.last_response = response
@@ -191,10 +193,10 @@ class API(object):
             try:
                 response_data = json.loads(response.text)
                 if "feedback_required" in str(response_data.get('message')):
-                    self.logger.error("ATTENTION!: `feedback_required`, your action could have been blocked")
+                    self.logger.error("ATTENTION!: feedback  required, your action could have been blocked")
                     return "feedback_required"
             except ValueError:
-                self.logger.error("Error checking for `feedback_required`, response text is not JSON")
+                self.logger.error("Error checking for feedback required, response text is not JSON")
 
             if response.status_code == 429:
                 sleep_minutes = 15
