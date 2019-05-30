@@ -87,7 +87,7 @@ class MainWindow_class(MainWindow.Ui_MainWindow, QtWidgets.QMainWindow):
 
         self.settings = QSettings(path + "gui.ini", QSettings.IniFormat)
 
-        restore(self.settings)
+        # restore(self.settings)
 
         # OFFICIAL
         self.pushButton_run.clicked.connect(self.login_instagram)
@@ -246,7 +246,8 @@ class MainWindow_class(MainWindow.Ui_MainWindow, QtWidgets.QMainWindow):
             self.workThread.start()
 
         else:
-            QtWidgets.QMessageBox.warning(self, "Ooopps", "wrong username or password")
+            QtWidgets.QMessageBox.warning(self, "Ooopps", "wrong username or password"
+                                                          "\n press Stop button and re-enter")
 
     def logout(self):
         try:
@@ -570,13 +571,14 @@ class workThread(QtCore.QThread):
                     # print("Begin following: " + username)
                     bot.follow_following(username, nfollows=self.spinBox_getfollowing.value())
         else:
-            print("groupBox_follow_from_hashtag not check")
+            print("groupBox follow not check")
             pass
 
     def unfollow(self):
         if self.groupBox_unfollow.isChecked():
-            if self.radioButton_nonfollowers.isChecked():
-                bot.unfollow_non_followers()
+            if self.radioButton_nonfollowers.isChecked() == 1:
+                print("unfollow non followers")
+                # bot.unfollow_non_followers()
 
             if self.radioButton_unfollowAll.isChecked():
                 bot.unfollow_everyone()
@@ -612,10 +614,10 @@ class workThread(QtCore.QThread):
             pass
 
     def comment(self):
-        comment_text = random.choice(self.comment_list())
-        lineEdit = str(self.lineEdit_comment.text()).strip().split(",")
-
         if self.groupBox_comment.isChecked():
+            comment_text = random.choice(self.comment_list())
+            lineEdit = str(self.lineEdit_comment.text()).strip().split(",")
+
             if self.comboBox_comment.currentText() == "hashtags":
                 for hashtag in lineEdit:
                     bot.comment_hashtag(hashtag, text=comment_text)
@@ -631,7 +633,6 @@ class workThread(QtCore.QThread):
             text = self.listWidget.item(i).text()
             list.append(text)
         return list
-
 
     def combo(self):
         start_time = datetime.now().strftime("%H:%M")
@@ -652,7 +653,7 @@ class workThread(QtCore.QThread):
                     bot.like_user(new_user_id, amount=self.spinBox_nlikes_combo.value())
                     bot.follow(new_user_id)
                     time.sleep(30 + 20 * random.random())
-                print("complete combo task")
+                print("complete combo followers task")
 
             if self.comboBox_combo.currentText() == "following":
                 # print("combo following")
@@ -662,7 +663,7 @@ class workThread(QtCore.QThread):
                     bot.like_user(new_user_id, amount=self.spinBox_nlikes_combo.value())
                     bot.follow(new_user_id)
                     time.sleep(30 + 20 * random.random())
-                print("complete combo task")
+                print("complete combo following task")
 
             if self.comboBox_combo.currentText() == "likers":
                 # print("combo likers")
@@ -673,13 +674,13 @@ class workThread(QtCore.QThread):
                         for liker in tqdm(likers):
                             bot.like_user(liker, amount=self.spinBox_nlikes_combo.value())
                             bot.follow(liker)
-                print("complete combo task")
+                print("complete combo likers task")
 
     def run_threaded(self, job_func):
         job_thread = threading.Thread(target=job_func)
         job_thread.start()
 
-    @fuckit
+
     def job(self):
         self.follow()
         self.like()
@@ -689,6 +690,8 @@ class workThread(QtCore.QThread):
     # ALL FUNCTION IN WORKTHREAD START HERE
     # if combo selected run combo
     # else run schedule
+
+    @fuckit
     def run(self):
         # todo check expired date
         # OFFICIAL
@@ -702,6 +705,19 @@ class workThread(QtCore.QThread):
             while 1:
                 schedule.run_pending()
                 time.sleep(1)
+
+
+        while 1:
+            if self.groupBox_combo.isChecked():
+                self.combo()
+            else:
+                self.job()
+                start_time = datetime.now().strftime("%H:%M")
+                schedule.every().day.at(start_time).do(self.run_threaded, self.job)
+
+            schedule.run_pending()
+            print("schedule run pending")
+            time.sleep(1)
 
 
 class OutputWrapper(QtCore.QObject):
