@@ -92,7 +92,7 @@ def comment_hashtag(self, hashtag, amount=None):
 
 def comment_user(self, user_id, amount=None):
     """ Comments last user_id's medias """
-    if not self.check_user(user_id): #, filter_closed_acc=True):
+    if not self.check_user(user_id):
         return False
     self.logger.info("Going to comment user_%s's feed:" % user_id)
     user_id = self.convert_to_user_id(user_id)
