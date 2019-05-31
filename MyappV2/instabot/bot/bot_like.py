@@ -80,9 +80,6 @@ def like_medias(self, medias, check_media=True):
         return broken_items
     # self.logger.info("Going to like %d medias." % (len(medias)))
     for media in tqdm(medias):
-        # media_link = self.get_link_from_media_id(media)
-        # msg = "LIKED: {}".format(media_link)
-        # self.console_print(msg)
         if not self.like(media, check_media):
             self.error_delay()
             broken_items.append(media)
