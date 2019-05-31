@@ -199,7 +199,7 @@ class API(object):
             try:
                 response_data = json.loads(response.text)
                 if "feedback_required" in str(response_data.get('message')):
-                    self.logger.error("ATTENTION!: `feedback_required`, your action could have been blocked")
+                    self.logger.error("ATTENTION!: `feedback_required`" + str(response_data.get('feedback_message')))
                     return "feedback_required"
             except ValueError:
                 self.logger.error("Error checking for `feedback_required`, response text is not JSON")

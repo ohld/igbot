@@ -70,6 +70,8 @@ def comment_medias(self, medias):
     broken_items = []
     self.logger.info("Going to comment %d medias." % (len(medias)))
     for media in tqdm(medias):
+        if not self.check_media(media):
+            return False
         if not self.is_commented(media):
             text = self.get_comment()
             self.logger.info("Commented with text: %s" % text)
@@ -90,7 +92,7 @@ def comment_hashtag(self, hashtag, amount=None):
 
 def comment_user(self, user_id, amount=None):
     """ Comments last user_id's medias """
-    if not self.check_user(user_id, filter_closed_acc=True):
+    if not self.check_user(user_id):
         return False
     self.logger.info("Going to comment user_%s's feed:" % user_id)
     user_id = self.convert_to_user_id(user_id)
