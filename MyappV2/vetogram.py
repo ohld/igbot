@@ -1,3 +1,6 @@
+# save comment todo
+# only open one app todo
+
 from datetime import datetime
 
 import fuckit
@@ -576,9 +579,8 @@ class workThread(QtCore.QThread):
 
     def unfollow(self):
         if self.groupBox_unfollow.isChecked():
-            if self.radioButton_nonfollowers.isChecked() == 1:
-                print("unfollow non followers")
-                # bot.unfollow_non_followers()
+            if self.radioButton_nonfollowers.isChecked():
+                bot.unfollow_non_followers()
 
             if self.radioButton_unfollowAll.isChecked():
                 bot.unfollow_everyone()
@@ -635,12 +637,6 @@ class workThread(QtCore.QThread):
         return list
 
     def combo(self):
-        start_time = datetime.now().strftime("%H:%M")
-        try:
-            schedule.every().day.at(start_time).do(self.run_threaded, self.unfollow)
-        except:
-            print("unfollow task error")
-
         usernames = str(self.lineEdit_combo.text()).strip().split(",")
         for username in usernames:
             user_id = bot.get_user_id_from_username(username)
@@ -695,29 +691,18 @@ class workThread(QtCore.QThread):
     def run(self):
         # todo check expired date
         # OFFICIAL
-        if self.groupBox_combo.isChecked():
-            self.combo()
-        else:
-            self.job()
-            start_time = datetime.now().strftime("%H:%M")
-            schedule.every().day.at(start_time).do(self.run_threaded, self.job)
-
-            while 1:
-                schedule.run_pending()
-                time.sleep(1)
-
-
         while 1:
+            start_time = datetime.now().strftime("%H:%M")
             if self.groupBox_combo.isChecked():
                 self.combo()
+                schedule.every().day.at(start_time).do(self.run_threaded, self.unfollow)
+
             else:
                 self.job()
-                start_time = datetime.now().strftime("%H:%M")
                 schedule.every().day.at(start_time).do(self.run_threaded, self.job)
 
             schedule.run_pending()
-            print("schedule run pending")
-            time.sleep(1)
+            time.sleep(15*60)
 
 
 class OutputWrapper(QtCore.QObject):
