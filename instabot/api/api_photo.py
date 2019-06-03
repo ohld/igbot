@@ -265,7 +265,7 @@ def stories_shaper(fname):
               "Install with `pip install Pillow` and retry")
         return False
     img = Image.open(fname)
-    if (img.size[0], img.size[1]) == (1080,1920):
+    if (img.size[0], img.size[1]) == (1080, 1920):
         print("Image is already 1080x1920. Just converting image.")
         new_fname = "{}.STORIES.jpg".format(fname)
         new = Image.new("RGB", (img.size[0], img.size[1]), (255, 255, 255))
