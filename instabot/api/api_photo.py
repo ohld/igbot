@@ -251,7 +251,7 @@ def resize_image(fname):
 def stories_shaper(fname):
     '''
     Find out the size of the uploaded image.
-    Processing is not needed if the image is already 1080x1920.
+    Processing is not needed if the image is already 1080x1920 pixels.
     Otherwise, the image height should be 1920 pixels.
     Substrate formation: Crop the image under 1080x1920 pixels and apply a Gaussian Blur filter.
     Centering the image depending on its aspect ratio and paste it onto the substrate.
