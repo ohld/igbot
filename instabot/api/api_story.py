@@ -7,7 +7,7 @@ from requests_toolbelt import MultipartEncoder
 import json
 
 from . import config
-from .api_photo import resize_image, compatible_aspect_ratio, get_image_size
+from .api_photo import stories_shaper, get_image_size
 
 
 def download_story(self, filename, story_url, username):
@@ -29,11 +29,8 @@ def download_story(self, filename, story_url, username):
 def upload_story_photo(self, photo, upload_id=None):
     if upload_id is None:
         upload_id = str(int(time.time() * 1000))
-    photo = resize_image(photo)
+    photo = stories_shaper(photo)
     if not photo:
-        return False
-    if not compatible_aspect_ratio(get_image_size(photo)):
-        self.logger.error('Photo does not have a compatible photo aspect ratio.')
         return False
 
     with open(photo, 'rb') as f:
