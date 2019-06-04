@@ -12,7 +12,7 @@ class file(object):
 
     @property
     def list(self):
-        with open(self.fname, 'r', encoding="utf8") as f:
+        with open(self.fname, 'r', encoding="utf8", errors='ignore') as f:
             lines = [x.strip('\n') for x in f.readlines()]
             return [x for x in lines if x]
 
