@@ -7,7 +7,7 @@ from requests_toolbelt import MultipartEncoder
 import json
 
 from . import config
-from .api_photo import stories_shaper, resize_image, compatible_aspect_ratio, get_image_size
+from .api_photo import stories_shaper, get_image_size
 
 
 def download_story(self, filename, story_url, username):
