@@ -72,7 +72,7 @@ def comment_medias(self, medias):
     for media in tqdm(medias):
         if not self.is_commented(media):
             text = self.get_comment()
-            self.logger.info("Commented with text: %s" % text)
+            self.logger.info("Commented with text: %s" % text.encode('utf-8'))
             if not self.comment(media, text):
                 self.delay('comment')
                 broken_items = medias[medias.index(media):]
