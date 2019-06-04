@@ -1,4 +1,3 @@
-
 import random
 from collections import OrderedDict
 
@@ -13,7 +12,7 @@ class file(object):
 
     @property
     def list(self):
-        with open(self.fname, 'r') as f:
+        with open(self.fname, 'r', encoding="utf8") as f:
             lines = [x.strip('\n') for x in f.readlines()]
             return [x for x in lines if x]
 
