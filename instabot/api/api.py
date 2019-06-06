@@ -199,7 +199,7 @@ class API(object):
             try:
                 response_data = json.loads(response.text)
                 if "feedback_required" in str(response_data.get('message')):
-                    self.logger.error("ATTENTION!: `feedback_required`" + str(response_data.get('feedback_message')))
+                    self.logger.error("ATTENTION!: `feedback_required` - " + str(response_data.get('feedback_message')))
                     return "feedback_required"
             except ValueError:
                 self.logger.error("Error checking for `feedback_required`, response text is not JSON")
@@ -248,8 +248,13 @@ class API(object):
                 else:
                     msg = "Instagram's error message: {}"
                     self.logger.info(msg.format(response_data.get('message')))
+#                     msg = 'Full Error JSON: {}'.format(str(response_data))
+#                     self.logger.info(msg)
                     if 'error_type' in response_data:
-                        msg = 'Error type: {}'.format(response_data['error_type'])
+                        msg = 'Error type: {}'.format(response_data['error_type'])                     
+                    self.logger.info(msg)
+                    if 'api_path' in response_data:
+                        msg = 'Response URL: {}'.format(response_data['api_path'])                     
                     self.logger.info(msg)
 
             # For debugging
