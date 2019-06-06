@@ -201,6 +201,10 @@ class API(object):
                 if "feedback_required" in str(response_data.get('message')):
                     self.logger.error("ATTENTION!: `feedback_required` - " + str(response_data.get('feedback_message')))
                     return "feedback_required"
+                else:
+                    msg = 'Full Error JSON: {}'.format(str(response_data))
+                    self.logger.info(msg)
+                    
             except ValueError:
                 self.logger.error("Error checking for `feedback_required`, response text is not JSON")
 
@@ -254,8 +258,6 @@ class API(object):
                     if 'api_path' in response_data:
                         msg = 'Response URL: {}'.format(response_data['api_path'])
                         self.logger.info(msg)
-#                     msg = 'Full Error JSON: {}'.format(str(response_data))
-#                     self.logger.info(msg)
 
             # For debugging
             try:
