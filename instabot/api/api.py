@@ -204,7 +204,6 @@ class API(object):
                 else:
                     msg = 'Full Error JSON: {}'.format(str(response_data))
                     self.logger.info(msg)
-                    
             except ValueError:
                 self.logger.error("Error checking for `feedback_required`, response text is not JSON")
 
