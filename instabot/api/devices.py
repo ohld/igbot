@@ -25,7 +25,7 @@ DEVICES = {
         'device': 'LON-L29',
         'model': 'HWLON',
         'cpu': 'hi3660'
-    },    
+    },
     # Released on February 2018
     'samsung_galaxy_s9_plus': {
         'instagram_version': '96.0.0.28.114',
