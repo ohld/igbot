@@ -1,5 +1,6 @@
 import random
 from collections import OrderedDict
+from io import open
 
 from huepy import bold, green, orange
 
