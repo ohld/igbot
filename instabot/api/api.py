@@ -888,7 +888,9 @@ class API(object):
         )
         if res:
             if "reels" in self.last_json:
-                return self.last_json["reels"]
+                dt = self.last_json["reels"]
+                items = [x[1]['items'] for x in dt.items()]
+                return sum(items,[])
             return []
         return []
 
