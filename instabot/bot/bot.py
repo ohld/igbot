@@ -329,7 +329,7 @@ class Bot(object):
         Returns array of stories links
         """
         return get_user_stories(self, user_id)
-    
+
     def get_user_reel(self, user_id):
         return get_user_reel(self, user_id)['items']
 
