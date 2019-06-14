@@ -888,9 +888,8 @@ class API(object):
         )
         if res:
             if "reels" in self.last_json:
-                dt = self.last_json["reels"]
-                items = [x[1]['items'] for x in dt.items()]
-                return sum(items, [])
+                return self.last_json["reels"]
+               
             return []
         return []
 
@@ -900,7 +899,14 @@ class API(object):
             They can be aquired by using get_users_reel() or get_user_reel() methods
         """
         if not isinstance(reels, list):
-            reels = [reels]
+            items_exist = False
+            if 'items' in reels:
+                  items_exist = True
+            if items_exist :
+                reels = reels['items']
+            else:
+                items = [x[1]['items'] for x in reels.items()]
+                reels = sum(items, [])
 
         story_seen = {}
         now = int(time.time())
