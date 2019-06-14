@@ -902,7 +902,7 @@ class API(object):
             items_exist = False
             if 'items' in reels:
                   items_exist = True
-            if items_exist :
+            if items_exist:
                 reels = reels['items']
             else:
                 items = [x[1]['items'] for x in reels.items()]
