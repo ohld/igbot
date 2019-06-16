@@ -26,7 +26,7 @@ def upload_story_photo(self, photo, upload_id=None):
 def watch_users_reels(self, user_ids, max_users=100):
     """
         user_ids - the list of user_id to get their stories
-        max_users - max amount of users to get stories from. 
+        max_users - max amount of users to get stories from.
 
         It seems like Instagram doesn't allow to get stories from more that 100 users at once.
     """
