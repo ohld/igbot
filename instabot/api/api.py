@@ -823,7 +823,7 @@ class API(object):
 
     def set_name_and_phone(self, name='', phone=''):
         return self.send_request(
-            'accounts/set_phone_and_name/', 
+            'accounts/set_phone_and_name/',
             self.json_data({'first_name': name, 'phone_number': phone})
         )
 
@@ -892,7 +892,7 @@ class API(object):
             })
         )
         if res:
-            return self.last_json["reels"] if "reels" in self.last_json else [] 
+            return self.last_json["reels"] if "reels" in self.last_json else []
         return []
 
     def see_reels(self, reels):
@@ -970,7 +970,7 @@ class API(object):
         return self.send_request(url)
 
     def get_self_insight(self):
-        # TODO: 
+        # TODO:
         url = 'insights/account_organic_insights/?show_promotions_in_landing_page=true&first={}'.format()
         return self.send_request(url)
 
