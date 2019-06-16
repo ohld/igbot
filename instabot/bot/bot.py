@@ -134,7 +134,8 @@ class Bot(object):
             'unblocks': 0,
             'messages': 0,
             'archived': 0,
-            'unarchived': 0
+            'unarchived': 0,
+            'stories_viewed': 0
         }
 
         self.start_time = datetime.datetime.now()
