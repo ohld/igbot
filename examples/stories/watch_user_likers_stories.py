@@ -1,5 +1,5 @@
 """
-    Watch user likers stories! 
+    Watch user likers stories!
     This script could be very useful to attract someone's audience to your account.
 
     If you will not specify the user_id, the script will use your likers as targets.
@@ -41,38 +41,37 @@ else:
 
 current_user_id = user_to_get_likers_of
 while True:
-    # try:
+    try:
         # GET USER FEED
+        if not bot.api.get_user_feed(current_user_id):
+            print("Can't get feed of user_id=%s" % current_user_id)
 
-    if not bot.api.get_user_feed(current_user_id):
-        print("Can't get feed of user_id=%s" % current_user_id)
+        # GET MEDIA LIKERS
+        user_media = random.choice(bot.api.last_json["items"])
+        if not bot.api.get_media_likers(media_id=user_media["pk"]):
+            print(
+                "Can't get media likers of media_id='%s' by user_id='%s'" % (user_media["pk"], current_user_id)
+            )
 
-    # GET MEDIA LIKERS
-    user_media = random.choice(bot.api.last_json["items"])
-    if not bot.api.get_media_likers(media_id=user_media["pk"]):
-        print(
-            "Can't get media likers of media_id='%s' by user_id='%s'" % (user_media["pk"], current_user_id)
-        )
+        likers = bot.api.last_json["users"]
+        liker_ids = [
+            str(u["pk"]) for u in likers if not u["is_private"] and "latest_reel_media" in u
+        ]
 
-    likers = bot.api.last_json["users"]
-    liker_ids = [
-        str(u["pk"]) for u in likers if not u["is_private"] and "latest_reel_media" in u
-    ]
+        # WATCH USERS STORIES
+        if bot.watch_users_reels(liker_ids):
+            print("Total stories viewed: %d" % bot.total["stories_viewed"])
 
-    # WATCH USERS STORIES 
-    if bot.watch_users_reels(liker_ids):
-        print("Total stories viewed: %d" % bot.total["stories_viewed"])
+        # CHOOSE RANDOM LIKER TO GRAB HIS LIKERS AND REPEAT
+        current_user_id = random.choice(liker_ids)
+        
+        if random.random() < 0.05:
+            current_user_id = user_to_get_likers_of
+            print("Sleeping and returning back to original user_id=%s" % current_user_id)
+            time.sleep(90 * random.random() + 60)
 
-    # CHOOSE RANDOM LIKER TO GRAB HIS LIKERS AND REPEAT
-    current_user_id = random.choice(liker_ids)
-    
-    if random.random() < 0.05:
+    except Exception as e:
+        # If something went wrong - sleep long and start again
+        print("Exception:", str(e))
         current_user_id = user_to_get_likers_of
-        print("Sleeping and returning back to original user_id=%s" % current_user_id)
-        time.sleep(90 * random.random() + 60)
-
-    # except Exception as e:
-    #     # If something went wrong - sleep long and start again
-    #     print("Exception:", str(e))
-    #     current_user_id = user_to_get_likers_of
-    #     time.sleep(240 * random.random() + 60)
+        time.sleep(240 * random.random() + 60)
