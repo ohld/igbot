@@ -64,7 +64,7 @@ while True:
 
         # CHOOSE RANDOM LIKER TO GRAB HIS LIKERS AND REPEAT
         current_user_id = random.choice(liker_ids)
-        
+
         if random.random() < 0.05:
             current_user_id = user_to_get_likers_of
             print("Sleeping and returning back to original user_id=%s" % current_user_id)
