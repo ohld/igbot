@@ -21,3 +21,39 @@ def upload_story_photo(self, photo, upload_id=None):
         return True
     self.logger.info("Photo '{}' is not uploaded.".format(photo))
     return False
+
+
+def watch_users_reels(self, user_ids, max_users=100):
+    """
+        user_ids - the list of user_id to get their stories
+        max_users - max amount of users to get stories from.
+
+        It seems like Instagram doesn't allow to get stories from more that 100 users at once.
+    """
+
+    # In case of only one user were passed
+    if not isinstance(user_ids, list):
+        user_ids = [user_ids]
+
+    # Get users reels
+    reels = self.api.get_users_reel(user_ids[:max_users])
+
+    # Filter to have users with at least 1 reel
+    reels = {
+        k: v for k, v in reels.items() if "items" in v and len(v["items"]) > 0
+    }
+
+    # Filter reels that were not seen before
+    unseen_reels = []
+    for _, reels_data in reels.items():
+        last_reel_seen_at = reels_data["seen"] if "seen" in reels_data else 0
+        unseen_reels.extend(
+            [r for r in reels_data["items"] if r["taken_at"] > last_reel_seen_at]
+        )
+
+    # See reels that were not seen before
+    # TODO: add counters for watched stories
+    if self.api.see_reels(unseen_reels):
+        self.total["stories_viewed"] += len(unseen_reels)
+        return True
+    return False

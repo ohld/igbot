@@ -103,7 +103,7 @@ def like_user(self, user_id, amount=None, filtration=True):
         self.logger.info(
             "None medias received: account is closed or medias have been filtered.")
         return False
-    return self.like_medias(medias[:amount])
+    return self.like_medias(medias[:amount], filtration)
 
 
 def like_users(self, user_ids, nlikes=None, filtration=True):
