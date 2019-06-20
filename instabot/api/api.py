@@ -313,6 +313,19 @@ class API(object):
         return self.send_request('qe/expose/', data)
 
     def upload_photo(self, photo, caption=None, upload_id=None, from_video=False, force_resize=False, options={}):
+        """Upload photo to Instagram
+
+        @param photo         Path to photo file (String)
+        @param caption       Media description (String)
+        @param upload_id     Unique upload_id (String). When None, then generate automatically
+        @param from_video    A flag that signals whether the photo is loaded from the video or by itself (Boolean, DEPRECATED: not used)
+        @param force_resize  Force photo resize (Boolean)
+        @param options       Object with difference options, e.g. configure_timeout, rename (Dict)
+                             Designed to reduce the number of function arguments!
+                             This is the simplest request object.
+
+        @return Boolean
+        """
         return upload_photo(self, photo, caption, upload_id, from_video, force_resize, options)
 
     def download_photo(self, media_id, filename, media=False, folder='photos'):
@@ -331,12 +344,37 @@ class API(object):
         return configure_story(self, upload_id, photo)
 
     def upload_video(self, video, caption=None, upload_id=None, thumbnail=None, options={}):
+        """Upload video to Instagram
+
+        @param video      Path to video file (String)
+        @param caption    Media description (String)
+        @param upload_id  Unique upload_id (String). When None, then generate automatically
+        @param thumbnail  Path to thumbnail for video (String). When None, then thumbnail is generate automatically
+        @param options    Object with difference options, e.g. configure_timeout, rename_thumbnail, rename (Dict)
+                          Designed to reduce the number of function arguments!
+                          This is the simplest request object.
+
+        @return           Object with state of uploading to Instagram (or False)
+        """
         return upload_video(self, video, caption, upload_id, thumbnail, options)
 
     def download_video(self, media_id, filename, media=False, folder='video'):
         return download_video(self, media_id, filename, media, folder)
 
     def configure_video(self, upload_id, video, thumbnail, width, height, duration, caption='', options={}):
+        """Post Configure Video (send caption, thumbnail and more else to Instagram)
+
+        @param upload_id  Unique upload_id (String). Received from "upload_video"
+        @param video      Path to video file (String)
+        @param thumbnail  Path to thumbnail for video (String). When None, then thumbnail is generate automatically
+        @param width      Width in px (Integer)
+        @param height     Height in px (Integer)
+        @param duration   Duration in seconds (Integer)
+        @param caption    Media description (String)
+        @param options    Object with difference options, e.g. configure_timeout, rename_thumbnail, rename (Dict)
+                          Designed to reduce the number of function arguments!
+                          This is the simplest request object.
+        """
         return configure_video(self, upload_id, video, thumbnail, width, height, duration, caption, options)
 
     def edit_media(self, media_id, captionText=''):

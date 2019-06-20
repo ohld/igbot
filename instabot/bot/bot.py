@@ -528,11 +528,33 @@ class Bot(object):
         return download_photos(self, medias, folder, save_description)
 
     def upload_photo(self, photo, caption=None, upload_id=None, from_video=False, options={}):
+        """Upload photo to Instagram
+
+        @param photo         Path to photo file (String)
+        @param caption       Media description (String)
+        @param upload_id     Unique upload_id (String). When None, then generate automatically
+        @param from_video    A flag that signals whether the photo is loaded from the video or by itself (Boolean, DEPRECATED: not used)
+        @param options       Object with difference options, e.g. configure_timeout, rename (Dict)
+                             Designed to reduce the number of function arguments!
+                             This is the simplest request object.
+
+        @return              Object with state of uploading to Instagram (or False)
+        """
         return upload_photo(self, photo, caption, upload_id, from_video, options)
 
     # video
 
     def upload_video(self, video, caption='', thumbnail=None, options={}):
+        """Upload video to Instagram
+
+        @param video      Path to video file (String)
+        @param caption    Media description (String)
+        @param thumbnail  Path to thumbnail for video (String). When None, then thumbnail is generate automatically
+        @param options    Object with difference options, e.g. configure_timeout, rename_thumbnail, rename (Dict)
+                          Designed to reduce the number of function arguments!
+
+        @return           Object with state of uploading to Instagram (or False)
+        """
         return upload_video(self, video, caption, thumbnail, options)
 
     def download_video(self, media_id, folder='videos', filename=None, save_description=False):

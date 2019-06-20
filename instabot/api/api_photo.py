@@ -85,7 +85,20 @@ def configure_photo(self, upload_id, photo, caption=''):
     return self.send_request('media/configure/?', data)
 
 
-def upload_photo(self, photo, caption=None, upload_id=None, from_video=False, force_rezize=False, options={}):
+def upload_photo(self, photo, caption=None, upload_id=None, from_video=False, force_resize=False, options={}):
+    """Upload photo to Instagram
+
+    @param photo         Path to photo file (String)
+    @param caption       Media description (String)
+    @param upload_id     Unique upload_id (String). When None, then generate automatically
+    @param from_video    A flag that signals whether the photo is loaded from the video or by itself (Boolean, DEPRECATED: not used)
+    @param force_resize  Force photo resize (Boolean)
+    @param options       Object with difference options, e.g. configure_timeout, rename (Dict)
+                         Designed to reduce the number of function arguments!
+                         This is the simplest request object.
+
+    @return Boolean
+    """
     options = dict({
         'configure_timeout': 15,
         'rename': True
@@ -96,7 +109,7 @@ def upload_photo(self, photo, caption=None, upload_id=None, from_video=False, fo
         return False
     if not compatible_aspect_ratio(get_image_size(photo)):
         self.logger.error('Photo does not have a compatible photo aspect ratio.')
-        if force_rezize:
+        if force_resize:
             photo = resize_image(photo)
         else:
             return False
