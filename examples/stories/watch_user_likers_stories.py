@@ -56,7 +56,7 @@ while True:
         likers = bot.api.last_json["users"]
         liker_ids = [
             str(u["pk"]) for u in likers if not u["is_private"] and "latest_reel_media" in u
-        ]
+        ][:20]
 
         # WATCH USERS STORIES
         if bot.watch_users_reels(liker_ids):
