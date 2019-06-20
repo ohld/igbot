@@ -154,7 +154,7 @@ def upload_video(self, video, caption=None, upload_id=None, thumbnail=None, opti
 def configure_video(self, upload_id, video, thumbnail, width, height, duration, caption='', options={}):
     # clipInfo = get_video_info(video)
     options = {
-        'rename': options.get('rename_thumbnail')
+        'rename': options.get('rename_thumbnail', True)
     }
     self.upload_photo(photo=thumbnail, caption=caption, upload_id=upload_id, from_video=True, options=options)
     data = self.json_data({
