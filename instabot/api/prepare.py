@@ -11,7 +11,7 @@ def add_credentials():
     with open(SECRET_FILE, "a") as f:
         print("Enter your login: ")
         f.write(str(sys.stdin.readline().strip()) + ":")
-        print("Enter your password: ")
+        print("Enter your password: (it will not be shown due to security reasons - just start typing and press Enter)")
         f.write(getpass.getpass() + "\n")
 
 

@@ -264,3 +264,70 @@ def resize_image(fname):
     new.paste(img, (0, 0, w, h), img)
     new.save(new_fname, quality=95)
     return new_fname
+
+
+def stories_shaper(fname):
+    '''
+    Find out the size of the uploaded image.
+    Processing is not needed if the image is already 1080x1920 pixels.
+    Otherwise, the image height should be 1920 pixels.
+    Substrate formation: Crop the image under 1080x1920 pixels and apply a Gaussian Blur filter.
+    Centering the image depending on its aspect ratio and paste it onto the substrate.
+    Save the image.
+    '''
+    try:
+        from PIL import Image, ImageFilter
+    except ImportError as e:
+        print("ERROR: {}".format(e))
+        print("Required module `PIL` not installed\n"
+              "Install with `pip install Pillow` and retry")
+        return False
+    img = Image.open(fname)
+    if (img.size[0], img.size[1]) == (1080, 1920):
+        print("Image is already 1080x1920. Just converting image.")
+        new_fname = "{}.STORIES.jpg".format(fname)
+        new = Image.new("RGB", (img.size[0], img.size[1]), (255, 255, 255))
+        new.paste(img, (0, 0, img.size[0], img.size[1]))
+        new.save(new_fname)
+        return new_fname
+    else:
+        min_width = 1080
+        min_height = 1920
+        if img.size[1] != 1920:
+            height_percent = (min_height / float(img.size[1]))
+            width_size = int((float(img.size[0]) * float(height_percent)))
+            img = img.resize((width_size, min_height), Image.ANTIALIAS)
+        else:
+            pass
+        if img.size[0] < 1080:
+            width_percent = (min_width / float(img.size[0]))
+            height_size = int((float(img.size[1]) * float(width_percent)))
+            img_bg = img.resize((min_width, height_size), Image.ANTIALIAS)
+        else:
+            pass
+        img_bg = img.crop((int((img.size[0] - 1080) / 2),
+                           int((img.size[1] - 1920) / 2),
+                           int(1080 + ((img.size[0] - 1080) / 2)),
+                           int(1920 + ((img.size[1] - 1920) / 2)))).filter(ImageFilter.GaussianBlur(100))
+        if img.size[1] > img.size[0]:
+            height_percent = (min_height / float(img.size[1]))
+            width_size = int((float(img.size[0]) * float(height_percent)))
+            img = img.resize((width_size, min_height), Image.ANTIALIAS)
+            if img.size[0] > 1080:
+                width_percent = (min_width / float(img.size[0]))
+                height_size = int((float(img.size[1]) * float(width_percent)))
+                img = img.resize((min_width, height_size), Image.ANTIALIAS)
+                img_bg.paste(img, (int(540 - img.size[0] / 2), int(960 - img.size[1] / 2)))
+            else:
+                img_bg.paste(img, (int(540 - img.size[0] / 2), 0))
+        else:
+            width_percent = (min_width / float(img.size[0]))
+            height_size = int((float(img.size[1]) * float(width_percent)))
+            img = img.resize((min_width, height_size), Image.ANTIALIAS)
+            img_bg.paste(img, (int(540 - img.size[0] / 2), int(960 - img.size[1] / 2)))
+        new_fname = "{}.STORIES.jpg".format(fname)
+        print("Saving new image w:{w} h:{h} to `{f}`".format(w=img_bg.size[0], h=img_bg.size[1], f=new_fname))
+        new = Image.new("RGB", (img_bg.size[0], img_bg.size[1]), (255, 255, 255))
+        new.paste(img_bg, (0, 0, img_bg.size[0], img_bg.size[1]))
+        new.save(new_fname)
+        return new_fname
