@@ -54,6 +54,6 @@ def watch_users_reels(self, user_ids, max_users=100):
     # See reels that were not seen before
     # TODO: add counters for watched stories
     if self.api.see_reels(unseen_reels):
-        self.total["stories_viewed"] += len(unseen_reels)
+        self.total["stories_viewed"] = len(unseen_reels)
         return True
     return False
