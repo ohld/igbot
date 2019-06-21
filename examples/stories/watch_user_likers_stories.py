@@ -37,7 +37,8 @@ else:
             You can specify username of another user to start (by default we use you as a starting point).
         """
     )
-    user_to_get_likers_of = bot.user_id
+#Move it to start line, else the user_id = none
+user_to_get_likers_of = bot.user_id
 
 current_user_id = user_to_get_likers_of
 while True:
