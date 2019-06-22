@@ -193,6 +193,14 @@ class API(object):
                 return True
             except JSONDecodeError:
                 return False
+
+        elif response.status_code == 405:
+            msg = 'Request Endpoint: {}'.format(str(config.API_URL + endpoint))
+            self.logger.info(msg)
+            msg = 'Request Data: {}'.format(str(post))
+            self.logger.info(msg)
+            return True
+
         else:
             if response.status_code != 404 and response.status_code != "404":
                 self.logger.error("Request returns {} error!".format(response.status_code))
@@ -208,10 +216,7 @@ class API(object):
                 self.logger.error("Error loading response.text, response text is not JSON")
                 msg = 'Full Response Text: {}'.format(str(response))
                 self.logger.info(msg)
-                
-            if response.status_code == 405:
-                return True
-                
+                                
             if response.status_code == 429:
                 sleep_minutes = 5
                 self.logger.warning(
