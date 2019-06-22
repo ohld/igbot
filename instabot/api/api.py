@@ -887,10 +887,7 @@ class API(object):
             })
         )
         if res:
-            if "reels" in self.last_json:
-                return self.last_json["reels"]
-               
-            return []
+             return self.last_json["reels"] if "reels" in self.last_json else []
         return []
 
     def see_reels(self, reels):
@@ -901,7 +898,7 @@ class API(object):
         if not isinstance(reels, list):
             items_exist = False
             if 'items' in reels:
-                  items_exist = True
+                 items_exist = True
             if items_exist:
                 reels = reels['items']
             else:
