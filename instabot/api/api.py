@@ -206,7 +206,7 @@ class API(object):
                     self.logger.info(msg)
             except ValueError:
                 self.logger.error("Error loading response.text, response text is not JSON")
-                msg = 'Full Response Text: {}'.format(str(response.text))
+                msg = 'Full Response Text: {}'.format(str(response))
                 self.logger.info(msg)
 
             if response.status_code == 429:
