@@ -193,7 +193,12 @@ class API(object):
                 return True
             except JSONDecodeError:
                 return False
-        else:
+        elif:
+            #TEMP add to enable 405
+            if response.status_code == 405:
+                self.logger.error("Request returns {} error!".format(response.status_code))
+                return True
+        elif:
             if response.status_code != 404 and response.status_code != "404":
                 self.logger.error("Request returns {} error!".format(response.status_code))
             try:
