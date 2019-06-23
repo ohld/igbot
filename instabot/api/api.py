@@ -195,6 +195,7 @@ class API(object):
                 return False
 
         elif response.status_code == 405:
+            self.logger.error("Request returns {} error!".format(response.status_code))
             msg = 'Request Endpoint: {}'.format(str(config.API_URL + endpoint))
             self.logger.info(msg)
             msg = 'Request Data: {}'.format(str(post))
