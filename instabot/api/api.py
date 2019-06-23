@@ -200,8 +200,11 @@ class API(object):
                 return False
 
         elif response.status_code == 405:
-            self.logger.error("Request returns {} error!".format(response.status_code))
-            return True
+            if "logout" in str(config.API_URL + endpoint):
+                return True
+            else:
+                self.logger.error("Request returns {} error!".format(response.status_code))
+                return False
         
         else:
             if response.status_code != 404 and response.status_code != "404":
