@@ -202,7 +202,7 @@ class API(object):
         elif response.status_code == 405:
             self.logger.error("Request returns {} error!".format(response.status_code))
             return True
-
+        
         else:
             if response.status_code != 404 and response.status_code != "404":
                 self.logger.error("Request returns {} error!".format(response.status_code))
@@ -227,7 +227,9 @@ class API(object):
                 time.sleep(sleep_minutes * 60)
             elif response.status_code == 400:
                 response_data = json.loads(response.text)
-
+                msg = 'Full Error JSON: {}'.format(str(response_data))
+                self.logger.info(msg)
+                
                 # PERFORM Interactive Two-Factor Authentication
                 if response_data.get('two_factor_required'):
                     self.logger.info("Two-factor authentication required")
