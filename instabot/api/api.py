@@ -210,6 +210,8 @@ class API(object):
                 response_data = json.loads(response.text)
                 if "feedback_required" in str(response_data.get('message')):
                     self.logger.error("ATTENTION!: `feedback_required` - " + str(response_data.get('feedback_message')))
+                    msg = 'Full Error JSON: {}'.format(str(response_data))
+                    self.logger.info(msg)
                     return "feedback_required"
                 else:
                     msg = 'Full Error JSON: {}'.format(str(response_data))
