@@ -172,6 +172,11 @@ class API(object):
         if headers:
             self.session.headers.update(headers)
         try:
+            msg = 'Request Endpoint: {}'.format(str(config.API_URL + endpoint))
+            self.logger.info(msg)
+            msg = 'Request Data: {}'.format(str(post))
+            self.logger.info(msg)
+            
             self.total_requests += 1
             if post is not None:  # POST
                 if with_signature:
@@ -196,10 +201,6 @@ class API(object):
 
         elif response.status_code == 405:
             self.logger.error("Request returns {} error!".format(response.status_code))
-            msg = 'Request Endpoint: {}'.format(str(config.API_URL + endpoint))
-            self.logger.info(msg)
-            msg = 'Request Data: {}'.format(str(post))
-            self.logger.info(msg)
             return True
 
         else:
