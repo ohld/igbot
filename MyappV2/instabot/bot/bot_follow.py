@@ -23,7 +23,8 @@ def follow(self, user_id):
                 self.following.append(user_id)
             return True
     else:
-        self.logger.info("Reach follow limit for today.")
+        self.logger.info("Reach follow limit for today. Going to rest for a while")
+        time.sleep(60*60)
     return False
 
 
