@@ -97,6 +97,7 @@ class MainWindow_class(MainWindow.Ui_MainWindow, QtWidgets.QMainWindow):
         self.pushButton_update_status.clicked.connect(self.csv_append)
         self.pushButton_addComment.clicked.connect(self.add_to_listWidget)
         self.pushButton_delComment.clicked.connect(self.delete_line_listWidget)
+        self.pushButton_stop.clicked.connect(self.logout)
 
         self.comboBox_follow.currentIndexChanged.connect(self.update_label_follow)
         self.comboBox_like.currentIndexChanged.connect(self.update_label_like)
@@ -110,7 +111,6 @@ class MainWindow_class(MainWindow.Ui_MainWindow, QtWidgets.QMainWindow):
         self.checkBox_no_profilePic.clicked.connect(self.coming_soon)
         self.checkBox_business.clicked.connect(self.coming_soon)
         self.checkBox_verified.clicked.connect(self.coming_soon)
-        self.pushButton_stop.clicked.connect(self.logout)
 
         #   TESTING
         self.button_testing.clicked.connect(self.click_testing)
@@ -636,7 +636,7 @@ class workThread(QtCore.QThread):
             list.append(text)
         return list
 
-    def combo(self):
+    def like_follow(self):
         usernames = str(self.lineEdit_combo.text()).strip().split(",")
         for username in usernames:
             user_id = bot.get_user_id_from_username(username)
@@ -677,32 +677,46 @@ class workThread(QtCore.QThread):
         job_thread.start()
 
 
-    def job(self):
+    def jobs(self):
         self.follow()
         self.like()
         self.comment()
         self.unfollow()
 
+    def check_job(self):
+        start_time = datetime.now().strftime("%H:%M")
+        if self.groupBox_combo.isChecked():
+            # official
+            self.run_threaded(self.like_follow)
+            schedule.every().day.at(start_time).do(self.run_threaded, self.unfollow)
+        else:
+            self.run_threaded(self.jobs)
+            # schedule.every().day.at(start_time).do(self.run_threaded, self.jobs)
+
+
+    def loop_job(self):
+        try:
+            self.check_job()
+        except:
+            self.loop_job()
+
     # ALL FUNCTION IN WORKTHREAD START HERE
     # if combo selected run combo
     # else run schedule
 
-    @fuckit
+# official
+#     @fuckit
     def run(self):
         # todo check expired date
-        # OFFICIAL
+        # OFFICIAl
+
+        self.loop_job()
         while 1:
-            start_time = datetime.now().strftime("%H:%M")
-            if self.groupBox_combo.isChecked():
-                self.combo()
-                schedule.every().day.at(start_time).do(self.run_threaded, self.unfollow)
-
-            else:
-                self.job()
-                schedule.every().day.at(start_time).do(self.run_threaded, self.job)
-
             schedule.run_pending()
-            time.sleep(15*60)
+            print("shchedule run pending")
+            time.sleep(5*60)
+
+
 
 
 class OutputWrapper(QtCore.QObject):
