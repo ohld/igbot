@@ -49,7 +49,7 @@ while True:
         # GET MEDIA LIKERS
         user_media = random.choice(bot.api.last_json["items"])
         if not bot.api.get_media_likers(media_id=user_media["pk"]):
-            print(
+            bot.logger.info(
                 "Can't get media likers of media_id='%s' by user_id='%s'" % (user_media["pk"], current_user_id)
             )
 
