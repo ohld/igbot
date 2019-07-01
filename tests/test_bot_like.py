@@ -918,7 +918,7 @@ class TestBotGet(TestBot):
 
         results_1 = 8
         responses.add(
-            responses.GET, "{api_url}feed/timeline/".format(api_url=API_URL),
+            responses.POST, "{api_url}feed/timeline/".format(api_url=API_URL),
             json={
                 "auto_load_more_enabled": True,
                 "num_results": results_1,

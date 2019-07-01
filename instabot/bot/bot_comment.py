@@ -71,7 +71,7 @@ def comment_medias(self, medias):
     self.logger.info("Going to comment %d medias." % (len(medias)))
     for media in tqdm(medias):
         if not self.check_media(media):
-            return False
+            continue
         if not self.is_commented(media):
             text = self.get_comment()
             self.logger.info("Commented with text: %s" % text)
