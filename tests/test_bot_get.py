@@ -101,7 +101,7 @@ class TestBotGet(TestBot):
         self.bot.max_likes_to_like = TEST_PHOTO_ITEM['like_count'] + 1
         results = 8
         responses.add(
-            responses.GET, "{api_url}feed/timeline/".format(api_url=API_URL),
+            responses.POST, "{api_url}feed/timeline/".format(api_url=API_URL),
             json={
                 "auto_load_more_enabled": True,
                 "num_results": results,
@@ -112,7 +112,7 @@ class TestBotGet(TestBot):
                 "feed_items": [TEST_TIMELINE_PHOTO_ITEM for _ in range(results)]
             }, status=200)
         responses.add(
-            responses.GET, "{api_url}feed/timeline/".format(api_url=API_URL),
+            responses.POST, "{api_url}feed/timeline/".format(api_url=API_URL),
             json={
                 "status": "fail"
             }, status=400)
@@ -131,7 +131,7 @@ class TestBotGet(TestBot):
     def test_get_timeline_users(self):
         results = 8
         responses.add(
-            responses.GET, "{api_url}feed/timeline/".format(api_url=API_URL),
+            responses.POST, "{api_url}feed/timeline/".format(api_url=API_URL),
             json={
                 "auto_load_more_enabled": True,
                 "num_results": results,
@@ -142,7 +142,7 @@ class TestBotGet(TestBot):
                 "feed_items": [TEST_TIMELINE_PHOTO_ITEM for _ in range(results)]
             }, status=200)
         responses.add(
-            responses.GET, "{api_url}feed/timeline/".format(api_url=API_URL),
+            responses.POST, "{api_url}feed/timeline/".format(api_url=API_URL),
             json={
                 "status": "fail"
             }, status=400)

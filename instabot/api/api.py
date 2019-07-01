@@ -151,7 +151,8 @@ class API(object):
     def logout(self, *args, **kwargs):
         if not self.is_logged_in:
             return True
-        self.is_logged_in = not self.send_request('accounts/logout/')
+        data = json.dumps({})
+        self.is_logged_in = not self.send_request('accounts/logout/', data, with_signature=False)
         return not self.is_logged_in
 
     def set_proxy(self):
@@ -300,7 +301,8 @@ class API(object):
 
     def get_timeline_feed(self):
         """ Returns 8 medias from timeline feed of logged user."""
-        return self.send_request('feed/timeline/')
+        data = self.json_data({'is_prefetch': '0', 'is_pull_to_refresh': '0'})
+        return self.send_request('feed/timeline/', data, with_signature=False)
 
     def get_megaphone_log(self):
         return self.send_request('megaphone/log/')
