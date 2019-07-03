@@ -49,6 +49,10 @@ def follow_users(self, user_ids):
             if self.api.last_response.status_code == 404:
                 self.console_print("404 error user {user_id} doesn't exist.", 'red')
                 broken_items.append(user_id)
+            
+            elif self.api.last_response.status_code == 400:
+                self.logger.info("Instagram is blocking your follow actions! Try not to follow for few days!")
+                break
 
             elif self.api.last_response.status_code == 200:
                 broken_items.append(user_id)
