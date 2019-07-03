@@ -1,12 +1,22 @@
 from tqdm import tqdm
 
 
-def like(self, media_id):
+def like(self, media_id, check_media=True):
     if not self.reached_limit('likes'):
+        if self.blocked_actions['likes']:
+            self.logger.warning('YOUR `LIKE` ACTION IS BLOCKED')
+            if self.blocked_actions_protection:
+                self.logger.warning('blocked_actions_protection ACTIVE. Skipping `like` action.')
+                return False
         self.delay('like')
-        if not self.check_media(media_id):
+        if check_media and not self.check_media(media_id):
             return False
-        if self.api.like(media_id):
+        _r = self.api.like(media_id)
+        if _r == 'feedback_required':
+            self.logger.error("`Like` action has been BLOCKED...!!!")
+            self.blocked_actions['likes'] = True
+            return False
+        if _r:
             self.logger.info("Liked media %d." % media_id)
             self.total['likes'] += 1
             return True
@@ -16,15 +26,34 @@ def like(self, media_id):
 
 
 def like_comment(self, comment_id):
-    if self.api.like_comment(comment_id):
-        return True
+    if not self.reached_limit('likes'):
+        if self.blocked_actions['likes']:
+            self.logger.warning('YOUR `LIKE` ACTION IS BLOCKED')
+            if self.blocked_actions_protection:
+                from datetime import timedelta
+                next_reset = (self.start_time.date() + timedelta(days=1)).strftime("%Y-%m-%d %H:%M:%S")
+                self.logger.warning('blocked_actions_protection ACTIVE. Skipping `like` action till, at least, {}.'.format(next_reset))
+                return False
+        self.delay('like')
+        _r = self.api.like_comment(comment_id)
+        if _r == 'feedback_required':
+            self.logger.error("`Like` action has been BLOCKED...!!!")
+            self.blocked_actions['likes'] = True
+            return False
+        if _r:
+            self.logger.info("Liked comment {}.".format(comment_id))
+            self.total['likes'] += 1
+            return True
+    else:
+        self.logger.info("Out of likes for today.")
     return False
 
 
 def like_media_comments(self, media_id):
     broken_items = []
     media_comments = self.get_media_comments(media_id)
-    comment_ids = [item["pk"] for item in media_comments if not item["has_liked_comment"]]
+    self.logger.info('Found {} comments'.format(len(media_comments)))
+    comment_ids = [item["pk"] for item in media_comments if not item.get('has_liked_comment') or not item["has_liked_comment"]]
 
     if not comment_ids:
         self.logger.info("None comments received: comments not found or comments have been filtered.")
@@ -42,14 +71,14 @@ def like_media_comments(self, media_id):
     return broken_items
 
 
-def like_medias(self, medias):
+def like_medias(self, medias, check_media=True):
     broken_items = []
     if not medias:
         self.logger.info("Nothing to like.")
         return broken_items
     self.logger.info("Going to like %d medias." % (len(medias)))
     for media in tqdm(medias):
-        if not self.like(media):
+        if not self.like(media, check_media):
             self.error_delay()
             broken_items.append(media)
     self.logger.info("DONE: Total liked %d medias." % self.total['likes'])
@@ -59,7 +88,7 @@ def like_medias(self, medias):
 def like_timeline(self, amount=None):
     self.logger.info("Liking timeline feed:")
     medias = self.get_timeline_medias()[:amount]
-    return self.like_medias(medias)
+    return self.like_medias(medias, check_media=False)
 
 
 def like_user(self, user_id, amount=None, filtration=True):
@@ -74,7 +103,7 @@ def like_user(self, user_id, amount=None, filtration=True):
         self.logger.info(
             "None medias received: account is closed or medias have been filtered.")
         return False
-    return self.like_medias(medias[:amount])
+    return self.like_medias(medias[:amount], filtration)
 
 
 def like_users(self, user_ids, nlikes=None, filtration=True):
@@ -125,3 +154,40 @@ def like_following(self, user_id, nlikes=None, nfollows=None):
         self.logger.info("%s not found / closed / has no following." % user_id)
     else:
         self.like_users(following_ids, nlikes)
+
+
+def like_location_feed(self, place, amount):
+    self.logger.info("Searching location: {}".format(place))
+    self.api.search_location(place)
+    if not self.api.last_json['items']:
+        self.logger.error("{} not found.".format(place))
+        return False
+    else:
+        finded_location = self.api.last_json['items'][0]['location']['pk']
+        self.api.get_location_feed(finded_location)
+        location_feed = self.api.last_json
+        if location_feed.get('story'):
+            self.logger.info("Liking users from stories...")
+            location_to_filter = location_feed["story"]["items"][:amount]
+            for i in range(0, len(location_to_filter)):
+                user = location_to_filter[i]["user"]["pk"]
+                self.like_user(user_id=user, amount=1, filtration=False)
+        elif location_feed.get('items'):
+            self.logger.info("Liking users from images...")
+            max_id = ''
+            counter = 0
+            while counter < amount:
+                location_to_filter = location_feed["items"][:amount]
+                medias = self.filter_medias(
+                    location_to_filter, filtration=False)
+                self.like_medias(medias)
+                counter += 1
+                if location_feed.get('next_max_id'):
+                    max_id = location_feed['next_max_id']
+                else:
+                    return False
+                self.api.get_location_feed(finded_location, max_id)
+                location_feed = self.api.last_json
+        else:
+            self.logger.error(" '{}' does not seem to have pictures. Select a different location.".format(place))
+            return False

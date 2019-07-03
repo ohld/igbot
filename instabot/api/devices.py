@@ -26,6 +26,18 @@ DEVICES = {
         'model': 'HWLON',
         'cpu': 'hi3660'
     },
+    # Released on February 2018
+    'samsung_galaxy_s9_plus': {
+        'instagram_version': '96.0.0.28.114',
+        'android_version': 24,
+        'android_release': '7.0',
+        'dpi': '640dpi',
+        'resolution': '1440x2560',
+        'manufacturer': 'samsung',
+        'device': 'SM-G965F',
+        'model': 'star2qltecs',
+        'cpu': 'samsungexynos9810'
+    },
     # Released on November 2016
     'one_plus_3t': {
         'instagram_version': '26.0.0.10.86',

@@ -59,13 +59,14 @@ def _get_media_ids(media_items):
 
 def check_media(self, media_id):
     if self.api.media_info(media_id):
+        medias = self.api.last_json["items"]
+
         if search_blacklist_hashtags_in_media(self, media_id):
             msg = 'Blacklist hashtag found in media, skipping!'
             self.console_print(msg, 'red')
             return False
 
-        self.api.media_info(media_id)
-        if self.filter_medias(self.api.last_json["items"]):
+        if self.filter_medias(medias, quiet=True):
             return check_user(self, self.get_media_owner(media_id))
         return False
 
@@ -197,12 +198,12 @@ def check_user(self, user_id, unfollowing=False):
         skipped.append(user_id)
         return False
     try:
-        if follower_count / following_count > self.max_followers_to_following_ratio:
+        if (following_count > 0) and follower_count / following_count > self.max_followers_to_following_ratio:
             msg = 'follower_count / following_count > bot.max_followers_to_following_ratio, skipping!'
             self.console_print(msg, 'red')
             skipped.append(user_id)
             return False
-        if following_count / follower_count > self.max_following_to_followers_ratio:
+        if (follower_count > 0) and following_count / follower_count > self.max_following_to_followers_ratio:
             msg = 'following_count / follower_count > bot.max_following_to_followers_ratio, skipping!'
             self.console_print(msg, 'red')
             skipped.append(user_id)
