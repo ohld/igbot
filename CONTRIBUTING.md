@@ -35,6 +35,4 @@ If you want to add a new documentation page in any language please follow the gu
 
 Install the dependencies using [pipenv](https://github.com/pypa/pipenv): `pipenv install`
 
-Run the tests: `pytest`
-
-Run the linter: `pycodestyle`
+See `.travis.yml` for the most up to date test and lint commands.
