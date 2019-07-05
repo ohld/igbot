@@ -51,8 +51,8 @@ def follow_users(self, user_ids):
                 broken_items.append(user_id)
             
             elif self.api.last_response.status_code == 400:
-                self.logger.info("Instagram is blocking your follow actions! Try not to follow for few days!")
-                break
+                self.logger.info("I'll go to sleep for 5 minues", 'yellow')
+                time.sleep(300)
 
             elif self.api.last_response.status_code == 200:
                 broken_items.append(user_id)
