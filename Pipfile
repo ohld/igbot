@@ -9,7 +9,8 @@ pytest = "*"
 pyflakes = "*"
 pysocks = "*"
 bumpversion = "*"
-pipenv = '*'
+pytest-cov = '*'
+codecov = '*'
 
 [packages]
 tqdm = "*"
