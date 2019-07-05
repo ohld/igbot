@@ -49,7 +49,7 @@ def follow_users(self, user_ids):
             if self.api.last_response.status_code == 404:
                 self.console_print("404 error user {user_id} doesn't exist.", 'red')
                 broken_items.append(user_id)
-            
+
             elif self.api.last_response.status_code == 400:
                 self.logger.info("I'll go to sleep for 5 minues", 'yellow')
                 time.sleep(300)
