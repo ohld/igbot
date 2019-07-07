@@ -3,10 +3,10 @@ import hmac
 import json
 import logging
 import os
+import random
 import sys
 import time
 import uuid
-import random
 
 from requests_toolbelt import MultipartEncoder
 
@@ -111,15 +111,19 @@ class API(object):
                 })
 
                 if self.send_request('accounts/login/', data, True):
-                    self.is_logged_in = True
-                    self.logger.info("Logged-in successfully as '{}'!".format(self.username))
-                    if use_cookie:
-                        self.save_cookie(cookie_fname)
-                        self.logger.info("Saved cookie!")
+                    self.save_successful_login(use_cookie, cookie_fname)
                     return True
+                elif self.last_json.get('error_type', '') == 'checkpoint_challenge_required':
+                    self.logger.info('Checkpoint challenge required...')
+                    solved = self.solve_challenge()
+                    if solved:
+                        self.save_successful_login(use_cookie, cookie_fname)
+                        return True
+                    else:
+                        self.save_failed_login()
+                        return False
                 else:
-                    self.logger.info("Username or password is incorrect.")
-                    delete_credentials()
+                    self.save_failed_login()
                     return False
 
     def load_cookie(self, fname):
@@ -147,6 +151,79 @@ class API(object):
     def save_cookie(self, fname):
         with open(fname, 'w') as f:
             json.dump(requests.utils.dict_from_cookiejar(self.session.cookies), f)
+
+    def save_successful_login(self, use_cookie, cookie_fname):
+        self.is_logged_in = True
+        self.logger.info("Logged-in successfully as '{}'!".format(self.username))
+        if use_cookie:
+            self.save_cookie(cookie_fname)
+            self.logger.info("Saved cookie!")
+
+    def save_failed_login(self):
+        self.logger.info('Username or password is incorrect.')
+        delete_credentials()
+
+    def solve_challenge(self):
+        challenge_url = self.last_json['challenge']['api_path'][1:]
+        try:
+            self.send_request(challenge_url, None, login=True, with_signature=False)
+        except Exception as e:
+            self.logger.error(e)
+            return False
+
+        choices = self.get_challenge_choices()
+        for choice in choices:
+            print(choice)
+        code = input('Insert choice: ')
+
+        data = json.dumps({'choice': code})
+        try:
+            self.send_request(challenge_url, data, login=True)
+        except Exception as e:
+            self.logger.error(e)
+            return False
+
+        print('A code has been sent to the method selected, please check.')
+        code = input('Insert code: ')
+
+        data = json.dumps({'security_code': code})
+        try:
+            self.send_request(challenge_url, data, login=True)
+        except Exception as e:
+            self.logger.error(e)
+            return False
+
+        worked = (('logged_in_user' in self.last_json) and (self.last_json.get('action', '') == 'close') and (self.last_json.get('status', '') == 'ok'))
+
+        if worked:
+            return True
+
+        self.logger.error('Not possible to log in. Reset and try again')
+        return False
+
+    def get_challenge_choices(self):
+        last_json = self.last_json
+        choices = []
+
+        if last_json.get('step_name', '') == 'select_verify_method':
+            choices.append("Checkpoint challenge received")
+            if 'phone_number' in last_json['step_data']:
+                choices.append('0 - Phone')
+            if 'email' in last_json['step_data']:
+                choices.append('1 - Email')
+
+        if last_json.get('step_name', '') == 'delta_login_review':
+            choices.append("Login attempt challenge received")
+            choices.append('0 - It was me')
+            choices.append('0 - It wasn\'t me')
+
+        if not choices:
+            choices.append(
+                '"{}" challenge received'.format(
+                    last_json.get('step_name', 'Unknown')))
+            choices.append('0 - Default')
+
+        return choices
 
     def logout(self, *args, **kwargs):
         if not self.is_logged_in:
