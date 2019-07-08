@@ -116,7 +116,7 @@ class Bot(object):
         unblock_delay=30,
         message_delay=60,
         stop_words=('shop', 'store', 'free'),
-        blacklist_hashtags=['#shop', '#store', '#free'],
+        blacklist_hashtags=('#shop', '#store', '#free'),
         blocked_actions_protection=True,
         verbosity=True,
         device=None
