@@ -60,8 +60,8 @@ from .bot_support import (
 )
 from .bot_unfollow import (
     unfollow, unfollow_everyone, unfollow_non_followers,
-    unfollow_users
-)
+    unfollow_users,
+    unfollow_after)
 from .bot_unlike import (
     unlike, unlike_comment, unlike_media_comments,
     unlike_medias, unlike_user
@@ -616,6 +616,9 @@ class Bot(object):
 
     def unfollow_non_followers(self, n_to_unfollows=None):
         return unfollow_non_followers(self, n_to_unfollows)
+
+    def unfollow_after(self, seconds, number_to_unfollow=None, nonfollowers_only=False):
+        return unfollow_after(self, seconds, number_to_unfollow, nonfollowers_only)
 
     def unfollow_everyone(self):
         return unfollow_everyone(self)

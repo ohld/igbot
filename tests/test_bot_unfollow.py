@@ -72,3 +72,10 @@ class TestBotUnfollow(TestBot):
         assert self.bot.unfollowed_file.list[-1] == str(user_id)
         assert str(user_id) not in self.bot.following
         self.bot._db.record_unfollow.assert_called_once_with(str(user_id))
+
+    def test_unfollow_after(self):
+        with patch.object(self.bot, 'unfollow') as patched_unfollow:
+            self.bot._db.get_followed_before.return_value = ['87654321']
+            self.bot.unfollow_after(99)
+            self.bot._db.get_followed_before.assert_called_once_with(99)
+            patched_unfollow.assert_called_once_with('87654321')

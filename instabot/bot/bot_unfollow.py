@@ -56,5 +56,19 @@ def unfollow_non_followers(self, n_to_unfollows=None):
     self.console_print(" ===> Unfollow non-followers done! <===", 'red')
 
 
+def unfollow_after(self, seconds, number_to_unfollow=None, nonfollowers_only=False):
+    num_users_message = number_to_unfollow if number_to_unfollow else "all"
+    self.logger.info(f'Unfollowing {num_users_message} users followed more than {seconds} seconds ago')
+    users_to_unfollow = self._db.get_followed_before(seconds)
+    if nonfollowers_only:
+        users_to_unfollow = [user_id for user_id in users_to_unfollow if user_id in self.followers]
+    for user_id in tqdm(users_to_unfollow[:number_to_unfollow]):
+        if self.reached_limit('unfollows'):
+            self.logger.info('Out of unfollows for today.')
+            break
+        self.unfollow(user_id)
+    self.logger.info('Done unfollowing users.')
+
+
 def unfollow_everyone(self):
     self.unfollow_users(self.following)
