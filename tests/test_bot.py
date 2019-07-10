@@ -9,6 +9,15 @@ import requests
 from instabot import Bot
 
 
+def reset_files(_bot):
+    for x in _bot.followed_file.list:
+        _bot.followed_file.remove(x)
+    for x in _bot.unfollowed_file.list:
+        _bot.unfollowed_file.remove(x)
+    for x in _bot.skipped_file.list:
+        _bot.skipped_file.remove(x)
+
+
 class TestBot:
     @patch('instabot.bot.bot.DB')
     def setup(self, _):

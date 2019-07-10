@@ -8,18 +8,9 @@ except ImportError:
 
 from instabot.api.config import API_URL, SIG_KEY_VERSION
 
-from .test_bot import TestBot
+from .test_bot import TestBot, reset_files
 from .test_variables import (TEST_SEARCH_USERNAME_ITEM, TEST_USERNAME_INFO_ITEM, TEST_FOLLOWER_ITEM,
                              TEST_FOLLOWING_ITEM)
-
-
-def reset_files(_bot):
-    for x in _bot.followed_file.list:
-        _bot.followed_file.remove(x)
-    for x in _bot.unfollowed_file.list:
-        _bot.unfollowed_file.remove(x)
-    for x in _bot.skipped_file.list:
-        _bot.skipped_file.remove(x)
 
 
 class TestBotFollow(TestBot):

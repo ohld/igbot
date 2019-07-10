@@ -7,14 +7,15 @@ def unfollow(self, user_id):
     username = user_info.get("username")
     self.console_print('===> Going to unfollow `user_id`: {} with username: {}'.format(user_id, username))
 
-    if self.check_user(user_id, unfollowing=True):
-        return True  # whitelisted user
+    # if self.check_user(user_id, unfollowing=True):
+    #     return True  # whitelisted user
     if not self.reached_limit('unfollows'):
         self.delay('unfollow')
         if self.api.unfollow(user_id):
             msg = '===> Unfollowed, `user_id`: {}, user_name: {}'
             self.console_print(msg.format(user_id, username), 'yellow')
             self.unfollowed_file.append(user_id)
+            self._db.record_unfollow(user_id)
             self.total['unfollows'] += 1
             if user_id in self.following:
                 self.following.remove(user_id)
