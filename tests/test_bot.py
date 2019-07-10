@@ -10,7 +10,8 @@ from instabot import Bot
 
 
 class TestBot:
-    def setup(self):
+    @patch('instabot.bot.bot.DB')
+    def setup(self, _):
         self.USER_ID = 1234567
         self.USERNAME = 'test_username'
         self.PASSWORD = 'test_password'

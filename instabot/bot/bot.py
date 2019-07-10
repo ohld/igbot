@@ -5,6 +5,7 @@ import random
 import signal
 import time
 
+from instabot.db import DB
 from .. import utils
 from ..api import API
 from .bot_archive import archive, archive_medias, unarchive_medias
@@ -223,6 +224,7 @@ class Bot(object):
         self.comments_file = utils.file(comments_file)
         self.blacklist_file = utils.file(blacklist_file)
         self.whitelist_file = utils.file(whitelist_file)
+        self._db = DB('instabot.sqlite')
 
         self.proxy = proxy
         self.verbosity = verbosity

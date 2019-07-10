@@ -1,4 +1,3 @@
-
 import pytest
 import responses
 
@@ -23,14 +22,14 @@ def reset_files(_bot):
         _bot.skipped_file.remove(x)
 
 
-class TestBotFilter(TestBot):
+class TestBotFollow(TestBot):
 
     @responses.activate
     @pytest.mark.parametrize('username', [TEST_SEARCH_USERNAME_ITEM['username'],
                                           TEST_SEARCH_USERNAME_ITEM['pk'],
                                           str(TEST_SEARCH_USERNAME_ITEM['pk'])])
     @patch('time.sleep', return_value=None)
-    def test_follow(self, patched_time_sleep, username):
+    def test_follow(self, _patched_time_sleep, username):
         follows_at_start = self.bot.total['follows']
         self.bot._following = [1]
         reset_files(self.bot)
@@ -82,6 +81,7 @@ class TestBotFilter(TestBot):
         assert self.bot.total['follows'] == follows_at_start + 1
         assert self.bot.followed_file.list[-1] == str(user_id)
         assert str(user_id) in self.bot.following
+        self.bot._db.record_follow.assert_called_once_with(str(user_id))
 
     @responses.activate
     @pytest.mark.parametrize('user_ids', [
