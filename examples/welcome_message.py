@@ -29,6 +29,8 @@ args = parser.parse_args()
 bot = Bot()
 bot.login(username=args.u, password=args.p,
           proxy=args.proxy)
+          
+followers = bot.get_user_followers(args.u)
 
 # Use custom message from args if exist
 if args.message:
@@ -37,7 +39,7 @@ if args.message:
 # Check on existed file with notified users
 notified_users = utils.file(NOTIFIED_USERS_PATH)
 if not notified_users.list:
-    notified_users.save_list(bot.followers)
+    notified_users.save_list(followers)
     print(
         'All followers saved in file {users_path}.\n'
         'In a next time, for all new followers script will send messages.'.format(
@@ -49,7 +51,7 @@ if not notified_users.list:
 print('Read saved list of notified users. Count: {count}'.format(
     count=len(notified_users)
 ))
-all_followers = bot.followers
+all_followers = followers
 print('Amount of all followers is {count}'.format(
     count=len(all_followers)
 ))
