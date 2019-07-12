@@ -4,6 +4,10 @@ from tqdm import tqdm
 def unfollow(self, user_id):
     user_id = self.convert_to_user_id(user_id)
     user_info = self.get_user_info(user_id)
+    
+    if not user_info:
+        return False # No user_info
+
     username = user_info.get("username")
     self.console_print('===> Going to unfollow `user_id`: {} with username: {}'.format(user_id, username))
 
