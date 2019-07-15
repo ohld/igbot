@@ -58,7 +58,7 @@ def unfollow_non_followers(self, n_to_unfollows=None):
 
 def unfollow_after(self, seconds, number_to_unfollow=None, nonfollowers_only=False):
     num_users_message = number_to_unfollow if number_to_unfollow else "all"
-    self.logger.info(f'Unfollowing {num_users_message} users followed more than {seconds} seconds ago')
+    self.logger.info('Unfollowing {} users followed more than {} seconds ago'.format(num_users_message, seconds))
     users_to_unfollow = self._db.get_followed_before(seconds)
     if nonfollowers_only:
         users_to_unfollow = [user_id for user_id in users_to_unfollow if user_id in self.followers]
