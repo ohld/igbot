@@ -2,9 +2,9 @@ import pytest
 import sqlite3
 
 try:
-    from unittest.mock import Mock, patch
+    from unittest.mock import Mock
 except ImportError:
-    from mock import Mock, patch
+    from mock import Mock
 
 from instabot.db import DB
 

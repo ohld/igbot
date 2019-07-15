@@ -25,6 +25,6 @@ class DB(object):
 
     def get_followed_before(self, seconds_ago):
         cursor = self.__conn.execute((f"SELECT user_id FROM follows "
-                                       f"WHERE unfollowed_at IS NULL "
-                                       f"AND followed_at < DATETIME('now', '-{seconds_ago} seconds')"))
+                                      f"WHERE unfollowed_at IS NULL "
+                                      f"AND followed_at < DATETIME('now', '-{seconds_ago} seconds')"))
         return [row[0] for row in cursor.fetchall()]
