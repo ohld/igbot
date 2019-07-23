@@ -1,7 +1,7 @@
 """
 instabot example
 Workflow:
-	Welcome message for new followers.
+Welcome message for new followers.
 """
 import argparse
 import os
@@ -19,8 +19,7 @@ parser.add_argument('-users', type=str, nargs='?', help='a path to already notif
 parser.add_argument('-message', type=str, nargs='?', help='message text')
 args = parser.parse_args()
 bot = Bot()
-bot.login(username=args.u, password=args.p,
-          proxy=args.proxy)
+bot.login(username=args.u, password=args.p,proxy=args.proxy)
 followers = bot.get_user_followers(args.u)
 # Use custom message from args if exist
 if args.message:
