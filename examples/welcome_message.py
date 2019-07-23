@@ -10,7 +10,7 @@ from tqdm import tqdm
 sys.path.append(os.path.join(sys.path[0], '../'))
 from instabot import Bot, utils
 NOTIFIED_USERS_PATH = 'notified_users.txt'
-MESSAGE = 'Thank you for a script, sudoguy!'
+MESSAGE = 'Hi, thanks for reaching me'
 parser = argparse.ArgumentParser(add_help=True)
 parser.add_argument('-u', type=str, help="username")
 parser.add_argument('-p', type=str, help="password")
