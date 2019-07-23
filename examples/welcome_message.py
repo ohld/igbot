@@ -1,7 +1,7 @@
 """
-    instabot example 
-    Workflow:
-        Welcome message for new followers.
+instabot example
+Workflow:
+	Welcome message for new followers.
 """
 import argparse
 import os
