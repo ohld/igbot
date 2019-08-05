@@ -2,7 +2,7 @@
 # https://github.com/mgp25/Instagram-API/blob/master/src/Devices/GoodDevices.php
 DEFAULT_DEVICE = 'one_plus_7'
 DEVICES = {
-	# Released on August 2019
+    # Released on August 2019
     'one_plus_7': {
         'instagram_version': '103.1.0.15.119',
         'android_version': 28,
