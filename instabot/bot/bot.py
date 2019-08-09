@@ -311,7 +311,7 @@ class Bot(object):
         if storage is not None:
             total, self.blocked_actions, self.api.total_requests, self.start_time = storage
 
-            for k,v in total.items():
+            for k, v in total.items():
                 self.total[k] = v
 
     def print_counters(self):
