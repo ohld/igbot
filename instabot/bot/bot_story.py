@@ -39,6 +39,10 @@ def watch_users_reels(self, user_ids, max_users=100):
     reels = self.api.get_users_reel(user_ids[:max_users])
 
     # Filter to have users with at least 1 reel
+    if isinstance(reels, list):
+        # strange output
+        return False
+
     reels = {
         k: v for k, v in reels.items() if "items" in v and len(v["items"]) > 0
     }
