@@ -30,3 +30,9 @@ If you want to add a new documentation page in any language please follow the gu
 6. Create pull request.
 
 ***Thank you for supporting the project!***
+
+## For Developers
+
+Install the dependencies using [pipenv](https://github.com/pypa/pipenv): `pipenv install`
+
+See `.travis.yml` for the most up to date test and lint commands.

@@ -230,7 +230,7 @@ def approve_pending_thread_requests(self):
     if pending:
         for thread in pending:
             thread_id = thread['thread_id']
-            self.api.approve_pending_thread()
+            self.api.approve_pending_thread(thread_id)
             if self.api.last_response.status_code == 200:
                 self.logger.info("Approved thread: {}".format(thread_id))
             else:

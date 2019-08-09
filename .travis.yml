@@ -12,9 +12,8 @@ matrix:
       sudo: true
 
 install:
-  - pip install -r requirements.txt
-  - pip install pytest-cov
-  - pip install codecov
+  - pip install pipenv
+  - pipenv install --dev
 
 script:
  - pyflakes instabot tests examples

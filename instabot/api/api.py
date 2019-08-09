@@ -3,10 +3,10 @@ import hmac
 import json
 import logging
 import os
+import random
 import sys
 import time
 import uuid
-import random
 
 from requests_toolbelt import MultipartEncoder
 
@@ -111,15 +111,19 @@ class API(object):
                 })
 
                 if self.send_request('accounts/login/', data, True):
-                    self.is_logged_in = True
-                    self.logger.info("Logged-in successfully as '{}'!".format(self.username))
-                    if use_cookie:
-                        self.save_cookie(cookie_fname)
-                        self.logger.info("Saved cookie!")
+                    self.save_successful_login(use_cookie, cookie_fname)
                     return True
+                elif self.last_json.get('error_type', '') == 'checkpoint_challenge_required':
+                    self.logger.info('Checkpoint challenge required...')
+                    solved = self.solve_challenge()
+                    if solved:
+                        self.save_successful_login(use_cookie, cookie_fname)
+                        return True
+                    else:
+                        self.save_failed_login()
+                        return False
                 else:
-                    self.logger.info("Username or password is incorrect.")
-                    delete_credentials()
+                    self.save_failed_login()
                     return False
 
     def load_cookie(self, fname):
@@ -148,10 +152,84 @@ class API(object):
         with open(fname, 'w') as f:
             json.dump(requests.utils.dict_from_cookiejar(self.session.cookies), f)
 
+    def save_successful_login(self, use_cookie, cookie_fname):
+        self.is_logged_in = True
+        self.logger.info("Logged-in successfully as '{}'!".format(self.username))
+        if use_cookie:
+            self.save_cookie(cookie_fname)
+            self.logger.info("Saved cookie!")
+
+    def save_failed_login(self):
+        self.logger.info('Username or password is incorrect.')
+        delete_credentials()
+
+    def solve_challenge(self):
+        challenge_url = self.last_json['challenge']['api_path'][1:]
+        try:
+            self.send_request(challenge_url, None, login=True, with_signature=False)
+        except Exception as e:
+            self.logger.error(e)
+            return False
+
+        choices = self.get_challenge_choices()
+        for choice in choices:
+            print(choice)
+        code = input('Insert choice: ')
+
+        data = json.dumps({'choice': code})
+        try:
+            self.send_request(challenge_url, data, login=True)
+        except Exception as e:
+            self.logger.error(e)
+            return False
+
+        print('A code has been sent to the method selected, please check.')
+        code = input('Insert code: ')
+
+        data = json.dumps({'security_code': code})
+        try:
+            self.send_request(challenge_url, data, login=True)
+        except Exception as e:
+            self.logger.error(e)
+            return False
+
+        worked = (('logged_in_user' in self.last_json) and (self.last_json.get('action', '') == 'close') and (self.last_json.get('status', '') == 'ok'))
+
+        if worked:
+            return True
+
+        self.logger.error('Not possible to log in. Reset and try again')
+        return False
+
+    def get_challenge_choices(self):
+        last_json = self.last_json
+        choices = []
+
+        if last_json.get('step_name', '') == 'select_verify_method':
+            choices.append("Checkpoint challenge received")
+            if 'phone_number' in last_json['step_data']:
+                choices.append('0 - Phone')
+            if 'email' in last_json['step_data']:
+                choices.append('1 - Email')
+
+        if last_json.get('step_name', '') == 'delta_login_review':
+            choices.append("Login attempt challenge received")
+            choices.append('0 - It was me')
+            choices.append('0 - It wasn\'t me')
+
+        if not choices:
+            choices.append(
+                '"{}" challenge received'.format(
+                    last_json.get('step_name', 'Unknown')))
+            choices.append('0 - Default')
+
+        return choices
+
     def logout(self, *args, **kwargs):
         if not self.is_logged_in:
             return True
-        self.is_logged_in = not self.send_request('accounts/logout/')
+        data = json.dumps({})
+        self.is_logged_in = not self.send_request('accounts/logout/', data, with_signature=False)
         return not self.is_logged_in
 
     def set_proxy(self):
@@ -300,7 +378,8 @@ class API(object):
 
     def get_timeline_feed(self):
         """ Returns 8 medias from timeline feed of logged user."""
-        return self.send_request('feed/timeline/')
+        data = self.json_data({'is_prefetch': '0', 'is_pull_to_refresh': '0'})
+        return self.send_request('feed/timeline/', data, with_signature=False)
 
     def get_megaphone_log(self):
         return self.send_request('megaphone/log/')
@@ -312,8 +391,21 @@ class API(object):
         })
         return self.send_request('qe/expose/', data)
 
-    def upload_photo(self, photo, caption=None, upload_id=None, from_video=False, configure_photo_timeout=15):
-        return upload_photo(self, photo, caption, upload_id, from_video, configure_photo_timeout)
+    def upload_photo(self, photo, caption=None, upload_id=None, from_video=False, force_resize=False, options={}):
+        """Upload photo to Instagram
+
+        @param photo         Path to photo file (String)
+        @param caption       Media description (String)
+        @param upload_id     Unique upload_id (String). When None, then generate automatically
+        @param from_video    A flag that signals whether the photo is loaded from the video or by itself (Boolean, DEPRECATED: not used)
+        @param force_resize  Force photo resize (Boolean)
+        @param options       Object with difference options, e.g. configure_timeout, rename (Dict)
+                             Designed to reduce the number of function arguments!
+                             This is the simplest request object.
+
+        @return Boolean
+        """
+        return upload_photo(self, photo, caption, upload_id, from_video, force_resize, options)
 
     def download_photo(self, media_id, filename, media=False, folder='photos'):
         return download_photo(self, media_id, filename, media, folder)
@@ -330,14 +422,39 @@ class API(object):
     def configure_story(self, upload_id, photo):
         return configure_story(self, upload_id, photo)
 
-    def upload_video(self, video, caption=None, upload_id=None, thumbnail=None, configure_video_timeout=15):
-        return upload_video(self, video, caption, upload_id, thumbnail, configure_video_timeout)
+    def upload_video(self, video, caption=None, upload_id=None, thumbnail=None, options={}):
+        """Upload video to Instagram
+
+        @param video      Path to video file (String)
+        @param caption    Media description (String)
+        @param upload_id  Unique upload_id (String). When None, then generate automatically
+        @param thumbnail  Path to thumbnail for video (String). When None, then thumbnail is generate automatically
+        @param options    Object with difference options, e.g. configure_timeout, rename_thumbnail, rename (Dict)
+                          Designed to reduce the number of function arguments!
+                          This is the simplest request object.
+
+        @return           Object with state of uploading to Instagram (or False)
+        """
+        return upload_video(self, video, caption, upload_id, thumbnail, options)
 
     def download_video(self, media_id, filename, media=False, folder='video'):
         return download_video(self, media_id, filename, media, folder)
 
-    def configure_video(self, upload_id, video, thumbnail, width, height, duration, caption=''):
-        return configure_video(self, upload_id, video, thumbnail, width, height, duration, caption)
+    def configure_video(self, upload_id, video, thumbnail, width, height, duration, caption='', options={}):
+        """Post Configure Video (send caption, thumbnail and more else to Instagram)
+
+        @param upload_id  Unique upload_id (String). Received from "upload_video"
+        @param video      Path to video file (String)
+        @param thumbnail  Path to thumbnail for video (String). When None, then thumbnail is generate automatically
+        @param width      Width in px (Integer)
+        @param height     Height in px (Integer)
+        @param duration   Duration in seconds (Integer)
+        @param caption    Media description (String)
+        @param options    Object with difference options, e.g. configure_timeout, rename_thumbnail, rename (Dict)
+                          Designed to reduce the number of function arguments!
+                          This is the simplest request object.
+        """
+        return configure_video(self, upload_id, video, thumbnail, width, height, duration, caption, options)
 
     def edit_media(self, media_id, captionText=''):
         data = self.json_data({'caption_text': captionText})
@@ -822,8 +939,10 @@ class API(object):
         return self.send_request('accounts/set_public/', data)
 
     def set_name_and_phone(self, name='', phone=''):
-        data = self.json_data({'first_name': name, 'phone_number': phone})
-        return self.send_request('accounts/set_phone_and_name/', data)
+        return self.send_request(
+            'accounts/set_phone_and_name/',
+            self.json_data({'first_name': name, 'phone_number': phone})
+        )
 
     def get_profile_data(self):
         data = self.json_data()
@@ -843,17 +962,19 @@ class API(object):
 
     def fb_user_search(self, query):
         url = 'fbsearch/topsearch/?context=blended&query={query}&rank_token={rank_token}'
-        url = url.format(query=query, rank_token=self.rank_token)
-        return self.send_request(url)
+        return self.send_request(
+            url.format(query=query, rank_token=self.rank_token)
+        )
 
     def search_users(self, query):
         url = 'users/search/?ig_sig_key_version={sig_key}&is_typeahead=true&query={query}&rank_token={rank_token}'
-        url = url.format(
-            sig_key=config.SIG_KEY_VERSION,
-            query=query,
-            rank_token=self.rank_token
+        return self.send_request(
+            url.format(
+                sig_key=config.SIG_KEY_VERSION,
+                query=query,
+                rank_token=self.rank_token
+            )
         )
-        return self.send_request(url)
 
     def search_username(self, username):
         url = 'users/{username}/usernameinfo/'.format(username=username)
@@ -861,8 +982,9 @@ class API(object):
 
     def search_tags(self, query):
         url = 'tags/search/?is_typeahead=true&q={query}&rank_token={rank_token}'
-        url = url.format(query=query, rank_token=self.rank_token)
-        return self.send_request(url)
+        return self.send_request(
+            url.format(query=query, rank_token=self.rank_token)
+        )
 
     def search_location(self, query='', lat=None, lng=None):
         url = 'fbsearch/places/?rank_token={rank_token}&query={query}&lat={lat}&lng={lng}'
@@ -875,9 +997,9 @@ class API(object):
 
     def get_users_reel(self, user_ids):
         """
-        Input: user_ids - a list of user_id
-        Output: dictionary: user_id - stories data.
-        Basically, for each user output the same as after self.get_user_reel
+            Input: user_ids - a list of user_id
+            Output: dictionary: user_id - stories data.
+            Basically, for each user output the same as after self.get_user_reel
         """
         url = 'feed/reels_media/'
         res = self.send_request(
@@ -887,9 +1009,7 @@ class API(object):
             })
         )
         if res:
-            if "reels" in self.last_json:
-                return self.last_json["reels"]
-            return []
+            return self.last_json["reels"] if "reels" in self.last_json else []
         return []
 
     def see_reels(self, reels):
@@ -898,6 +1018,7 @@ class API(object):
             They can be aquired by using get_users_reel() or get_user_reel() methods
         """
         if not isinstance(reels, list):
+            # In case of only one reel as input
             reels = [reels]
 
         story_seen = {}
@@ -924,9 +1045,10 @@ class API(object):
         return self.send_request(url)
 
     def get_self_story_viewers(self, story_id):
-
-        url = 'media/{}/list_reel_media_viewer/?supported_capabilities_new={}'.format(story_id,
-                                                                                      config.SUPPORTED_CAPABILITIES)
+        url = 'media/{}/list_reel_media_viewer/?supported_capabilities_new={}'.format(
+            story_id,
+            config.SUPPORTED_CAPABILITIES
+        )
         return self.send_request(url)
 
     def get_tv_suggestions(self):
@@ -952,16 +1074,21 @@ class API(object):
         return self.send_request(url)
 
     def get_hashtag_sections(self, hashtag):
-        data = self.json_data({'supported_tabs': "['top','recent','places']", 'include_persistent': 'true'})
+        data = self.json_data(
+            {'supported_tabs': "['top','recent','places']", 'include_persistent': 'true'}
+        )
         url = 'tags/{}/sections/'.format(hashtag)
         return self.send_request(url, data)
 
     def get_media_insight(self, media_id):
-        url = 'insights/media_organic_insights/{}/?ig_sig_key_version={}'.format(media_id, config.IG_SIG_KEY)
+        url = 'insights/media_organic_insights/{}/?ig_sig_key_version={}'.format(
+            media_id, config.IG_SIG_KEY
+        )
         return self.send_request(url)
 
     def get_self_insight(self):
-        url = 'insights/account_organic_insights/?show_promotions_in_landing_page=true&first={}'.format()  # todo
+        # TODO:
+        url = 'insights/account_organic_insights/?show_promotions_in_landing_page=true&first={}'.format()
         return self.send_request(url)
 
     def save_media(self, media_id):
