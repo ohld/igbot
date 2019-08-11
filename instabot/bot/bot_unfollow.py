@@ -5,6 +5,11 @@ def unfollow(self, user_id):
     user_id = self.convert_to_user_id(user_id)
     user_info = self.get_user_info(user_id)
     username = user_info.get("username")
+
+    if not user_info:
+        self.logger.info("Can't get user_id=%s info" % str(user_id))
+        return False  # No user_info
+
     self.console_print('===> Going to unfollow `user_id`: {} with username: {}'.format(user_id, username))
 
     if self.check_user(user_id, unfollowing=True):
