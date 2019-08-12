@@ -10,13 +10,19 @@ USER_AGENT_BASE = (
     '{dpi}; {resolution}; {manufacturer}; '
     '{device}; {model}; {cpu}; en_US)')
 SIG_KEY_VERSION = '4'
-IG_SIG_KEY = '99e16edcca71d7c1f3fd74d447f6281bd5253a623000a55ed0b60014467a53b1'
+# version 105.0.0.18.119 (166149665)
+# August 6, 2019
+# from https://www.apkmirror.com/apk/instagram/instagram-instagram/instagram-instagram-105-0-0-18-119-release/instagram-105-0-0-18-119-4-android-apk-download/
+# Check website regularly to update IG_SIG_KEY and X-IG-Capabilities in REQUEST_HEADERS
+IG_SIG_KEY = '5f3e50f435583c9ae626302a71f7340044087a7e2c60adacfc254205a993e305'
 
 # Request variables taken from
 # https://github.com/ping/instagram_private_api/blob/422d61f0a8cc9de3d5a0e78bcba53751c44e5d63/instagram_private_api/client.py#L375
 REQUEST_HEADERS = {
     'Connection': 'Keep-Alive',
-    'X-IG-Capabilities': '3brTBw==',  # base64.b64encode(struct.pack('<i', 131316445)).decode('ascii')
+    # version 105.0.0.18.119 (166149665)
+    # python3 -c "import base64, struct; print(base64.b64encode(struct.pack('<i', 166149665)).decode('ascii'));"
+    'X-IG-Capabilities': 'IT7nCQ==',
     'X-IG-Connection-Type': 'WIFI',
     'X-FB-HTTP-Engine': 'Liger',
     'Accept': '*/*',
