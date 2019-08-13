@@ -291,7 +291,10 @@ class API(object):
             self.last_login = data['timing_value']['last_login']
             self.last_experiments = data['timing_value']['last_experiments']
 
-            self.logger.info('Recovery from {}, cookie, timing value and:\n-phone_id={}\n-uuid={}\n-client_session_id={}\n-device_id={}'.format(fname, self.phone_id, self.uuid, self.client_session_id, self.device_id))
+            self.device_settings = data['device_settings']
+            self.user_agent = data['user_agent']
+
+            self.logger.info('Recovery from {}, cookie, timing, device user-agent and:\n-phone_id={}\n-uuid={}\n-client_session_id={}\n-device_id={}'.format(fname, self.phone_id, self.uuid, self.client_session_id, self.device_id))
         return True
 
     def save_uuid_and_cookie(self, fname):
@@ -309,7 +312,9 @@ class API(object):
             'timing_value': {
                 'last_login': self.last_login,
                 'last_experiments': self.last_experiments
-            }
+            },
+            'device_settings': self.device_settings,
+            'user_agent': self.user_agent
         }
         with open(fname, 'w') as f:
             json.dump(data, f)
