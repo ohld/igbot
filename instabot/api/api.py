@@ -40,6 +40,8 @@ class API(object):
         self.base_path = base_path
 
         self.is_logged_in = False
+        self.last_login = None
+
         self.last_response = None
         self.total_requests = 0
 
@@ -95,11 +97,12 @@ class API(object):
         data = json.dumps(data)
         return self.send_request( 'launcher/sync/', data, login=login )
 
-    def sync_features(self):
+    def sync_user_features(self):
         data = self.default_data
-        data['id'] = self.property
+        data['id'] = self.user_id
         data['experiments'] = config.EXPERIMENTS
         data = json.dumps(data)
+        self.last_experiments = time.time()
         return self.send_request( 'qe/sync/', data, headers={ 'X-DEVICE-ID': self.uuid} )
 
     def set_contact_point_prefill(self, usage='prefill'):
@@ -117,25 +120,54 @@ class API(object):
         data = json.dumps({ 'adid': self.advertising_id })
         return self.send_request( 'attribution/log_attribution/', data, login=True )
 
-    def login_flow(self, just_logged_in):
+
+    def login_flow(self, just_logged_in=False, app_refresh_interval=1800):
         self.logger.info("LOGIN FLOW! Just logged-in: {}".format( just_logged_in ) )
         if(just_logged_in):
+            # SYNC
             self.sync_launcher(False)
+            self.sync_user_features()
+            # Update feed and timeline
             self.get_timeline_feed(options=['recovered_from_crash'])
             self.get_reels_tray_feed()
             self.get_suggested_searches('users')
+            # getRecentSearches() ...
             self.get_suggested_searches('blended')
+            # DM-Update
+            self.get_ranked_recipients('reshare', True)
+            self.get_ranked_recipients('save', True)
+            self.get_inbox_v2()
+            self.get_presence()
+            self.get_recent_activity()
+            # Config and other stuffs
+            self.get_loom_fetch_config()
+            self.get_profile_notice()
+            # getBlockedMedia() ...
+            self.explore(True)
+            # getQPFetch() ...
+            # getFacebookOTA() ...
         else:
-            if random.randint(1, 100) % 2 == 0: # Randomly change session_id (should be change every x times!)
-                self.client_session_id = self.generate_UUID(uuid_type=True)
+            is_session_expired = (time.time() - self.last_login) > app_refresh_interval
 
             self.get_timeline_feed(options=['is_pull_to_refresh'] if random.randint(1, 100) % 2 == 0 else [] ) # Random pull_to_refresh :)
 
-            if random.randint(1, 100) % 2 == 0:
-                self.get_reels_tray_feed()
+            if is_session_expired:
+                self.last_login = time.time()
+                self.client_session_id = self.generate_UUID(uuid_type=True)
 
-            self.sync_launcher()
-            self.sync_device_features()
+                # getBootstrapUsers() ...
+                self.get_reels_tray_feed()
+                self.get_ranked_recipients('reshare', True)
+                self.get_ranked_recipients('save', True)
+                self.get_inbox_v2()
+                self.get_presence()
+                self.get_recent_activity()
+                self.get_profile_notice()
+                self.explore(False)
+
+            if (time.time() - self.last_experiments) > 7200:
+                self.sync_user_features()
+                self.sync_device_features()
 
     def pre_login_flow(self):
         self.logger.info("PRE-LOGIN FLOW!... " )
@@ -233,6 +265,7 @@ class API(object):
 
     def save_successful_login(self, use_cookie, cookie_fname):
         self.is_logged_in = True
+        self.last_login = time.time()
         self.logger.info("Logged-in successfully as '{}'!".format(self.username))
         if use_cookie:
             self.save_cookie(cookie_fname)
@@ -324,6 +357,9 @@ class API(object):
             self.logger.critical(msg)
             raise Exception(msg)
 
+        if self.is_logged_in is True and login is False:
+            self.login_flow(login, 2700) # Before do a request check if new should do a login_flow
+
         self.session.headers.update(config.REQUEST_HEADERS)
         self.session.headers.update({'User-Agent': self.user_agent})
         if headers:
@@ -332,13 +368,10 @@ class API(object):
             self.total_requests += 1
             if post is not None:  # POST
                 if with_signature:
-                    # Only `send_direct_item` doesn't need a signature
-                    post = self.generate_signature(post)
-                response = self.session.post(
-                    config.API_URL + endpoint, data=post)
+                    post = self.generate_signature(post)  # Only `send_direct_item` doesn't need a signature
+                response = self.session.post( config.API_URL + endpoint, data=post)
             else:  # GET
-                response = self.session.get(
-                    config.API_URL + endpoint)
+                response = self.session.get( config.API_URL + endpoint)
         except Exception as e:
             self.logger.warning(str(e))
             return False
@@ -603,8 +636,19 @@ class API(object):
         })
         return self.send_request('accounts/change_password/', data)
 
-    def explore(self):
-        return self.send_request('discover/explore/')
+    def explore(self, is_prefetch=false):
+        data = {
+            'is_prefetch': is_prefetch,
+            'is_from_promote': False,
+            'timezone_offset': datetime.datetime.now(pytz.timezone('CET')).strftime('%z'),
+            'session_id': self.client_session_id,
+            'supported_capabilities_new': config.SUPPORTED_CAPABILITIES
+        }
+        if is_prefetch:
+            data['max_id'] = 0
+            data['module'] = 'explore_popular'
+        data = json.dumps(data)
+        return self.send_request('discover/explore/', data)
 
     def comment(self, media_id, comment_text):
         data = self.json_data({'comment_text': comment_text})
@@ -630,13 +674,23 @@ class API(object):
         return self.get_username_info(self.user_id)
 
     def get_recent_activity(self):
-        return self.send_request('news/inbox/?')
+        return self.send_request('news/inbox')
 
     def get_following_recent_activity(self):
-        return self.send_request('news/?')
+        return self.send_request('news')
 
-    def getv2Inbox(self):
-        return self.send_request('direct_v2/inbox/?')
+    def get_inbox_v2(self):
+        data = json.dumps({'persistentBadging', 'true', 'use_unified_inbox', 'true'})
+        return self.send_request('direct_v2/inbox/')
+
+    def get_presence(self):
+        return self.send_request('direct_v2/get_presence/')
+
+    def get_ranked_recipients(self, mode, show_threads, query=None):
+        data = { 'mode': mode, 'show_threads': 'false' if show_threads is False else 'true', 'use_unified_inbox': 'true' }
+        if query != None:
+            data['query'] = query
+        return self.send_request('direct_v2/ranked_recipients/', json.dumps(data))
 
     def get_user_tags(self, user_id):
         url = 'usertags/{user_id}/feed/?rank_token={rank_token}&ranked_content=true&'
@@ -1261,6 +1315,12 @@ class API(object):
         })
         url = 'friendships/approve/{}/'.format(user_id)
         return self.send_request(url, post=data)
+
+    def get_loom_fetch_config(self):
+        return self.send_request('loom/fetch_config/')
+
+    def get_profile_notice(self):
+        return self.send_request('users/profile_notice/')
 
     def reject_pending_friendship(self, user_id):
         data = self.json_data({

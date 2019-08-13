@@ -40,7 +40,7 @@ bot = Bot()
 bot.login(username=args.u, password=args.p,
           proxy=args.proxy)
 
-if bot.api.getv2Inbox():
+if bot.api.get_inbox_v2():
     data = bot.last_json['inbox']['threads']
     for item in data:
         bot.console_print(item['inviter']['username'], 'lightgreen')
