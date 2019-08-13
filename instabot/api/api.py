@@ -73,6 +73,7 @@ class API(object):
             self.phone_id = self.generate_UUID(uuid_type=True)
             self.uuid = self.generate_UUID(uuid_type=True)
             self.client_session_id = self.generate_UUID(uuid_type=True)
+            self.advertising_id = self.generate_UUID(uuid_type=True)
             self.device_id = self.generate_device_id(self.get_seed(username, password))
             # self.logger.info("uuid GENERATE! phone_id={}, uuid={}, session_id={}, device_id={}".format( self.phone_id, self.uuid, self.client_session_id, self.device_id ))
 
@@ -112,8 +113,12 @@ class API(object):
         data = json.dumps({ 'device_id': self.uuid, 'mobile_subno_usage': usage })
         return self.send_request( 'accounts/read_msisdn_header/', data, login=True, headers={ 'X-DEVICE-ID': self.uuid} )
 
+    def log_attribution(self, usage='default'):
+        data = json.dumps({ 'adid': self.advertising_id })
+        return self.send_request( 'attribution/log_attribution/', data, login=True )
+
     def login_flow(self, just_logged_in):
-        self.logger.info("LOGIN FLOW! Already logged-in: {}".format( just_logged_in ) )
+        self.logger.info("LOGIN FLOW! Just logged-in: {}".format( just_logged_in ) )
         if(just_logged_in):
             self.sync_launcher(False)
             self.get_timeline_feed(options=['recovered_from_crash'])
@@ -134,9 +139,11 @@ class API(object):
 
     def pre_login_flow(self):
         self.logger.info("PRE-LOGIN FLOW!... " )
+
         self.read_msisdn_header('default')
-        self.sync_launcher( True )
-        self.sync_device_features( True )
+        self.sync_launcher(True)
+        self.sync_device_features(True)
+        self.log_attribution()
         self.set_contact_point_prefill('prefill')
 
     def login(self, username=None, password=None, force=False, proxy=None,
