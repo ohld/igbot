@@ -99,6 +99,17 @@ class API(object):
         data = json.dumps(data)
         return self.send_request( 'qe/sync/', data, headers={ 'X-DEVICE-ID': self.uuid} )
 
+    def set_contact_point_prefill(self, usage='prefill'):
+        data = json.dumps({ 'id': self.uuid, 'phone_id': self.phone_id, '_csrftoken': self.token, 'usage': usage })
+        return self.send_request( 'accounts/contact_point_prefill/', data, login=True)
+
+    def get_suggested_searches(self, _type='users'):
+        return self.send_request('fbsearch/suggested_searches/', self.json_data({'type': _type}))
+
+    def read_msisdn_header(self, usage='default'):
+        data = json.dumps({ 'device_id': self.uuid, 'mobile_subno_usage': usage })
+        return self.send_request( 'accounts/read_msisdn_header/', data, login=True, headers={ 'X-DEVICE-ID': self.uuid} )
+
     def login(self, username=None, password=None, force=False, proxy=None,
               use_cookie=False, cookie_fname=None):
         if password is None:
