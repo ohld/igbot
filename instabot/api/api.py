@@ -74,6 +74,31 @@ class API(object):
             self.device_id = self.generate_device_id(self.get_seed(username, password))
             # self.logger.info("uuid GENERATE! phone_id={}, uuid={}, session_id={}, device_id={}".format( self.phone_id, self.uuid, self.session_id, self.device_id ))
 
+    def sync_device_features(self, login=False):
+        data = { 'id': self.uuid, 'server_config_retrieval': '1',  'experiments': config.LOGIN_EXPERIMENTS }
+        if login is False:
+            data['_uuid'] = self.uuid
+            data['_uid'] = self.user_id
+            data['_csrftoken'] = self.token
+        data = json.dumps(data)
+        return self.send_request( 'qe/sync/', data, login=login, headers={ 'X-DEVICE-ID': self.uuid} )
+
+    def sync_launcher(self, login=False):
+        data = { 'id': self.uuid, 'server_config_retrieval': '1',  'experiments': config.LAUNCHER_CONFIGS }
+        if login is False:
+            data['_uuid'] = self.uuid
+            data['_uid'] = self.user_id
+            data['_csrftoken'] = self.token
+        data = json.dumps(data)
+        return self.send_request( 'launcher/sync/', data, login=login )
+
+    def sync_features(self):
+        data = self.default_data
+        data['id'] = self.property
+        data['experiments'] = config.EXPERIMENTS
+        data = json.dumps(data)
+        return self.send_request( 'qe/sync/', data, headers={ 'X-DEVICE-ID': self.uuid} )
+
     def login(self, username=None, password=None, force=False, proxy=None,
               use_cookie=False, cookie_fname=None):
         if password is None:
@@ -374,10 +399,6 @@ class API(object):
             data = {}
         data.update(self.default_data)
         return json.dumps(data)
-
-    def sync_features(self):
-        data = self.json_data({'id': self.user_id, 'experiments': config.EXPERIMENTS})
-        return self.send_request('qe/sync/', data)
 
     def auto_complete_user_list(self):
         return self.send_request('friendships/autocomplete_user_list/')
