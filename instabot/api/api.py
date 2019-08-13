@@ -168,6 +168,8 @@ class API(object):
                 self.sync_user_features()
                 self.sync_device_features()
 
+        self.save_uuid_and_cookie()
+
     def pre_login_flow(self):
         self.logger.info("PRE-LOGIN FLOW!... " )
 
@@ -177,20 +179,20 @@ class API(object):
         self.log_attribution()
         self.set_contact_point_prefill('prefill')
 
-    def login(self, username=None, password=None, force=False, proxy=None,
-              use_cookie=False, cookie_fname=None, ask_for_code=False):
+    def login(self, username=None, password=None, force=False, proxy=None, use_cookie=False, cookie_fname=None, ask_for_code=False):
         if password is None:
             username, password = get_credentials(username=username)
 
-        self.device_id = self.generate_device_id(self.get_seed(username, password))
+        self.session = requests.Session()
+
         self.proxy = proxy
+        self.set_proxy()  # Only happens if `self.proxy`
+
         self.set_user(username, password)
 
-        """
         if not cookie_fname:
             cookie_fname = "{username}_cookie.txt".format(username=username)
             cookie_fname = os.path.join(self.base_path, cookie_fname)
-        """
 
         cookie_is_loaded = False
         """
@@ -209,11 +211,10 @@ class API(object):
 
         if use_cookie is True and self.load_uuid_and_cookie() is True:
             cookie_is_loaded = True
+            self.save_successful_login(use_cookie, cookie_fname)
+            self.login_flow(False)
 
         if not cookie_is_loaded and (not self.is_logged_in or force):
-            self.session = requests.Session()
-            self.set_proxy()  # Only happens if `self.proxy`
-
             self.pre_login_flow()
             data = json.dumps({
                 'phone_id': self.uuid,
@@ -297,7 +298,7 @@ class API(object):
             self.logger.info('Recovery from {}, cookie, timing, device user-agent and:\n-phone_id={}\n-uuid={}\n-client_session_id={}\n-device_id={}'.format(fname, self.phone_id, self.uuid, self.client_session_id, self.device_id))
         return True
 
-    def save_uuid_and_cookie(self, fname):
+    def save_uuid_and_cookie(self, fname=None):
         if fname is None:
             fname = "{}_uuid_and_cookie.json".format(self.username)
         data = {
@@ -414,9 +415,6 @@ class API(object):
             msg = "Not logged in!"
             self.logger.critical(msg)
             raise Exception(msg)
-
-        if self.is_logged_in is True and login is False:
-            self.login_flow(login, 2700) # Before do a request check if new should do a login_flow
 
         self.session.headers.update(config.REQUEST_HEADERS)
         self.session.headers.update({'User-Agent': self.user_agent})
@@ -694,7 +692,7 @@ class API(object):
         })
         return self.send_request('accounts/change_password/', data)
 
-    def explore(self, is_prefetch=false):
+    def explore(self, is_prefetch=False):
         data = {
             'is_prefetch': is_prefetch,
             'is_from_promote': False,
@@ -738,8 +736,8 @@ class API(object):
         return self.send_request('news')
 
     def get_inbox_v2(self):
-        data = json.dumps({'persistentBadging', 'true', 'use_unified_inbox', 'true'})
-        return self.send_request('direct_v2/inbox/')
+        data = json.dumps({'persistentBadging': True, 'use_unified_inbox': True})
+        return self.send_request('direct_v2/inbox/', data)
 
     def get_presence(self):
         return self.send_request('direct_v2/get_presence/')
