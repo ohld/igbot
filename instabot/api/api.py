@@ -113,6 +113,7 @@ class API(object):
         return self.send_request( 'accounts/read_msisdn_header/', data, login=True, headers={ 'X-DEVICE-ID': self.uuid} )
 
     def login_flow(self, just_logged_in):
+        self.logger.info("LOGIN FLOW! Already logged-in: {}".format( just_logged_in ) )
         if(just_logged_in):
             self.sync_launcher(False)
             self.get_timeline_feed(options=['recovered_from_crash'])
@@ -132,6 +133,7 @@ class API(object):
             self.sync_device_features()
 
     def pre_login_flow(self):
+        self.logger.info("PRE-LOGIN FLOW!... " )
         self.read_msisdn_header('default')
         self.sync_launcher( True )
         self.sync_device_features( True )
@@ -1097,6 +1099,16 @@ class API(object):
     def get_user_reel(self, user_id):
         url = 'feed/user/{}/reel_media/'.format(user_id)
         return self.send_request(url)
+
+    def get_reels_tray_feed(self):
+        data = {
+            'supported_capabilities_new': config.SUPPORTED_CAPABILITIES,
+            'reason': 'pull_to_refresh',
+            '_csrftoken': self.token,
+            '_uuid': self.uuid
+        }
+        data = json.dumps(data)
+        return self.send_request('feed/reels_tray/', data)
 
     def get_users_reel(self, user_ids):
         """
