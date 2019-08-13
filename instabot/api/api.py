@@ -414,10 +414,44 @@ class API(object):
     def auto_complete_user_list(self):
         return self.send_request('friendships/autocomplete_user_list/')
 
-    def get_timeline_feed(self):
-        """ Returns 8 medias from timeline feed of logged user."""
-        data = self.json_data({'is_prefetch': '0', 'is_pull_to_refresh': '0'})
-        return self.send_request('feed/timeline/', data, with_signature=False)
+    def get_timeline_feed(self, options=[]):
+        headers = {
+            'X-Ads-Opt-Out': '0',
+            'X-DEVICE-ID': self.uuid
+        }
+        data = {
+            '_csrftoken': self.rank_token,
+            '_uuid': self.uuid,
+            'is_prefetch': '0',
+            'phone_id': self.phone_id,
+            'device_id': self.uuid,
+            'client_session_id': self.session_id,
+            'battery_level': random.randint(25, 100),
+            'is_charging': '0',
+            'will_sound_on': '1',
+            'is_on_screen': 'true',
+            'timezone_offset': datetime.datetime.now(pytz.timezone('CET')).strftime('%z')
+        }
+
+        if 'is_pull_to_refresh' in options:
+            data['reason'] = 'pull_to_refresh'
+            data['is_pull_to_refresh'] = '1'
+        elif 'is_pull_to_refresh' not in options:
+            data['reason'] = 'warm_start_fetch'
+            data['is_pull_to_refresh'] = '0'
+
+        # unseen_posts
+        # feed_view_info
+        # seen_posts
+
+        if 'push_disabled' in options:
+            data['push_disabled'] = 'true'
+
+        if 'recovered_from_crash' in options:
+            data['recovered_from_crash'] = '1'
+
+        data = json.dumps(data)
+        return self.send_request('feed/timeline/', data, with_signature=False, headers=headers)
 
     def get_megaphone_log(self):
         return self.send_request('megaphone/log/')
