@@ -102,3 +102,29 @@ def follow_following(self, user_id, nfollows=None):
         self.logger.info("{} not found / closed / has no following.".format(user_id))
     else:
         self.follow_users(followings[:nfollows])
+
+
+def approve_pending_follow_requests(self):
+    pending = self.get_pending_follow_requests()
+    if pending:
+        for u in tqdm(pending, desc='Approving users'):
+            user_id = u["pk"]
+            username = u["username"]
+            self.api.approve_pending_friendship(user_id)
+            if self.api.last_response.status_code != 200:
+                self.logger.error("Could not approve {}".format(username))
+        self.logger.info("DONE: {} people approved.".format(len(pending)))
+        return True
+
+
+def reject_pending_follow_requests(self):
+    pending = self.get_pending_follow_requests()
+    if pending:
+        for u in tqdm(pending, desc='Rejecting users'):
+            user_id = u["pk"]
+            username = u["username"]
+            self.api.reject_pending_friendship(user_id)
+            if self.api.last_response.status_code != 200:
+                self.logger.error("Could not approve {}".format(username))
+        self.logger.info("DONE: {} people rejected.".format(len(pending)))
+        return True

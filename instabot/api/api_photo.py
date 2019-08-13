@@ -24,6 +24,7 @@ def download_photo(self, media_id, filename, media=False, folder='photos'):
         images = media['image_versions2']['candidates']
         fname = os.path.join(folder, filename)
         if os.path.exists(fname):
+            self.logger.info("File already esists, skipping...")
             return os.path.abspath(fname)
         response = self.session.get(images[0]['url'], stream=True)
         if response.status_code == 200:
@@ -84,23 +85,44 @@ def configure_photo(self, upload_id, photo, caption=''):
     return self.send_request('media/configure/?', data)
 
 
-def upload_photo(self, photo, caption=None, upload_id=None, from_video=False):
+def upload_photo(self, photo, caption=None, upload_id=None, from_video=False, force_resize=False, options={}):
+    """Upload photo to Instagram
+
+    @param photo         Path to photo file (String)
+    @param caption       Media description (String)
+    @param upload_id     Unique upload_id (String). When None, then generate automatically
+    @param from_video    A flag that signals whether the photo is loaded from the video or by itself (Boolean, DEPRECATED: not used)
+    @param force_resize  Force photo resize (Boolean)
+    @param options       Object with difference options, e.g. configure_timeout, rename (Dict)
+                         Designed to reduce the number of function arguments!
+                         This is the simplest request object.
+
+    @return Boolean
+    """
+    options = dict({
+        'configure_timeout': 15,
+        'rename': True
+    }, **(options or {}))
     if upload_id is None:
         upload_id = str(int(time.time() * 1000))
-    if not from_video:
-        photo = resize_image(photo)
     if not photo:
         return False
     if not compatible_aspect_ratio(get_image_size(photo)):
-        self.logger.info('Photo does not have a compatible '
-                         'photo aspect ratio.')
-        return False
+        self.logger.error('Photo does not have a compatible photo aspect ratio.')
+        if force_resize:
+            photo = resize_image(photo)
+        else:
+            return False
+
+    with open(photo, 'rb') as f:
+        photo_bytes = f.read()
+
     data = {
         'upload_id': upload_id,
         '_uuid': self.uuid,
         '_csrftoken': self.token,
         'image_compression': '{"lib_name":"jt","lib_version":"1.3.0","quality":"87"}',
-        'photo': ('pending_media_%s.jpg' % upload_id, open(photo, 'rb'), 'application/octet-stream', {'Content-Transfer-Encoding': 'binary'})
+        'photo': ('pending_media_%s.jpg' % upload_id, photo_bytes, 'application/octet-stream', {'Content-Transfer-Encoding': 'binary'})
     }
     m = MultipartEncoder(data, boundary=self.uuid)
     self.session.headers.update({'X-IG-Capabilities': '3Q4=',
@@ -113,12 +135,19 @@ def upload_photo(self, photo, caption=None, upload_id=None, from_video=False):
                                  'User-Agent': self.user_agent})
     response = self.session.post(
         config.API_URL + "upload/photo/", data=m.to_string())
+
+    configure_timeout = options.get('configure_timeout')
     if response.status_code == 200:
-        if self.configure_photo(upload_id, photo, caption):
-            self.expose()
-            from os import rename
-            rename(photo, "{}.REMOVE_ME".format(photo))
-            return True
+        for attempt in range(4):
+            if configure_timeout:
+                time.sleep(configure_timeout)
+            if self.configure_photo(upload_id, photo, caption):
+                media = self.last_json.get('media')
+                self.expose()
+                if options.get('rename'):
+                    from os import rename
+                    rename(photo, "{}.REMOVE_ME".format(photo))
+                return media
     return False
 
 
@@ -235,3 +264,70 @@ def resize_image(fname):
     new.paste(img, (0, 0, w, h), img)
     new.save(new_fname, quality=95)
     return new_fname
+
+
+def stories_shaper(fname):
+    '''
+    Find out the size of the uploaded image.
+    Processing is not needed if the image is already 1080x1920 pixels.
+    Otherwise, the image height should be 1920 pixels.
+    Substrate formation: Crop the image under 1080x1920 pixels and apply a Gaussian Blur filter.
+    Centering the image depending on its aspect ratio and paste it onto the substrate.
+    Save the image.
+    '''
+    try:
+        from PIL import Image, ImageFilter
+    except ImportError as e:
+        print("ERROR: {}".format(e))
+        print("Required module `PIL` not installed\n"
+              "Install with `pip install Pillow` and retry")
+        return False
+    img = Image.open(fname)
+    if (img.size[0], img.size[1]) == (1080, 1920):
+        print("Image is already 1080x1920. Just converting image.")
+        new_fname = "{}.STORIES.jpg".format(fname)
+        new = Image.new("RGB", (img.size[0], img.size[1]), (255, 255, 255))
+        new.paste(img, (0, 0, img.size[0], img.size[1]))
+        new.save(new_fname)
+        return new_fname
+    else:
+        min_width = 1080
+        min_height = 1920
+        if img.size[1] != 1920:
+            height_percent = (min_height / float(img.size[1]))
+            width_size = int((float(img.size[0]) * float(height_percent)))
+            img = img.resize((width_size, min_height), Image.ANTIALIAS)
+        else:
+            pass
+        if img.size[0] < 1080:
+            width_percent = (min_width / float(img.size[0]))
+            height_size = int((float(img.size[1]) * float(width_percent)))
+            img_bg = img.resize((min_width, height_size), Image.ANTIALIAS)
+        else:
+            pass
+        img_bg = img.crop((int((img.size[0] - 1080) / 2),
+                           int((img.size[1] - 1920) / 2),
+                           int(1080 + ((img.size[0] - 1080) / 2)),
+                           int(1920 + ((img.size[1] - 1920) / 2)))).filter(ImageFilter.GaussianBlur(100))
+        if img.size[1] > img.size[0]:
+            height_percent = (min_height / float(img.size[1]))
+            width_size = int((float(img.size[0]) * float(height_percent)))
+            img = img.resize((width_size, min_height), Image.ANTIALIAS)
+            if img.size[0] > 1080:
+                width_percent = (min_width / float(img.size[0]))
+                height_size = int((float(img.size[1]) * float(width_percent)))
+                img = img.resize((min_width, height_size), Image.ANTIALIAS)
+                img_bg.paste(img, (int(540 - img.size[0] / 2), int(960 - img.size[1] / 2)))
+            else:
+                img_bg.paste(img, (int(540 - img.size[0] / 2), 0))
+        else:
+            width_percent = (min_width / float(img.size[0]))
+            height_size = int((float(img.size[1]) * float(width_percent)))
+            img = img.resize((min_width, height_size), Image.ANTIALIAS)
+            img_bg.paste(img, (int(540 - img.size[0] / 2), int(960 - img.size[1] / 2)))
+        new_fname = "{}.STORIES.jpg".format(fname)
+        print("Saving new image w:{w} h:{h} to `{f}`".format(w=img_bg.size[0], h=img_bg.size[1], f=new_fname))
+        new = Image.new("RGB", (img_bg.size[0], img_bg.size[1]), (255, 255, 255))
+        new.paste(img_bg, (0, 0, img_bg.size[0], img_bg.size[1]))
+        new.save(new_fname)
+        return new_fname

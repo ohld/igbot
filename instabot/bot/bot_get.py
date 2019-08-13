@@ -6,10 +6,43 @@
 from tqdm import tqdm
 
 
+# STORY
+
+def get_user_stories(self, user_id):
+    self.api.get_user_stories(user_id)
+    try:
+        if int(self.api.last_json["reel"]["media_count"]) > 0:
+            list_image = []
+            list_video = []
+            for item in self.api.last_json["reel"]["items"]:
+                if int(item["media_type"]) == 1:  # photo
+                    img = item["image_versions2"]["candidates"][0]["url"]
+                    list_image.append(img)
+                elif int(item["media_type"]) == 2:  # video
+                    video = item["video_versions"][0]["url"]
+                    list_video.append(video)
+            return list_image, list_video
+        else:
+            return [], []
+    except Exception as e:
+        self.logger.error(str(e))
+        return [], []
+
+
+def get_self_story_viewers(self, story_id):
+    self.api.get_self_story_viewers(story_id)
+    return self.api.last_json
+
+
+def get_user_reel(self, user_id):
+    self.api.get_user_reel(user_id)
+    return self.api.last_json
+
+
 def get_media_owner(self, media_id):
     self.api.media_info(media_id)
     try:
-        return str(self.api.last_json["items"][0]["user"]["pk"])
+        return str(self.api.last_json.get("items")[0]["user"]["pk"])
     except Exception as ex:
         self.logger.error("Error: get_media_owner(%s)\n%s", media_id, ex)
         return False
@@ -28,15 +61,15 @@ def get_popular_medias(self):
 def get_your_medias(self, as_dict=False):
     self.api.get_self_user_feed()
     if as_dict:
-        return self.api.last_json["items"]
-    return self.filter_medias(self.api.last_json["items"], False)
+        return self.api.last_json.get("items")
+    return self.filter_medias(self.api.last_json.get("items"), False)
 
 
 def get_archived_medias(self, as_dict=False):
     self.api.get_archive_feed()
     if as_dict:
-        return self.api.last_json["items"]
-    return self.filter_medias(self.api.last_json["items"], False)
+        return self.api.last_json.get("items")
+    return self.filter_medias(self.api.last_json.get("items"), False)
 
 
 def get_timeline_medias(self, filtration=True):
@@ -58,7 +91,7 @@ def get_user_medias(self, user_id, filtration=True, is_comment=False):
     if self.api.last_json["status"] == 'fail':
         self.logger.warning("This is a closed account.")
         return []
-    return self.filter_medias(self.api.last_json["items"], filtration, is_comment=is_comment)
+    return self.filter_medias(self.api.last_json.get("items"), filtration, is_comment=is_comment)
 
 
 def get_total_user_medias(self, user_id):
@@ -96,7 +129,7 @@ def get_hashtag_medias(self, hashtag, filtration=True):
     if not self.api.get_hashtag_feed(hashtag):
         self.logger.warning("Error while getting hashtag feed.")
         return []
-    return self.filter_medias(self.api.last_json["items"], filtration)
+    return self.filter_medias(self.api.last_json.get("items"), filtration)
 
 
 def get_total_hashtag_medias(self, hashtag, amount=100, filtration=False):
@@ -112,7 +145,7 @@ def get_geotag_medias(self, geotag, filtration=True):
 
 def get_locations_from_coordinates(self, latitude, longitude):
     self.api.search_location(lat=latitude, lng=longitude)
-    all_locations = self.api.last_json["items"]
+    all_locations = self.api.last_json.get("items")
     filtered_locations = []
 
     for location in all_locations:
@@ -132,7 +165,7 @@ def get_media_info(self, media_id):
     if "items" not in self.api.last_json:
         self.logger.info("Media with %s not found." % media_id)
         return []
-    return self.api.last_json["items"]
+    return self.api.last_json.get("items")
 
 
 def get_timeline_users(self):
@@ -330,3 +363,20 @@ def convert_to_user_id(self, x):
         x = self.get_user_id_from_username(x)
     # if type is not str than it is int so user_id passed
     return x
+
+
+def get_pending_follow_requests(self):
+    self.api.get_pending_friendships()
+    if self.api.last_json.get("users"):
+        return self.api.last_json.get("users")
+    else:
+        self.logger.info("There isn't any pending request.")
+        return []
+
+
+def get_pending_thread_requests(self):
+    self.api.get_pending_inbox()
+    threads = self.api.last_json['inbox']['threads']
+    if not threads:
+        self.logger.info("There isn't any pending thread request.")
+    return threads

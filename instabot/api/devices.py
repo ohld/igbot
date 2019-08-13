@@ -1,10 +1,12 @@
 # Devices taken from
 # https://github.com/mgp25/Instagram-API/blob/master/src/Devices/GoodDevices.php
 DEFAULT_DEVICE = 'samsung_galaxy_s7'
+# from https://www.apkmirror.com/apk/instagram/instagram-instagram/instagram-instagram-105-0-0-18-119-release/instagram-105-0-0-18-119-4-android-apk-download/
+INSTAGRAM_VERSION = '105.0.0.18.119'
 DEVICES = {
     # Released on March 2016
     'samsung_galaxy_s7': {
-        'instagram_version': '26.0.0.10.86',
+        'instagram_version': INSTAGRAM_VERSION,
         'android_version': 24,
         'android_release': '7.0',
         'dpi': '640dpi',
@@ -16,7 +18,7 @@ DEVICES = {
     },
     # Released on January 2017
     'huawei_mate_9_pro': {
-        'instagram_version': '26.0.0.10.86',
+        'instagram_version': INSTAGRAM_VERSION,
         'android_version': 24,
         'android_release': '7.0',
         'dpi': '640dpi',
@@ -26,9 +28,21 @@ DEVICES = {
         'model': 'HWLON',
         'cpu': 'hi3660'
     },
+    # Released on February 2018
+    'samsung_galaxy_s9_plus': {
+        'instagram_version': INSTAGRAM_VERSION,
+        'android_version': 24,
+        'android_release': '7.0',
+        'dpi': '640dpi',
+        'resolution': '1440x2560',
+        'manufacturer': 'samsung',
+        'device': 'SM-G965F',
+        'model': 'star2qltecs',
+        'cpu': 'samsungexynos9810'
+    },
     # Released on November 2016
     'one_plus_3t': {
-        'instagram_version': '26.0.0.10.86',
+        'instagram_version': INSTAGRAM_VERSION,
         'android_version': 24,
         'android_release': '7.0',
         'dpi': '380dpi',
@@ -40,7 +54,7 @@ DEVICES = {
     },
     # Released on April 2016
     'lg_g5': {
-        'instagram_version': '26.0.0.10.86',
+        'instagram_version': INSTAGRAM_VERSION,
         'android_version': 23,
         'android_release': '6.0.1',
         'dpi': '640dpi',
@@ -52,7 +66,7 @@ DEVICES = {
     },
     # Released on June 2016
     'zte_axon_7': {
-        'instagram_version': '26.0.0.10.86',
+        'instagram_version': INSTAGRAM_VERSION,
         'android_version': 23,
         'android_release': '6.0.1',
         'dpi': '640dpi',
@@ -64,7 +78,7 @@ DEVICES = {
     },
     # Released on March 2016
     'samsung_galaxy_s7_edge': {
-        'instagram_version': '26.0.0.10.86',
+        'instagram_version': INSTAGRAM_VERSION,
         'android_version': 23,
         'android_release': '6.0.1',
         'dpi': '640dpi',

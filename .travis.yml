@@ -1,34 +1,31 @@
 language: python
+dist: xenial
 
 python:
   - "2.7"
   - "3.5"
   - "3.6"
-# Enable 3.7 without globally enabling sudo and dist: xenial for other build jobs
+  - "3.7"
+  - "3.8-dev"
+  - "nightly"
+  - "pypy"
+  - "pypy3.5"
+
 matrix:
-  include:
-    - python: 3.7
-      dist: xenial
-      sudo: true
+  allow_failures:
+    - python: "3.8-dev"
+    - python: "nightly"
 
 install:
-  - pip install -r requirements.txt
-  - pip install pytest-cov
-  - pip install codecov
+  - pip install tox-travis codecov
 
 script:
- - pyflakes instabot tests examples
- - pycodestyle --ignore=E501 instabot tests
- - pycodestyle --ignore=E402,E501 examples
- - py.test --cov=instabot --cov-report=xml
- - codecov
+ - tox
 
 after_success:
+ - codecov
  - if [ "$TRAVIS_PULL_REQUEST" = "false" ] && [ "$TRAVIS_BRANCH" = "master" ]; then bumpversion --verbose minor && bash push.sh; fi
 
-branches:
-  only:
-    - master
 cache: pip
 
 # deploy:

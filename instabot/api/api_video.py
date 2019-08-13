@@ -12,24 +12,36 @@ from requests_toolbelt import MultipartEncoder
 from . import config
 
 
-def download_video(self, media_id, filename, media=False, folder='videos'):
+def download_video(self, media_id, filename=None, media=False, folder='videos'):
+    video_urls = []
     if not media:
         self.media_info(media_id)
         media = self.last_json['items'][0]
     filename = '{0}_{1}.mp4'.format(media['user']['username'], media_id) if not filename else '{0}.mp4'.format(filename)
+
     try:
         clips = media['video_versions']
+        video_urls.append(clips[0]['url'])
+    except KeyError:
+        carousels = media.get('carousel_media', [])
+        for carousel in carousels:
+            video_urls.append(carousel['video_versions'][0]['url'])
     except Exception:
         return False
+
     fname = os.path.join(folder, filename)
     if os.path.exists(fname):
         return os.path.abspath(fname)
-    response = self.session.get(clips[0]['url'], stream=True)
-    if response.status_code == 200:
-        with open(fname, 'wb') as f:
-            response.raw.decode_content = True
-            shutil.copyfileobj(response.raw, f)
-        return os.path.abspath(fname)
+
+    for counter, video_url in enumerate(video_urls):
+        response = self.session.get(video_url, stream=True)
+        if response.status_code == 200:
+            fname = os.path.join(folder, '{}_{}'.format(counter, filename))
+            with open(fname, 'wb') as f:
+                response.raw.decode_content = True
+                shutil.copyfileobj(response.raw, f)
+
+    return os.path.abspath(fname)
 
 
 # leaving here function used by old upload_video, no more used now
@@ -58,10 +70,27 @@ def get_video_info(filename):
     return res
 
 
-def upload_video(self, video, caption=None, upload_id=None):
+def upload_video(self, video, caption=None, upload_id=None, thumbnail=None, options={}):
+    """Upload video to Instagram
+
+    @param video      Path to video file (String)
+    @param caption    Media description (String)
+    @param upload_id  Unique upload_id (String). When None, then generate automatically
+    @param thumbnail  Path to thumbnail for video (String). When None, then thumbnail is generate automatically
+    @param options    Object with difference options, e.g. configure_timeout, rename_thumbnail, rename (Dict)
+                      Designed to reduce the number of function arguments!
+                      This is the simplest request object.
+
+    @return           Object with state of uploading to Instagram (or False)
+    """
+    options = dict({
+        'configure_timeout': 15,
+        'rename_thumbnail': True,
+        'rename': True
+    }, **(options or {}))
     if upload_id is None:
         upload_id = str(int(time.time() * 1000))
-    video, thumbnail, width, height, duration = resize_video(video)
+    video, thumbnail, width, height, duration = resize_video(video, thumbnail)
     data = {
         'upload_id': upload_id,
         '_csrftoken': self.token,
@@ -119,18 +148,40 @@ def upload_video(self, video, caption=None, upload_id=None):
             response = self.session.post(upload_url, data=video_data[start:start + length])
         self.session.headers = headers
 
+        configure_timeout = options.get('configure_timeout')
         if response.status_code == 200:
-            if self.configure_video(upload_id, video, thumbnail, width, height, duration, caption):
-                self.expose()
-                from os import rename
-                rename(video, "{}.REMOVE_ME".format(video))
-                return True
+            for attempt in range(4):
+                if configure_timeout:
+                    time.sleep(configure_timeout)
+                if self.configure_video(upload_id, video, thumbnail, width, height, duration, caption, options=options):
+                    media = self.last_json.get('media')
+                    self.expose()
+                    if options.get('rename'):
+                        from os import rename
+                        rename(video, "{}.REMOVE_ME".format(video))
+                    return media
     return False
 
 
-def configure_video(self, upload_id, video, thumbnail, width, height, duration, caption=''):
+def configure_video(self, upload_id, video, thumbnail, width, height, duration, caption='', options={}):
+    """Post Configure Video (send caption, thumbnail and more else to Instagram)
+
+    @param upload_id  Unique upload_id (String). Received from "upload_video"
+    @param video      Path to video file (String)
+    @param thumbnail  Path to thumbnail for video (String). When None, then thumbnail is generate automatically
+    @param width      Width in px (Integer)
+    @param height     Height in px (Integer)
+    @param duration   Duration in seconds (Integer)
+    @param caption    Media description (String)
+    @param options    Object with difference options, e.g. configure_timeout, rename_thumbnail, rename (Dict)
+                      Designed to reduce the number of function arguments!
+                      This is the simplest request object.
+    """
     # clipInfo = get_video_info(video)
-    self.upload_photo(photo=thumbnail, caption=caption, upload_id=upload_id, from_video=True)
+    options = {
+        'rename': options.get('rename_thumbnail', True)
+    }
+    self.upload_photo(photo=thumbnail, caption=caption, upload_id=upload_id, from_video=True, options=options)
     data = self.json_data({
         'upload_id': upload_id,
         'source_type': 3,
@@ -154,7 +205,7 @@ def configure_video(self, upload_id, video, thumbnail, width, height, duration, 
     return self.send_request('media/configure/?video=1', data)
 
 
-def resize_video(fname):
+def resize_video(fname, thumbnail=None):
     from math import ceil
     try:
         import moviepy.editor as mp
@@ -215,7 +266,8 @@ def resize_video(fname):
     new_fname = "{}.CONVERTED.mp4".format(fname)
     print("Saving new video w:{w} h:{h} to `{f}`".format(w=w, h=h, f=new_fname))
     vid.write_videofile(new_fname, codec="libx264", audio_codec="aac")
-    print("Generating thumbnail...")
-    thumbnail_name = "{}.jpg".format(fname)
-    vid.save_frame(thumbnail_name, t=(vid.duration / 2))
-    return new_fname, thumbnail_name, w, h, vid.duration
+    if not thumbnail:
+        print("Generating thumbnail...")
+        thumbnail = "{}.jpg".format(fname)
+        vid.save_frame(thumbnail, t=(vid.duration / 2))
+    return new_fname, thumbnail, w, h, vid.duration

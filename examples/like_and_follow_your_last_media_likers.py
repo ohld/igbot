@@ -31,6 +31,7 @@ def like_and_follow_media_likers(bot, media, nlikes=3):
 
 
 def like_and_follow_your_feed_likers(bot, nlikes=3):
+    bot.logger.info("Starting like_and_follow_your_feed_likers")
     last_media = bot.get_your_medias()[0]
     return like_and_follow_media_likers(bot, last_media, nlikes=nlikes)
 

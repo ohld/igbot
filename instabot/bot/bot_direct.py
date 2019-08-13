@@ -1,3 +1,6 @@
+import os
+from mimetypes import guess_type
+
 from tqdm import tqdm
 
 
@@ -160,7 +163,6 @@ def send_profile(self, profile_user_id, user_ids, text='', thread_id=None):
 def send_like(self, user_ids, thread_id=None):
     """
     :param self: bot
-    :param text: text of message
     :param user_ids: list of user_ids for creating group or one user_id for send to one person
     :param thread_id: thread_id
     """
@@ -181,8 +183,55 @@ def send_like(self, user_ids, thread_id=None):
     return False
 
 
+def send_photo(self, user_ids, filepath, thread_id=None):
+    """
+    :param self: bot
+    :param filepath: file path to send
+    :param user_ids: list of user_ids for creating group or one user_id for send to one person
+    :param thread_id: thread_id
+    """
+    user_ids = _get_user_ids(self, user_ids)
+    if not isinstance(user_ids, (list, str)):
+        self.logger.error('user_ids must be a list or string')
+        return False
+
+    if self.reached_limit('messages'):
+        self.logger.info("Out of messages for today.")
+        return False
+
+    if not os.path.exists(filepath):
+        self.logger.error('File %s is not found', filepath)
+        return False
+
+    mime_type = guess_type(filepath)
+    if mime_type[0] != 'image/jpeg':
+        self.logger.error('Only jpeg files are supported')
+        return False
+
+    self.delay('message')
+    if not self.api.send_direct_item(
+            'photo', user_ids, filepath=filepath, thread=thread_id):
+        self.logger.info("Message to %s wasn't sent", user_ids)
+        return False
+
+    self.total['messages'] += 1
+    return True
+
+
 def _get_user_ids(self, user_ids):
     if isinstance(user_ids, str):
         user_ids = self.convert_to_user_id(user_ids)
         return [user_ids]
     return [self.convert_to_user_id(user) for user in user_ids]
+
+
+def approve_pending_thread_requests(self):
+    pending = self.get_pending_thread_requests()
+    if pending:
+        for thread in pending:
+            thread_id = thread['thread_id']
+            self.api.approve_pending_thread(thread_id)
+            if self.api.last_response.status_code == 200:
+                self.logger.info("Approved thread: {}".format(thread_id))
+            else:
+                self.logger.error("Could not approve thread {}".format(thread_id))
