@@ -67,7 +67,7 @@ class API(object):
         self.username = username
         self.password = password
 
-        if generate_uuid is True:
+        if generate_uuid is True: # This field should be stores in json, data and cookie in json file. # Next step!
             self.phone_id = self.generate_UUID(uuid_type=True)
             self.uuid = self.generate_UUID(uuid_type=True)
             self.session_id = self.generate_UUID(uuid_type=True)
@@ -110,8 +110,27 @@ class API(object):
         data = json.dumps({ 'device_id': self.uuid, 'mobile_subno_usage': usage })
         return self.send_request( 'accounts/read_msisdn_header/', data, login=True, headers={ 'X-DEVICE-ID': self.uuid} )
 
+    def login_flow(self, just_logged_in):
+        if(just_logged_in):
+            self.sync_launcher(False)
+            self.get_timeline_feed(options=['recovered_from_crash'])
+            self.get_reels_tray_feed()
+            self.get_suggested_searches('users')
+            self.get_suggested_searches('blended')
+        else:
+            if random.randint(1, 100) % 2 == 0: # Randomly change session_id (should be change every x times!)
+                self.session_id = self.generate_UUID(uuid_type=True)
+            self.sync_launcher()
+            self.sync_device_features()
+
+    def pre_login_flow(self):
+        self.read_msisdn_header('default')
+        self.sync_launcher( True )
+        self.sync_device_features( True )
+        self.set_contact_point_prefill('prefill')
+
     def login(self, username=None, password=None, force=False, proxy=None,
-              use_cookie=False, cookie_fname=None):
+              use_cookie=False, cookie_fname=None, ask_for_code=False):
         if password is None:
             username, password = get_credentials(username=username)
 
@@ -139,24 +158,25 @@ class API(object):
         if not cookie_is_loaded and (not self.is_logged_in or force):
             self.session = requests.Session()
             self.set_proxy()  # Only happens if `self.proxy`
-            url = 'si/fetch_headers/?challenge_type=signup&guid={uuid}'
-            url = url.format(uuid=self.generate_UUID(False))
-            if self.send_request(url, login=True):
-                data = json.dumps({
-                    'phone_id': self.generate_UUID(True),
-                    '_csrftoken': self.token,
-                    'username': self.username,
-                    'guid': self.uuid,
-                    'device_id': self.device_id,
-                    'password': self.password,
-                    'login_attempt_count': '0',
-                })
 
-                if self.send_request('accounts/login/', data, True):
-                    self.save_successful_login(use_cookie, cookie_fname)
-                    return True
-                elif self.last_json.get('error_type', '') == 'checkpoint_challenge_required':
-                    self.logger.info('Checkpoint challenge required...')
+            self.pre_login_flow()
+            data = json.dumps({
+                'phone_id': self.uuid,
+                '_csrftoken': self.token,
+                'username': self.username,
+                'guid': self.uuid,
+                'device_id': self.device_id,
+                'password': self.password,
+                'login_attempt_count': '0',
+            })
+
+            if self.send_request('accounts/login/', data, True):
+                self.save_successful_login(use_cookie, cookie_fname)
+                self.login_flow(True)
+                return True
+            elif self.last_json.get('error_type', '') == 'checkpoint_challenge_required':
+                self.logger.info('Checkpoint challenge required...')
+                if ask_for_code is True:
                     solved = self.solve_challenge()
                     if solved:
                         self.save_successful_login(use_cookie, cookie_fname)
@@ -164,9 +184,9 @@ class API(object):
                     else:
                         self.save_failed_login()
                         return False
-                else:
-                    self.save_failed_login()
-                    return False
+            else:
+                self.save_failed_login()
+                return False
 
     def load_cookie(self, fname):
         # Python2 compatibility
@@ -709,6 +729,9 @@ class API(object):
         return self.send_request(url, data)
 
     def like(self, media_id):
+        if random.randint(1, 100) % 2 == 0: # Increase the randomness
+            self.login_flow(False) # For test
+
         data = self.json_data({'media_id': media_id})
         url = 'media/{media_id}/like/'.format(media_id=media_id)
         return self.send_request(url, data)
