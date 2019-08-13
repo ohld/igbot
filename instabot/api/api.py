@@ -72,9 +72,9 @@ class API(object):
         if generate_uuid is True: # This field should be stores in json, data and cookie in json file. # Next step!
             self.phone_id = self.generate_UUID(uuid_type=True)
             self.uuid = self.generate_UUID(uuid_type=True)
-            self.session_id = self.generate_UUID(uuid_type=True)
+            self.client_session_id = self.generate_UUID(uuid_type=True)
             self.device_id = self.generate_device_id(self.get_seed(username, password))
-            # self.logger.info("uuid GENERATE! phone_id={}, uuid={}, session_id={}, device_id={}".format( self.phone_id, self.uuid, self.session_id, self.device_id ))
+            # self.logger.info("uuid GENERATE! phone_id={}, uuid={}, session_id={}, device_id={}".format( self.phone_id, self.uuid, self.client_session_id, self.device_id ))
 
     def sync_device_features(self, login=False):
         data = { 'id': self.uuid, 'server_config_retrieval': '1',  'experiments': config.LOGIN_EXPERIMENTS }
@@ -121,7 +121,7 @@ class API(object):
             self.get_suggested_searches('blended')
         else:
             if random.randint(1, 100) % 2 == 0: # Randomly change session_id (should be change every x times!)
-                self.session_id = self.generate_UUID(uuid_type=True)
+                self.client_session_id = self.generate_UUID(uuid_type=True)
 
             self.get_timeline_feed(options=['is_pull_to_refresh'] if random.randint(1, 100) % 2 == 0 else [] ) # Random pull_to_refresh :)
 
@@ -453,7 +453,7 @@ class API(object):
             'is_prefetch': '0',
             'phone_id': self.phone_id,
             'device_id': self.uuid,
-            'client_session_id': self.session_id,
+            'client_session_id': self.client_session_id,
             'battery_level': random.randint(25, 100),
             'is_charging': '0',
             'will_sound_on': '1',
