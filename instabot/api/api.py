@@ -7,6 +7,8 @@ import random
 import sys
 import time
 import uuid
+import datetime
+import pytz
 
 from requests_toolbelt import MultipartEncoder
 
@@ -120,6 +122,12 @@ class API(object):
         else:
             if random.randint(1, 100) % 2 == 0: # Randomly change session_id (should be change every x times!)
                 self.session_id = self.generate_UUID(uuid_type=True)
+
+            self.get_timeline_feed(options=['is_pull_to_refresh'] if random.randint(1, 100) % 2 == 0 else [] ) # Random pull_to_refresh :)
+
+            if random.randint(1, 100) % 2 == 0:
+                self.get_reels_tray_feed()
+
             self.sync_launcher()
             self.sync_device_features()
 
