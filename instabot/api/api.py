@@ -147,10 +147,9 @@ class API(object):
             # getQPFetch() ...
             # getFacebookOTA() ...
         else:
-            is_session_expired = (time.time() - self.last_login) > app_refresh_interval
-
             self.get_timeline_feed(options=['is_pull_to_refresh'] if random.randint(1, 100) % 2 == 0 else [] ) # Random pull_to_refresh :)
 
+            is_session_expired = (time.time() - self.last_login) > app_refresh_interval
             if is_session_expired:
                 self.last_login = time.time()
                 self.client_session_id = self.generate_UUID(uuid_type=True)
@@ -187,11 +186,14 @@ class API(object):
         self.proxy = proxy
         self.set_user(username, password)
 
+        """
         if not cookie_fname:
             cookie_fname = "{username}_cookie.txt".format(username=username)
             cookie_fname = os.path.join(self.base_path, cookie_fname)
+        """
 
         cookie_is_loaded = False
+        """
         if use_cookie:
             try:
                 self.load_cookie(cookie_fname)
@@ -203,6 +205,10 @@ class API(object):
             except Exception:
                 print("The cookie is not found, but don't worry `instabot`"
                       " will create it for you using your login details.")
+        """
+
+        if use_cookie is True and self.load_uuid_and_cookie() is True:
+            cookie_is_loaded = True
 
         if not cookie_is_loaded and (not self.is_logged_in or force):
             self.session = requests.Session()
@@ -262,6 +268,53 @@ class API(object):
     def save_cookie(self, fname):
         with open(fname, 'w') as f:
             json.dump(requests.utils.dict_from_cookiejar(self.session.cookies), f)
+
+    def load_uuid_and_cookie(self, fname=None):
+        if fname is None:
+            fname = "{}_uuid_and_cookie.json".format(self.username)
+
+        if os.path.isfile(fname) is False:
+            return False
+
+        with open(fname, 'r') as f:
+            data = json.load(f)
+            self.session.cookies = requests.utils.cookiejar_from_dict( data['cookie'] )
+            cookie_username = self.cookie_dict['ds_user']
+            assert cookie_username == self.username
+
+            self.phone_id = data['uuids']['phone_id']
+            self.uuid = data['uuids']['uuid']
+            self.client_session_id = data['uuids']['client_session_id']
+            self.advertising_id = data['uuids']['advertising_id']
+            self.device_id = data['uuids']['device_id']
+
+            self.last_login = data['timing_value']['last_login']
+            self.last_experiments = data['timing_value']['last_experiments']
+
+            self.logger.info('Recovery from {}, cookie, timing value and:\n-phone_id={}\n-uuid={}\n-client_session_id={}\n-device_id={}'.format(fname, self.phone_id, self.uuid, self.client_session_id, self.device_id))
+        return True
+
+    def save_uuid_and_cookie(self, fname):
+        if fname is None:
+            fname = "{}_uuid_and_cookie.json".format(self.username)
+        data = {
+            'uuids': {
+                'phone_id': self.phone_id,
+                'uuid': self.uuid,
+                'client_session_id': self.client_session_id,
+                'advertising_id': self.advertising_id,
+                'device_id': self.device_id
+            },
+            'cookie': requests.utils.dict_from_cookiejar(self.session.cookies),
+            'timing_value': {
+                'last_login': self.last_login,
+                'last_experiments': self.last_experiments
+            }
+        }
+        with open(fname, 'w') as f:
+            json.dump(data, f)
+
+
 
     def save_successful_login(self, use_cookie, cookie_fname):
         self.is_logged_in = True
