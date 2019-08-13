@@ -63,10 +63,16 @@ class API(object):
 
         self.last_json = None
 
-    def set_user(self, username, password):
+    def set_user(self, username, password, generate_uuid=True):
         self.username = username
         self.password = password
-        self.uuid = self.generate_UUID(uuid_type=True)
+
+        if generate_uuid is True:
+            self.phone_id = self.generate_UUID(uuid_type=True)
+            self.uuid = self.generate_UUID(uuid_type=True)
+            self.session_id = self.generate_UUID(uuid_type=True)
+            self.device_id = self.generate_device_id(self.get_seed(username, password))
+            # self.logger.info("uuid GENERATE! phone_id={}, uuid={}, session_id={}, device_id={}".format( self.phone_id, self.uuid, self.session_id, self.device_id ))
 
     def login(self, username=None, password=None, force=False, proxy=None,
               use_cookie=False, cookie_fname=None):
