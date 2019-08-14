@@ -856,9 +856,6 @@ class API(object):
         return self.send_request(url, data)
 
     def like(self, media_id):
-        if random.randint(1, 100) % 2 == 0: # Increase the randomness
-            self.login_flow(False) # For test
-
         data = self.json_data({'media_id': media_id})
         url = 'media/{media_id}/like/'.format(media_id=media_id)
         return self.send_request(url, data)
