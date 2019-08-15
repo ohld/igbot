@@ -34,9 +34,9 @@ PY2 = sys.version_info[0] == 2
 class API(object):
     def __init__(self, device=None, base_path=''):
         # Setup device and user_agent
-        device = device or devices.DEFAULT_DEVICE
-        self.device_settings = devices.DEVICES[device]
-        self.user_agent = config.USER_AGENT_BASE.format(**self.device_settings)
+        self.device = device or devices.DEFAULT_DEVICE
+
+        self.cookie_fname = None
         self.base_path = base_path
 
         self.is_logged_in = False
@@ -67,9 +67,13 @@ class API(object):
 
         self.last_json = None
 
-    def set_user(self, username, password, generate_uuid=True):
+    def set_user(self, username, password, generate_uuid=True, set_device=True):
         self.username = username
         self.password = password
+
+        if set_device is True:
+            self.device_settings = devices.DEVICES[self.device]
+            self.user_agent = config.USER_AGENT_BASE.format(**self.device_settings)
 
         if generate_uuid is True: # This field should be stores in json, data and cookie in json file. # Next step!
             self.phone_id = self.generate_UUID(uuid_type=True)
@@ -120,55 +124,64 @@ class API(object):
         data = json.dumps({ 'adid': self.advertising_id })
         return self.send_request( 'attribution/log_attribution/', data, login=True )
 
-
     def login_flow(self, just_logged_in=False, app_refresh_interval=1800):
         self.logger.info("LOGIN FLOW! Just logged-in: {}".format( just_logged_in ) )
+        check_flow = []
         if(just_logged_in):
-            # SYNC
-            self.sync_launcher(False)
-            self.sync_user_features()
-            # Update feed and timeline
-            self.get_timeline_feed(options=['recovered_from_crash'])
-            self.get_reels_tray_feed()
-            self.get_suggested_searches('users')
-            # getRecentSearches() ...
-            self.get_suggested_searches('blended')
-            # DM-Update
-            self.get_ranked_recipients('reshare', True)
-            self.get_ranked_recipients('save', True)
-            self.get_inbox_v2()
-            self.get_presence()
-            self.get_recent_activity()
-            # Config and other stuffs
-            self.get_loom_fetch_config()
-            self.get_profile_notice()
-            # getBlockedMedia() ...
-            self.explore(True)
-            # getQPFetch() ...
-            # getFacebookOTA() ...
+            try:
+                # SYNC
+                check_flow.append( self.sync_launcher(False) )
+                check_flow.append( self.sync_user_features() )
+                # Update feed and timeline
+                check_flow.append( self.get_timeline_feed(options=['recovered_from_crash'])  )
+                check_flow.append( self.get_reels_tray_feed() )
+                check_flow.append( self.get_suggested_searches('users') )
+                # getRecentSearches() ...
+                check_flow.append( self.get_suggested_searches('blended') )
+                # DM-Update
+                check_flow.append( self.get_ranked_recipients('reshare', True) )
+                check_flow.append( self.get_ranked_recipients('save', True) )
+                check_flow.append( self.get_inbox_v2() )
+                check_flow.append( self.get_presence() )
+                check_flow.append( self.get_recent_activity() )
+                # Config and other stuffs
+                check_flow.append( self.get_loom_fetch_config() )
+                check_flow.append( self.get_profile_notice() )
+                # getBlockedMedia() ...
+                check_flow.append( self.explore(True) )
+                # getQPFetch() ...
+                # getFacebookOTA() ...
+            except Exception as e:
+                self.logger.error("Exception raised: {}".format(e))
+                return False
         else:
-            self.get_timeline_feed(options=['is_pull_to_refresh'] if random.randint(1, 100) % 2 == 0 else [] ) # Random pull_to_refresh :)
+            try:
+                check_flow.append( self.get_timeline_feed(options=['is_pull_to_refresh'] if random.randint(1, 100) % 2 == 0 else [] ) ) # Random pull_to_refresh :)
 
-            is_session_expired = (time.time() - self.last_login) > app_refresh_interval
-            if is_session_expired:
-                self.last_login = time.time()
-                self.client_session_id = self.generate_UUID(uuid_type=True)
+                is_session_expired = (time.time() - self.last_login) > app_refresh_interval
+                if is_session_expired:
+                    self.last_login = time.time()
+                    self.client_session_id = self.generate_UUID(uuid_type=True)
 
-                # getBootstrapUsers() ...
-                self.get_reels_tray_feed()
-                self.get_ranked_recipients('reshare', True)
-                self.get_ranked_recipients('save', True)
-                self.get_inbox_v2()
-                self.get_presence()
-                self.get_recent_activity()
-                self.get_profile_notice()
-                self.explore(False)
+                    # getBootstrapUsers() ...
+                    check_flow.append( self.get_reels_tray_feed() )
+                    check_flow.append( self.get_ranked_recipients('reshare', True) )
+                    check_flow.append( self.get_ranked_recipients('save', True) )
+                    check_flow.append( self.get_inbox_v2() )
+                    check_flow.append( self.get_presence() )
+                    check_flow.append( self.get_recent_activity() )
+                    check_flow.append( self.get_profile_notice() )
+                    check_flow.append( self.explore(False) )
 
-            if (time.time() - self.last_experiments) > 7200:
-                self.sync_user_features()
-                self.sync_device_features()
+                if (time.time() - self.last_experiments) > 7200:
+                    check_flow.append( self.sync_user_features() )
+                    check_flow.append( self.sync_device_features() )
+            except Exception as e:
+                self.logger.error("Exception raised: {}".format(e))
+                return False
 
         self.save_uuid_and_cookie()
+        return False if False in check_flow else True
 
     def pre_login_flow(self):
         self.logger.info("PRE-LOGIN FLOW!... " )
@@ -188,33 +201,25 @@ class API(object):
         self.proxy = proxy
         self.set_proxy()  # Only happens if `self.proxy`
 
-        self.set_user(username, password)
-
-        if not cookie_fname:
-            cookie_fname = "{username}_cookie.txt".format(username=username)
-            cookie_fname = os.path.join(self.base_path, cookie_fname)
+        self.cookie_fname = cookie_fname
+        if self.cookie_fname:
+            cookie_fname = "{username}_uuid_and_cookie.json".format(username=username)
+            self.cookie_fname = os.path.join(self.base_path, cookie_fname)
 
         cookie_is_loaded = False
-        """
-        if use_cookie:
-            try:
-                self.load_cookie(cookie_fname)
-                cookie_is_loaded = True
-                self.is_logged_in = True
-                self.set_proxy()  # Only happens if `self.proxy`
-                self.logger.info("Logged-in successfully as '{}' using the cookie!".format(self.username))
-                return True
-            except Exception:
-                print("The cookie is not found, but don't worry `instabot`"
-                      " will create it for you using your login details.")
-        """
 
-        if use_cookie is True and self.load_uuid_and_cookie() is True:
-            cookie_is_loaded = True
-            self.save_successful_login(use_cookie, cookie_fname)
-            self.login_flow(False)
+        if use_cookie is True:
+            try:
+                if self.load_uuid_and_cookie() is True:
+                    if self.login_flow(False) is True:  # Check if the token loaded is valid.
+                        cookie_is_loaded = True
+                        self.save_successful_login()
+            except Exception:
+                print("The cookie is not found, but don't worry `instabot` will create it for you using your login details.")
 
         if not cookie_is_loaded and (not self.is_logged_in or force):
+            self.set_user(username, password, True, True)
+
             self.pre_login_flow()
             data = json.dumps({
                 'phone_id': self.uuid,
@@ -227,7 +232,7 @@ class API(object):
             })
 
             if self.send_request('accounts/login/', data, True):
-                self.save_successful_login(use_cookie, cookie_fname)
+                self.save_successful_login()
                 self.login_flow(True)
                 return True
             elif self.last_json.get('error_type', '') == 'checkpoint_challenge_required':
@@ -235,7 +240,8 @@ class API(object):
                 if ask_for_code is True:
                     solved = self.solve_challenge()
                     if solved:
-                        self.save_successful_login(use_cookie, cookie_fname)
+                        self.save_successful_login()
+                        self.login_flow(True)
                         return True
                     else:
                         self.save_failed_login()
@@ -270,11 +276,12 @@ class API(object):
         with open(fname, 'w') as f:
             json.dump(requests.utils.dict_from_cookiejar(self.session.cookies), f)
 
-    def load_uuid_and_cookie(self, fname=None):
-        if fname is None:
+    def load_uuid_and_cookie(self):
+        if self.cookie_fname is None:
             fname = "{}_uuid_and_cookie.json".format(self.username)
+            self.cookie_fname = os.path.join(self.base_path, fname)
 
-        if os.path.isfile(fname) is False:
+        if os.path.isfile(self.cookie_fname) is False:
             return False
 
         with open(fname, 'r') as f:
@@ -295,12 +302,14 @@ class API(object):
             self.device_settings = data['device_settings']
             self.user_agent = data['user_agent']
 
-            self.logger.info('Recovery from {}, cookie, timing, device user-agent and:\n-phone_id={}\n-uuid={}\n-client_session_id={}\n-device_id={}'.format(fname, self.phone_id, self.uuid, self.client_session_id, self.device_id))
+            self.logger.info('Recovery from {}, COOKIE, TIMING, DEVICE and ... \n-user-agent={}\n- phone_id={}\n- uuid={}\n- client_session_id={}\n- device_id={}'.format(fname, self.user_agent, self.phone_id, self.uuid, self.client_session_id, self.device_id))
         return True
 
-    def save_uuid_and_cookie(self, fname=None):
-        if fname is None:
+    def save_uuid_and_cookie(self):
+        if self.cookie_fname is None:
             fname = "{}_uuid_and_cookie.json".format(self.username)
+            self.cookie_fname = os.path.join(self.base_path, fname)
+
         data = {
             'uuids': {
                 'phone_id': self.phone_id,
@@ -317,18 +326,13 @@ class API(object):
             'device_settings': self.device_settings,
             'user_agent': self.user_agent
         }
-        with open(fname, 'w') as f:
+        with open(self.cookie_fname, 'w') as f:
             json.dump(data, f)
 
-
-
-    def save_successful_login(self, use_cookie, cookie_fname):
+    def save_successful_login(self):
         self.is_logged_in = True
         self.last_login = time.time()
         self.logger.info("Logged-in successfully as '{}'!".format(self.username))
-        if use_cookie:
-            self.save_cookie(cookie_fname)
-            self.logger.info("Saved cookie!")
 
     def save_failed_login(self):
         self.logger.info('Username or password is incorrect.')
