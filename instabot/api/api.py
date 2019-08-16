@@ -446,7 +446,13 @@ class API(object):
             raise Exception(msg)
 
         self.session.headers.update(config.REQUEST_HEADERS)
-        self.session.headers.update({'User-Agent': self.user_agent})
+        self.session.headers.update({
+            'User-Agent': self.user_agent,
+            'X-IG-Connection-Speed': '-1kbps',
+            'X-IG-Bandwidth-Speed-KBPS': random.randint(7000, 10000),
+            'X-IG-Bandwidth-TotalBytes-B': random.randint(500000, 900000),
+            'X-IG-Bandwidth-TotalTime-MS': random.randint(50, 150),
+        })
         if headers:
             self.session.headers.update(headers)
         try:

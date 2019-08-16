@@ -23,6 +23,7 @@ REQUEST_HEADERS = {
     # version 105.0.0.18.119 (166149665)
     # python3 -c "import base64, struct; print(base64.b64encode(struct.pack('<i', 166149665)).decode('ascii'));"
     'X-IG-Capabilities': 'IT7nCQ==',
+    'X-IG-App-ID': '567067343352427',
     'X-IG-Connection-Type': 'WIFI',
     'X-FB-HTTP-Engine': 'Liger',
     'Accept': '*/*',
