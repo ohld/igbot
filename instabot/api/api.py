@@ -67,21 +67,21 @@ class API(object):
 
         self.last_json = None
 
-    def set_user(self, username, password, generate_uuid=True, set_device=True):
+    def set_user(self, username, password, generate_all_uuids=True, set_device=True):
         self.username = username
         self.password = password
 
         if set_device is True:
             self.set_device()
 
-        if generate_uuid is True:
-            self.generate_uuid()
+        if generate_all_uuids is True:
+            self.generate_all_uuids()
 
     def set_device(self):
         self.device_settings = devices.DEVICES[self.device]
         self.user_agent = config.USER_AGENT_BASE.format(**self.device_settings)
 
-    def generate_uuid(self): # This field should be stores in json, data and cookie in json file. # Next step!
+    def generate_all_uuids(self): # This field should be stores in json, data and cookie in json file. # Next step!
         self.phone_id = self.generate_UUID(uuid_type=True)
         self.uuid = self.generate_UUID(uuid_type=True)
         self.client_session_id = self.generate_UUID(uuid_type=True)
@@ -139,7 +139,7 @@ class API(object):
                 check_flow.append( self.sync_launcher(False) )
                 check_flow.append( self.sync_user_features() )
                 # Update feed and timeline
-                check_flow.append( self.get_timeline_feed(options=['recovered_from_crash'])  )
+                check_flow.append( self.get_timeline_feed()  )
                 check_flow.append( self.get_reels_tray_feed(reason='cold_start') )
                 check_flow.append( self.get_suggested_searches('users') )
                 # getRecentSearches() ...
@@ -204,7 +204,8 @@ class API(object):
         if password is None:
             username, password = get_credentials(username=username)
 
-        set_device = generate_uuid = True
+        set_device = generate_all_uuids = True
+        self.set_user(username, password)
         self.session = requests.Session()
 
         self.proxy = proxy
@@ -218,18 +219,21 @@ class API(object):
         cookie_is_loaded = False
 
         if use_cookie is True:
-            try:
-                if self.load_uuid_and_cookie() is True:
-                    if self.login_flow(False) is True:  # Check if the token loaded is valid.
-                        cookie_is_loaded = True
-                        self.save_successful_login()
-                    else:
-                        set_device = generate_uuid = False
-            except Exception:
-                print("The cookie is not found, but don't worry `instabot` will create it for you using your login details.")
+            # try:
+            if self.load_uuid_and_cookie() is True:
+                if self.login_flow(False) is True:  # Check if the token loaded is valid.
+                    cookie_is_loaded = True
+                    self.save_successful_login()
+                else:
+                    set_device = generate_all_uuids = False
+            # except Exception:
+            #     print("The cookie is not found, but don't worry `instabot` will create it for you using your login details.")
 
         if not cookie_is_loaded and (not self.is_logged_in or force):
-            self.set_user(username, password, set_device, generate_uuid)
+            if set_device is True:
+                self.set_device()
+            if generate_all_uuids is True:
+                self.generate_all_uuids()
 
             self.pre_login_flow()
             data = json.dumps({
@@ -314,15 +318,16 @@ class API(object):
                 self.device_settings = data['device_settings']
                 self.user_agent = data['user_agent']
 
-                self.logger.info('Recovery from {}, COOKIE, TIMING, DEVICE and ... \n-user-agent={}\n- phone_id={}\n- uuid={}\n- client_session_id={}\n- device_id={}'.format(fname, self.user_agent, self.phone_id, self.uuid, self.client_session_id, self.device_id))
+                self.logger.info('Recovery from {}, COOKIE, TIMING, DEVICE and ... \n- user-agent={}\n- phone_id={}\n- uuid={}\n- client_session_id={}\n- device_id={}'.format(fname, self.user_agent, self.phone_id, self.uuid, self.client_session_id, self.device_id))
             else:
                 self.logger.info('The cookie seems to be the with the older structure. Load and init again all uuids')
                 self.session.cookies = requests.utils.cookiejar_from_dict( data['cookie'] )
                 cookie_username = self.cookie_dict['ds_user']
                 assert cookie_username == self.username
                 self.set_device()
-                self.generate_uuid()
+                self.generate_all_uuids()
 
+        self.is_logged_in = True
         return True
 
     def save_uuid_and_cookie(self):
@@ -573,25 +578,24 @@ class API(object):
             "surfaces_to_triggers": "{\"5734\":[\"instagram_feed_prompt\"],\"4715\":[\"instagram_feed_header\"],\"5858\":[\"instagram_feed_tool_tip\"]}","surfaces_to_queries":"{\"5734\":\"viewer() {eligible_promotions.trigger_context_v2(<trigger_context_v2>).ig_parameters(<ig_parameters>).trigger_name(<trigger_name>).surface_nux_id(<surface>).external_gating_permitted_qps(<external_gating_permitted_qps>).supports_client_filters(true).include_holdouts(true) {edges {client_ttl_seconds,log_eligibility_waterfall,is_holdout,priority,time_range {start,end},node {id,promotion_id,logging_data,max_impressions,triggers,contextual_filters {clause_type,filters {filter_type,unknown_action,value {name,required,bool_value,int_value,string_value},extra_datas {name,required,bool_value,int_value,string_value}},clauses {clause_type,filters {filter_type,unknown_action,value {name,required,bool_value,int_value,string_value},extra_datas {name,required,bool_value,int_value,string_value}},clauses {clause_type,filters {filter_type,unknown_action,value {name,required,bool_value,int_value,string_value},extra_datas {name,required,bool_value,int_value,string_value}},clauses {clause_type,filters {filter_type,unknown_action,value {name,required,bool_value,int_value,string_value},extra_datas {name,required,bool_value,int_value,string_value}}}}}},is_uncancelable,template {name,parameters {name,required,bool_value,string_value,color_value,}},creatives {title {text},content {text},footer {text},social_context {text},social_context_images,primary_action{title {text},url,limit,dismiss_promotion},secondary_action{title {text},url,limit,dismiss_promotion},dismiss_action{title {text},url,limit,dismiss_promotion},image.scale(<scale>) {uri,width,height}}}}}}\",\"4715\":\"viewer() {eligible_promotions.trigger_context_v2(<trigger_context_v2>).ig_parameters(<ig_parameters>).trigger_name(<trigger_name>).surface_nux_id(<surface>).external_gating_permitted_qps(<external_gating_permitted_qps>).supports_client_filters(true).include_holdouts(true) {edges {client_ttl_seconds,log_eligibility_waterfall,is_holdout,priority,time_range {start,end},node {id,promotion_id,logging_data,max_impressions,triggers,contextual_filters {clause_type,filters {filter_type,unknown_action,value {name,required,bool_value,int_value,string_value},extra_datas {name,required,bool_value,int_value,string_value}},clauses {clause_type,filters {filter_type,unknown_action,value {name,required,bool_value,int_value,string_value},extra_datas {name,required,bool_value,int_value,string_value}},clauses {clause_type,filters {filter_type,unknown_action,value {name,required,bool_value,int_value,string_value},extra_datas {name,required,bool_value,int_value,string_value}},clauses {clause_type,filters {filter_type,unknown_action,value {name,required,bool_value,int_value,string_value},extra_datas {name,required,bool_value,int_value,string_value}}}}}},is_uncancelable,template {name,parameters {name,required,bool_value,string_value,color_value,}},creatives {title {text},content {text},footer {text},social_context {text},social_context_images,primary_action{title {text},url,limit,dismiss_promotion},secondary_action{title {text},url,limit,dismiss_promotion},dismiss_action{title {text},url,limit,dismiss_promotion},image.scale(<scale>) {uri,width,height}}}}}}\",\"5858\":\"viewer() {eligible_promotions.trigger_context_v2(<trigger_context_v2>).ig_parameters(<ig_parameters>).trigger_name(<trigger_name>).surface_nux_id(<surface>).external_gating_permitted_qps(<external_gating_permitted_qps>).supports_client_filters(true).include_holdouts(true) {edges {client_ttl_seconds,log_eligibility_waterfall,is_holdout,priority,time_range {start,end},node {id,promotion_id,logging_data,max_impressions,triggers,contextual_filters {clause_type,filters {filter_type,unknown_action,value {name,required,bool_value,int_value,string_value},extra_datas {name,required,bool_value,int_value,string_value}},clauses {clause_type,filters {filter_type,unknown_action,value {name,required,bool_value,int_value,string_value},extra_datas {name,required,bool_value,int_value,string_value}},clauses {clause_type,filters {filter_type,unknown_action,value {name,required,bool_value,int_value,string_value},extra_datas {name,required,bool_value,int_value,string_value}},clauses {clause_type,filters {filter_type,unknown_action,value {name,required,bool_value,int_value,string_value},extra_datas {name,required,bool_value,int_value,string_value}}}}}},is_uncancelable,template {name,parameters {name,required,bool_value,string_value,color_value,}},creatives {title {text},content {text},footer {text},social_context {text},social_context_images,primary_action{title {text},url,limit,dismiss_promotion},secondary_action{title {text},url,limit,dismiss_promotion},dismiss_action{title {text},url,limit,dismiss_promotion},image.scale(<scale>) {uri,width,height}}}}}}\"}"  # Just copied from request.
         }
         data = self.json_data(data)
-        return self.send_request('feed/timeline/', data)
+        return self.send_request('qp/batch_fetch/', data)
 
     def get_timeline_feed(self, options=[]):
         headers = {
             'X-Ads-Opt-Out': '0',
             'X-DEVICE-ID': self.uuid,
-            'Content-Encoding': 'gzip'
         }
         data = {
             '_csrftoken': self.token,
             '_uuid': self.uuid,
-            'is_prefetch': '0',
+            'is_prefetch': 0,
             'phone_id': self.phone_id,
             'device_id': self.uuid,
             'client_session_id': self.client_session_id,
             'battery_level': random.randint(25, 100),
-            'is_charging': '0',
-            'will_sound_on': '1',
-            'is_on_screen': 'true',
+            'is_charging': random.randint(0, 1),
+            'will_sound_on': random.randint(0, 1),
+            'is_on_screen': True,
             'timezone_offset': datetime.datetime.now(pytz.timezone('CET')).strftime('%z')
         }
 
