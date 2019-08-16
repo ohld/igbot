@@ -134,7 +134,7 @@ class API(object):
                 check_flow.append( self.sync_user_features() )
                 # Update feed and timeline
                 check_flow.append( self.get_timeline_feed(options=['recovered_from_crash'])  )
-                check_flow.append( self.get_reels_tray_feed() )
+                check_flow.append( self.get_reels_tray_feed(reason='cold_start') )
                 check_flow.append( self.get_suggested_searches('users') )
                 # getRecentSearches() ...
                 check_flow.append( self.get_suggested_searches('blended') )
@@ -157,7 +157,9 @@ class API(object):
                 return False
         else:
             try:
-                check_flow.append( self.get_timeline_feed(options=['is_pull_to_refresh'] if random.randint(1, 100) % 2 == 0 else [] ) ) # Random pull_to_refresh :)
+                pull_to_refresh = random.randint(1, 100) % 2 == 0
+                check_flow.append( self.get_timeline_feed(options=['is_pull_to_refresh'] if pull_to_refresh is True else [] ) ) # Random pull_to_refresh :)
+                check_flow.append( self.get_reels_tray_feed(reason='pull_to_refresh' if pull_to_refresh is True else 'cold_start' ) )
 
                 is_session_expired = (time.time() - self.last_login) > app_refresh_interval
                 if is_session_expired:
@@ -165,7 +167,6 @@ class API(object):
                     self.client_session_id = self.generate_UUID(uuid_type=True)
 
                     # getBootstrapUsers() ...
-                    check_flow.append( self.get_reels_tray_feed() )
                     check_flow.append( self.get_ranked_recipients('reshare', True) )
                     check_flow.append( self.get_ranked_recipients('save', True) )
                     check_flow.append( self.get_inbox_v2() )
@@ -579,7 +580,7 @@ class API(object):
             data['reason'] = 'pull_to_refresh'
             data['is_pull_to_refresh'] = '1'
         elif 'is_pull_to_refresh' not in options:
-            data['reason'] = 'warm_start_fetch'
+            data['reason'] = 'cold_start_fetch'
             data['is_pull_to_refresh'] = '0'
 
         # unseen_posts
@@ -1230,10 +1231,10 @@ class API(object):
         url = 'feed/user/{}/reel_media/'.format(user_id)
         return self.send_request(url)
 
-    def get_reels_tray_feed(self):
+    def get_reels_tray_feed(self, reason='pull_to_refresh'): # reason can be = cold_start, pull_to_refresh
         data = {
             'supported_capabilities_new': config.SUPPORTED_CAPABILITIES,
-            'reason': 'pull_to_refresh',
+            'reason': reason,
             '_csrftoken': self.token,
             '_uuid': self.uuid
         }
