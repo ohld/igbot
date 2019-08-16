@@ -25,6 +25,8 @@ REQUEST_HEADERS = {
     'X-IG-Capabilities': 'IT7nCQ==',
     'X-IG-App-ID': '567067343352427',
     'X-IG-Connection-Type': 'WIFI',
+    'X-IG-Prefetch-Request': 'foreground',
+    'X-IG-VP9-Capable': 'false',
     'X-FB-HTTP-Engine': 'Liger',
     'Accept': '*/*',
     'Accept-Encoding': 'gzip,deflate',
