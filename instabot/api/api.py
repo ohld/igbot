@@ -200,11 +200,10 @@ class API(object):
         self.log_attribution()
         self.set_contact_point_prefill('prefill')
 
-    def login(self, username=None, password=None, force=False, proxy=None, use_cookie=False, cookie_fname=None, ask_for_code=False):
+    def login(self, username=None, password=None, force=False, proxy=None, use_cookie=False, cookie_fname=None, ask_for_code=False, set_device=True, generate_all_uuids=True):
         if password is None:
             username, password = get_credentials(username=username)
 
-        set_device = generate_all_uuids = True
         self.set_user(username, password)
         self.session = requests.Session()
 
