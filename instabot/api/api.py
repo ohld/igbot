@@ -81,7 +81,7 @@ class API(object):
         self.device_settings = devices.DEVICES[self.device]
         self.user_agent = config.USER_AGENT_BASE.format(**self.device_settings)
 
-    def generate_all_uuids(self): # This field should be stores in json, data and cookie in json file. # Next step!
+    def generate_all_uuids(self):  # This field should be stores in json, data and cookie in json file. # Next step!
         self.phone_id = self.generate_UUID(uuid_type=True)
         self.uuid = self.generate_UUID(uuid_type=True)
         self.client_session_id = self.generate_UUID(uuid_type=True)
@@ -90,22 +90,22 @@ class API(object):
         # self.logger.info("uuid GENERATE! phone_id={}, uuid={}, session_id={}, device_id={}".format( self.phone_id, self.uuid, self.client_session_id, self.device_id ))
 
     def sync_device_features(self, login=False):
-        data = { 'id': self.uuid, 'server_config_retrieval': '1',  'experiments': config.LOGIN_EXPERIMENTS }
+        data = {'id': self.uuid, 'server_config_retrieval': '1', 'experiments': config.LOGIN_EXPERIMENTS}
         if login is False:
             data['_uuid'] = self.uuid
             data['_uid'] = self.user_id
             data['_csrftoken'] = self.token
         data = json.dumps(data)
-        return self.send_request( 'qe/sync/', data, login=login, headers={ 'X-DEVICE-ID': self.uuid} )
+        return self.send_request('qe/sync/', data, login=login, headers={'X-DEVICE-ID': self.uuid})
 
     def sync_launcher(self, login=False):
-        data = { 'id': self.uuid, 'server_config_retrieval': '1',  'experiments': config.LAUNCHER_CONFIGS }
+        data = {'id': self.uuid, 'server_config_retrieval': '1', 'experiments': config.LAUNCHER_CONFIGS}
         if login is False:
             data['_uuid'] = self.uuid
             data['_uid'] = self.user_id
             data['_csrftoken'] = self.token
         data = json.dumps(data)
-        return self.send_request( 'launcher/sync/', data, login=login )
+        return self.send_request('launcher/sync/', data, login=login)
 
     def sync_user_features(self):
         data = self.default_data
@@ -113,49 +113,49 @@ class API(object):
         data['experiments'] = config.EXPERIMENTS
         data = json.dumps(data)
         self.last_experiments = time.time()
-        return self.send_request( 'qe/sync/', data, headers={ 'X-DEVICE-ID': self.uuid} )
+        return self.send_request('qe/sync/', data, headers={'X-DEVICE-ID': self.uuid})
 
     def set_contact_point_prefill(self, usage='prefill'):
-        data = json.dumps({ 'id': self.uuid, 'phone_id': self.phone_id, '_csrftoken': self.token, 'usage': usage })
-        return self.send_request( 'accounts/contact_point_prefill/', data, login=True)
+        data = json.dumps({'id': self.uuid, 'phone_id': self.phone_id, '_csrftoken': self.token, 'usage': usage})
+        return self.send_request('accounts/contact_point_prefill/', data, login=True)
 
     def get_suggested_searches(self, _type='users'):
         return self.send_request('fbsearch/suggested_searches/', self.json_data({'type': _type}))
 
     def read_msisdn_header(self, usage='default'):
-        data = json.dumps({ 'device_id': self.uuid, 'mobile_subno_usage': usage })
-        return self.send_request( 'accounts/read_msisdn_header/', data, login=True, headers={ 'X-DEVICE-ID': self.uuid} )
+        data = json.dumps({'device_id': self.uuid, 'mobile_subno_usage': usage})
+        return self.send_request('accounts/read_msisdn_header/', data, login=True, headers={'X-DEVICE-ID': self.uuid})
 
     def log_attribution(self, usage='default'):
-        data = json.dumps({ 'adid': self.advertising_id })
-        return self.send_request( 'attribution/log_attribution/', data, login=True )
+        data = json.dumps({'adid': self.advertising_id})
+        return self.send_request('attribution/log_attribution/', data, login=True)
 
     def login_flow(self, just_logged_in=False, app_refresh_interval=1800):
-        self.logger.info("LOGIN FLOW! Just logged-in: {}".format( just_logged_in ) )
+        self.logger.info("LOGIN FLOW! Just logged-in: {}".format(just_logged_in))
         check_flow = []
         if(just_logged_in):
             try:
                 # SYNC
-                check_flow.append( self.sync_launcher(False) )
-                check_flow.append( self.sync_user_features() )
+                check_flow.append(self.sync_launcher(False))
+                check_flow.append(self.sync_user_features())
                 # Update feed and timeline
-                check_flow.append( self.get_timeline_feed()  )
-                check_flow.append( self.get_reels_tray_feed(reason='cold_start') )
-                check_flow.append( self.get_suggested_searches('users') )
+                check_flow.append(self.get_timeline_feed())
+                check_flow.append(self.get_reels_tray_feed(reason='cold_start'))
+                check_flow.append(self.get_suggested_searches('users'))
                 # getRecentSearches() ...
-                check_flow.append( self.get_suggested_searches('blended') )
+                check_flow.append(self.get_suggested_searches('blended'))
                 # DM-Update
-                check_flow.append( self.get_ranked_recipients('reshare', True) )
-                check_flow.append( self.get_ranked_recipients('save', True) )
-                check_flow.append( self.get_inbox_v2() )
-                check_flow.append( self.get_presence() )
-                check_flow.append( self.get_recent_activity() )
+                check_flow.append(self.get_ranked_recipients('reshare', True))
+                check_flow.append(self.get_ranked_recipients('save', True))
+                check_flow.append(self.get_inbox_v2())
+                check_flow.append(self.get_presence())
+                check_flow.append(self.get_recent_activity())
                 # Config and other stuffs
-                check_flow.append( self.get_loom_fetch_config() )
-                check_flow.append( self.get_profile_notice() )
-                check_flow.append( self.batch_fetch() )
+                check_flow.append(self.get_loom_fetch_config())
+                check_flow.append(self.get_profile_notice())
+                check_flow.append(self.batch_fetch())
                 # getBlockedMedia() ...
-                check_flow.append( self.explore(True) )
+                check_flow.append(self.explore(True))
                 # getQPFetch() ...
                 # getFacebookOTA() ...
             except Exception as e:
@@ -164,8 +164,8 @@ class API(object):
         else:
             try:
                 pull_to_refresh = random.randint(1, 100) % 2 == 0
-                check_flow.append( self.get_timeline_feed(options=['is_pull_to_refresh'] if pull_to_refresh is True else [] ) ) # Random pull_to_refresh :)
-                check_flow.append( self.get_reels_tray_feed(reason='pull_to_refresh' if pull_to_refresh is True else 'cold_start' ) )
+                check_flow.append(self.get_timeline_feed(options=['is_pull_to_refresh'] if pull_to_refresh is True else []))  # Random pull_to_refresh :)
+                check_flow.append(self.get_reels_tray_feed(reason='pull_to_refresh' if pull_to_refresh is True else 'cold_start'))
 
                 is_session_expired = (time.time() - self.last_login) > app_refresh_interval
                 if is_session_expired:
@@ -173,17 +173,17 @@ class API(object):
                     self.client_session_id = self.generate_UUID(uuid_type=True)
 
                     # getBootstrapUsers() ...
-                    check_flow.append( self.get_ranked_recipients('reshare', True) )
-                    check_flow.append( self.get_ranked_recipients('save', True) )
-                    check_flow.append( self.get_inbox_v2() )
-                    check_flow.append( self.get_presence() )
-                    check_flow.append( self.get_recent_activity() )
-                    check_flow.append( self.get_profile_notice() )
-                    check_flow.append( self.explore(False) )
+                    check_flow.append(self.get_ranked_recipients('reshare', True))
+                    check_flow.append(self.get_ranked_recipients('save', True))
+                    check_flow.append(self.get_inbox_v2())
+                    check_flow.append(self.get_presence())
+                    check_flow.append(self.get_recent_activity())
+                    check_flow.append(self.get_profile_notice())
+                    check_flow.append(self.explore(False))
 
                 if (time.time() - self.last_experiments) > 7200:
-                    check_flow.append( self.sync_user_features() )
-                    check_flow.append( self.sync_device_features() )
+                    check_flow.append(self.sync_user_features())
+                    check_flow.append(self.sync_device_features())
             except Exception as e:
                 self.logger.error("Exception raised: {}".format(e))
                 return False
@@ -192,7 +192,7 @@ class API(object):
         return False if False in check_flow else True
 
     def pre_login_flow(self):
-        self.logger.info("PRE-LOGIN FLOW!... " )
+        self.logger.info("PRE-LOGIN FLOW!... ")
 
         self.read_msisdn_header('default')
         self.sync_launcher(True)
@@ -302,7 +302,7 @@ class API(object):
         with open(fname, 'r') as f:
             data = json.load(f)
             if 'cookie' in data:
-                self.session.cookies = requests.utils.cookiejar_from_dict( data['cookie'] )
+                self.session.cookies = requests.utils.cookiejar_from_dict(data['cookie'])
                 cookie_username = self.cookie_dict['ds_user']
                 assert cookie_username == self.username
 
@@ -321,7 +321,7 @@ class API(object):
                 self.logger.info('Recovery from {}, COOKIE, TIMING, DEVICE and ... \n- user-agent={}\n- phone_id={}\n- uuid={}\n- client_session_id={}\n- device_id={}'.format(fname, self.user_agent, self.phone_id, self.uuid, self.client_session_id, self.device_id))
             else:
                 self.logger.info('The cookie seems to be the with the older structure. Load and init again all uuids')
-                self.session.cookies = requests.utils.cookiejar_from_dict( data['cookie'] )
+                self.session.cookies = requests.utils.cookiejar_from_dict(data['cookie'])
                 cookie_username = self.cookie_dict['ds_user']
                 assert cookie_username == self.username
                 self.set_device()
@@ -449,9 +449,9 @@ class API(object):
         self.session.headers.update({
             'User-Agent': self.user_agent,
             'X-IG-Connection-Speed': '-1kbps',
-            'X-IG-Bandwidth-Speed-KBPS': str( random.randint(7000, 10000) ),
-            'X-IG-Bandwidth-TotalBytes-B': str( random.randint(500000, 900000) ),
-            'X-IG-Bandwidth-TotalTime-MS': str( random.randint(50, 150) ),
+            'X-IG-Bandwidth-Speed-KBPS': str(random.randint(7000, 10000)),
+            'X-IG-Bandwidth-TotalBytes-B': str(random.randint(500000, 900000)),
+            'X-IG-Bandwidth-TotalTime-MS': str(random.randint(50, 150)),
         })
         if headers:
             self.session.headers.update(headers)
@@ -460,9 +460,9 @@ class API(object):
             if post is not None:  # POST
                 if with_signature:
                     post = self.generate_signature(post)  # Only `send_direct_item` doesn't need a signature
-                response = self.session.post( config.API_URL + endpoint, data=post)
+                response = self.session.post(config.API_URL + endpoint, data=post)
             else:  # GET
-                response = self.session.get( config.API_URL + endpoint)
+                response = self.session.get(config.API_URL + endpoint)
         except Exception as e:
             self.logger.warning(str(e))
             return False
@@ -581,7 +581,7 @@ class API(object):
             "scale": 3,
             "version": 1,
             "vc_policy": "default",
-            "surfaces_to_triggers": "{\"5734\":[\"instagram_feed_prompt\"],\"4715\":[\"instagram_feed_header\"],\"5858\":[\"instagram_feed_tool_tip\"]}","surfaces_to_queries":"{\"5734\":\"viewer() {eligible_promotions.trigger_context_v2(<trigger_context_v2>).ig_parameters(<ig_parameters>).trigger_name(<trigger_name>).surface_nux_id(<surface>).external_gating_permitted_qps(<external_gating_permitted_qps>).supports_client_filters(true).include_holdouts(true) {edges {client_ttl_seconds,log_eligibility_waterfall,is_holdout,priority,time_range {start,end},node {id,promotion_id,logging_data,max_impressions,triggers,contextual_filters {clause_type,filters {filter_type,unknown_action,value {name,required,bool_value,int_value,string_value},extra_datas {name,required,bool_value,int_value,string_value}},clauses {clause_type,filters {filter_type,unknown_action,value {name,required,bool_value,int_value,string_value},extra_datas {name,required,bool_value,int_value,string_value}},clauses {clause_type,filters {filter_type,unknown_action,value {name,required,bool_value,int_value,string_value},extra_datas {name,required,bool_value,int_value,string_value}},clauses {clause_type,filters {filter_type,unknown_action,value {name,required,bool_value,int_value,string_value},extra_datas {name,required,bool_value,int_value,string_value}}}}}},is_uncancelable,template {name,parameters {name,required,bool_value,string_value,color_value,}},creatives {title {text},content {text},footer {text},social_context {text},social_context_images,primary_action{title {text},url,limit,dismiss_promotion},secondary_action{title {text},url,limit,dismiss_promotion},dismiss_action{title {text},url,limit,dismiss_promotion},image.scale(<scale>) {uri,width,height}}}}}}\",\"4715\":\"viewer() {eligible_promotions.trigger_context_v2(<trigger_context_v2>).ig_parameters(<ig_parameters>).trigger_name(<trigger_name>).surface_nux_id(<surface>).external_gating_permitted_qps(<external_gating_permitted_qps>).supports_client_filters(true).include_holdouts(true) {edges {client_ttl_seconds,log_eligibility_waterfall,is_holdout,priority,time_range {start,end},node {id,promotion_id,logging_data,max_impressions,triggers,contextual_filters {clause_type,filters {filter_type,unknown_action,value {name,required,bool_value,int_value,string_value},extra_datas {name,required,bool_value,int_value,string_value}},clauses {clause_type,filters {filter_type,unknown_action,value {name,required,bool_value,int_value,string_value},extra_datas {name,required,bool_value,int_value,string_value}},clauses {clause_type,filters {filter_type,unknown_action,value {name,required,bool_value,int_value,string_value},extra_datas {name,required,bool_value,int_value,string_value}},clauses {clause_type,filters {filter_type,unknown_action,value {name,required,bool_value,int_value,string_value},extra_datas {name,required,bool_value,int_value,string_value}}}}}},is_uncancelable,template {name,parameters {name,required,bool_value,string_value,color_value,}},creatives {title {text},content {text},footer {text},social_context {text},social_context_images,primary_action{title {text},url,limit,dismiss_promotion},secondary_action{title {text},url,limit,dismiss_promotion},dismiss_action{title {text},url,limit,dismiss_promotion},image.scale(<scale>) {uri,width,height}}}}}}\",\"5858\":\"viewer() {eligible_promotions.trigger_context_v2(<trigger_context_v2>).ig_parameters(<ig_parameters>).trigger_name(<trigger_name>).surface_nux_id(<surface>).external_gating_permitted_qps(<external_gating_permitted_qps>).supports_client_filters(true).include_holdouts(true) {edges {client_ttl_seconds,log_eligibility_waterfall,is_holdout,priority,time_range {start,end},node {id,promotion_id,logging_data,max_impressions,triggers,contextual_filters {clause_type,filters {filter_type,unknown_action,value {name,required,bool_value,int_value,string_value},extra_datas {name,required,bool_value,int_value,string_value}},clauses {clause_type,filters {filter_type,unknown_action,value {name,required,bool_value,int_value,string_value},extra_datas {name,required,bool_value,int_value,string_value}},clauses {clause_type,filters {filter_type,unknown_action,value {name,required,bool_value,int_value,string_value},extra_datas {name,required,bool_value,int_value,string_value}},clauses {clause_type,filters {filter_type,unknown_action,value {name,required,bool_value,int_value,string_value},extra_datas {name,required,bool_value,int_value,string_value}}}}}},is_uncancelable,template {name,parameters {name,required,bool_value,string_value,color_value,}},creatives {title {text},content {text},footer {text},social_context {text},social_context_images,primary_action{title {text},url,limit,dismiss_promotion},secondary_action{title {text},url,limit,dismiss_promotion},dismiss_action{title {text},url,limit,dismiss_promotion},image.scale(<scale>) {uri,width,height}}}}}}\"}"  # Just copied from request.
+            "surfaces_to_triggers": "{\"5734\":[\"instagram_feed_prompt\"],\"4715\":[\"instagram_feed_header\"],\"5858\":[\"instagram_feed_tool_tip\"]}", "surfaces_to_queries": "{\"5734\":\"viewer() {eligible_promotions.trigger_context_v2(<trigger_context_v2>).ig_parameters(<ig_parameters>).trigger_name(<trigger_name>).surface_nux_id(<surface>).external_gating_permitted_qps(<external_gating_permitted_qps>).supports_client_filters(true).include_holdouts(true) {edges {client_ttl_seconds,log_eligibility_waterfall,is_holdout,priority,time_range {start,end},node {id,promotion_id,logging_data,max_impressions,triggers,contextual_filters {clause_type,filters {filter_type,unknown_action,value {name,required,bool_value,int_value,string_value},extra_datas {name,required,bool_value,int_value,string_value}},clauses {clause_type,filters {filter_type,unknown_action,value {name,required,bool_value,int_value,string_value},extra_datas {name,required,bool_value,int_value,string_value}},clauses {clause_type,filters {filter_type,unknown_action,value {name,required,bool_value,int_value,string_value},extra_datas {name,required,bool_value,int_value,string_value}},clauses {clause_type,filters {filter_type,unknown_action,value {name,required,bool_value,int_value,string_value},extra_datas {name,required,bool_value,int_value,string_value}}}}}},is_uncancelable,template {name,parameters {name,required,bool_value,string_value,color_value,}},creatives {title {text},content {text},footer {text},social_context {text},social_context_images,primary_action{title {text},url,limit,dismiss_promotion},secondary_action{title {text},url,limit,dismiss_promotion},dismiss_action{title {text},url,limit,dismiss_promotion},image.scale(<scale>) {uri,width,height}}}}}}\",\"4715\":\"viewer() {eligible_promotions.trigger_context_v2(<trigger_context_v2>).ig_parameters(<ig_parameters>).trigger_name(<trigger_name>).surface_nux_id(<surface>).external_gating_permitted_qps(<external_gating_permitted_qps>).supports_client_filters(true).include_holdouts(true) {edges {client_ttl_seconds,log_eligibility_waterfall,is_holdout,priority,time_range {start,end},node {id,promotion_id,logging_data,max_impressions,triggers,contextual_filters {clause_type,filters {filter_type,unknown_action,value {name,required,bool_value,int_value,string_value},extra_datas {name,required,bool_value,int_value,string_value}},clauses {clause_type,filters {filter_type,unknown_action,value {name,required,bool_value,int_value,string_value},extra_datas {name,required,bool_value,int_value,string_value}},clauses {clause_type,filters {filter_type,unknown_action,value {name,required,bool_value,int_value,string_value},extra_datas {name,required,bool_value,int_value,string_value}},clauses {clause_type,filters {filter_type,unknown_action,value {name,required,bool_value,int_value,string_value},extra_datas {name,required,bool_value,int_value,string_value}}}}}},is_uncancelable,template {name,parameters {name,required,bool_value,string_value,color_value,}},creatives {title {text},content {text},footer {text},social_context {text},social_context_images,primary_action{title {text},url,limit,dismiss_promotion},secondary_action{title {text},url,limit,dismiss_promotion},dismiss_action{title {text},url,limit,dismiss_promotion},image.scale(<scale>) {uri,width,height}}}}}}\",\"5858\":\"viewer() {eligible_promotions.trigger_context_v2(<trigger_context_v2>).ig_parameters(<ig_parameters>).trigger_name(<trigger_name>).surface_nux_id(<surface>).external_gating_permitted_qps(<external_gating_permitted_qps>).supports_client_filters(true).include_holdouts(true) {edges {client_ttl_seconds,log_eligibility_waterfall,is_holdout,priority,time_range {start,end},node {id,promotion_id,logging_data,max_impressions,triggers,contextual_filters {clause_type,filters {filter_type,unknown_action,value {name,required,bool_value,int_value,string_value},extra_datas {name,required,bool_value,int_value,string_value}},clauses {clause_type,filters {filter_type,unknown_action,value {name,required,bool_value,int_value,string_value},extra_datas {name,required,bool_value,int_value,string_value}},clauses {clause_type,filters {filter_type,unknown_action,value {name,required,bool_value,int_value,string_value},extra_datas {name,required,bool_value,int_value,string_value}},clauses {clause_type,filters {filter_type,unknown_action,value {name,required,bool_value,int_value,string_value},extra_datas {name,required,bool_value,int_value,string_value}}}}}},is_uncancelable,template {name,parameters {name,required,bool_value,string_value,color_value,}},creatives {title {text},content {text},footer {text},social_context {text},social_context_images,primary_action{title {text},url,limit,dismiss_promotion},secondary_action{title {text},url,limit,dismiss_promotion},dismiss_action{title {text},url,limit,dismiss_promotion},image.scale(<scale>) {uri,width,height}}}}}}\"}"  # Just copied from request.
         }
         data = self.json_data(data)
         return self.send_request('qp/batch_fetch/', data)
@@ -789,8 +789,8 @@ class API(object):
         return self.send_request('direct_v2/get_presence/')
 
     def get_ranked_recipients(self, mode, show_threads, query=None):
-        data = { 'mode': mode, 'show_threads': 'false' if show_threads is False else 'true', 'use_unified_inbox': 'true' }
-        if query != None:
+        data = {'mode': mode, 'show_threads': 'false' if show_threads is False else 'true', 'use_unified_inbox': 'true'}
+        if query is not None:
             data['query'] = query
         return self.send_request('direct_v2/ranked_recipients/', json.dumps(data))
 
@@ -1260,7 +1260,7 @@ class API(object):
         url = 'feed/user/{}/reel_media/'.format(user_id)
         return self.send_request(url)
 
-    def get_reels_tray_feed(self, reason='pull_to_refresh'): # reason can be = cold_start, pull_to_refresh
+    def get_reels_tray_feed(self, reason='pull_to_refresh'):  # reason can be = cold_start, pull_to_refresh
         data = {
             'supported_capabilities_new': config.SUPPORTED_CAPABILITIES,
             'reason': reason,
