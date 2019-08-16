@@ -109,7 +109,7 @@ class API(object):
 
     def sync_user_features(self):
         data = self.default_data
-        data['id'] = self.user_id
+        data['id'] = self.uuid
         data['experiments'] = config.EXPERIMENTS
         data = json.dumps(data)
         self.last_experiments = time.time()
@@ -237,7 +237,7 @@ class API(object):
 
             self.pre_login_flow()
             data = json.dumps({
-                'phone_id': self.uuid,
+                'phone_id': self.phone_id,
                 '_csrftoken': self.token,
                 'username': self.username,
                 'guid': self.uuid,
@@ -249,6 +249,7 @@ class API(object):
             if self.send_request('accounts/login/', data, True):
                 self.save_successful_login()
                 self.login_flow(True)
+                self.device_id = self.uuid
                 return True
             elif self.last_json.get('error_type', '') == 'checkpoint_challenge_required':
                 self.logger.info('Checkpoint challenge required...')
@@ -630,7 +631,7 @@ class API(object):
 
     def expose(self):
         data = self.json_data({
-            'id': self.user_id,
+            'id': self.uuid,
             'experiment': 'ig_android_profile_contextual_feed'
         })
         return self.send_request('qe/expose/', data)
