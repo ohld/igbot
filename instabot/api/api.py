@@ -72,21 +72,21 @@ class API(object):
         self.password = password
 
         if set_device is True:
-            set_device()
+            self.set_device()
 
         if generate_uuid is True:
-            generate_uuid()
+            self.generate_uuid()
 
-    def set_device():
+    def set_device(self):
         self.device_settings = devices.DEVICES[self.device]
         self.user_agent = config.USER_AGENT_BASE.format(**self.device_settings)
 
-    def generate_uuid(): # This field should be stores in json, data and cookie in json file. # Next step!
+    def generate_uuid(self): # This field should be stores in json, data and cookie in json file. # Next step!
         self.phone_id = self.generate_UUID(uuid_type=True)
         self.uuid = self.generate_UUID(uuid_type=True)
         self.client_session_id = self.generate_UUID(uuid_type=True)
         self.advertising_id = self.generate_UUID(uuid_type=True)
-        self.device_id = self.generate_device_id(self.get_seed(username, password))
+        self.device_id = self.generate_device_id(self.get_seed(self.username, self.password))
         # self.logger.info("uuid GENERATE! phone_id={}, uuid={}, session_id={}, device_id={}".format( self.phone_id, self.uuid, self.client_session_id, self.device_id ))
 
     def sync_device_features(self, login=False):
@@ -464,6 +464,7 @@ class API(object):
             except JSONDecodeError:
                 return False
         else:
+            print(endpoint, post, response.content)
             if response.status_code != 404 and response.status_code != "404":
                 self.logger.error("Request returns {} error!".format(response.status_code))
             try:
