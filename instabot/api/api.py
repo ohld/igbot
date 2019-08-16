@@ -72,16 +72,22 @@ class API(object):
         self.password = password
 
         if set_device is True:
-            self.device_settings = devices.DEVICES[self.device]
-            self.user_agent = config.USER_AGENT_BASE.format(**self.device_settings)
+            set_device()
 
-        if generate_uuid is True: # This field should be stores in json, data and cookie in json file. # Next step!
-            self.phone_id = self.generate_UUID(uuid_type=True)
-            self.uuid = self.generate_UUID(uuid_type=True)
-            self.client_session_id = self.generate_UUID(uuid_type=True)
-            self.advertising_id = self.generate_UUID(uuid_type=True)
-            self.device_id = self.generate_device_id(self.get_seed(username, password))
-            # self.logger.info("uuid GENERATE! phone_id={}, uuid={}, session_id={}, device_id={}".format( self.phone_id, self.uuid, self.client_session_id, self.device_id ))
+        if generate_uuid is True:
+            generate_uuid()
+
+    def set_device():
+        self.device_settings = devices.DEVICES[self.device]
+        self.user_agent = config.USER_AGENT_BASE.format(**self.device_settings)
+
+    def generate_uuid(): # This field should be stores in json, data and cookie in json file. # Next step!
+        self.phone_id = self.generate_UUID(uuid_type=True)
+        self.uuid = self.generate_UUID(uuid_type=True)
+        self.client_session_id = self.generate_UUID(uuid_type=True)
+        self.advertising_id = self.generate_UUID(uuid_type=True)
+        self.device_id = self.generate_device_id(self.get_seed(username, password))
+        # self.logger.info("uuid GENERATE! phone_id={}, uuid={}, session_id={}, device_id={}".format( self.phone_id, self.uuid, self.client_session_id, self.device_id ))
 
     def sync_device_features(self, login=False):
         data = { 'id': self.uuid, 'server_config_retrieval': '1',  'experiments': config.LOGIN_EXPERIMENTS }
@@ -198,6 +204,7 @@ class API(object):
         if password is None:
             username, password = get_credentials(username=username)
 
+        set_device = generate_uuid = True
         self.session = requests.Session()
 
         self.proxy = proxy
@@ -216,11 +223,13 @@ class API(object):
                     if self.login_flow(False) is True:  # Check if the token loaded is valid.
                         cookie_is_loaded = True
                         self.save_successful_login()
+                    else:
+                        set_device = generate_uuid = False
             except Exception:
                 print("The cookie is not found, but don't worry `instabot` will create it for you using your login details.")
 
         if not cookie_is_loaded and (not self.is_logged_in or force):
-            self.set_user(username, password, True, True)
+            self.set_user(username, password, set_device, generate_uuid)
 
             self.pre_login_flow()
             data = json.dumps({
@@ -288,23 +297,32 @@ class API(object):
 
         with open(fname, 'r') as f:
             data = json.load(f)
-            self.session.cookies = requests.utils.cookiejar_from_dict( data['cookie'] )
-            cookie_username = self.cookie_dict['ds_user']
-            assert cookie_username == self.username
+            if 'cookie' in data:
+                self.session.cookies = requests.utils.cookiejar_from_dict( data['cookie'] )
+                cookie_username = self.cookie_dict['ds_user']
+                assert cookie_username == self.username
 
-            self.phone_id = data['uuids']['phone_id']
-            self.uuid = data['uuids']['uuid']
-            self.client_session_id = data['uuids']['client_session_id']
-            self.advertising_id = data['uuids']['advertising_id']
-            self.device_id = data['uuids']['device_id']
+                self.phone_id = data['uuids']['phone_id']
+                self.uuid = data['uuids']['uuid']
+                self.client_session_id = data['uuids']['client_session_id']
+                self.advertising_id = data['uuids']['advertising_id']
+                self.device_id = data['uuids']['device_id']
 
-            self.last_login = data['timing_value']['last_login']
-            self.last_experiments = data['timing_value']['last_experiments']
+                self.last_login = data['timing_value']['last_login']
+                self.last_experiments = data['timing_value']['last_experiments']
 
-            self.device_settings = data['device_settings']
-            self.user_agent = data['user_agent']
+                self.device_settings = data['device_settings']
+                self.user_agent = data['user_agent']
 
-            self.logger.info('Recovery from {}, COOKIE, TIMING, DEVICE and ... \n-user-agent={}\n- phone_id={}\n- uuid={}\n- client_session_id={}\n- device_id={}'.format(fname, self.user_agent, self.phone_id, self.uuid, self.client_session_id, self.device_id))
+                self.logger.info('Recovery from {}, COOKIE, TIMING, DEVICE and ... \n-user-agent={}\n- phone_id={}\n- uuid={}\n- client_session_id={}\n- device_id={}'.format(fname, self.user_agent, self.phone_id, self.uuid, self.client_session_id, self.device_id))
+            else:
+                self.logger.info('The cookie seems to be the with the older structure. Load and init again all uuids')
+                self.session.cookies = requests.utils.cookiejar_from_dict( data['cookie'] )
+                cookie_username = self.cookie_dict['ds_user']
+                assert cookie_username == self.username
+                self.set_device()
+                self.generate_uuid()
+
         return True
 
     def save_uuid_and_cookie(self):
