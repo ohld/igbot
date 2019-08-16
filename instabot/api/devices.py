@@ -6,7 +6,7 @@ INSTAGRAM_VERSION = '105.0.0.18.119'
 DEVICES = {
     # Released on August 2019
     'one_plus_7': {
-        'instagram_version': '103.1.0.15.119',
+        'instagram_version': INSTAGRAM_VERSION,
         'android_version': 28,
         'android_release': '9.0',
         'dpi': '420dpi',
