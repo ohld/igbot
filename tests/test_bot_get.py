@@ -921,7 +921,7 @@ class TestBotGet(TestBot):
                                     }
                          }
         responses.add(
-            responses.GET, '{api_url}direct_v2/inbox/?'.format(
+            responses.POST, '{api_url}direct_v2/inbox/'.format(
                 api_url=API_URL), json=response_data, status=200)
         inbox = self.bot.get_messages()
         assert inbox == response_data
