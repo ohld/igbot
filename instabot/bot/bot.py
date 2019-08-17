@@ -303,8 +303,8 @@ class Bot(object):
         if self.api.login(**args) is False:
             return False
         self.prepare()
-        # signal.signal(signal.SIGTERM, self.logout)
-        # atexit.register(self.logout)
+        signal.signal(signal.SIGTERM, self.logout)
+        atexit.register(self.logout)
         return True
 
     def prepare(self):
