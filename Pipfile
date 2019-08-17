@@ -19,6 +19,7 @@ requests-toolbelt = "*"
 responses = "*"
 six = "*"
 huepy = "*"
+pytz = "*"
 
 [requires]
 python_version = "3.7"
