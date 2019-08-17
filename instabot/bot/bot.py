@@ -1,9 +1,10 @@
 import os
-import atexit
 import datetime
 import random
-import signal
 import time
+# UNUSED IMPORTS
+# import signal
+# import atexit
 
 from .. import utils
 from ..api import API
