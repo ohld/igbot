@@ -349,7 +349,7 @@ def get_link_from_media_id(self, media_id):
 
 
 def get_messages(self):
-    if self.api.getv2Inbox():
+    if self.api.get_inbox_v2():
         return self.api.last_json
     else:
         self.logger.info("Messages were not found, something went wrong.")

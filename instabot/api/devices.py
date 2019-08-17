@@ -1,9 +1,21 @@
 # Devices taken from
 # https://github.com/mgp25/Instagram-API/blob/master/src/Devices/GoodDevices.php
-DEFAULT_DEVICE = 'samsung_galaxy_s7'
+DEFAULT_DEVICE = 'one_plus_7'
 # from https://www.apkmirror.com/apk/instagram/instagram-instagram/instagram-instagram-105-0-0-18-119-release/instagram-105-0-0-18-119-4-android-apk-download/
 INSTAGRAM_VERSION = '105.0.0.18.119'
 DEVICES = {
+    # Released on August 2019
+    'one_plus_7': {
+        'instagram_version': INSTAGRAM_VERSION,
+        'android_version': 28,
+        'android_release': '9.0',
+        'dpi': '420dpi',
+        'resolution': '1080x2260',
+        'manufacturer': 'OnePlus',
+        'device': 'GM1903',
+        'model': 'OnePlus7',
+        'cpu': 'qcom'
+    },
     # Released on March 2016
     'samsung_galaxy_s7': {
         'instagram_version': INSTAGRAM_VERSION,

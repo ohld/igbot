@@ -7,6 +7,8 @@ import random
 import sys
 import time
 import uuid
+import datetime
+import pytz
 
 from requests_toolbelt import MultipartEncoder
 
@@ -32,12 +34,14 @@ PY2 = sys.version_info[0] == 2
 class API(object):
     def __init__(self, device=None, base_path=''):
         # Setup device and user_agent
-        device = device or devices.DEFAULT_DEVICE
-        self.device_settings = devices.DEVICES[device]
-        self.user_agent = config.USER_AGENT_BASE.format(**self.device_settings)
+        self.device = device or devices.DEFAULT_DEVICE
+
+        self.cookie_fname = None
         self.base_path = base_path
 
         self.is_logged_in = False
+        self.last_login = None
+
         self.last_response = None
         self.total_requests = 0
 
@@ -63,68 +67,203 @@ class API(object):
 
         self.last_json = None
 
-    def set_user(self, username, password):
+    def set_user(self, username, password, generate_all_uuids=True, set_device=True):
         self.username = username
         self.password = password
-        self.uuid = self.generate_UUID(uuid_type=True)
 
-    def login(self, username=None, password=None, force=False, proxy=None,
-              use_cookie=False, cookie_fname=None):
+        if set_device is True:
+            self.set_device()
+
+        if generate_all_uuids is True:
+            self.generate_all_uuids()
+
+    def set_device(self):
+        self.device_settings = devices.DEVICES[self.device]
+        self.user_agent = config.USER_AGENT_BASE.format(**self.device_settings)
+
+    def generate_all_uuids(self):  # This field should be stores in json, data and cookie in json file. # Next step!
+        self.phone_id = self.generate_UUID(uuid_type=True)
+        self.uuid = self.generate_UUID(uuid_type=True)
+        self.client_session_id = self.generate_UUID(uuid_type=True)
+        self.advertising_id = self.generate_UUID(uuid_type=True)
+        self.device_id = self.generate_device_id(self.get_seed(self.username, self.password))
+        # self.logger.info("uuid GENERATE! phone_id={}, uuid={}, session_id={}, device_id={}".format( self.phone_id, self.uuid, self.client_session_id, self.device_id ))
+
+    def sync_device_features(self, login=False):
+        data = {'id': self.uuid, 'server_config_retrieval': '1', 'experiments': config.LOGIN_EXPERIMENTS}
+        if login is False:
+            data['_uuid'] = self.uuid
+            data['_uid'] = self.user_id
+            data['_csrftoken'] = self.token
+        data = json.dumps(data)
+        return self.send_request('qe/sync/', data, login=login, headers={'X-DEVICE-ID': self.uuid})
+
+    def sync_launcher(self, login=False):
+        data = {'id': self.uuid, 'server_config_retrieval': '1', 'experiments': config.LAUNCHER_CONFIGS}
+        if login is False:
+            data['_uuid'] = self.uuid
+            data['_uid'] = self.user_id
+            data['_csrftoken'] = self.token
+        data = json.dumps(data)
+        return self.send_request('launcher/sync/', data, login=login)
+
+    def sync_user_features(self):
+        data = self.default_data
+        data['id'] = self.user_id
+        data['experiments'] = config.EXPERIMENTS
+        data = json.dumps(data)
+        self.last_experiments = time.time()
+        return self.send_request('qe/sync/', data, headers={'X-DEVICE-ID': self.uuid})
+
+    def set_contact_point_prefill(self, usage='prefill'):
+        data = json.dumps({'id': self.uuid, 'phone_id': self.phone_id, '_csrftoken': self.token, 'usage': usage})
+        return self.send_request('accounts/contact_point_prefill/', data, login=True)
+
+    def get_suggested_searches(self, _type='users'):
+        return self.send_request('fbsearch/suggested_searches/', self.json_data({'type': _type}))
+
+    def read_msisdn_header(self, usage='default'):
+        data = json.dumps({'device_id': self.uuid, 'mobile_subno_usage': usage})
+        return self.send_request('accounts/read_msisdn_header/', data, login=True, headers={'X-DEVICE-ID': self.uuid})
+
+    def log_attribution(self, usage='default'):
+        data = json.dumps({'adid': self.advertising_id})
+        return self.send_request('attribution/log_attribution/', data, login=True)
+
+    def login_flow(self, just_logged_in=False, app_refresh_interval=1800):
+        self.logger.info("LOGIN FLOW! Just logged-in: {}".format(just_logged_in))
+        check_flow = []
+        if(just_logged_in):
+            try:
+                # SYNC
+                check_flow.append(self.sync_launcher(False))
+                check_flow.append(self.sync_user_features())
+                # Update feed and timeline
+                check_flow.append(self.get_timeline_feed())
+                check_flow.append(self.get_reels_tray_feed(reason='cold_start'))
+                check_flow.append(self.get_suggested_searches('users'))
+                # getRecentSearches() ...
+                check_flow.append(self.get_suggested_searches('blended'))
+                # DM-Update
+                check_flow.append(self.get_ranked_recipients('reshare', True))
+                check_flow.append(self.get_ranked_recipients('save', True))
+                check_flow.append(self.get_inbox_v2())
+                check_flow.append(self.get_presence())
+                check_flow.append(self.get_recent_activity())
+                # Config and other stuffs
+                check_flow.append(self.get_loom_fetch_config())
+                check_flow.append(self.get_profile_notice())
+                check_flow.append(self.batch_fetch())
+                # getBlockedMedia() ...
+                check_flow.append(self.explore(True))
+                # getQPFetch() ...
+                # getFacebookOTA() ...
+            except Exception as e:
+                self.logger.error("Exception raised: {}".format(e))
+                return False
+        else:
+            try:
+                pull_to_refresh = random.randint(1, 100) % 2 == 0
+                check_flow.append(self.get_timeline_feed(options=['is_pull_to_refresh'] if pull_to_refresh is True else []))  # Random pull_to_refresh :)
+                check_flow.append(self.get_reels_tray_feed(reason='pull_to_refresh' if pull_to_refresh is True else 'cold_start'))
+
+                is_session_expired = (time.time() - self.last_login) > app_refresh_interval
+                if is_session_expired:
+                    self.last_login = time.time()
+                    self.client_session_id = self.generate_UUID(uuid_type=True)
+
+                    # getBootstrapUsers() ...
+                    check_flow.append(self.get_ranked_recipients('reshare', True))
+                    check_flow.append(self.get_ranked_recipients('save', True))
+                    check_flow.append(self.get_inbox_v2())
+                    check_flow.append(self.get_presence())
+                    check_flow.append(self.get_recent_activity())
+                    check_flow.append(self.get_profile_notice())
+                    check_flow.append(self.explore(False))
+
+                if (time.time() - self.last_experiments) > 7200:
+                    check_flow.append(self.sync_user_features())
+                    check_flow.append(self.sync_device_features())
+            except Exception as e:
+                self.logger.error("Exception raised: {}".format(e))
+                return False
+
+        self.save_uuid_and_cookie()
+        return False if False in check_flow else True
+
+    def pre_login_flow(self):
+        self.logger.info("PRE-LOGIN FLOW!... ")
+
+        self.read_msisdn_header('default')
+        self.sync_launcher(True)
+        self.sync_device_features(True)
+        self.log_attribution()
+        self.set_contact_point_prefill('prefill')
+
+    def login(self, username=None, password=None, force=False, proxy=None, use_cookie=False, cookie_fname=None, ask_for_code=False):
         if password is None:
             username, password = get_credentials(username=username)
 
-        self.device_id = self.generate_device_id(self.get_seed(username, password))
-        self.proxy = proxy
+        set_device = generate_all_uuids = True
         self.set_user(username, password)
+        self.session = requests.Session()
 
-        if not cookie_fname:
-            cookie_fname = "{username}_cookie.txt".format(username=username)
-            cookie_fname = os.path.join(self.base_path, cookie_fname)
+        self.proxy = proxy
+        self.set_proxy()  # Only happens if `self.proxy`
+
+        self.cookie_fname = cookie_fname
+        if self.cookie_fname:
+            cookie_fname = "{username}_uuid_and_cookie.json".format(username=username)
+            self.cookie_fname = os.path.join(self.base_path, cookie_fname)
 
         cookie_is_loaded = False
-        if use_cookie:
-            try:
-                self.load_cookie(cookie_fname)
-                cookie_is_loaded = True
-                self.is_logged_in = True
-                self.set_proxy()  # Only happens if `self.proxy`
-                self.logger.info("Logged-in successfully as '{}' using the cookie!".format(self.username))
-                return True
-            except Exception:
-                print("The cookie is not found, but don't worry `instabot`"
-                      " will create it for you using your login details.")
+
+        if use_cookie is True:
+            # try:
+            if self.load_uuid_and_cookie() is True:
+                if self.login_flow(False) is True:  # Check if the token loaded is valid.
+                    cookie_is_loaded = True
+                    self.save_successful_login()
+                else:
+                    set_device = generate_all_uuids = False
+            # except Exception:
+            #     print("The cookie is not found, but don't worry `instabot` will create it for you using your login details.")
 
         if not cookie_is_loaded and (not self.is_logged_in or force):
-            self.session = requests.Session()
-            self.set_proxy()  # Only happens if `self.proxy`
-            url = 'si/fetch_headers/?challenge_type=signup&guid={uuid}'
-            url = url.format(uuid=self.generate_UUID(False))
-            if self.send_request(url, login=True):
-                data = json.dumps({
-                    'phone_id': self.generate_UUID(True),
-                    '_csrftoken': self.token,
-                    'username': self.username,
-                    'guid': self.uuid,
-                    'device_id': self.device_id,
-                    'password': self.password,
-                    'login_attempt_count': '0',
-                })
+            if set_device is True:
+                self.set_device()
+            if generate_all_uuids is True:
+                self.generate_all_uuids()
 
-                if self.send_request('accounts/login/', data, True):
-                    self.save_successful_login(use_cookie, cookie_fname)
-                    return True
-                elif self.last_json.get('error_type', '') == 'checkpoint_challenge_required':
-                    self.logger.info('Checkpoint challenge required...')
+            self.pre_login_flow()
+            data = json.dumps({
+                'phone_id': self.uuid,
+                '_csrftoken': self.token,
+                'username': self.username,
+                'guid': self.uuid,
+                'device_id': self.device_id,
+                'password': self.password,
+                'login_attempt_count': '0',
+            })
+
+            if self.send_request('accounts/login/', data, True):
+                self.save_successful_login()
+                self.login_flow(True)
+                return True
+            elif self.last_json.get('error_type', '') == 'checkpoint_challenge_required':
+                self.logger.info('Checkpoint challenge required...')
+                if ask_for_code is True:
                     solved = self.solve_challenge()
                     if solved:
-                        self.save_successful_login(use_cookie, cookie_fname)
+                        self.save_successful_login()
+                        self.login_flow(True)
                         return True
                     else:
                         self.save_failed_login()
                         return False
-                else:
-                    self.save_failed_login()
-                    return False
+            else:
+                self.save_failed_login()
+                return False
 
     def load_cookie(self, fname):
         # Python2 compatibility
@@ -152,12 +291,73 @@ class API(object):
         with open(fname, 'w') as f:
             json.dump(requests.utils.dict_from_cookiejar(self.session.cookies), f)
 
-    def save_successful_login(self, use_cookie, cookie_fname):
+    def load_uuid_and_cookie(self):
+        if self.cookie_fname is None:
+            fname = "{}_uuid_and_cookie.json".format(self.username)
+            self.cookie_fname = os.path.join(self.base_path, fname)
+
+        if os.path.isfile(self.cookie_fname) is False:
+            return False
+
+        with open(fname, 'r') as f:
+            data = json.load(f)
+            if 'cookie' in data:
+                self.session.cookies = requests.utils.cookiejar_from_dict(data['cookie'])
+                cookie_username = self.cookie_dict['ds_user']
+                assert cookie_username == self.username
+
+                self.phone_id = data['uuids']['phone_id']
+                self.uuid = data['uuids']['uuid']
+                self.client_session_id = data['uuids']['client_session_id']
+                self.advertising_id = data['uuids']['advertising_id']
+                self.device_id = data['uuids']['device_id']
+
+                self.last_login = data['timing_value']['last_login']
+                self.last_experiments = data['timing_value']['last_experiments']
+
+                self.device_settings = data['device_settings']
+                self.user_agent = data['user_agent']
+
+                self.logger.info('Recovery from {}, COOKIE, TIMING, DEVICE and ... \n- user-agent={}\n- phone_id={}\n- uuid={}\n- client_session_id={}\n- device_id={}'.format(fname, self.user_agent, self.phone_id, self.uuid, self.client_session_id, self.device_id))
+            else:
+                self.logger.info('The cookie seems to be the with the older structure. Load and init again all uuids')
+                self.session.cookies = requests.utils.cookiejar_from_dict(data['cookie'])
+                cookie_username = self.cookie_dict['ds_user']
+                assert cookie_username == self.username
+                self.set_device()
+                self.generate_all_uuids()
+
         self.is_logged_in = True
+        return True
+
+    def save_uuid_and_cookie(self):
+        if self.cookie_fname is None:
+            fname = "{}_uuid_and_cookie.json".format(self.username)
+            self.cookie_fname = os.path.join(self.base_path, fname)
+
+        data = {
+            'uuids': {
+                'phone_id': self.phone_id,
+                'uuid': self.uuid,
+                'client_session_id': self.client_session_id,
+                'advertising_id': self.advertising_id,
+                'device_id': self.device_id
+            },
+            'cookie': requests.utils.dict_from_cookiejar(self.session.cookies),
+            'timing_value': {
+                'last_login': self.last_login,
+                'last_experiments': self.last_experiments
+            },
+            'device_settings': self.device_settings,
+            'user_agent': self.user_agent
+        }
+        with open(self.cookie_fname, 'w') as f:
+            json.dump(data, f)
+
+    def save_successful_login(self):
+        self.is_logged_in = True
+        self.last_login = time.time()
         self.logger.info("Logged-in successfully as '{}'!".format(self.username))
-        if use_cookie:
-            self.save_cookie(cookie_fname)
-            self.logger.info("Saved cookie!")
 
     def save_failed_login(self):
         self.logger.info('Username or password is incorrect.')
@@ -246,20 +446,23 @@ class API(object):
             raise Exception(msg)
 
         self.session.headers.update(config.REQUEST_HEADERS)
-        self.session.headers.update({'User-Agent': self.user_agent})
+        self.session.headers.update({
+            'User-Agent': self.user_agent,
+            'X-IG-Connection-Speed': '-1kbps',
+            'X-IG-Bandwidth-Speed-KBPS': str(random.randint(7000, 10000)),
+            'X-IG-Bandwidth-TotalBytes-B': str(random.randint(500000, 900000)),
+            'X-IG-Bandwidth-TotalTime-MS': str(random.randint(50, 150)),
+        })
         if headers:
             self.session.headers.update(headers)
         try:
             self.total_requests += 1
             if post is not None:  # POST
                 if with_signature:
-                    # Only `send_direct_item` doesn't need a signature
-                    post = self.generate_signature(post)
-                response = self.session.post(
-                    config.API_URL + endpoint, data=post)
+                    post = self.generate_signature(post)  # Only `send_direct_item` doesn't need a signature
+                response = self.session.post(config.API_URL + endpoint, data=post)
             else:  # GET
-                response = self.session.get(
-                    config.API_URL + endpoint)
+                response = self.session.get(config.API_URL + endpoint)
         except Exception as e:
             self.logger.warning(str(e))
             return False
@@ -272,6 +475,7 @@ class API(object):
             except JSONDecodeError:
                 return False
         else:
+            print(endpoint, post, response.content)
             if response.status_code != 404 and response.status_code != "404":
                 self.logger.error("Request returns {} error!".format(response.status_code))
             try:
@@ -369,17 +573,57 @@ class API(object):
         data.update(self.default_data)
         return json.dumps(data)
 
-    def sync_features(self):
-        data = self.json_data({'id': self.user_id, 'experiments': config.EXPERIMENTS})
-        return self.send_request('qe/sync/', data)
-
     def auto_complete_user_list(self):
         return self.send_request('friendships/autocomplete_user_list/')
 
-    def get_timeline_feed(self):
-        """ Returns 8 medias from timeline feed of logged user."""
-        data = self.json_data({'is_prefetch': '0', 'is_pull_to_refresh': '0'})
-        return self.send_request('feed/timeline/', data, with_signature=False)
+    def batch_fetch(self):
+        data = {
+            "scale": 3,
+            "version": 1,
+            "vc_policy": "default",
+            "surfaces_to_triggers": "{\"5734\":[\"instagram_feed_prompt\"],\"4715\":[\"instagram_feed_header\"],\"5858\":[\"instagram_feed_tool_tip\"]}", "surfaces_to_queries": "{\"5734\":\"viewer() {eligible_promotions.trigger_context_v2(<trigger_context_v2>).ig_parameters(<ig_parameters>).trigger_name(<trigger_name>).surface_nux_id(<surface>).external_gating_permitted_qps(<external_gating_permitted_qps>).supports_client_filters(true).include_holdouts(true) {edges {client_ttl_seconds,log_eligibility_waterfall,is_holdout,priority,time_range {start,end},node {id,promotion_id,logging_data,max_impressions,triggers,contextual_filters {clause_type,filters {filter_type,unknown_action,value {name,required,bool_value,int_value,string_value},extra_datas {name,required,bool_value,int_value,string_value}},clauses {clause_type,filters {filter_type,unknown_action,value {name,required,bool_value,int_value,string_value},extra_datas {name,required,bool_value,int_value,string_value}},clauses {clause_type,filters {filter_type,unknown_action,value {name,required,bool_value,int_value,string_value},extra_datas {name,required,bool_value,int_value,string_value}},clauses {clause_type,filters {filter_type,unknown_action,value {name,required,bool_value,int_value,string_value},extra_datas {name,required,bool_value,int_value,string_value}}}}}},is_uncancelable,template {name,parameters {name,required,bool_value,string_value,color_value,}},creatives {title {text},content {text},footer {text},social_context {text},social_context_images,primary_action{title {text},url,limit,dismiss_promotion},secondary_action{title {text},url,limit,dismiss_promotion},dismiss_action{title {text},url,limit,dismiss_promotion},image.scale(<scale>) {uri,width,height}}}}}}\",\"4715\":\"viewer() {eligible_promotions.trigger_context_v2(<trigger_context_v2>).ig_parameters(<ig_parameters>).trigger_name(<trigger_name>).surface_nux_id(<surface>).external_gating_permitted_qps(<external_gating_permitted_qps>).supports_client_filters(true).include_holdouts(true) {edges {client_ttl_seconds,log_eligibility_waterfall,is_holdout,priority,time_range {start,end},node {id,promotion_id,logging_data,max_impressions,triggers,contextual_filters {clause_type,filters {filter_type,unknown_action,value {name,required,bool_value,int_value,string_value},extra_datas {name,required,bool_value,int_value,string_value}},clauses {clause_type,filters {filter_type,unknown_action,value {name,required,bool_value,int_value,string_value},extra_datas {name,required,bool_value,int_value,string_value}},clauses {clause_type,filters {filter_type,unknown_action,value {name,required,bool_value,int_value,string_value},extra_datas {name,required,bool_value,int_value,string_value}},clauses {clause_type,filters {filter_type,unknown_action,value {name,required,bool_value,int_value,string_value},extra_datas {name,required,bool_value,int_value,string_value}}}}}},is_uncancelable,template {name,parameters {name,required,bool_value,string_value,color_value,}},creatives {title {text},content {text},footer {text},social_context {text},social_context_images,primary_action{title {text},url,limit,dismiss_promotion},secondary_action{title {text},url,limit,dismiss_promotion},dismiss_action{title {text},url,limit,dismiss_promotion},image.scale(<scale>) {uri,width,height}}}}}}\",\"5858\":\"viewer() {eligible_promotions.trigger_context_v2(<trigger_context_v2>).ig_parameters(<ig_parameters>).trigger_name(<trigger_name>).surface_nux_id(<surface>).external_gating_permitted_qps(<external_gating_permitted_qps>).supports_client_filters(true).include_holdouts(true) {edges {client_ttl_seconds,log_eligibility_waterfall,is_holdout,priority,time_range {start,end},node {id,promotion_id,logging_data,max_impressions,triggers,contextual_filters {clause_type,filters {filter_type,unknown_action,value {name,required,bool_value,int_value,string_value},extra_datas {name,required,bool_value,int_value,string_value}},clauses {clause_type,filters {filter_type,unknown_action,value {name,required,bool_value,int_value,string_value},extra_datas {name,required,bool_value,int_value,string_value}},clauses {clause_type,filters {filter_type,unknown_action,value {name,required,bool_value,int_value,string_value},extra_datas {name,required,bool_value,int_value,string_value}},clauses {clause_type,filters {filter_type,unknown_action,value {name,required,bool_value,int_value,string_value},extra_datas {name,required,bool_value,int_value,string_value}}}}}},is_uncancelable,template {name,parameters {name,required,bool_value,string_value,color_value,}},creatives {title {text},content {text},footer {text},social_context {text},social_context_images,primary_action{title {text},url,limit,dismiss_promotion},secondary_action{title {text},url,limit,dismiss_promotion},dismiss_action{title {text},url,limit,dismiss_promotion},image.scale(<scale>) {uri,width,height}}}}}}\"}"  # Just copied from request.
+        }
+        data = self.json_data(data)
+        return self.send_request('qp/batch_fetch/', data)
+
+    def get_timeline_feed(self, options=[]):
+        headers = {
+            'X-Ads-Opt-Out': '0',
+            'X-DEVICE-ID': self.uuid,
+        }
+        data = {
+            '_csrftoken': self.token,
+            '_uuid': self.uuid,
+            'is_prefetch': 0,
+            'phone_id': self.phone_id,
+            'device_id': self.uuid,
+            'client_session_id': self.client_session_id,
+            'battery_level': random.randint(25, 100),
+            'is_charging': random.randint(0, 1),
+            'will_sound_on': random.randint(0, 1),
+            'is_on_screen': True,
+            'timezone_offset': datetime.datetime.now(pytz.timezone('CET')).strftime('%z')
+        }
+
+        if 'is_pull_to_refresh' in options:
+            data['reason'] = 'pull_to_refresh'
+            data['is_pull_to_refresh'] = '1'
+        elif 'is_pull_to_refresh' not in options:
+            data['reason'] = 'cold_start_fetch'
+            data['is_pull_to_refresh'] = '0'
+
+        # unseen_posts
+        # feed_view_info
+        # seen_posts
+
+        if 'push_disabled' in options:
+            data['push_disabled'] = 'true'
+
+        if 'recovered_from_crash' in options:
+            data['recovered_from_crash'] = '1'
+
+        data = json.dumps(data)
+        return self.send_request('feed/timeline/', data, with_signature=False, headers=headers)
 
     def get_megaphone_log(self):
         return self.send_request('megaphone/log/')
@@ -494,8 +738,19 @@ class API(object):
         })
         return self.send_request('accounts/change_password/', data)
 
-    def explore(self):
-        return self.send_request('discover/explore/')
+    def explore(self, is_prefetch=False):
+        data = {
+            'is_prefetch': is_prefetch,
+            'is_from_promote': False,
+            'timezone_offset': datetime.datetime.now(pytz.timezone('CET')).strftime('%z'),
+            'session_id': self.client_session_id,
+            'supported_capabilities_new': config.SUPPORTED_CAPABILITIES
+        }
+        if is_prefetch:
+            data['max_id'] = 0
+            data['module'] = 'explore_popular'
+        data = json.dumps(data)
+        return self.send_request('discover/explore/', data)
 
     def comment(self, media_id, comment_text):
         data = self.json_data({'comment_text': comment_text})
@@ -521,13 +776,23 @@ class API(object):
         return self.get_username_info(self.user_id)
 
     def get_recent_activity(self):
-        return self.send_request('news/inbox/?')
+        return self.send_request('news/inbox')
 
     def get_following_recent_activity(self):
-        return self.send_request('news/?')
+        return self.send_request('news')
 
-    def getv2Inbox(self):
-        return self.send_request('direct_v2/inbox/?')
+    def get_inbox_v2(self):
+        data = json.dumps({'persistentBadging': True, 'use_unified_inbox': True})
+        return self.send_request('direct_v2/inbox/', data)
+
+    def get_presence(self):
+        return self.send_request('direct_v2/get_presence/')
+
+    def get_ranked_recipients(self, mode, show_threads, query=None):
+        data = {'mode': mode, 'show_threads': 'false' if show_threads is False else 'true', 'use_unified_inbox': 'true'}
+        if query is not None:
+            data['query'] = query
+        return self.send_request('direct_v2/ranked_recipients/', json.dumps(data))
 
     def get_user_tags(self, user_id):
         url = 'usertags/{user_id}/feed/?rank_token={rank_token}&ranked_content=true&'
@@ -995,6 +1260,16 @@ class API(object):
         url = 'feed/user/{}/reel_media/'.format(user_id)
         return self.send_request(url)
 
+    def get_reels_tray_feed(self, reason='pull_to_refresh'):  # reason can be = cold_start, pull_to_refresh
+        data = {
+            'supported_capabilities_new': config.SUPPORTED_CAPABILITIES,
+            'reason': reason,
+            '_csrftoken': self.token,
+            '_uuid': self.uuid
+        }
+        data = json.dumps(data)
+        return self.send_request('feed/reels_tray/', data)
+
     def get_users_reel(self, user_ids):
         """
             Input: user_ids - a list of user_id
@@ -1139,6 +1414,12 @@ class API(object):
         })
         url = 'friendships/approve/{}/'.format(user_id)
         return self.send_request(url, post=data)
+
+    def get_loom_fetch_config(self):
+        return self.send_request('loom/fetch_config/')
+
+    def get_profile_notice(self):
+        return self.send_request('users/profile_notice/')
 
     def reject_pending_friendship(self, user_id):
         data = self.json_data({
