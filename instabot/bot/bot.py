@@ -2,9 +2,6 @@ import os
 import datetime
 import random
 import time
-# UNUSED IMPORTS
-# import signal
-# import atexit
 
 from .. import utils
 from ..api import API
@@ -303,8 +300,6 @@ class Bot(object):
         if self.api.login(**args) is False:
             return False
         self.prepare()
-        signal.signal(signal.SIGTERM, self.logout)
-        atexit.register(self.logout)
         return True
 
     def prepare(self):
