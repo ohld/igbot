@@ -27,7 +27,9 @@ from .api_photo import (configure_photo, download_photo, upload_photo)
 from .api_video import (configure_video, download_video, upload_video)
 from .api_story import (download_story, upload_story_photo, configure_story)
 from .api_login import (
-    sync_device_features, sync_launcher, sync_user_features
+    sync_device_features, sync_launcher, sync_user_features,
+    set_device, generate_all_uuids, reinstall_app_simulation, change_device_simulation,
+    load_uuid_and_cookie, save_uuid_and_cookie
 )
 from .prepare import delete_credentials, get_credentials
 
@@ -79,32 +81,6 @@ class API(object):
 
         if generate_all_uuids is True:
             self.generate_all_uuids()
-
-    def set_device(self):
-        self.device_settings = devices.DEVICES[self.device]
-        self.user_agent = config.USER_AGENT_BASE.format(**self.device_settings)
-
-    def generate_all_uuids(self):  # This field should be stores in json, data and cookie in json file. # Next step!
-        self.phone_id = self.generate_UUID(uuid_type=True)
-        self.uuid = self.generate_UUID(uuid_type=True)
-        self.client_session_id = self.generate_UUID(uuid_type=True)
-        self.advertising_id = self.generate_UUID(uuid_type=True)
-        self.device_id = self.generate_device_id(self.get_seed(self.generate_UUID(uuid_type=True)))
-        # self.logger.info("uuid GENERATE! phone_id={}, uuid={}, session_id={}, device_id={}".format( self.phone_id, self.uuid, self.client_session_id, self.device_id ))
-
-    def reinstall_app_simulation(self):
-        self.logger.info("Reinstall app simulation, generating new `phone_id`...")
-        self.phone_id = self.generate_UUID(uuid_type=True)
-        self.save_uuid_and_cookie()
-        self.logger.info("New phone_id: {}".format(self.phone_id))
-
-    def change_device_simulation(self):
-        self.logger.info("Change device simulation")
-        self.reinstall_app_simulation()
-        self.logger.info("Generating new `android_device_id`...")
-        self.device_id = self.generate_device_id(self.get_seed(self.generate_UUID(uuid_type=True)))
-        self.save_uuid_and_cookie()
-        self.logger.info("New android_device_id: {}".format(self.device_id))
 
     def set_contact_point_prefill(self, usage='prefill'):
         data = json.dumps({'id': self.uuid, 'phone_id': self.phone_id, '_csrftoken': self.token, 'usage': usage})
@@ -255,69 +231,6 @@ class API(object):
             else:
                 self.save_failed_login()
                 return False
-
-    def load_uuid_and_cookie(self):
-        if self.cookie_fname is None:
-            fname = "{}_uuid_and_cookie.json".format(self.username)
-            self.cookie_fname = os.path.join(self.base_path, fname)
-
-        if os.path.isfile(self.cookie_fname) is False:
-            return False
-
-        with open(fname, 'r') as f:
-            data = json.load(f)
-            if 'cookie' in data:
-                self.session.cookies = requests.utils.cookiejar_from_dict(data['cookie'])
-                cookie_username = self.cookie_dict['ds_user']
-                assert cookie_username == self.username
-
-                self.phone_id = data['uuids']['phone_id']
-                self.uuid = data['uuids']['uuid']
-                self.client_session_id = data['uuids']['client_session_id']
-                self.advertising_id = data['uuids']['advertising_id']
-                self.device_id = data['uuids']['device_id']
-
-                self.last_login = data['timing_value']['last_login']
-                self.last_experiments = data['timing_value']['last_experiments']
-
-                self.device_settings = data['device_settings']
-                self.user_agent = data['user_agent']
-
-                self.logger.info('Recovery from {}, COOKIE, TIMING, DEVICE and ... \n- user-agent={}\n- phone_id={}\n- uuid={}\n- client_session_id={}\n- device_id={}'.format(fname, self.user_agent, self.phone_id, self.uuid, self.client_session_id, self.device_id))
-            else:
-                self.logger.info('The cookie seems to be the with the older structure. Load and init again all uuids')
-                self.session.cookies = requests.utils.cookiejar_from_dict(data['cookie'])
-                cookie_username = self.cookie_dict['ds_user']
-                assert cookie_username == self.username
-                self.set_device()
-                self.generate_all_uuids()
-
-        self.is_logged_in = True
-        return True
-
-    def save_uuid_and_cookie(self):
-        if self.cookie_fname is None:
-            fname = "{}_uuid_and_cookie.json".format(self.username)
-            self.cookie_fname = os.path.join(self.base_path, fname)
-
-        data = {
-            'uuids': {
-                'phone_id': self.phone_id,
-                'uuid': self.uuid,
-                'client_session_id': self.client_session_id,
-                'advertising_id': self.advertising_id,
-                'device_id': self.device_id
-            },
-            'cookie': requests.utils.dict_from_cookiejar(self.session.cookies),
-            'timing_value': {
-                'last_login': self.last_login,
-                'last_experiments': self.last_experiments
-            },
-            'device_settings': self.device_settings,
-            'user_agent': self.user_agent
-        }
-        with open(self.cookie_fname, 'w') as f:
-            json.dump(data, f)
 
     def save_successful_login(self):
         self.is_logged_in = True
@@ -600,6 +513,7 @@ class API(object):
         })
         return self.send_request('qe/expose/', data)
 
+    # ====== PHOTO METHODS ====== #
     def upload_photo(self, photo, caption=None, upload_id=None, from_video=False, force_resize=False, options={}):
         """Upload photo to Instagram
 
@@ -622,6 +536,7 @@ class API(object):
     def configure_photo(self, upload_id, photo, caption=''):
         return configure_photo(self, upload_id, photo, caption)
 
+    # ====== STORY METHODS ====== #
     def download_story(self, filename, story_url, username):
         return download_story(self, filename, story_url, username)
 
@@ -631,6 +546,7 @@ class API(object):
     def configure_story(self, upload_id, photo):
         return configure_story(self, upload_id, photo)
 
+    # ====== VIDEO METHODS ====== #
     def upload_video(self, video, caption=None, upload_id=None, thumbnail=None, options={}):
         """Upload video to Instagram
 
@@ -745,19 +661,6 @@ class API(object):
 
     def get_following_recent_activity(self):
         return self.send_request('news')
-
-    def get_inbox_v2(self):
-        data = json.dumps({'persistentBadging': True, 'use_unified_inbox': True})
-        return self.send_request('direct_v2/inbox/', data)
-
-    def get_presence(self):
-        return self.send_request('direct_v2/get_presence/')
-
-    def get_ranked_recipients(self, mode, show_threads, query=None):
-        data = {'mode': mode, 'show_threads': 'false' if show_threads is False else 'true', 'use_unified_inbox': 'true'}
-        if query is not None:
-            data['query'] = query
-        return self.send_request('direct_v2/ranked_recipients/', json.dumps(data))
 
     def get_user_tags(self, user_id):
         url = 'usertags/{user_id}/feed/?rank_token={rank_token}&ranked_content=true&'
@@ -920,57 +823,6 @@ class API(object):
             template = '["{}"]' if use_quotes else '[{}]'
             result['thread'] = template.format(thread_id)
         return result
-
-    def send_direct_item(self, item_type, users, **options):
-        data = {
-            'client_context': self.generate_UUID(True),
-            'action': 'send_item'
-        }
-        headers = {}
-        recipients = self._prepare_recipients(users, options.get('thread'), use_quotes=False)
-        if not recipients:
-            return False
-        data['recipient_users'] = recipients.get('users')
-        if recipients.get('thread'):
-            data['thread_ids'] = recipients.get('thread')
-        data.update(self.default_data)
-
-        url = 'direct_v2/threads/broadcast/{}/'.format(item_type)
-        text = options.get('text', '')
-        if item_type == 'link':
-            data['link_text'] = text
-            data['link_urls'] = json.dumps(options.get('urls'))
-        elif item_type == 'text':
-            data['text'] = text
-        elif item_type == 'media_share':
-            data['text'] = text
-            data['media_type'] = options.get('media_type', 'photo')
-            data['media_id'] = options.get('media_id', '')
-        elif item_type == 'hashtag':
-            data['text'] = text
-            data['hashtag'] = options.get('hashtag', '')
-        elif item_type == 'profile':
-            data['text'] = text
-            data['profile_user_id'] = options.get('profile_user_id')
-        elif item_type == 'photo':
-            url = 'direct_v2/threads/broadcast/upload_photo/'
-            filepath = options['filepath']
-            upload_id = str(int(time.time() * 1000))
-            with open(filepath, 'rb') as f:
-                photo = f.read()
-
-            data['photo'] = (
-                'direct_temp_photo_%s.jpg' % upload_id, photo,
-                'application/octet-stream',
-                {'Content-Transfer-Encoding': 'binary'})
-
-            m = MultipartEncoder(data, boundary=self.uuid)
-            data = m.to_string()
-            headers.update({
-                'Content-type': m.content_type,
-            })
-
-        return self.send_request(url, data, with_signature=False, headers=headers)
 
     @staticmethod
     def generate_signature(data):
@@ -1395,6 +1247,71 @@ class API(object):
         })
         url = 'friendships/ignore/{}/'.format(user_id)
         return self.send_request(url, post=data)
+
+    # ====== DIRECT METHODS ====== #
+    def get_inbox_v2(self):
+        data = json.dumps({'persistentBadging': True, 'use_unified_inbox': True})
+        return self.send_request('direct_v2/inbox/', data)
+
+    def get_presence(self):
+        return self.send_request('direct_v2/get_presence/')
+
+    def get_ranked_recipients(self, mode, show_threads, query=None):
+        data = {'mode': mode, 'show_threads': 'false' if show_threads is False else 'true', 'use_unified_inbox': 'true'}
+        if query is not None:
+            data['query'] = query
+        return self.send_request('direct_v2/ranked_recipients/', json.dumps(data))
+
+    def send_direct_item(self, item_type, users, **options):
+        data = {
+            'client_context': self.generate_UUID(True),
+            'action': 'send_item'
+        }
+        headers = {}
+        recipients = self._prepare_recipients(users, options.get('thread'), use_quotes=False)
+        if not recipients:
+            return False
+        data['recipient_users'] = recipients.get('users')
+        if recipients.get('thread'):
+            data['thread_ids'] = recipients.get('thread')
+        data.update(self.default_data)
+
+        url = 'direct_v2/threads/broadcast/{}/'.format(item_type)
+        text = options.get('text', '')
+        if item_type == 'link':
+            data['link_text'] = text
+            data['link_urls'] = json.dumps(options.get('urls'))
+        elif item_type == 'text':
+            data['text'] = text
+        elif item_type == 'media_share':
+            data['text'] = text
+            data['media_type'] = options.get('media_type', 'photo')
+            data['media_id'] = options.get('media_id', '')
+        elif item_type == 'hashtag':
+            data['text'] = text
+            data['hashtag'] = options.get('hashtag', '')
+        elif item_type == 'profile':
+            data['text'] = text
+            data['profile_user_id'] = options.get('profile_user_id')
+        elif item_type == 'photo':
+            url = 'direct_v2/threads/broadcast/upload_photo/'
+            filepath = options['filepath']
+            upload_id = str(int(time.time() * 1000))
+            with open(filepath, 'rb') as f:
+                photo = f.read()
+
+            data['photo'] = (
+                'direct_temp_photo_%s.jpg' % upload_id, photo,
+                'application/octet-stream',
+                {'Content-Transfer-Encoding': 'binary'})
+
+            m = MultipartEncoder(data, boundary=self.uuid)
+            data = m.to_string()
+            headers.update({
+                'Content-type': m.content_type,
+            })
+
+        return self.send_request(url, data, with_signature=False, headers=headers)
 
     def get_pending_inbox(self):
         url = 'direct_v2/pending_inbox/?persistentBadging=true&use_unified_inbox=true'
