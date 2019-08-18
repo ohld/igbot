@@ -127,7 +127,7 @@ class TestBotFilter(TestBot):
         results = 5
         for i in range(results):
             my_test_photo_items.append(TEST_PHOTO_ITEM.copy())
-            my_test_photo_items[i]['pk'] = TEST_PHOTO_ITEM['pk'] + i
+            my_test_photo_items[i]['pk'] = TEST_PHOTO_ITEM['id'] + i
             if i % 2:
                 my_test_photo_items[i]['has_liked'] = False
             else:
@@ -146,7 +146,7 @@ class TestBotFilter(TestBot):
         for my_test_photo_item in my_test_photo_items:
             responses.add(
                 responses.POST, "{api_url}media/{media_id}/unlike/".format(
-                    api_url=API_URL, media_id=my_test_photo_item['pk']
+                    api_url=API_URL, media_id=my_TEST_PHOTO_ITEM['id']
                 ), json="{'status': 'ok'}", status=200
             )
         broken_items = self.bot.unlike_user(user_id)

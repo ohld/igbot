@@ -293,7 +293,7 @@ class TestBotGet(TestBot):
 
         responses.add(
             responses.GET, "{api_url}media/{media_id}/info/".format(
-                api_url=API_URL, media_id=TEST_PHOTO_ITEM['pk']),
+                api_url=API_URL, media_id=TEST_PHOTO_ITEM['id']),
             json={
                 "auto_load_more_enabled": True,
                 "num_results": 1,
@@ -317,7 +317,7 @@ class TestBotGet(TestBot):
         }
         responses.add(
             responses.GET, '{api_url}media/{media_id}/comments/?'.format(
-                api_url=API_URL, media_id=TEST_PHOTO_ITEM['pk']), json=response_data, status=200)
+                api_url=API_URL, media_id=TEST_PHOTO_ITEM['id']), json=response_data, status=200)
 
         response_data = {
             'status': 'ok',
@@ -339,7 +339,7 @@ class TestBotGet(TestBot):
 
         responses.add(
             responses.POST, '{api_url}media/{media_id}/like/'.format(
-                api_url=API_URL, media_id=TEST_PHOTO_ITEM['pk']
+                api_url=API_URL, media_id=TEST_PHOTO_ITEM['id']
             ), status=200, json={'status': 'ok'})
 
         broken_items = self.bot.like_user(user_id)
@@ -397,7 +397,7 @@ class TestBotGet(TestBot):
 
         responses.add(
             responses.GET, "{api_url}media/{media_id}/info/".format(
-                api_url=API_URL, media_id=TEST_PHOTO_ITEM['pk']),
+                api_url=API_URL, media_id=TEST_PHOTO_ITEM['id']),
             json={
                 "auto_load_more_enabled": True,
                 "num_results": 1,
@@ -421,7 +421,7 @@ class TestBotGet(TestBot):
         }
         responses.add(
             responses.GET, '{api_url}media/{media_id}/comments/?'.format(
-                api_url=API_URL, media_id=TEST_PHOTO_ITEM['pk']), json=response_data, status=200)
+                api_url=API_URL, media_id=TEST_PHOTO_ITEM['id']), json=response_data, status=200)
 
         response_data = {
             'status': 'ok',
@@ -443,7 +443,7 @@ class TestBotGet(TestBot):
 
         responses.add(
             responses.POST, '{api_url}media/{media_id}/like/'.format(
-                api_url=API_URL, media_id=TEST_PHOTO_ITEM['pk']
+                api_url=API_URL, media_id=TEST_PHOTO_ITEM['id']
             ), status=200, json={'status': 'ok'})
 
         self.bot.like_users(user_ids)
@@ -484,7 +484,7 @@ class TestBotGet(TestBot):
         self.bot._following = [1]
 
         for media in medias:
-            TEST_PHOTO_ITEM['pk'] = media
+            TEST_PHOTO_ITEM['id'] = media
             responses.add(
                 responses.GET, "{api_url}media/{media_id}/info/".format(
                     api_url=API_URL, media_id=media),
@@ -511,7 +511,7 @@ class TestBotGet(TestBot):
             }
             responses.add(
                 responses.GET, '{api_url}media/{media_id}/comments/?'.format(
-                    api_url=API_URL, media_id=TEST_PHOTO_ITEM['pk']), json=response_data, status=200)
+                    api_url=API_URL, media_id=TEST_PHOTO_ITEM['id']), json=response_data, status=200)
 
             response_data = {
                 'status': 'ok',
@@ -533,7 +533,7 @@ class TestBotGet(TestBot):
 
             responses.add(
                 responses.POST, '{api_url}media/{media_id}/like/'.format(
-                    api_url=API_URL, media_id=TEST_PHOTO_ITEM['pk']
+                    api_url=API_URL, media_id=TEST_PHOTO_ITEM['id']
                 ), status=200, json={'status': 'ok'})
 
         broken_items = self.bot.like_medias(medias)
@@ -565,7 +565,7 @@ class TestBotGet(TestBot):
 
         responses.add(
             responses.GET, "{api_url}media/{media_id}/info/".format(
-                api_url=API_URL, media_id=my_test_photo_item['pk']),
+                api_url=API_URL, media_id=my_TEST_PHOTO_ITEM['id']),
             json={
                 "auto_load_more_enabled": True,
                 "num_results": 1,
@@ -589,7 +589,7 @@ class TestBotGet(TestBot):
         }
         responses.add(
             responses.GET, '{api_url}media/{media_id}/comments/?'.format(
-                api_url=API_URL, media_id=TEST_PHOTO_ITEM['pk']), json=response_data, status=200)
+                api_url=API_URL, media_id=TEST_PHOTO_ITEM['id']), json=response_data, status=200)
 
         response_data = {
             'status': 'ok',
@@ -611,7 +611,7 @@ class TestBotGet(TestBot):
 
         responses.add(
             responses.POST, '{api_url}media/{media_id}/like/'.format(
-                api_url=API_URL, media_id=my_test_photo_item['pk']
+                api_url=API_URL, media_id=my_TEST_PHOTO_ITEM['id']
             ), status=200, json={'status': 'ok'})
 
         broken_items = self.bot.like_hashtag(hashtag)
@@ -710,7 +710,7 @@ class TestBotGet(TestBot):
 
         responses.add(
             responses.GET, "{api_url}media/{media_id}/info/".format(
-                api_url=API_URL, media_id=my_test_photo_item['pk']),
+                api_url=API_URL, media_id=my_TEST_PHOTO_ITEM['id']),
             json={
                 "auto_load_more_enabled": True,
                 "num_results": 1,
@@ -734,7 +734,7 @@ class TestBotGet(TestBot):
         }
         responses.add(
             responses.GET, '{api_url}media/{media_id}/comments/?'.format(
-                api_url=API_URL, media_id=my_test_photo_item['pk']), json=response_data, status=200)
+                api_url=API_URL, media_id=my_TEST_PHOTO_ITEM['id']), json=response_data, status=200)
 
         response_data = {
             'status': 'ok',
@@ -756,7 +756,7 @@ class TestBotGet(TestBot):
 
         responses.add(
             responses.POST, '{api_url}media/{media_id}/like/'.format(
-                api_url=API_URL, media_id=my_test_photo_item['pk']
+                api_url=API_URL, media_id=my_TEST_PHOTO_ITEM['id']
             ), status=200, json={'status': 'ok'})
 
         self.bot.like_followers(username)
@@ -854,7 +854,7 @@ class TestBotGet(TestBot):
 
         responses.add(
             responses.GET, "{api_url}media/{media_id}/info/".format(
-                api_url=API_URL, media_id=my_test_photo_item['pk']),
+                api_url=API_URL, media_id=my_TEST_PHOTO_ITEM['id']),
             json={
                 "auto_load_more_enabled": True,
                 "num_results": 1,
@@ -878,7 +878,7 @@ class TestBotGet(TestBot):
         }
         responses.add(
             responses.GET, '{api_url}media/{media_id}/comments/?'.format(
-                api_url=API_URL, media_id=my_test_photo_item['pk']), json=response_data, status=200)
+                api_url=API_URL, media_id=my_TEST_PHOTO_ITEM['id']), json=response_data, status=200)
 
         response_data = {
             'status': 'ok',
@@ -900,7 +900,7 @@ class TestBotGet(TestBot):
 
         responses.add(
             responses.POST, '{api_url}media/{media_id}/like/'.format(
-                api_url=API_URL, media_id=my_test_photo_item['pk']
+                api_url=API_URL, media_id=my_TEST_PHOTO_ITEM['id']
             ), status=200, json={'status': 'ok'})
 
         self.bot.like_following(username)

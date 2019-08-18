@@ -733,7 +733,7 @@ class TestBotGet(TestBot):
         results_2 = 3
         responses.add(
             responses.GET, "{api_url}media/{media_id}/likers/?".format(
-                api_url=API_URL, media_id=TEST_PHOTO_ITEM['pk']),
+                api_url=API_URL, media_id=TEST_PHOTO_ITEM['id']),
             json={
                 "user_count": results_2,
                 "status": "ok",
