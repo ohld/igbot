@@ -33,7 +33,7 @@ class TestBot:
 
 
 class TestBotAPI(TestBot):
-    @patch('instabot.API.load_cookie')
+    @patch('instabot.API.load_uuid_and_cookie')
     def test_login(self, load_cookie_mock):
         self.bot = Bot()
 
