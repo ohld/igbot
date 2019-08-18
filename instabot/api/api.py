@@ -647,11 +647,14 @@ class API(object):
 
     # From profile => "is_carousel_bumped_post":"false", "container_module":"feed_contextual_profile", "feed_position":"0"
     # From home/feed => "inventory_source":"media_or_ad", "is_carousel_bumped_post":"false", "container_module":"feed_timeline", "feed_position":"0"
-    def like(self, media_id, double_tap=0):
+    def like(self, media_id, double_tap=0):  # For the moment simulate the like from feed.
         return self.send_request(
             endpoint='media/{media_id}/like/'.format(media_id=media_id),
             post=self.json_data(self.action_data({
-                'media_id': media_id
+                'media_id': media_id,
+                'inventory_source': 'media_or_ad',
+                'container_module': 'feed_timeline',
+                'feed_position': str(random.randint(0, 5))
             })),
             extra_sig=['d={}'.format(double_tap)]
         )
