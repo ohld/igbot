@@ -1,6 +1,5 @@
 from tqdm import tqdm
 
-
 def like(self, media_id, check_media=True):
     if not self.reached_limit('likes'):
         if self.blocked_actions['likes']:
@@ -17,7 +16,7 @@ def like(self, media_id, check_media=True):
             self.blocked_actions['likes'] = True
             return False
         if _r:
-            self.logger.info("Liked media %d." % media_id)
+            self.logger.info("Liked media %s." % media_id)
             self.total['likes'] += 1
             return True
     else:
@@ -53,7 +52,7 @@ def like_media_comments(self, media_id):
     broken_items = []
     media_comments = self.get_media_comments(media_id)
     self.logger.info('Found {} comments'.format(len(media_comments)))
-    comment_ids = [item["pk"] for item in media_comments if not item.get('has_liked_comment') or not item["has_liked_comment"]]
+    comment_ids = [item["id"] for item in media_comments if not item.get('has_liked_comment') or not item["has_liked_comment"]]
 
     if not comment_ids:
         self.logger.info("None comments received: comments not found or comments have been filtered.")
