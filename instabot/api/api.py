@@ -546,6 +546,7 @@ class API(object):
         """
         return configure_video(self, upload_id, video, thumbnail, width, height, duration, caption, options)
 
+    # ====== MEDIA METHODS ====== #
     def edit_media(self, media_id, captionText=''):
         data = self.json_data({'caption_text': captionText})
         url = 'media/{media_id}/edit_media/'.format(media_id=media_id)
@@ -576,28 +577,6 @@ class API(object):
         url = 'media/{media_id}/delete/'.format(media_id=media.get('id'))
         return self.send_request(url, data)
 
-    def change_password(self, new_password):
-        data = self.json_data({
-            'old_password': self.password,
-            'new_password1': new_password,
-            'new_password2': new_password
-        })
-        return self.send_request('accounts/change_password/', data)
-
-    def explore(self, is_prefetch=False):
-        data = {
-            'is_prefetch': is_prefetch,
-            'is_from_promote': False,
-            'timezone_offset': datetime.datetime.now(pytz.timezone('CET')).strftime('%z'),
-            'session_id': self.client_session_id,
-            'supported_capabilities_new': config.SUPPORTED_CAPABILITIES
-        }
-        if is_prefetch:
-            data['max_id'] = 0
-            data['module'] = 'explore_popular'
-        data = json.dumps(data)
-        return self.send_request('discover/explore/', data)
-
     def comment(self, media_id, comment_text):
         data = self.json_data({'comment_text': comment_text})
         url = 'media/{media_id}/comment/'.format(media_id=media_id)
@@ -613,6 +592,54 @@ class API(object):
         url = 'media/{media_id}/comment/{comment_id}/delete/'
         url = url.format(media_id=media_id, comment_id=comment_id)
         return self.send_request(url, data)
+
+    def get_comment_likers(self, comment_id):
+        url = 'media/{comment_id}/comment_likers/?'.format(comment_id=comment_id)
+        return self.send_request(url)
+
+    def get_media_likers(self, media_id):
+        url = 'media/{media_id}/likers/?'.format(media_id=media_id)
+        return self.send_request(url)
+
+    def like_comment(self, comment_id):
+        data = self.json_data()
+        url = 'media/{comment_id}/comment_like/'.format(comment_id=comment_id)
+        return self.send_request(url, data)
+
+    def unlike_comment(self, comment_id):
+        data = self.json_data()
+        url = 'media/{comment_id}/comment_unlike/'.format(comment_id=comment_id)
+        return self.send_request(url, data)
+
+    def like(self, media_id):
+        data = self.json_data({'media_id': media_id})
+        url = 'media/{media_id}/like/'.format(media_id=media_id)
+        return self.send_request(url, data)
+
+    def unlike(self, media_id):
+        data = self.json_data({'media_id': media_id})
+        url = 'media/{media_id}/unlike/'.format(media_id=media_id)
+        return self.send_request(url, data)
+
+    def get_media_comments(self, media_id, max_id=''):
+        url = 'media/{media_id}/comments/'.format(media_id=media_id)
+        if max_id:
+            url += '?max_id={max_id}'.format(max_id=max_id)
+        return self.send_request(url)
+
+    def explore(self, is_prefetch=False):
+        data = {
+            'is_prefetch': is_prefetch,
+            'is_from_promote': False,
+            'timezone_offset': datetime.datetime.now(pytz.timezone('CET')).strftime('%z'),
+            'session_id': self.client_session_id,
+            'supported_capabilities_new': config.SUPPORTED_CAPABILITIES
+        }
+        if is_prefetch:
+            data['max_id'] = 0
+            data['module'] = 'explore_popular'
+        data = json.dumps(data)
+        return self.send_request('discover/explore/', data)
 
     def get_username_info(self, user_id):
         url = 'users/{user_id}/info/'.format(user_id=user_id)
@@ -635,18 +662,6 @@ class API(object):
     def get_self_user_tags(self):
         return self.get_user_tags(self.user_id)
 
-    def tag_feed(self, tag):
-        url = 'feed/tag/{tag}/?rank_token={rank_token}&ranked_content=true&'
-        return self.send_request(url.format(tag=tag, rank_token=self.rank_token))
-
-    def get_comment_likers(self, comment_id):
-        url = 'media/{comment_id}/comment_likers/?'.format(comment_id=comment_id)
-        return self.send_request(url)
-
-    def get_media_likers(self, media_id):
-        url = 'media/{media_id}/likers/?'.format(media_id=media_id)
-        return self.send_request(url)
-
     def get_geo_media(self, user_id):
         url = 'maps/user/{user_id}/'.format(user_id=user_id)
         return self.send_request(url)
@@ -657,6 +672,11 @@ class API(object):
     def sync_from_adress_book(self, contacts):
         url = 'address_book/link/?include=extra_display_name,thumbnails'
         return self.send_request(url, 'contacts=' + json.dumps(contacts))
+
+    # ====== FEED METHODS ====== #
+    def tag_feed(self, tag):
+        url = 'feed/tag/{tag}/?rank_token={rank_token}&ranked_content=true&'
+        return self.send_request(url.format(tag=tag, rank_token=self.rank_token))
 
     def get_timeline(self):
         url = 'feed/timeline/?rank_token={rank_token}&ranked_content=true&'
@@ -701,6 +721,11 @@ class API(object):
         url = 'feed/popular/?people_teaser_supported=1&rank_token={rank_token}&ranked_content=true&'
         return self.send_request(url.format(rank_token=self.rank_token))
 
+    def get_liked_media(self, max_id=''):
+        url = 'feed/liked/?max_id={max_id}'.format(max_id=max_id)
+        return self.send_request(url)
+
+    # ====== FRIENDSHIPS METHODS ====== #
     def get_user_followings(self, user_id, max_id=''):
         url = 'friendships/{user_id}/following/?max_id={max_id}&ig_sig_key_version={sig_key}&rank_token={rank_token}'
         url = url.format(
@@ -723,35 +748,6 @@ class API(object):
 
     def get_self_user_followers(self):
         return self.followers
-
-    def like_comment(self, comment_id):
-        data = self.json_data()
-        url = 'media/{comment_id}/comment_like/'.format(comment_id=comment_id)
-        return self.send_request(url, data)
-
-    def unlike_comment(self, comment_id):
-        data = self.json_data()
-        url = 'media/{comment_id}/comment_unlike/'.format(comment_id=comment_id)
-        return self.send_request(url, data)
-
-    def like(self, media_id):
-        data = self.json_data({'media_id': media_id})
-        url = 'media/{media_id}/like/'.format(media_id=media_id)
-        return self.send_request(url, data)
-
-    def unlike(self, media_id):
-        data = self.json_data({'media_id': media_id})
-        url = 'media/{media_id}/unlike/'.format(media_id=media_id)
-        return self.send_request(url, data)
-
-    def get_media_comments(self, media_id, max_id=''):
-        url = 'media/{media_id}/comments/'.format(media_id=media_id)
-        if max_id:
-            url += '?max_id={max_id}'.format(max_id=max_id)
-        return self.send_request(url)
-
-    def get_direct_share(self):
-        return self.send_request('direct_share/inbox/?')
 
     def follow(self, user_id):
         data = self.json_data({'user_id': user_id})
@@ -777,6 +773,54 @@ class API(object):
         data = self.json_data({'user_id': user_id})
         url = 'friendships/show/{user_id}/'.format(user_id=user_id)
         return self.send_request(url, data)
+
+        def mute_user(self, user, mute_story=False, mute_posts=False):
+        data_dict = {}
+        if mute_posts:
+            data_dict['target_posts_author_id'] = user
+        if mute_story:
+            data_dict['target_reel_author_id'] = user
+        data = self.json_data(data_dict)
+        url = 'friendships/mute_posts_or_story_from_follow/'
+        return self.send_request(url, data)
+
+    def unmute_user(self, user, unmute_posts=False, unmute_stories=False):
+        data_dict = {}
+        if unmute_posts:
+            data_dict['target_posts_author_id'] = user
+        if unmute_stories:
+            data_dict['target_reel_author_id'] = user
+        data = self.json_data(data_dict)
+        url = 'friendships/unmute_posts_or_story_from_follow/'
+        return self.send_request(url, data)
+
+    def get_pending_friendships(self):
+        """Get pending follow requests"""
+        url = 'friendships/pending/'
+        return self.send_request(url)
+
+    def approve_pending_friendship(self, user_id):
+        data = self.json_data({
+            '_uuid': self.uuid,
+            '_uid': self.user_id,
+            'user_id': user_id,
+            '_csrftoken': self.token
+        })
+        url = 'friendships/approve/{}/'.format(user_id)
+        return self.send_request(url, post=data)
+
+    def reject_pending_friendship(self, user_id):
+        data = self.json_data({
+            '_uuid': self.uuid,
+            '_uid': self.user_id,
+            'user_id': user_id,
+            '_csrftoken': self.token
+        })
+        url = 'friendships/ignore/{}/'.format(user_id)
+        return self.send_request(url, post=data)
+
+    def get_direct_share(self):
+        return self.send_request('direct_share/inbox/?')
 
     @staticmethod
     def _prepare_recipients(users, thread_id=None, use_quotes=False):
@@ -816,10 +860,6 @@ class API(object):
             return generated_uuid
         else:
             return generated_uuid.replace('-', '')
-
-    def get_liked_media(self, max_id=''):
-        url = 'feed/liked/?max_id={max_id}'.format(max_id=max_id)
-        return self.send_request(url)
 
     def get_total_followers_or_followings(self,
                                           user_id,
@@ -972,6 +1012,15 @@ class API(object):
             next_id = last_json.get("next_max_id", "")
             liked_items += last_json["items"]
         return liked_items
+
+    # ====== ACCOUNT / PERSONAL INFO METHODS ====== #
+    def change_password(self, new_password):
+        data = self.json_data({
+            'old_password': self.password,
+            'new_password1': new_password,
+            'new_password2': new_password
+        })
+        return self.send_request('accounts/change_password/', data)
 
     def remove_profile_picture(self):
         data = self.json_data()
@@ -1162,56 +1211,11 @@ class API(object):
         url = 'feed/saved/'
         return self.send_request(url)
 
-    def mute_user(self, user, mute_story=False, mute_posts=False):
-        data_dict = {}
-        if mute_posts:
-            data_dict['target_posts_author_id'] = user
-        if mute_story:
-            data_dict['target_reel_author_id'] = user
-        data = self.json_data(data_dict)
-        url = 'friendships/mute_posts_or_story_from_follow/'
-        return self.send_request(url, data)
-
-    def unmute_user(self, user, unmute_posts=False, unmute_stories=False):
-        data_dict = {}
-        if unmute_posts:
-            data_dict['target_posts_author_id'] = user
-        if unmute_stories:
-            data_dict['target_reel_author_id'] = user
-        data = self.json_data(data_dict)
-        url = 'friendships/unmute_posts_or_story_from_follow/'
-        return self.send_request(url, data)
-
-    def get_pending_friendships(self):
-        """Get pending follow requests"""
-        url = 'friendships/pending/'
-        return self.send_request(url)
-
-    def approve_pending_friendship(self, user_id):
-        data = self.json_data({
-            '_uuid': self.uuid,
-            '_uid': self.user_id,
-            'user_id': user_id,
-            '_csrftoken': self.token
-        })
-        url = 'friendships/approve/{}/'.format(user_id)
-        return self.send_request(url, post=data)
-
     def get_loom_fetch_config(self):
         return self.send_request('loom/fetch_config/')
 
     def get_profile_notice(self):
         return self.send_request('users/profile_notice/')
-
-    def reject_pending_friendship(self, user_id):
-        data = self.json_data({
-            '_uuid': self.uuid,
-            '_uid': self.user_id,
-            'user_id': user_id,
-            '_csrftoken': self.token
-        })
-        url = 'friendships/ignore/{}/'.format(user_id)
-        return self.send_request(url, post=data)
 
     # ====== DIRECT METHODS ====== #
     def get_inbox_v2(self):
