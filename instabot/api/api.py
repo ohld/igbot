@@ -86,8 +86,22 @@ class API(object):
         self.uuid = self.generate_UUID(uuid_type=True)
         self.client_session_id = self.generate_UUID(uuid_type=True)
         self.advertising_id = self.generate_UUID(uuid_type=True)
-        self.device_id = self.generate_device_id(self.get_seed(self.username, self.password))
+        self.device_id = self.generate_device_id(self.get_seed(self.generate_UUID(uuid_type=True)))
         # self.logger.info("uuid GENERATE! phone_id={}, uuid={}, session_id={}, device_id={}".format( self.phone_id, self.uuid, self.client_session_id, self.device_id ))
+
+    def reinstall_app_simulation(self):
+        self.logger.info("Reinstall app simulation, generating new `phone_id`...")
+        self.phone_id = self.generate_UUID(uuid_type=True)
+        self.save_uuid_and_cookie()
+        self.logger.info("New phone_id: {}".format(self.phone_id))
+
+    def change_device_simulation(self):
+        self.logger.info("Change device simulation")
+        self.reinstall_app_simulation()
+        self.logger.info("Generating new `android_device_id`...")
+        self.device_id = self.generate_device_id(self.get_seed(self.generate_UUID(uuid_type=True)))
+        self.save_uuid_and_cookie()
+        self.logger.info("New android_device_id: {}".format(self.device_id))
 
     def sync_device_features(self, login=False):
         data = {'id': self.uuid, 'server_config_retrieval': '1', 'experiments': config.LOGIN_EXPERIMENTS}
