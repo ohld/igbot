@@ -132,7 +132,9 @@ class API(object):
     def save_uuid_and_cookie(self):
         return save_uuid_and_cookie(self)
 
-    def login(self, username=None, password=None, force=False, proxy=None, use_cookie=False, cookie_fname=None, ask_for_code=False, set_device=True, generate_all_uuids=True):
+    def login(self, username=None, password=None, force=False, proxy=None,
+              use_cookie=False, cookie_fname=None, ask_for_code=False,
+              set_device=True, generate_all_uuids=True):
         if password is None:
             username, password = get_credentials(username=username)
 
