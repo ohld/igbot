@@ -98,6 +98,40 @@ class API(object):
         data = json.dumps({'adid': self.advertising_id})
         return self.send_request('attribution/log_attribution/', data, login=True)
 
+    # ====== ALL METHODS IMPORT FROM api_login ====== #
+    def sync_device_features(self, login=False):
+        return sync_device_features(self, login)
+
+    def sync_launcher(self, login=False):
+        return sync_launcher(self, login)
+
+    def sync_user_features(self):
+        return sync_user_features(self)
+
+    def pre_login_flow(self):
+        return pre_login_flow(self)
+
+    def login_flow(self, just_logged_in=False, app_refresh_interval=1800):
+        return login_flow(self, just_logged_in, app_refresh_interval)
+
+    def set_device(self):
+        return set_device(self)
+
+    def generate_all_uuids(self):
+        return generate_all_uuids(self)
+
+    def reinstall_app_simulation(self):
+        return reinstall_app_simulation(self)
+
+    def change_device_simulation(self):
+        return change_device_simulation(self)
+
+    def load_uuid_and_cookie(self):
+        return load_uuid_and_cookie(self)
+
+    def save_uuid_and_cookie(self):
+        return save_uuid_and_cookie(self)
+
     def login(self, username=None, password=None, force=False, proxy=None, use_cookie=False, cookie_fname=None, ask_for_code=False, set_device=True, generate_all_uuids=True):
         if password is None:
             username, password = get_credentials(username=username)
