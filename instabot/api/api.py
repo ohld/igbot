@@ -23,9 +23,12 @@ import six.moves.urllib as urllib
 from tqdm import tqdm
 
 from . import config, devices
-from .api_photo import configure_photo, download_photo, upload_photo
-from .api_video import configure_video, download_video, upload_video
-from .api_story import download_story, upload_story_photo, configure_story
+from .api_photo import (configure_photo, download_photo, upload_photo)
+from .api_video import (configure_video, download_video, upload_video)
+from .api_story import (download_story, upload_story_photo, configure_story)
+from .api_login import (
+    sync_device_features, sync_launcher, sync_user_features
+)
 from .prepare import delete_credentials, get_credentials
 
 PY2 = sys.version_info[0] == 2
@@ -102,32 +105,6 @@ class API(object):
         self.device_id = self.generate_device_id(self.get_seed(self.generate_UUID(uuid_type=True)))
         self.save_uuid_and_cookie()
         self.logger.info("New android_device_id: {}".format(self.device_id))
-
-    def sync_device_features(self, login=False):
-        data = {'id': self.uuid, 'server_config_retrieval': '1', 'experiments': config.LOGIN_EXPERIMENTS}
-        if login is False:
-            data['_uuid'] = self.uuid
-            data['_uid'] = self.user_id
-            data['_csrftoken'] = self.token
-        data = json.dumps(data)
-        return self.send_request('qe/sync/', data, login=login, headers={'X-DEVICE-ID': self.uuid})
-
-    def sync_launcher(self, login=False):
-        data = {'id': self.uuid, 'server_config_retrieval': '1', 'experiments': config.LAUNCHER_CONFIGS}
-        if login is False:
-            data['_uuid'] = self.uuid
-            data['_uid'] = self.user_id
-            data['_csrftoken'] = self.token
-        data = json.dumps(data)
-        return self.send_request('launcher/sync/', data, login=login)
-
-    def sync_user_features(self):
-        data = self.default_data
-        data['id'] = self.uuid
-        data['experiments'] = config.EXPERIMENTS
-        data = json.dumps(data)
-        self.last_experiments = time.time()
-        return self.send_request('qe/sync/', data, headers={'X-DEVICE-ID': self.uuid})
 
     def set_contact_point_prefill(self, usage='prefill'):
         data = json.dumps({'id': self.uuid, 'phone_id': self.phone_id, '_csrftoken': self.token, 'usage': usage})
