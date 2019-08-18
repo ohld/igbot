@@ -54,6 +54,8 @@ def _get_media_ids(media_items):
     for media in media_items:
         if 'id' in media:
             result.append(media['id'])
+        elif 'pk' in media:
+            result.append(media['pk'])
     return result
 
 

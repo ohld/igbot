@@ -931,7 +931,7 @@ class TestBotGet(TestBot):
 
         responses.add(
             responses.POST, '{api_url}media/{media_id}/like/'.format(
-                api_url=API_URL, media_id=my_test_timelime_photo_item['media_or_ad']['pk']
+                api_url=API_URL, media_id=my_test_timelime_photo_item['media_or_ad']['id']
             ), status=200, json={'status': 'ok'})
 
         broken_items = self.bot.like_timeline()
