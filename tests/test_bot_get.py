@@ -93,7 +93,7 @@ class TestBotGet(TestBot):
 
         medias = self.bot.get_popular_medias()
 
-        assert medias == [str(TEST_PHOTO_ITEM["pk"]) for _ in range(results)]
+        assert medias == [str(TEST_PHOTO_ITEM["id"]) for _ in range(results)]
         assert len(medias) == results
 
     @responses.activate
@@ -119,7 +119,7 @@ class TestBotGet(TestBot):
 
         medias = self.bot.get_timeline_medias()
 
-        assert medias == [TEST_PHOTO_ITEM["pk"] for _ in range(results)]
+        assert medias == [TEST_PHOTO_ITEM["id"] for _ in range(results)]
         assert len(medias) == results
 
         medias = self.bot.get_timeline_medias()
@@ -176,7 +176,7 @@ class TestBotGet(TestBot):
 
         medias = self.bot.get_your_medias()
 
-        assert medias == [my_test_photo_item["pk"] for _ in range(results)]
+        assert medias == [my_test_photo_item["id"] for _ in range(results)]
         assert len(medias) == results
 
         medias = self.bot.get_your_medias(as_dict=True)
@@ -218,11 +218,11 @@ class TestBotGet(TestBot):
         # user feed object returned by `feed/user/{user_id}/` API call.
 
         medias = self.bot.get_user_medias(user_id, filtration=False, is_comment=False)
-        assert medias == [test_photo_item["pk"] for test_photo_item in my_test_photo_items]
+        assert medias == [test_photo_item["id"] for test_photo_item in my_test_photo_items]
         assert len(medias) == results
 
         medias = self.bot.get_user_medias(user_id, filtration=True, is_comment=False)
-        assert medias == [test_photo_item["pk"] for test_photo_item in my_test_photo_items if (not test_photo_item["has_liked"] and test_photo_item["like_count"] < self.bot.max_likes_to_like and test_photo_item["like_count"] > self.bot.min_likes_to_like)]
+        assert medias == [test_photo_item["id"] for test_photo_item in my_test_photo_items if (not test_photo_item["has_liked"] and test_photo_item["like_count"] < self.bot.max_likes_to_like and test_photo_item["like_count"] > self.bot.min_likes_to_like)]
         assert len(medias) == results - expect_filtered
 
     @responses.activate
@@ -244,7 +244,7 @@ class TestBotGet(TestBot):
 
         medias = self.bot.get_archived_medias()
 
-        assert medias == [my_test_photo_item["pk"] for _ in range(results)]
+        assert medias == [my_test_photo_item["id"] for _ in range(results)]
         assert len(medias) == results
 
         medias = self.bot.get_archived_medias(as_dict=True)
@@ -590,11 +590,11 @@ class TestBotGet(TestBot):
             json=response_data, status=200)
 
         medias = self.bot.get_hashtag_medias(hashtag, filtration=False)
-        assert medias == [test_photo_item["pk"] for test_photo_item in my_test_photo_items]
+        assert medias == [test_photo_item["id"] for test_photo_item in my_test_photo_items]
         assert len(medias) == results
 
         medias = self.bot.get_hashtag_medias(hashtag, filtration=True)
-        assert medias == [test_photo_item["pk"] for test_photo_item in my_test_photo_items if (not test_photo_item["has_liked"] and test_photo_item["like_count"] < self.bot.max_likes_to_like and test_photo_item["like_count"] > self.bot.min_likes_to_like)]
+        assert medias == [test_photo_item["id"] for test_photo_item in my_test_photo_items if (not test_photo_item["has_liked"] and test_photo_item["like_count"] < self.bot.max_likes_to_like and test_photo_item["like_count"] > self.bot.min_likes_to_like)]
         assert len(medias) == results - expect_filtered
 
     @responses.activate
@@ -633,11 +633,11 @@ class TestBotGet(TestBot):
             json=response_data, status=200)
 
         medias = self.bot.get_total_hashtag_medias(hashtag, amount=amount, filtration=False)
-        assert medias == [test_photo_item["pk"] for test_photo_item in my_test_photo_items[:amount]]
+        assert medias == [test_photo_item["id"] for test_photo_item in my_test_photo_items[:amount]]
         assert len(medias) == amount
 
         medias = self.bot.get_total_hashtag_medias(hashtag, amount=amount, filtration=True)
-        assert medias == [test_photo_item["pk"] for test_photo_item in my_test_photo_items[:amount] if (not test_photo_item["has_liked"] and test_photo_item["like_count"] < self.bot.max_likes_to_like and test_photo_item["like_count"] > self.bot.min_likes_to_like)]
+        assert medias == [test_photo_item["id"] for test_photo_item in my_test_photo_items[:amount] if (not test_photo_item["has_liked"] and test_photo_item["like_count"] < self.bot.max_likes_to_like and test_photo_item["like_count"] > self.bot.min_likes_to_like)]
         assert len(medias) == amount - expect_filtered
 
     @responses.activate
@@ -683,7 +683,7 @@ class TestBotGet(TestBot):
 
         medias = self.bot.get_last_user_medias(user_id, count=results)
 
-        assert medias == [TEST_PHOTO_ITEM["pk"] for _ in range(results)]
+        assert medias == [TEST_PHOTO_ITEM["id"] for _ in range(results)]
         assert len(medias) == results
 
     @responses.activate
@@ -708,7 +708,7 @@ class TestBotGet(TestBot):
             json=response_data, status=200)
 
         medias = self.bot.get_total_user_medias(user_id)
-        assert medias == [TEST_PHOTO_ITEM["pk"] for _ in range(results)]
+        assert medias == [TEST_PHOTO_ITEM["id"] for _ in range(results)]
         assert len(medias) == results
 
     @responses.activate

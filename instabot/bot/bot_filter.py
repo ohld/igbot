@@ -52,8 +52,8 @@ def _filter_medias_nlikes(media_items, max_likes_to_like, min_likes_to_like):
 def _get_media_ids(media_items):
     result = []
     for media in media_items:
-        if 'pk' in media:
-            result.append(media['pk'])
+        if 'id' in media:
+            result.append(media['id'])
     return result
 
 

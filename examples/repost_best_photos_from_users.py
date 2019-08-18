@@ -30,7 +30,7 @@ def repost_best_photos(bot, users, amount=1):
 def sort_best_medias(bot, media_ids, amount=1):
     best_medias = [bot.get_media_info(media)[0] for media in tqdm(media_ids, desc='Getting media info')]
     best_medias = sorted(best_medias, key=lambda x: (x['like_count'], x['comment_count']), reverse=True)
-    return [best_media['pk'] for best_media in best_medias[:amount]]
+    return [best_media['id'] for best_media in best_medias[:amount]]
 
 
 def get_not_used_medias_from_users(bot, users=None, users_path=USERNAME_DATABASE):
