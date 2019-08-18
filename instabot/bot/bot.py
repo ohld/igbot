@@ -2,6 +2,8 @@ import os
 import datetime
 import random
 import time
+import signal
+import atexit
 
 from .. import utils
 from ..api import API
@@ -288,7 +290,6 @@ class Bot(object):
         return next((p.version for p in pkg_resources.working_set if p.project_name.lower() == 'instabot'), "No match")
 
     def logout(self, *args, **kwargs):
-        save_checkpoint(self)
         self.api.logout()
         self.logger.info("Bot stopped. "
                          "Worked: %s", datetime.datetime.now() - self.start_time)
@@ -300,6 +301,8 @@ class Bot(object):
         if self.api.login(**args) is False:
             return False
         self.prepare()
+        signal.signal(signal.SIGTERM, self.print_counters)
+        atexit.register(self.print_counters)
         return True
 
     def prepare(self):
@@ -311,6 +314,7 @@ class Bot(object):
                 self.total[k] = v
 
     def print_counters(self):
+        save_checkpoint(self)
         for key, val in self.total.items():
             if val > 0:
                 self.logger.info("Total {}: {}{}".format(key, val,
