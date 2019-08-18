@@ -8,6 +8,8 @@ import requests.utils
 from . import config, devices
 
 # ====== SYNC METHODS ====== #
+
+
 def sync_device_features(self, login=False):
     data = {'id': self.uuid, 'server_config_retrieval': '1', 'experiments': config.LOGIN_EXPERIMENTS}
     if login is False:
@@ -16,6 +18,7 @@ def sync_device_features(self, login=False):
         data['_csrftoken'] = self.token
     data = json.dumps(data)
     return self.send_request('qe/sync/', data, login=login, headers={'X-DEVICE-ID': self.uuid})
+
 
 def sync_launcher(self, login=False):
     data = {'id': self.uuid, 'server_config_retrieval': '1', 'experiments': config.LAUNCHER_CONFIGS}
@@ -26,6 +29,7 @@ def sync_launcher(self, login=False):
     data = json.dumps(data)
     return self.send_request('launcher/sync/', data, login=login)
 
+
 def sync_user_features(self):
     data = self.default_data
     data['id'] = self.uuid
@@ -35,6 +39,8 @@ def sync_user_features(self):
     return self.send_request('qe/sync/', data, headers={'X-DEVICE-ID': self.uuid})
 
 # ====== LOGIN/PRE FLOWS METHODS ====== #
+
+
 def pre_login_flow(self):
     self.logger.info("PRE-LOGIN FLOW!... ")
 
@@ -43,6 +49,7 @@ def pre_login_flow(self):
     self.sync_device_features(True)
     self.log_attribution()
     self.set_contact_point_prefill('prefill')
+
 
 def login_flow(self, just_logged_in=False, app_refresh_interval=1800):
     self.logger.info("LOGIN FLOW! Just logged-in: {}".format(just_logged_in))
@@ -106,9 +113,12 @@ def login_flow(self, just_logged_in=False, app_refresh_interval=1800):
     return False if False in check_flow else True
 
 # ====== DEVICE / CLIENT_ID / PHONE_ID AND OTHER VALUES (uuids) ====== #
+
+
 def set_device(self):
     self.device_settings = devices.DEVICES[self.device]
     self.user_agent = config.USER_AGENT_BASE.format(**self.device_settings)
+
 
 def generate_all_uuids(self):
     self.phone_id = self.generate_UUID(uuid_type=True)
@@ -118,11 +128,13 @@ def generate_all_uuids(self):
     self.device_id = self.generate_device_id(self.get_seed(self.generate_UUID(uuid_type=True)))
     # self.logger.info("uuid GENERATE! phone_id={}, uuid={}, session_id={}, device_id={}".format( self.phone_id, self.uuid, self.client_session_id, self.device_id ))
 
+
 def reinstall_app_simulation(self):
     self.logger.info("Reinstall app simulation, generating new `phone_id`...")
     self.phone_id = self.generate_UUID(uuid_type=True)
     self.save_uuid_and_cookie()
     self.logger.info("New phone_id: {}".format(self.phone_id))
+
 
 def change_device_simulation(self):
     self.logger.info("Change device simulation")
@@ -131,6 +143,7 @@ def change_device_simulation(self):
     self.device_id = self.generate_device_id(self.get_seed(self.generate_UUID(uuid_type=True)))
     self.save_uuid_and_cookie()
     self.logger.info("New android_device_id: {}".format(self.device_id))
+
 
 def load_uuid_and_cookie(self):
     if self.cookie_fname is None:
@@ -170,6 +183,7 @@ def load_uuid_and_cookie(self):
 
     self.is_logged_in = True
     return True
+
 
 def save_uuid_and_cookie(self):
     if self.cookie_fname is None:
