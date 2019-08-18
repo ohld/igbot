@@ -9,6 +9,7 @@ import time
 import uuid
 import datetime
 import pytz
+import base64
 
 from requests_toolbelt import MultipartEncoder
 
@@ -284,7 +285,7 @@ class API(object):
             self.session.proxies['http'] = scheme + self.proxy
             self.session.proxies['https'] = scheme + self.proxy
 
-    def send_request(self, endpoint, post=None, login=False, with_signature=True, headers=None):
+    def send_request(self, endpoint, post=None, login=False, with_signature=True, headers=None, extra_sig=None):
         if (not self.is_logged_in and not login):
             msg = "Not logged in!"
             self.logger.critical(msg)
@@ -305,6 +306,8 @@ class API(object):
             if post is not None:  # POST
                 if with_signature:
                     post = self.generate_signature(post)  # Only `send_direct_item` doesn't need a signature
+                    if extra_sig is not None and extra_sig != []:
+                        post += '&'.join(extra_sig)
                 response = self.session.post(config.API_URL + endpoint, data=post)
             else:  # GET
                 response = self.session.get(config.API_URL + endpoint)
@@ -417,6 +420,14 @@ class API(object):
             data = {}
         data.update(self.default_data)
         return json.dumps(data)
+
+    def action_data(self, data):
+        _data = {
+            "radio_type": "wifi-none",
+            "device_id": self.device_id
+        }
+        data.update(_data)
+        return data
 
     def auto_complete_user_list(self):
         return self.send_request('friendships/autocomplete_user_list/')
@@ -579,10 +590,30 @@ class API(object):
         url = 'media/{media_id}/delete/'.format(media_id=media.get('id'))
         return self.send_request(url, data)
 
+    def gen_user_breadcrumb(self, size):
+        key = 'iN4$aGr0m'
+        dt = int(time.time() * 1000)
+
+        time_elapsed = random.randint(500, 1500) + size * random.randint(500, 1500)
+        text_change_event_count = max(1, size / random.randint(3, 5))
+
+        data = '{size!s} {elapsed!s} {count!s} {dt!s}'.format(**{
+            'size': size, 'elapsed': time_elapsed, 'count': text_change_event_count, 'dt': dt
+        })
+        return '{0!s}\n{1!s}\n'.format(
+            base64.b64encode(hmac.new(key.encode('ascii'), data.encode('ascii'), digestmod=hashlib.sha256).digest()),
+            base64.b64encode(data.encode('ascii')))
+
     def comment(self, media_id, comment_text):
-        data = self.json_data({'comment_text': comment_text})
-        url = 'media/{media_id}/comment/'.format(media_id=media_id)
-        return self.send_request(url, data)
+        return self.send_request(
+            endpoint='media/{media_id}/comment/'.format(media_id=media_id),
+            post=self.json_data(self.action_data({
+                'container_module': "comments_v2",
+                'user_breadcrumb': self.gen_user_breadcrumb(len(comment_text)),
+                'idempotence_token': self.generate_UUID(True),
+                'comment_text': comment_text
+            }))
+        )
 
     def reply_to_comment(self, media_id, comment_text, parent_comment_id):
         data = self.json_data({'comment_text': comment_text, 'replied_to_comment_id': parent_comment_id})
@@ -613,10 +644,16 @@ class API(object):
         url = 'media/{comment_id}/comment_unlike/'.format(comment_id=comment_id)
         return self.send_request(url, data)
 
-    def like(self, media_id):
-        data = self.json_data({'media_id': media_id})
-        url = 'media/{media_id}/like/'.format(media_id=media_id)
-        return self.send_request(url, data)
+    # From profile => "is_carousel_bumped_post":"false", "container_module":"feed_contextual_profile", "feed_position":"0"
+    # From home/feed => "inventory_source":"media_or_ad", "is_carousel_bumped_post":"false", "container_module":"feed_timeline", "feed_position":"0"
+    def like(self, media_id, double_tap=0):
+        return self.send_request(
+            endpoint='media/{media_id}/like/'.format(media_id=media_id),
+            post=self.json_data(self.action_data({
+                'media_id': media_id
+            })),
+            extra_sig=['d={}'.format(double_tap)]
+        )
 
     def unlike(self, media_id):
         data = self.json_data({'media_id': media_id})
@@ -1199,10 +1236,13 @@ class API(object):
         url = 'insights/account_organic_insights/?show_promotions_in_landing_page=true&first={}'.format()
         return self.send_request(url)
 
-    def save_media(self, media_id):
-        data = self.json_data()
-        url = 'media/{}/save/'.format(media_id)
-        return self.send_request(url, data)
+    # From profile => "module_name":"feed_contextual_profile"
+    # From home/feed => "module_name":"feed_timeline"
+    def save_media(self, media_id, module_name="feed_timeline"):
+        return self.send_request(
+            endpoint='media/{media_id}/save/'.format(media_id=media_id),
+            post=self.json_data(self.action_data({'module_name': module_name}))
+        )
 
     def unsave_media(self, media_id):
         data = self.json_data()
