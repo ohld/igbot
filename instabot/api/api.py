@@ -29,7 +29,8 @@ from .api_story import (download_story, upload_story_photo, configure_story)
 from .api_login import (
     sync_device_features, sync_launcher, sync_user_features,
     set_device, generate_all_uuids, reinstall_app_simulation, change_device_simulation,
-    load_uuid_and_cookie, save_uuid_and_cookie
+    load_uuid_and_cookie, save_uuid_and_cookie,
+    pre_login_flow, login_flow
 )
 from .prepare import delete_credentials, get_credentials
 
@@ -96,76 +97,6 @@ class API(object):
     def log_attribution(self, usage='default'):
         data = json.dumps({'adid': self.advertising_id})
         return self.send_request('attribution/log_attribution/', data, login=True)
-
-    def login_flow(self, just_logged_in=False, app_refresh_interval=1800):
-        self.logger.info("LOGIN FLOW! Just logged-in: {}".format(just_logged_in))
-        check_flow = []
-        if(just_logged_in):
-            try:
-                # SYNC
-                check_flow.append(self.sync_launcher(False))
-                check_flow.append(self.sync_user_features())
-                # Update feed and timeline
-                check_flow.append(self.get_timeline_feed())
-                check_flow.append(self.get_reels_tray_feed(reason='cold_start'))
-                check_flow.append(self.get_suggested_searches('users'))
-                # getRecentSearches() ...
-                check_flow.append(self.get_suggested_searches('blended'))
-                # DM-Update
-                check_flow.append(self.get_ranked_recipients('reshare', True))
-                check_flow.append(self.get_ranked_recipients('save', True))
-                check_flow.append(self.get_inbox_v2())
-                check_flow.append(self.get_presence())
-                check_flow.append(self.get_recent_activity())
-                # Config and other stuffs
-                check_flow.append(self.get_loom_fetch_config())
-                check_flow.append(self.get_profile_notice())
-                check_flow.append(self.batch_fetch())
-                # getBlockedMedia() ...
-                check_flow.append(self.explore(True))
-                # getQPFetch() ...
-                # getFacebookOTA() ...
-            except Exception as e:
-                self.logger.error("Exception raised: {}".format(e))
-                return False
-        else:
-            try:
-                pull_to_refresh = random.randint(1, 100) % 2 == 0
-                check_flow.append(self.get_timeline_feed(options=['is_pull_to_refresh'] if pull_to_refresh is True else []))  # Random pull_to_refresh :)
-                check_flow.append(self.get_reels_tray_feed(reason='pull_to_refresh' if pull_to_refresh is True else 'cold_start'))
-
-                is_session_expired = (time.time() - self.last_login) > app_refresh_interval
-                if is_session_expired:
-                    self.last_login = time.time()
-                    self.client_session_id = self.generate_UUID(uuid_type=True)
-
-                    # getBootstrapUsers() ...
-                    check_flow.append(self.get_ranked_recipients('reshare', True))
-                    check_flow.append(self.get_ranked_recipients('save', True))
-                    check_flow.append(self.get_inbox_v2())
-                    check_flow.append(self.get_presence())
-                    check_flow.append(self.get_recent_activity())
-                    check_flow.append(self.get_profile_notice())
-                    check_flow.append(self.explore(False))
-
-                if (time.time() - self.last_experiments) > 7200:
-                    check_flow.append(self.sync_user_features())
-                    check_flow.append(self.sync_device_features())
-            except Exception as e:
-                self.logger.error("Exception raised: {}".format(e))
-                return False
-
-        self.save_uuid_and_cookie()
-        return False if False in check_flow else True
-
-    def pre_login_flow(self):
-        self.logger.info("PRE-LOGIN FLOW!... ")
-
-        self.read_msisdn_header('default')
-        self.sync_launcher(True)
-        self.sync_device_features(True)
-        self.log_attribution()
-        self.set_contact_point_prefill('prefill')
 
     def login(self, username=None, password=None, force=False, proxy=None, use_cookie=False, cookie_fname=None, ask_for_code=False, set_device=True, generate_all_uuids=True):
         if password is None:
