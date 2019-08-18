@@ -50,7 +50,7 @@ def get_media_owner(self, media_id):
 
 def get_user_tags_medias(self, user_id):
     self.api.get_user_tags(user_id)
-    return [str(media['id']) for media in self.api.last_json['items']]
+    return [str(media['pk']) for media in self.api.last_json['items']]
 
 
 def get_popular_medias(self):
