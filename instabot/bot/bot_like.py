@@ -1,5 +1,6 @@
 from tqdm import tqdm
 
+
 def like(self, media_id, check_media=True):
     if not self.reached_limit('likes'):
         if self.blocked_actions['likes']:
