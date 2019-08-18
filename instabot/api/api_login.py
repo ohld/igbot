@@ -5,7 +5,7 @@ import random
 import requests
 import requests.utils
 
-from . import config
+from . import config, devices
 
 # ====== SYNC METHODS ====== #
 def sync_device_features(self, login=False):

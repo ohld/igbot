@@ -774,7 +774,7 @@ class API(object):
         url = 'friendships/show/{user_id}/'.format(user_id=user_id)
         return self.send_request(url, data)
 
-        def mute_user(self, user, mute_story=False, mute_posts=False):
+    def mute_user(self, user, mute_story=False, mute_posts=False):
         data_dict = {}
         if mute_posts:
             data_dict['target_posts_author_id'] = user
