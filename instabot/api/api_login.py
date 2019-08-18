@@ -125,7 +125,7 @@ def generate_all_uuids(self):
     self.uuid = self.generate_UUID(uuid_type=True)
     self.client_session_id = self.generate_UUID(uuid_type=True)
     self.advertising_id = self.generate_UUID(uuid_type=True)
-    self.device_id = self.generate_device_id(self.get_seed(self.generate_UUID(uuid_type=True)))
+    self.device_id = self.generate_device_id(self.get_seed(self.username, self.password))
     # self.logger.info("uuid GENERATE! phone_id={}, uuid={}, session_id={}, device_id={}".format( self.phone_id, self.uuid, self.client_session_id, self.device_id ))
 
 

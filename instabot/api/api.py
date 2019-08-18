@@ -139,6 +139,7 @@ class API(object):
         if password is None:
             username, password = get_credentials(username=username)
 
+        set_device = generate_all_uuids = True
         self.set_user(username, password)
         self.session = requests.Session()
 
