@@ -279,32 +279,6 @@ class API(object):
                 self.save_failed_login()
                 return False
 
-    def load_cookie(self, fname):
-        # Python2 compatibility
-        if PY2:
-            FileNotFoundError = IOError
-
-        try:
-            with open(fname, 'r') as f:
-                self.session = requests.Session()
-                self.session.cookies = requests.utils.cookiejar_from_dict(json.load(f))
-            cookie_username = self.cookie_dict['ds_user']
-            assert cookie_username == self.username
-        except FileNotFoundError:
-            raise Exception('Cookie file `{}` not found'.format(fname))
-        except (TypeError, EOFError):
-            os.remove(fname)
-            msg = ('An error occured opening the cookie `{}`, '
-                   'it will be removed an recreated.')
-            raise Exception(msg.format(fname))
-        except AssertionError:
-            msg = 'The loaded cookie was for {} instead of {}.'
-            raise Exception(msg.format(cookie_username, self.username))
-
-    def save_cookie(self, fname):
-        with open(fname, 'w') as f:
-            json.dump(requests.utils.dict_from_cookiejar(self.session.cookies), f)
-
     def load_uuid_and_cookie(self):
         if self.cookie_fname is None:
             fname = "{}_uuid_and_cookie.json".format(self.username)
