@@ -2,7 +2,7 @@ from tqdm import tqdm
 
 
 def like(self, media_id, check_media=True,
-         container_module="feed_timeline",
+         container_module="feed_short_url",
          feed_position=0,
          username=None, user_id=None,
          hashtag_name=None, hashtag_id=None,

@@ -648,19 +648,12 @@ class API(object):
     # From profile => "is_carousel_bumped_post":"false", "container_module":"feed_contextual_profile", "feed_position":"0"
     # From home/feed => "inventory_source":"media_or_ad", "is_carousel_bumped_post":"false", "container_module":"feed_timeline", "feed_position":"0"
     def like(self, media_id, double_tap=None,
-             container_module="feed_timeline",
+             container_module="feed_short_url",
              feed_position=0,
              username=None, user_id=None,
              hashtag_name=None, hashtag_id=None,
              entity_page_name=None, entity_page_id=None):
 
-        # TODO: comment out debug log out when done
-        self.logger.debug("LIKE: {} {} {} {} {} {} {} {}".format(
-            container_module, feed_position,
-            username, user_id,
-            hashtag_name, hashtag_id,
-            entity_page_name, entity_page_id
-        ))
         data = self.action_data({
             'media_id': media_id,
             'container_module': container_module,
@@ -681,9 +674,12 @@ class API(object):
                 'entity_page_id': entity_page_id})
         if double_tap is None:
             double_tap = random.randint(0, 1)
+        json_data = self.json_data(data)
+        # TODO: comment out debug log out when done
+        self.logger.debug("post data: {}".format(json_data))
         return self.send_request(
             endpoint='media/{media_id}/like/'.format(media_id=media_id),
-            post=self.json_data(data),
+            post=json_data,
             extra_sig=['d={}'.format(double_tap)]
         )
 
