@@ -687,7 +687,13 @@ class API(object):
         )
 
     def unlike(self, media_id):
-        data = self.json_data({'media_id': media_id})
+        data = self.json_data({
+            "media_id": media_id,
+            "radio_type": "wifi-none",
+            "is_carousel_bumped_post": "false",
+            "container_module": "photo_view_other",
+            "feed_position": "0"
+        })
         url = 'media/{media_id}/unlike/'.format(media_id=media_id)
         return self.send_request(url, data)
 
@@ -827,7 +833,7 @@ class API(object):
         return self.send_request(url, data)
 
     def unfollow(self, user_id):
-        data = self.json_data({'user_id': user_id})
+        data = self.json_data({'user_id': user_id, 'radio_type': 'wifi-none'})
         url = 'friendships/destroy/{user_id}/'.format(user_id=user_id)
         return self.send_request(url, data)
 
