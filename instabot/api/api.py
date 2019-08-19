@@ -820,7 +820,9 @@ class API(object):
         return self.followers
 
     def follow(self, user_id):
-        data = self.json_data({'user_id': user_id})
+        data = self.json_data(
+            self.action_data({'user_id': user_id}))
+        self.logger.debug("post data: {}".format(data))
         url = 'friendships/create/{user_id}/'.format(user_id=user_id)
         return self.send_request(url, data)
 
