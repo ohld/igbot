@@ -184,7 +184,7 @@ class API(object):
             if self.send_request('accounts/login/', data, True):
                 self.save_successful_login()
                 self.login_flow(True)
-                self.device_id = self.uuid
+                # self.device_id = self.uuid
                 return True
             elif self.last_json.get('error_type', '') == 'checkpoint_challenge_required':
                 self.logger.info('Checkpoint challenge required...')
