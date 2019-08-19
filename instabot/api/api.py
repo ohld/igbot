@@ -657,7 +657,8 @@ class API(object):
         data = self.action_data({
             'media_id': media_id,
             'container_module': container_module,
-            'feed_position': feed_position})
+            'feed_position': feed_position,
+            'is_carousel_bumped_post': 'false'})
         if container_module == 'feed_timeline':
             data.update({'inventory_source': 'media_or_ad'})
         if username:
