@@ -1365,3 +1365,8 @@ class API(object):
         })
         url = 'direct_v2/threads/{}/approve/'.format(thread_id)
         return self.send_request(url, post=data)
+
+    def open_instagram_link(self, link):
+        return self.send_request(
+            "oembed/?url={}".format(
+                urllib.parse.quote(link, safe='')))
