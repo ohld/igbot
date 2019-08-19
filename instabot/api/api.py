@@ -638,12 +638,20 @@ class API(object):
         return self.send_request(url)
 
     def like_comment(self, comment_id):
-        data = self.json_data()
+        data = self.json_data({
+            "is_carousel_bumped_post": "false",
+            "container_module": "comments_v2",
+            "feed_position": "0"
+        })
         url = 'media/{comment_id}/comment_like/'.format(comment_id=comment_id)
         return self.send_request(url, data)
 
     def unlike_comment(self, comment_id):
-        data = self.json_data()
+        data = self.json_data({
+            "is_carousel_bumped_post": "false",
+            "container_module": "comments_v2",
+            "feed_position": "0"
+        })
         url = 'media/{comment_id}/comment_unlike/'.format(comment_id=comment_id)
         return self.send_request(url, data)
 
