@@ -1,7 +1,14 @@
 from tqdm import tqdm
 
 
-def like(self, media_id, check_media=True):
+def like(
+    self, media_id, check_media=True,
+    container_module="feed_timeline",
+    feed_position=0,
+    username=None, user_id=None,
+    hashtag_name=None, hashtag_id=None,
+    entity_page_name=None, entity_page_id=None
+    ):
     if not self.reached_limit('likes'):
         if self.blocked_actions['likes']:
             self.logger.warning('YOUR `LIKE` ACTION IS BLOCKED')
@@ -11,7 +18,14 @@ def like(self, media_id, check_media=True):
         self.delay('like')
         if check_media and not self.check_media(media_id):
             return False
-        _r = self.api.like(media_id)
+        _r = self.api.like(
+            media_id,
+            container_module=container_module,
+            feed_position=feed_position,
+            username=username, user_id=user_id,
+            hashtag_name=hashtag_name, hashtag_id=hashtag_id,
+            entity_page_name=entity_page_name,
+            entity_page_id=entity_page_id)
         if _r == 'feedback_required':
             self.logger.error("`Like` action has been BLOCKED...!!!")
             self.blocked_actions['likes'] = True
@@ -71,16 +85,32 @@ def like_media_comments(self, media_id):
     return broken_items
 
 
-def like_medias(self, medias, check_media=True):
+def like_medias(
+    self, medias, check_media=True,
+    container_module="feed_timeline",
+    username=None, user_id=None,
+    hashtag_name=None, hashtag_id=None,
+    entity_page_name=None, entity_page_id=None
+    ):
     broken_items = []
     if not medias:
         self.logger.info("Nothing to like.")
         return broken_items
     self.logger.info("Going to like %d medias." % (len(medias)))
+    feed_position = 0
     for media in tqdm(medias):
-        if not self.like(media, check_media):
+        if not self.like(
+            media, check_media=check_media,
+            container_module=container_module,
+            feed_position=feed_position,
+            username=username, user_id=user_id,
+            hashtag_name=hashtag_name, hashtag_id=hashtag_id,
+            entity_page_name=entity_page_name,
+            entity_page_id=entity_page_id
+            ):
             self.error_delay()
             broken_items.append(media)
+        feed_position += 1
     self.logger.info("DONE: Total liked %d medias." % self.total['likes'])
     return broken_items
 
@@ -118,7 +148,18 @@ def like_hashtag(self, hashtag, amount=None):
     """ Likes last medias from hashtag """
     self.logger.info("Going to like media with hashtag #%s." % hashtag)
     medias = self.get_total_hashtag_medias(hashtag, amount)
-    return self.like_medias(medias)
+    if self.api.search_tags(hashtag):
+        for tag in self.api.last_json['results']:
+            if tag['name'] == hashtag:
+                hashtag_id = tag['id']
+                break
+    else:
+        self.logger.error("NO INFO FOR HASHTAG: {}".format(hashtag))
+        return False
+    return self.like_medias(
+        medias,
+        container_module="feed_contextual_hashtag",
+        hashtag_name=hashtag, hashtag_id=hashtag_id)
 
 
 def like_geotag(self, geotag, amount=None):

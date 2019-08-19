@@ -647,15 +647,48 @@ class API(object):
 
     # From profile => "is_carousel_bumped_post":"false", "container_module":"feed_contextual_profile", "feed_position":"0"
     # From home/feed => "inventory_source":"media_or_ad", "is_carousel_bumped_post":"false", "container_module":"feed_timeline", "feed_position":"0"
-    def like(self, media_id, double_tap=0):  # For the moment simulate the like from feed.
+    def like(
+        self, media_id, double_tap=None,
+        container_module="feed_timeline",
+        feed_position=0,
+        username=None, user_id=None,
+        hashtag_name=None, hashtag_id=None,
+        entity_page_name=None, entity_page_id=None
+        ):
+        # TODO: comment out debug log out when done
+        self.logger.debug("LIKE: {} {} {} {} {} {} {} {}".format(
+            container_module, feed_position,
+            username, user_id,
+            hashtag_name, hashtag_id,
+            entity_page_name, entity_page_id
+        ))
+        data = self.action_data({
+                'media_id': media_id,
+                'container_module': container_module,
+                'feed_position': feed_position
+            })
+        if container_module == 'feed_timeline':
+            data.update({'inventory_source': 'media_or_ad'})
+        if username:
+            data.update({
+                'username': username,
+                'user_id': user_id
+            })
+        if hashtag_name:
+            data.update({
+                'hashtag_name': hashtag_name,
+                'hashtag_id': hashtag_id
+            })
+        if entity_page_name:
+            data.update({
+                'entity_page_name': entity_page_name,
+                'entity_page_id': entity_page_id
+            })
+        if double_tap is None:
+            double_tap = random.randint(0, 1)
         return self.send_request(
             endpoint='media/{media_id}/like/'.format(media_id=media_id),
-            post=self.json_data(self.action_data({
-                'media_id': media_id,
-                'inventory_source': 'media_or_ad',
-                'container_module': 'feed_timeline',
-                'feed_position': str(random.randint(0, 5))
-            })),
+            post=self.json_data(data),
             extra_sig=['d={}'.format(double_tap)]
         )
 
