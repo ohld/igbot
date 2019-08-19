@@ -197,6 +197,8 @@ class API(object):
                     else:
                         self.save_failed_login()
                         return False
+                else:
+                    return False
             else:
                 self.save_failed_login()
                 return False
