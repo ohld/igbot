@@ -1,14 +1,13 @@
 from tqdm import tqdm
 
 
-def like(
-    self, media_id, check_media=True,
-    container_module="feed_timeline",
-    feed_position=0,
-    username=None, user_id=None,
-    hashtag_name=None, hashtag_id=None,
-    entity_page_name=None, entity_page_id=None
-    ):
+def like(self, media_id, check_media=True,
+         container_module="feed_timeline",
+         feed_position=0,
+         username=None, user_id=None,
+         hashtag_name=None, hashtag_id=None,
+         entity_page_name=None, entity_page_id=None):
+
     if not self.reached_limit('likes'):
         if self.blocked_actions['likes']:
             self.logger.warning('YOUR `LIKE` ACTION IS BLOCKED')
@@ -85,13 +84,12 @@ def like_media_comments(self, media_id):
     return broken_items
 
 
-def like_medias(
-    self, medias, check_media=True,
-    container_module="feed_timeline",
-    username=None, user_id=None,
-    hashtag_name=None, hashtag_id=None,
-    entity_page_name=None, entity_page_id=None
-    ):
+def like_medias(self, medias, check_media=True,
+                container_module="feed_timeline",
+                username=None, user_id=None,
+                hashtag_name=None, hashtag_id=None,
+                entity_page_name=None, entity_page_id=None):
+
     broken_items = []
     if not medias:
         self.logger.info("Nothing to like.")
@@ -99,15 +97,13 @@ def like_medias(
     self.logger.info("Going to like %d medias." % (len(medias)))
     feed_position = 0
     for media in tqdm(medias):
-        if not self.like(
-            media, check_media=check_media,
-            container_module=container_module,
-            feed_position=feed_position,
-            username=username, user_id=user_id,
-            hashtag_name=hashtag_name, hashtag_id=hashtag_id,
-            entity_page_name=entity_page_name,
-            entity_page_id=entity_page_id
-            ):
+        if not self.like(media, check_media=check_media,
+                         container_module=container_module,
+                         feed_position=feed_position,
+                         username=username, user_id=user_id,
+                         hashtag_name=hashtag_name, hashtag_id=hashtag_id,
+                         entity_page_name=entity_page_name,
+                         entity_page_id=entity_page_id):
             self.error_delay()
             broken_items.append(media)
         feed_position += 1

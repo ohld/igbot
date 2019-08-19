@@ -563,6 +563,31 @@ class TestBotGet(TestBot):
                 rank_token=self.bot.api.rank_token),
             json=response_data, status=200)
 
+        response_tag = {'results': [{
+                        'id': 17841563287125205,
+                        'name': hashtag,
+                        'media_count': 7645915,
+                        'follow_status': None,
+                        'following': None,
+                        'allow_following': None,
+                        'allow_muting_story': None,
+                        'profile_pic_url': 'https://instagram.fmxp6-1.fna.fbcdn.net/vp/8e512ee62d218765d3ac46f3da6869de/5E0E0DE3/t51.2885-15/e35/c148.0.889.889a/s150x150/67618693_2467437380156007_7054420538339677194_n.jpg?_nc_ht=instagram.fmxp6-1.fna.fbcdn.net&ig_cache_key=MjExMzI5MDMwNDYxNzY3MDExMQ%3D%3D.2.c',
+                        'non_violating': None,
+                        'related_tags': None,
+                        'subtitle': None,
+                        'social_context': None,
+                        'social_context_profile_links': None,
+                        'follow_button_text': None,
+                        'show_follow_drop_down': None,
+                        'formatted_media_count': '7.6M',
+                        'debug_info': None,
+                        'search_result_subtitle': '7.6M posts'}]}
+
+        responses.add(
+            responses.GET, '{api_url}tags/search/?is_typeahead=true&q={query}&rank_token={rank_token}'.format(
+                api_url=API_URL, query=hashtag, rank_token=self.bot.api.rank_token),
+            json=response_tag, status=200)
+
         responses.add(
             responses.GET, "{api_url}media/{media_id}/info/".format(
                 api_url=API_URL, media_id=my_test_photo_item['id']),

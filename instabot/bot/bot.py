@@ -494,30 +494,29 @@ class Bot(object):
     # like
 
     def like(self, media_id, check_media=True,
-        container_module="feed_timeline",
-        feed_position=0,
-        username=None, user_id=None,
-        hashtag_name=None, hashtag_id=None,
-        entity_page_name=None, entity_page_id=None
-        ):
+             container_module="feed_timeline",
+             feed_position=0,
+             username=None, user_id=None,
+             hashtag_name=None, hashtag_id=None,
+             entity_page_name=None, entity_page_id=None):
+
         return like(self, media_id, check_media,
-            container_module=container_module,
-            feed_position=feed_position,
-            username=username, user_id=user_id,
-            hashtag_name=hashtag_name, hashtag_id=hashtag_id,
-            entity_page_name=entity_page_name,
-            entity_page_id=entity_page_id)
+                    container_module=container_module,
+                    feed_position=feed_position,
+                    username=username, user_id=user_id,
+                    hashtag_name=hashtag_name, hashtag_id=hashtag_id,
+                    entity_page_name=entity_page_name,
+                    entity_page_id=entity_page_id)
 
     def like_comment(self, comment_id):
         return like_comment(self, comment_id)
 
-    def like_medias(
-        self, media_ids, check_media=True,
-        container_module="feed_timeline",
-        username=None, user_id=None,
-        hashtag_name=None, hashtag_id=None,
-        entity_page_name=None, entity_page_id=None
-        ):
+    def like_medias(self, media_ids, check_media=True,
+                    container_module="feed_timeline",
+                    username=None, user_id=None,
+                    hashtag_name=None, hashtag_id=None,
+                    entity_page_name=None, entity_page_id=None):
+
         return like_medias(
             self, media_ids, check_media,
             container_module=container_module,
