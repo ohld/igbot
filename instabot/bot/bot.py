@@ -296,13 +296,20 @@ class Bot(object):
         self.print_counters()
 
     def login(self, **args):
+        """if login function is run threaded, for example in scheduled job,
+        signal will fail because it 'only works in main thread'.
+        In this case, you may want to call login(is_threaded=True).
+        """
         if self.proxy:
             args['proxy'] = self.proxy
         if self.api.login(**args) is False:
             return False
         self.prepare()
-        signal.signal(signal.SIGTERM, self.print_counters)
         atexit.register(self.print_counters)
+        if 'is_threaded' in args:
+            if args['is_threaded']:
+                return True
+        signal.signal(signal.SIGTERM, self.print_counters)
         return True
 
     def prepare(self):
