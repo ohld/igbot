@@ -329,7 +329,7 @@ class API(object):
             self.session.proxies["http"] = scheme + self.proxy
             self.session.proxies["https"] = scheme + self.proxy
 
-    def send_request(
+    def send_request(  # noqa: C901
         self,
         endpoint,
         post=None,
@@ -1068,7 +1068,7 @@ class API(object):
         else:
             return generated_uuid.replace("-", "")
 
-    def get_total_followers_or_followings(
+    def get_total_followers_or_followings(  # noqa: C901
         self,
         user_id,
         amount=None,

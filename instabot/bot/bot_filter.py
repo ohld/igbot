@@ -118,7 +118,7 @@ def search_blacklist_hashtags_in_media(self, media_id):
     return any((h in text) for h in self.blacklist_hashtags)
 
 
-def check_user(self, user_id, unfollowing=False):
+def check_user(self, user_id, unfollowing=False):  # noqa: C901
     if not self.filter_users and not unfollowing:
         return True
 
