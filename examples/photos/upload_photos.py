@@ -6,7 +6,7 @@ import argparse
 import captions_for_medias
 
 sys.path.append(os.path.join(sys.path[0], "../../"))
-from instabot import Bot  # noqa: E402
+from instabot import Bot  # noqa: E402 isort:skip
 
 
 parser = argparse.ArgumentParser(add_help=True)

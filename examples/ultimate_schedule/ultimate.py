@@ -9,8 +9,8 @@ import time
 import config
 
 sys.path.append(os.path.join(sys.path[0], "../../"))
-import schedule  # noqa: E402
-from instabot import Bot, utils  # noqa: E402
+import schedule  # noqa: E402 isort:skip
+from instabot import Bot, utils  # noqa: E402 isort:skip
 
 
 bot = Bot(

@@ -11,7 +11,7 @@ import os
 import sys
 
 sys.path.append(os.path.join(sys.path[0], "../"))
-from instabot import Bot  # noqa: E402
+from instabot import Bot  # noqa: E402 isort:skip
 
 try:
     input = raw_input

@@ -3,10 +3,10 @@ import sys
 import os
 import argparse
 
-import captions_for_medias  # noqa: E402
+import captions_for_medias  # noqa: E402 isort:skip
 
 sys.path.append(os.path.join(sys.path[0], "../../"))
-from instabot import Bot  # noqa: E402
+from instabot import Bot  # noqa: E402 isort:skip
 
 
 parser = argparse.ArgumentParser(add_help=True)
