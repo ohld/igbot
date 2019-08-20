@@ -1,6 +1,6 @@
+import argparse
 import os
 import sys
-import argparse
 
 sys.path.append(os.path.join(sys.path[0], "../"))
 from instabot import Bot  # noqa: E402

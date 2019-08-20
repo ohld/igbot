@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
-from glob import glob
 import os
 import sys
 import threading
 import time
+from glob import glob
 
 import config
 

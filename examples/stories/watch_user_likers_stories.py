@@ -12,9 +12,9 @@
 """
 
 import os
+import random
 import sys
 import time
-import random
 
 # in case if you just downloaded zip with sources
 sys.path.append(os.path.join(sys.path[0], "../../"))

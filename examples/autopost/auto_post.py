@@ -2,7 +2,6 @@ import glob
 import os
 import sys
 import time
-
 from io import open
 
 sys.path.append(os.path.join(sys.path[0], "../../"))

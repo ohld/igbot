@@ -1,3 +1,5 @@
+import base64
+import datetime
 import hashlib
 import hmac
 import json
@@ -7,40 +9,31 @@ import random
 import sys
 import time
 import uuid
-import datetime
-import pytz
-import base64
 
+import pytz
+import requests
+import requests.utils
+import six.moves.urllib as urllib
 from requests_toolbelt import MultipartEncoder
+from tqdm import tqdm
+
+from . import config, devices
+from .api_login import (change_device_simulation, generate_all_uuids,
+                        load_uuid_and_cookie, login_flow, pre_login_flow,
+                        reinstall_app_simulation, save_uuid_and_cookie,
+                        set_device, sync_device_features, sync_launcher,
+                        sync_user_features)
+from .api_photo import configure_photo, download_photo, upload_photo
+from .api_story import configure_story, download_story, upload_story_photo
+from .api_video import configure_video, download_video, upload_video
+from .prepare import delete_credentials, get_credentials
 
 try:
     from json.decoder import JSONDecodeError
 except ImportError:
     JSONDecodeError = ValueError
 
-import requests
-import requests.utils
-import six.moves.urllib as urllib
-from tqdm import tqdm
 
-from . import config, devices
-from .api_photo import configure_photo, download_photo, upload_photo
-from .api_video import configure_video, download_video, upload_video
-from .api_story import download_story, upload_story_photo, configure_story
-from .api_login import (
-    sync_device_features,
-    sync_launcher,
-    sync_user_features,
-    set_device,
-    generate_all_uuids,
-    reinstall_app_simulation,
-    change_device_simulation,
-    load_uuid_and_cookie,
-    save_uuid_and_cookie,
-    pre_login_flow,
-    login_flow,
-)
-from .prepare import delete_credentials, get_credentials
 
 PY2 = sys.version_info[0] == 2
 

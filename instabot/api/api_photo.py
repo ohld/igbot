@@ -1,4 +1,5 @@
 from __future__ import unicode_literals
+
 import imghdr
 import os
 import shutil

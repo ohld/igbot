@@ -1,13 +1,15 @@
 from __future__ import unicode_literals
+
+import json
 import os
 import shutil
 import time
 from random import randint
+
 from requests_toolbelt import MultipartEncoder
-import json
 
 from . import config
-from .api_photo import stories_shaper, get_image_size
+from .api_photo import get_image_size, stories_shaper
 
 
 def download_story(self, filename, story_url, username):

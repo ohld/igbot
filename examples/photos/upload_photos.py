@@ -1,7 +1,8 @@
 from __future__ import unicode_literals
-import sys
-import os
+
 import argparse
+import os
+import sys
 
 import captions_for_medias
 
