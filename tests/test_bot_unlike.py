@@ -4,15 +4,17 @@ import responses
 from instabot.api.config import API_URL
 
 from .test_bot import TestBot
-from .test_variables import (TEST_CAPTION_ITEM, TEST_COMMENT_ITEM,
-                             TEST_PHOTO_ITEM, TEST_USERNAME_INFO_ITEM)
+from .test_variables import (
+    TEST_CAPTION_ITEM,
+    TEST_COMMENT_ITEM,
+    TEST_PHOTO_ITEM,
+    TEST_USERNAME_INFO_ITEM,
+)
 
 try:
     from unittest.mock import patch
 except ImportError:
     from mock import patch
-
-
 
 
 class TestBotFilter(TestBot):

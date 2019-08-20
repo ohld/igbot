@@ -18,11 +18,19 @@ from requests_toolbelt import MultipartEncoder
 from tqdm import tqdm
 
 from . import config, devices
-from .api_login import (change_device_simulation, generate_all_uuids,
-                        load_uuid_and_cookie, login_flow, pre_login_flow,
-                        reinstall_app_simulation, save_uuid_and_cookie,
-                        set_device, sync_device_features, sync_launcher,
-                        sync_user_features)
+from .api_login import (
+    change_device_simulation,
+    generate_all_uuids,
+    load_uuid_and_cookie,
+    login_flow,
+    pre_login_flow,
+    reinstall_app_simulation,
+    save_uuid_and_cookie,
+    set_device,
+    sync_device_features,
+    sync_launcher,
+    sync_user_features,
+)
 from .api_photo import configure_photo, download_photo, upload_photo
 from .api_story import configure_story, download_story, upload_story_photo
 from .api_video import configure_video, download_video, upload_video
@@ -32,7 +40,6 @@ try:
     from json.decoder import JSONDecodeError
 except ImportError:
     JSONDecodeError = ValueError
-
 
 
 PY2 = sys.version_info[0] == 2

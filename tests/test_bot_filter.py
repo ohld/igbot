@@ -12,8 +12,6 @@ except ImportError:
     from mock import patch
 
 
-
-
 class TestBotFilter(TestBot):
     @pytest.mark.parametrize(
         "filter_users,filter_business_accounts,filter_verified_accounts,expected",

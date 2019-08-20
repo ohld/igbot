@@ -10,8 +10,6 @@ except ImportError:
     from mock import Mock, patch
 
 
-
-
 class TestBot:
     def setup(self):
         self.USER_ID = 1234567

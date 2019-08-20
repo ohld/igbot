@@ -12,8 +12,6 @@ except ImportError:
     from mock import patch
 
 
-
-
 class TestBotGet(TestBot):
     @responses.activate
     @pytest.mark.parametrize(
