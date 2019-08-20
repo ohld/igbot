@@ -4,6 +4,7 @@ import os
 import shutil
 import struct
 import time
+import json
 
 from requests_toolbelt import MultipartEncoder
 
@@ -65,7 +66,7 @@ def compatible_aspect_ratio(size):
     return min_ratio <= ratio <= max_ratio
 
 
-def configure_photo(self, upload_id, photo, caption=''):
+def configure_photo(self, upload_id, photo, user_tags, caption=''):
     (w, h) = get_image_size(photo)
     data = self.json_data({
         'media_folder': 'Instagram',
@@ -78,6 +79,7 @@ def configure_photo(self, upload_id, photo, caption=''):
             'crop_center': [0.0, 0.0],
             'crop_zoom': 1.0
         },
+        'usertags': user_tags,
         'extra': {
             'source_width': w,
             'source_height': h,
@@ -85,7 +87,7 @@ def configure_photo(self, upload_id, photo, caption=''):
     return self.send_request('media/configure/?', data)
 
 
-def upload_photo(self, photo, caption=None, upload_id=None, from_video=False, force_resize=False, options={}):
+def upload_photo(self, photo, caption=None, upload_id=None, from_video=False, force_resize=False, options={}, user_tags=None):
     """Upload photo to Instagram
 
     @param photo         Path to photo file (String)
@@ -96,9 +98,18 @@ def upload_photo(self, photo, caption=None, upload_id=None, from_video=False, fo
     @param options       Object with difference options, e.g. configure_timeout, rename (Dict)
                          Designed to reduce the number of function arguments!
                          This is the simplest request object.
+    @param user_tags     Tag other users (List)
+                         usertags = [
+                            {"user_id": user_id, "position": [x, y]}
+                         ]
 
     @return Boolean
     """
+    if user_tags is None:
+        usertags = []
+    else:
+        tags = {'in': [{'user_id': user['user_id'], 'position': [user['x'], user['y']]} for user in user_tags]}
+        usertags = json.dumps(tags, separators=(',', ':'))
     options = dict({
         'configure_timeout': 15,
         'rename': True
@@ -141,7 +152,7 @@ def upload_photo(self, photo, caption=None, upload_id=None, from_video=False, fo
         for attempt in range(4):
             if configure_timeout:
                 time.sleep(configure_timeout)
-            if self.configure_photo(upload_id, photo, caption):
+            if self.configure_photo(upload_id, photo, usertags, caption):
                 media = self.last_json.get('media')
                 self.expose()
                 if options.get('rename'):

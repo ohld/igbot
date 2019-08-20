@@ -26,7 +26,14 @@ def download_story(self, filename, story_url, username):
         return os.path.abspath(fname)
 
 
-def upload_story_photo(self, photo, upload_id=None):
+def upload_story_photo(self, photo, upload_id=None, user_tags=None):
+    if user_tags is None:
+        reel_mentions = []
+    else:
+        tags = [{'user_id': user['user_id'], 'x': user['x'], 
+            'y': user['y'], 'width': user['width'],'height': user['height'], 
+            'rotation': user['rotation']} for user in user_tags]
+        reel_mentions = json.dumps(tags, separators=(',', ':'))
     if upload_id is None:
         upload_id = str(int(time.time() * 1000))
     photo = stories_shaper(photo)
@@ -57,13 +64,13 @@ def upload_story_photo(self, photo, upload_id=None):
 
     if response.status_code == 200:
         upload_id = json.loads(response.text).get('upload_id')
-        if self.configure_story(upload_id, photo):
+        if self.configure_story(upload_id, photo, reel_mentions):
             # self.expose()
             return True
     return False
 
 
-def configure_story(self, upload_id, photo):
+def configure_story(self, upload_id, photo, reel_mentions):
     (w, h) = get_image_size(photo)
     data = self.json_data({
         'source_type': 4,
@@ -78,6 +85,7 @@ def configure_story(self, upload_id, photo):
             'crop_center': [0.0, 0.0],
             'crop_zoom': 1.3333334
         },
+        'reel_mentions': reel_mentions,
         'extra': {
             'source_width': w,
             'source_height': h,

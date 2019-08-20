@@ -391,9 +391,8 @@ class API(object):
         })
         return self.send_request('qe/expose/', data)
 
-    def upload_photo(self, photo, caption=None, upload_id=None, from_video=False, force_resize=False, options={}):
+    def upload_photo(self, photo, caption=None, upload_id=None, from_video=False, force_resize=False, options={}, user_tags=None):
         """Upload photo to Instagram
-
         @param photo         Path to photo file (String)
         @param caption       Media description (String)
         @param upload_id     Unique upload_id (String). When None, then generate automatically
@@ -402,29 +401,31 @@ class API(object):
         @param options       Object with difference options, e.g. configure_timeout, rename (Dict)
                              Designed to reduce the number of function arguments!
                              This is the simplest request object.
-
+        @param user_tags     Tag other users (List)
+                             usertags = [
+                                {"user_id": user_id, "position": [x, y]}
+                             ]
         @return Boolean
         """
-        return upload_photo(self, photo, caption, upload_id, from_video, force_resize, options)
+        return upload_photo(self, photo, caption, upload_id, from_video, force_resize, options, user_tags)
 
     def download_photo(self, media_id, filename, media=False, folder='photos'):
         return download_photo(self, media_id, filename, media, folder)
 
-    def configure_photo(self, upload_id, photo, caption=''):
-        return configure_photo(self, upload_id, photo, caption)
+    def configure_photo(self, upload_id, photo, user_tags, caption=''):
+        return configure_photo(self, upload_id, photo, user_tags, caption)
 
     def download_story(self, filename, story_url, username):
         return download_story(self, filename, story_url, username)
 
-    def upload_story_photo(self, photo, upload_id=None):
-        return upload_story_photo(self, photo, upload_id)
+    def upload_story_photo(self, photo, upload_id=None, user_tags=None):
+        return upload_story_photo(self, photo, upload_id, user_tags)
 
-    def configure_story(self, upload_id, photo):
-        return configure_story(self, upload_id, photo)
+    def configure_story(self, upload_id, photo, user_tags):
+        return configure_story(self, upload_id, photo, user_tags)
 
     def upload_video(self, video, caption=None, upload_id=None, thumbnail=None, options={}):
         """Upload video to Instagram
-
         @param video      Path to video file (String)
         @param caption    Media description (String)
         @param upload_id  Unique upload_id (String). When None, then generate automatically
@@ -432,7 +433,6 @@ class API(object):
         @param options    Object with difference options, e.g. configure_timeout, rename_thumbnail, rename (Dict)
                           Designed to reduce the number of function arguments!
                           This is the simplest request object.
-
         @return           Object with state of uploading to Instagram (or False)
         """
         return upload_video(self, video, caption, upload_id, thumbnail, options)
@@ -442,7 +442,6 @@ class API(object):
 
     def configure_video(self, upload_id, video, thumbnail, width, height, duration, caption='', options={}):
         """Post Configure Video (send caption, thumbnail and more else to Instagram)
-
         @param upload_id  Unique upload_id (String). Received from "upload_video"
         @param video      Path to video file (String)
         @param thumbnail  Path to thumbnail for video (String). When None, then thumbnail is generate automatically
