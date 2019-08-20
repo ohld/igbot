@@ -393,6 +393,7 @@ class API(object):
 
     def upload_photo(self, photo, caption=None, upload_id=None, from_video=False, force_resize=False, options={}, user_tags=None):
         """Upload photo to Instagram
+
         @param photo         Path to photo file (String)
         @param caption       Media description (String)
         @param upload_id     Unique upload_id (String). When None, then generate automatically
@@ -405,6 +406,7 @@ class API(object):
                              usertags = [
                                 {"user_id": user_id, "position": [x, y]}
                              ]
+
         @return Boolean
         """
         return upload_photo(self, photo, caption, upload_id, from_video, force_resize, options, user_tags)
@@ -426,6 +428,7 @@ class API(object):
 
     def upload_video(self, video, caption=None, upload_id=None, thumbnail=None, options={}):
         """Upload video to Instagram
+
         @param video      Path to video file (String)
         @param caption    Media description (String)
         @param upload_id  Unique upload_id (String). When None, then generate automatically
@@ -433,6 +436,7 @@ class API(object):
         @param options    Object with difference options, e.g. configure_timeout, rename_thumbnail, rename (Dict)
                           Designed to reduce the number of function arguments!
                           This is the simplest request object.
+
         @return           Object with state of uploading to Instagram (or False)
         """
         return upload_video(self, video, caption, upload_id, thumbnail, options)
@@ -442,6 +446,7 @@ class API(object):
 
     def configure_video(self, upload_id, video, thumbnail, width, height, duration, caption='', options={}):
         """Post Configure Video (send caption, thumbnail and more else to Instagram)
+
         @param upload_id  Unique upload_id (String). Received from "upload_video"
         @param video      Path to video file (String)
         @param thumbnail  Path to thumbnail for video (String). When None, then thumbnail is generate automatically
