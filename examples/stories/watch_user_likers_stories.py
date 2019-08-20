@@ -12,13 +12,13 @@
 """
 
 import os
+import random
 import sys
 import time
-import random
 
 # in case if you just downloaded zip with sources
 sys.path.append(os.path.join(sys.path[0], "../../"))
-from instabot import Bot  # noqa: E402 isort:skip
+from instabot import Bot  # noqa: E402
 
 bot = Bot()
 bot.login()

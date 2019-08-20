@@ -2,9 +2,9 @@
     Instabot Checkpoint methods.
 """
 
-from datetime import datetime
-import pickle
 import os
+import pickle
+from datetime import datetime
 
 CHECKPOINT_PATH = "{fname}.checkpoint"
 

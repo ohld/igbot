@@ -8,23 +8,23 @@ import sys
 import time
 import uuid
 
+import requests
+import requests.utils
+import six.moves.urllib as urllib
 from requests_toolbelt import MultipartEncoder
+from tqdm import tqdm
+
+from . import config, devices
+from .api_photo import configure_photo, download_photo, upload_photo
+from .api_story import configure_story, download_story, upload_story_photo
+from .api_video import configure_video, download_video, upload_video
+from .prepare import delete_credentials, get_credentials
 
 try:
     from json.decoder import JSONDecodeError
 except ImportError:
     JSONDecodeError = ValueError
 
-import requests
-import requests.utils
-import six.moves.urllib as urllib
-from tqdm import tqdm
-
-from . import config, devices
-from .api_photo import configure_photo, download_photo, upload_photo
-from .api_video import configure_video, download_video, upload_video
-from .api_story import download_story, upload_story_photo, configure_story
-from .prepare import delete_credentials, get_credentials
 
 PY2 = sys.version_info[0] == 2
 

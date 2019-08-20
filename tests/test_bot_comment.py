@@ -1,15 +1,15 @@
 import pytest
 import responses
 
-try:
-    from unittest.mock import patch
-except ImportError:
-    from mock import patch
-
 from instabot.api.config import API_URL
 
 from .test_bot import TestBot
 from .test_variables import TEST_CAPTION_ITEM, TEST_COMMENT_ITEM
+
+try:
+    from unittest.mock import patch
+except ImportError:
+    from mock import patch
 
 
 class TestBotGet(TestBot):

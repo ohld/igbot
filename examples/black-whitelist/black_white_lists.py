@@ -13,13 +13,14 @@
             1234124512
 """
 
-import sys
-import os
-from tqdm import tqdm
 import argparse
+import os
+import sys
+
+from tqdm import tqdm
 
 sys.path.append(os.path.join(sys.path[0], "../../"))
-from instabot import Bot  # noqa: E402 isort:skip
+from instabot import Bot  # noqa: E402
 
 parser = argparse.ArgumentParser(add_help=True)
 parser.add_argument("-u", type=str, help="username")

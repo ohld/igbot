@@ -7,7 +7,7 @@ import time
 from tqdm import tqdm
 
 sys.path.append(os.path.join(sys.path[0], "../"))
-from instabot import Bot  # noqa: E402 isort:skip
+from instabot import Bot  # noqa: E402
 
 
 # initial

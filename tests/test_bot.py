@@ -1,13 +1,13 @@
 import json
 
+import requests
+
+from instabot import Bot
+
 try:
     from unittest.mock import Mock, patch
 except ImportError:
     from mock import Mock, patch
-
-import requests
-
-from instabot import Bot
 
 
 class TestBot:

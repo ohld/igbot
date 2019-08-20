@@ -1,20 +1,20 @@
 import pytest
 import responses
 
-try:
-    from unittest.mock import patch
-except ImportError:
-    from mock import patch
-
 from instabot.api.config import API_URL, SIG_KEY_VERSION
 
 from .test_bot import TestBot
 from .test_variables import (
-    TEST_SEARCH_USERNAME_ITEM,
-    TEST_USERNAME_INFO_ITEM,
     TEST_FOLLOWER_ITEM,
     TEST_FOLLOWING_ITEM,
+    TEST_SEARCH_USERNAME_ITEM,
+    TEST_USERNAME_INFO_ITEM,
 )
+
+try:
+    from unittest.mock import patch
+except ImportError:
+    from mock import patch
 
 
 def reset_files(_bot):

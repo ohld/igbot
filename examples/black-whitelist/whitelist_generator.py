@@ -5,12 +5,12 @@
     will not be unfollowed.
 """
 
-import sys
 import os
 import random
+import sys
 
 sys.path.append(os.path.join(sys.path[0], "../../"))
-from instabot import Bot  # noqa: E402 isort:skip
+from instabot import Bot  # noqa: E402
 
 bot = Bot()
 bot.login()

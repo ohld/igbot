@@ -1,16 +1,16 @@
 # -*- coding: utf-8 -*-
 
-from glob import glob
 import os
 import sys
 import threading
 import time
+from glob import glob
 
 import config
 
 sys.path.append(os.path.join(sys.path[0], "../../"))
-import schedule  # noqa: E402 isort:skip
-from instabot import Bot, utils  # noqa: E402 isort:skip
+import schedule  # noqa: E402
+from instabot import Bot, utils  # noqa: E402
 
 
 bot = Bot(
