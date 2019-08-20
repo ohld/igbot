@@ -6,11 +6,12 @@ import sys
 import threading
 import time
 
-sys.path.append(os.path.join(sys.path[0], "../../"))
-import schedule
-from instabot import Bot, utils
-
 import config
+
+sys.path.append(os.path.join(sys.path[0], "../../"))
+import schedule  # noqa: E402
+from instabot import Bot, utils  # noqa: E402
+
 
 bot = Bot(
     comments_file=config.COMMENTS_FILE,

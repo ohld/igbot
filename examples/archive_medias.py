@@ -12,7 +12,7 @@ import sys
 from tqdm import tqdm
 
 sys.path.append(os.path.join(sys.path[0], "../"))
-from instabot import Bot
+from instabot import Bot  # noqa: E402
 
 
 def archive_medias(bot, medias):

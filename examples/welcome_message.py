@@ -9,7 +9,7 @@ import sys
 from tqdm import tqdm
 
 sys.path.append(os.path.join(sys.path[0], "../"))
-from instabot import Bot, utils
+from instabot import Bot, utils  # noqa: E402
 
 NOTIFIED_USERS_PATH = "notified_users.txt"
 MESSAGE = "Hi, thanks for reaching me"

@@ -17,7 +17,7 @@ import sys
 import os
 
 sys.path.append(os.path.join(sys.path[0], "../../"))
-from instabot import Bot
+from instabot import Bot  # noqa: E402
 
 if len(sys.argv) != 2:
     print("USAGE: Pass a path to the file with comments")

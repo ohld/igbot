@@ -4,7 +4,7 @@ import os
 from tqdm import tqdm
 
 sys.path.append(os.path.join(sys.path[0], "../"))
-from instabot import Bot
+from instabot import Bot  # noqa: E402
 
 if len(sys.argv) < 2:
     print(

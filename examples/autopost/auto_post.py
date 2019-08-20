@@ -6,7 +6,7 @@ import time
 from io import open
 
 sys.path.append(os.path.join(sys.path[0], "../../"))
-from instabot import Bot
+from instabot import Bot  # noqa: E402
 
 posted_pic_list = []
 try:
