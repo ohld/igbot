@@ -6,7 +6,6 @@ verify_ssl = true
 [dev-packages]
 pycodestyle = "*"
 pytest = "*"
-pyflakes = "*"
 pysocks = "*"
 bumpversion = "*"
 pytest-cov = '*'
