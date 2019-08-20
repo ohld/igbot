@@ -26,16 +26,20 @@ def like(
         self.delay("like")
         if check_media and not self.check_media(media_id):
             return False
-        if container_module == "feed_short_url":
-            if "_" in str(media_id):
-                media_pk = int(media_id.split("_")[0])
-            else:
-                media_pk = int(media_id)
-            link = self.get_link_from_media_id(media_pk)
-            self.logger.debug("Opening link {}".format(link))
-            self.api.open_instagram_link(link)
-            self.logger.debug("Getting media info...")
-            self.api.media_info(media_id)
+        #
+        # TODO: commented out simulation "open link in app"
+        #
+        # if container_module == "feed_short_url":
+        #     if "_" in str(media_id):
+        #         media_pk = int(media_id.split("_")[0])
+        #     else:
+        #         media_pk = int(media_id)
+        #     link = self.get_link_from_media_id(media_pk)
+        #     self.logger.debug("Opening link {}".format(link))
+        #     self.api.open_instagram_link(link)
+        #     self.logger.debug("Getting media info...")
+        #     self.api.media_info(media_id)
+        #
         _r = self.api.like(
             media_id,
             container_module=container_module,
