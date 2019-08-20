@@ -1,4 +1,3 @@
-
 import pytest
 import responses
 
@@ -10,25 +9,25 @@ except ImportError:
 from instabot.api.config import API_URL
 
 from .test_bot import TestBot
-from .test_variables import (TEST_CAPTION_ITEM, TEST_COMMENT_ITEM)
+from .test_variables import TEST_CAPTION_ITEM, TEST_COMMENT_ITEM
 
 
 class TestBotGet(TestBot):
-
     @responses.activate
-    @pytest.mark.parametrize('blocked_actions_protection,blocked_actions', [
-        (True, True),
-        (True, False),
-        (False, True),
-        (False, False)])
-    @patch('time.sleep', return_value=None)
-    def test_comment_feedback(self, patched_time_sleep, blocked_actions_protection, blocked_actions):
+    @pytest.mark.parametrize(
+        "blocked_actions_protection,blocked_actions",
+        [(True, True), (True, False), (False, True), (False, False)],
+    )
+    @patch("time.sleep", return_value=None)
+    def test_comment_feedback(
+        self, patched_time_sleep, blocked_actions_protection, blocked_actions
+    ):
         self.bot.blocked_actions_protection = blocked_actions_protection
-        self.bot.blocked_actions['comments'] = blocked_actions
+        self.bot.blocked_actions["comments"] = blocked_actions
         media_id = 1234567890
         comment_txt = "Yeah great!"
 
-        TEST_COMMENT_ITEM['user']['pk'] = self.bot.user_id + 1
+        TEST_COMMENT_ITEM["user"]["pk"] = self.bot.user_id + 1
 
         results = 3
         response_data = {
@@ -41,11 +40,16 @@ class TestBotGet(TestBot):
             "has_more_headload_comments": False,
             "media_header_display": "none",
             "preview_comments": [],
-            "status": "ok"
+            "status": "ok",
         }
         responses.add(
-            responses.GET, '{api_url}media/{media_id}/comments/?'.format(
-                api_url=API_URL, media_id=media_id), json=response_data, status=200)
+            responses.GET,
+            "{api_url}media/{media_id}/comments/?".format(
+                api_url=API_URL, media_id=media_id
+            ),
+            json=response_data,
+            status=200,
+        )
 
         response_data = {
             "message": "feedback_required",
@@ -56,27 +60,33 @@ class TestBotGet(TestBot):
             "feedback_appeal_label": "Report problem",
             "feedback_ignore_label": "OK",
             "feedback_action": "report_problem",
-            "status": "fail"}
+            "status": "fail",
+        }
         responses.add(
-            responses.POST, '{api_url}media/{media_id}/comment/'.format(
+            responses.POST,
+            "{api_url}media/{media_id}/comment/".format(
                 api_url=API_URL, media_id=media_id
-            ), json=response_data, status=400
+            ),
+            json=response_data,
+            status=400,
         )
 
         assert not self.bot.comment(media_id, comment_txt)
 
     @responses.activate
-    @pytest.mark.parametrize('blocked_actions_protection,blocked_actions', [
-        (True, False),
-        (False, False)])
-    @patch('time.sleep', return_value=None)
-    def test_comment(self, patched_time_sleep, blocked_actions_protection, blocked_actions):
+    @pytest.mark.parametrize(
+        "blocked_actions_protection,blocked_actions", [(True, False), (False, False)]
+    )
+    @patch("time.sleep", return_value=None)
+    def test_comment(
+        self, patched_time_sleep, blocked_actions_protection, blocked_actions
+    ):
         self.bot.blocked_actions_protection = blocked_actions_protection
-        self.bot.blocked_actions['comments'] = blocked_actions
+        self.bot.blocked_actions["comments"] = blocked_actions
         media_id = 1234567890
         comment_txt = "Yeah great!"
 
-        TEST_COMMENT_ITEM['user']['pk'] = self.bot.user_id + 1
+        TEST_COMMENT_ITEM["user"]["pk"] = self.bot.user_id + 1
 
         results = 3
         response_data = {
@@ -89,18 +99,25 @@ class TestBotGet(TestBot):
             "has_more_headload_comments": False,
             "media_header_display": "none",
             "preview_comments": [],
-            "status": "ok"
+            "status": "ok",
         }
         responses.add(
-            responses.GET, '{api_url}media/{media_id}/comments/?'.format(
-                api_url=API_URL, media_id=media_id), json=response_data, status=200)
-
-        response_data = {
-            "status": "ok"}
-        responses.add(
-            responses.POST, '{api_url}media/{media_id}/comment/'.format(
+            responses.GET,
+            "{api_url}media/{media_id}/comments/?".format(
                 api_url=API_URL, media_id=media_id
-            ), json=response_data, status=200
+            ),
+            json=response_data,
+            status=200,
+        )
+
+        response_data = {"status": "ok"}
+        responses.add(
+            responses.POST,
+            "{api_url}media/{media_id}/comment/".format(
+                api_url=API_URL, media_id=media_id
+            ),
+            json=response_data,
+            status=200,
         )
 
         assert self.bot.comment(media_id, comment_txt)

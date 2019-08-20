@@ -6,7 +6,7 @@
 
 You can:
 * Put the star into the [Instabot main repository](https://github.com/instagrambot). To do this, click on the star here https://github.com/instagrambot at top right corner. Mind that GitHub registration is required (for free).
-* Login to [Telegram Group](https://t.me/instabotproject) and help newcomers to understand the installation and configuration of Instabot. 
+* Login to [Telegram Group](https://t.me/instabotproject) and help newcomers to understand the installation and configuration of Instabot.
 * Tell everywhere about our project! It will be enough to throw off the link: https://instagrambot.github.io.
 * Find bugs and describe them in [Issues](https://github.com/instagrambot/instabot/issues) section, be sure to attach the _screenshots_ and _commands_ that you entered. This will help correct these errors and make Instabot better!
 * If you are a developer, correct these bugs and errors! Do this via Pull Request, don't forget the PEP8 standard.
