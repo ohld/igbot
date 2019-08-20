@@ -147,8 +147,8 @@ class API(object):
     def change_device_simulation(self):
         return change_device_simulation(self)
 
-    def load_uuid_and_cookie(self):
-        return load_uuid_and_cookie(self)
+    def load_uuid_and_cookie(self, load_uuid=True, load_cookie=True):
+        return load_uuid_and_cookie(self, load_uuid=load_uuid, load_cookie=load_cookie)
 
     def save_uuid_and_cookie(self):
         return save_uuid_and_cookie(self)
@@ -160,11 +160,12 @@ class API(object):
         force=False,
         proxy=None,
         use_cookie=True,
+        use_uuid=True,
         cookie_fname=None,
         ask_for_code=False,
         set_device=True,
         generate_all_uuids=True,
-        is_threaded=False
+        is_threaded=False,
     ):
         if password is None:
             username, password = get_credentials(username=username)
@@ -185,7 +186,10 @@ class API(object):
 
         if use_cookie is True:
             # try:
-            if self.load_uuid_and_cookie() is True:
+            if (
+                self.load_uuid_and_cookie(load_cookie=use_cookie, load_uuid=use_uuid)
+                is True
+            ):
                 if (
                     self.login_flow(False) is True
                 ):  # Check if the token loaded is valid.
@@ -197,10 +201,17 @@ class API(object):
             #     print("The cookie is not found, but don't worry `instabot` will create it for you using your login details.")
 
         if not cookie_is_loaded and (not self.is_logged_in or force):
-            if set_device is True:
-                self.set_device()
-            if generate_all_uuids is True:
-                self.generate_all_uuids()
+            if use_uuid is True:
+                if (
+                    self.load_uuid_and_cookie(
+                        load_cookie=use_cookie, load_uuid=use_uuid
+                    )
+                    is False
+                ):
+                    if set_device is True:
+                        self.set_device()
+                    if generate_all_uuids is True:
+                        self.generate_all_uuids()
 
             self.pre_login_flow()
             data = json.dumps(
@@ -253,7 +264,7 @@ class API(object):
         try:
             self.send_request(challenge_url, None, login=True, with_signature=False)
         except Exception as e:
-            self.logger.error(e)
+            self.logger.error("solve_challenge; {}".format(e))
             return False
 
         choices = self.get_challenge_choices()

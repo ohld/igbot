@@ -2,6 +2,7 @@ import json
 import os
 import random
 import time
+import traceback
 
 import requests
 import requests.utils
@@ -92,7 +93,9 @@ def login_flow(self, just_logged_in=False, app_refresh_interval=1800):
             # getQPFetch() ...
             # getFacebookOTA() ...
         except Exception as e:
-            self.logger.error("Exception raised: {}".format(e))
+            self.logger.error(
+                "Exception raised: {}\n{}".format(e, traceback.format_exc())
+            )
             return False
     else:
         try:
@@ -128,7 +131,9 @@ def login_flow(self, just_logged_in=False, app_refresh_interval=1800):
                 check_flow.append(self.sync_user_features())
                 check_flow.append(self.sync_device_features())
         except Exception as e:
-            self.logger.error("Exception raised: {}".format(e))
+            self.logger.error(
+                "Exception raised: {}\n{}".format(e, traceback.format_exc())
+            )
             return False
 
     self.save_uuid_and_cookie()
@@ -172,7 +177,7 @@ def change_device_simulation(self):
     self.logger.info("New android_device_id: {}".format(self.device_id))
 
 
-def load_uuid_and_cookie(self):
+def load_uuid_and_cookie(self, load_uuid=True, load_cookie=True):
     if self.cookie_fname is None:
         fname = "{}_uuid_and_cookie.json".format(self.username)
         self.cookie_fname = os.path.join(self.base_path, fname)
@@ -183,25 +188,33 @@ def load_uuid_and_cookie(self):
     with open(fname, "r") as f:
         data = json.load(f)
         if "cookie" in data:
-            self.session.cookies = requests.utils.cookiejar_from_dict(data["cookie"])
-            cookie_username = self.cookie_dict["ds_user"]
-            assert cookie_username == self.username
-
-            self.phone_id = data["uuids"]["phone_id"]
-            self.uuid = data["uuids"]["uuid"]
-            self.client_session_id = data["uuids"]["client_session_id"]
-            self.advertising_id = data["uuids"]["advertising_id"]
-            self.device_id = data["uuids"]["device_id"]
-
             self.last_login = data["timing_value"]["last_login"]
             self.last_experiments = data["timing_value"]["last_experiments"]
 
-            self.device_settings = data["device_settings"]
-            self.user_agent = data["user_agent"]
+            if load_cookie:
+                self.logger.debug("Loading cookies")
+                self.session.cookies = requests.utils.cookiejar_from_dict(
+                    data["cookie"]
+                )
+                cookie_username = self.cookie_dict["ds_user"]
+                assert cookie_username == self.username
+
+            if load_uuid:
+                self.logger.debug("Loading uuids")
+                self.phone_id = data["uuids"]["phone_id"]
+                self.uuid = data["uuids"]["uuid"]
+                self.client_session_id = data["uuids"]["client_session_id"]
+                self.advertising_id = data["uuids"]["advertising_id"]
+                self.device_id = data["uuids"]["device_id"]
+
+                self.device_settings = data["device_settings"]
+                self.user_agent = data["user_agent"]
 
             self.logger.info(
-                "Recovery from {}, COOKIE, TIMING, DEVICE and ... \n- user-agent={}\n- phone_id={}\n- uuid={}\n- client_session_id={}\n- device_id={}".format(
+                "Recovery from {}: COOKIE {} - UUIDs {} - TIMING, DEVICE and ... \n- user-agent={}\n- phone_id={}\n- uuid={}\n- client_session_id={}\n- device_id={}".format(
                     fname,
+                    load_cookie,
+                    load_uuid,
                     self.user_agent,
                     self.phone_id,
                     self.uuid,

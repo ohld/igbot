@@ -70,7 +70,8 @@ class TestBotAPI(TestBot):
             assert self.bot.api.login(
                 username=self.USERNAME,
                 password=self.PASSWORD,
-                use_cookie=False
+                use_cookie=False,
+                use_uuid=False,
             )
 
         assert self.bot.api.username == self.USERNAME
