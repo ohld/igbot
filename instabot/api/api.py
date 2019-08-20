@@ -159,11 +159,12 @@ class API(object):
         password=None,
         force=False,
         proxy=None,
-        use_cookie=False,
+        use_cookie=True,
         cookie_fname=None,
         ask_for_code=False,
         set_device=True,
         generate_all_uuids=True,
+        is_threaded=False
     ):
         if password is None:
             username, password = get_credentials(username=username)
