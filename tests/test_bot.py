@@ -67,7 +67,11 @@ class TestBotAPI(TestBot):
                 {"csrftoken": self.TOKEN, "ds_user_id": self.USER_ID}
             )
 
-            assert self.bot.api.login(username=self.USERNAME, password=self.PASSWORD)
+            assert self.bot.api.login(
+                username=self.USERNAME,
+                password=self.PASSWORD,
+                use_cookie=False
+            )
 
         assert self.bot.api.username == self.USERNAME
         assert self.bot.user_id == self.USER_ID
