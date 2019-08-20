@@ -6,16 +6,18 @@ import sys
 import threading
 import time
 
-sys.path.append(os.path.join(sys.path[0], '../../'))
+sys.path.append(os.path.join(sys.path[0], "../../"))
 import schedule
 from instabot import Bot, utils
 
 import config
 
-bot = Bot(comments_file=config.COMMENTS_FILE,
-          blacklist_file=config.BLACKLIST_FILE,
-          whitelist_file=config.WHITELIST_FILE,
-          friends_file=config.FRIENDS_FILE)
+bot = Bot(
+    comments_file=config.COMMENTS_FILE,
+    blacklist_file=config.BLACKLIST_FILE,
+    whitelist_file=config.WHITELIST_FILE,
+    friends_file=config.FRIENDS_FILE,
+)
 bot.login()
 bot.logger.info("ULTIMATE script. Safe to run 24/7!")
 
@@ -24,8 +26,7 @@ random_hashtag_file = utils.file(config.HASHTAGS_FILE)
 photo_captions_file = utils.file(config.PHOTO_CAPTIONS_FILE)
 posted_pic_list = utils.file(config.POSTED_PICS_FILE).list
 
-pics = sorted([os.path.basename(x) for x in
-               glob(config.PICS_PATH + "/*.jpg")])
+pics = sorted([os.path.basename(x) for x in glob(config.PICS_PATH + "/*.jpg")])
 
 
 def stats():
@@ -45,7 +46,9 @@ def like_followers_from_random_user_file():
 
 
 def follow_followers():
-    bot.follow_followers(random_user_file.random(), nfollows=config.NUMBER_OF_FOLLOWERS_TO_FOLLOW)
+    bot.follow_followers(
+        random_user_file.random(), nfollows=config.NUMBER_OF_FOLLOWERS_TO_FOLLOW
+    )
 
 
 def comment_medias():
@@ -53,7 +56,9 @@ def comment_medias():
 
 
 def unfollow_non_followers():
-    bot.unfollow_non_followers(n_to_unfollows=config.NUMBER_OF_NON_FOLLOWERS_TO_UNFOLLOW)
+    bot.unfollow_non_followers(
+        n_to_unfollows=config.NUMBER_OF_NON_FOLLOWERS_TO_UNFOLLOW
+    )
 
 
 def follow_users_from_hashtag_file():
@@ -85,7 +90,7 @@ def upload_pictures():  # Automatically post a pic in 'pics' folder
                 # After posting a pic, comment it with all the hashtags specified
                 # In config.PICS_HASHTAGS
                 posted_pic_list.append(pic)
-                with open('pics.txt', 'a') as f:
+                with open("pics.txt", "a") as f:
                     f.write(pic + "\n")
                 bot.logger.info("Succesfully uploaded: " + pic)
                 bot.logger.info("Commenting uploaded photo with hashtags...")
@@ -121,7 +126,9 @@ def run_threaded(job_fn):
 schedule.every(1).hour.do(run_threaded, stats)
 schedule.every(8).hours.do(run_threaded, like_hashtags)
 schedule.every(2).hours.do(run_threaded, like_timeline)
-schedule.every(1).days.at("16:00").do(run_threaded, like_followers_from_random_user_file)
+schedule.every(1).days.at("16:00").do(
+    run_threaded, like_followers_from_random_user_file
+)
 schedule.every(2).days.at("11:00").do(run_threaded, follow_followers)
 schedule.every(16).hours.do(run_threaded, comment_medias)
 schedule.every(1).days.at("08:00").do(run_threaded, unfollow_non_followers)

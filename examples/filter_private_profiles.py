@@ -9,12 +9,11 @@
 import os
 import sys
 
-sys.path.append(os.path.join(sys.path[0], '../'))
+sys.path.append(os.path.join(sys.path[0], "../"))
 from instabot import Bot
 
 
-bot = Bot(filter_users=True,
-          filter_private_users=True)
+bot = Bot(filter_users=True, filter_private_users=True)
 bot.login()
 private_user_input = input("\n Enter a private user: ")
 bot.follow(bot.get_user_id_from_username(private_user_input))

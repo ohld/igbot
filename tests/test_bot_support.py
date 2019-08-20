@@ -10,35 +10,42 @@ from .test_bot import TestBot
 
 
 class TestBotSupport(TestBot):
-
-    @pytest.mark.parametrize('url,result', [
-        ('https://google.com', ['https://google.com']),
-        ('google.com', ['google.com']),
-        ('google.com/search?q=instabot', ['google.com/search?q=instabot']),
-        ('https://google.com/search?q=instabot', ['https://google.com/search?q=instabot']),
-        ('мвд.рф', ['мвд.рф']),
-        ('https://мвд.рф', ['https://мвд.рф']),
-        ('http://мвд.рф/news/', ['http://мвд.рф/news/']),
-        ('hello, google.com/search?q=test and bing.com', ['google.com/search?q=test', 'bing.com']),
-    ])
+    @pytest.mark.parametrize(
+        "url,result",
+        [
+            ("https://google.com", ["https://google.com"]),
+            ("google.com", ["google.com"]),
+            ("google.com/search?q=instabot", ["google.com/search?q=instabot"]),
+            (
+                "https://google.com/search?q=instabot",
+                ["https://google.com/search?q=instabot"],
+            ),
+            ("мвд.рф", ["мвд.рф"]),
+            ("https://мвд.рф", ["https://мвд.рф"]),
+            ("http://мвд.рф/news/", ["http://мвд.рф/news/"]),
+            (
+                "hello, google.com/search?q=test and bing.com",
+                ["google.com/search?q=test", "bing.com"],
+            ),
+        ],
+    )
     def test_extract_urls(self, url, result):
         assert self.bot.extract_urls(url) == result
 
     def test_check_if_file_exist(self):
-        test_file = open('test', 'w')
+        test_file = open("test", "w")
 
-        assert self.bot.check_if_file_exists('test')
+        assert self.bot.check_if_file_exists("test")
 
         test_file.close()
-        os.remove('test')
+        os.remove("test")
 
     def test_check_if_file_exist_fail(self):
-        assert not self.bot.check_if_file_exists('test')
+        assert not self.bot.check_if_file_exists("test")
 
-    @pytest.mark.parametrize('verbosity,text,result', [
-        (True, 'test', 'test'),
-        (False, 'test', '')
-    ])
+    @pytest.mark.parametrize(
+        "verbosity,text,result", [(True, "test", "test"), (False, "test", "")]
+    )
     def test_console_print(self, verbosity, text, result):
         self.bot.verbosity = verbosity
         try:

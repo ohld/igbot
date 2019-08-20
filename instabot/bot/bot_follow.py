@@ -5,16 +5,16 @@ from tqdm import tqdm
 
 def follow(self, user_id):
     user_id = self.convert_to_user_id(user_id)
-    msg = ' ===> Going to follow `user_id`: {}.'.format(user_id)
+    msg = " ===> Going to follow `user_id`: {}.".format(user_id)
     self.console_print(msg)
     if not self.check_user(user_id):
         return False
-    if not self.reached_limit('follows'):
-        self.delay('follow')
+    if not self.reached_limit("follows"):
+        self.delay("follow")
         if self.api.follow(user_id):
-            msg = '===> FOLLOWED <==== `user_id`: {}.'.format(user_id)
-            self.console_print(msg, 'green')
-            self.total['follows'] += 1
+            msg = "===> FOLLOWED <==== `user_id`: {}.".format(user_id)
+            self.console_print(msg, "green")
+            self.total["follows"] += 1
             self.followed_file.append(user_id)
             if user_id not in self.following:
                 self.following.append(user_id)
@@ -26,7 +26,7 @@ def follow(self, user_id):
 
 def follow_users(self, user_ids):
     broken_items = []
-    if self.reached_limit('follows'):
+    if self.reached_limit("follows"):
         self.logger.info("Out of follows for today.")
         return
     msg = "Going to follow {} users.".format(len(user_ids))
@@ -34,20 +34,20 @@ def follow_users(self, user_ids):
     skipped = self.skipped_file
     followed = self.followed_file
     unfollowed = self.unfollowed_file
-    self.console_print(msg, 'green')
+    self.console_print(msg, "green")
 
     # Remove skipped and already followed and unfollowed list from user_ids
     user_ids = list(set(user_ids) - skipped.set - followed.set - unfollowed.set)
-    msg = 'After filtering followed, unfollowed and `{}`, {} user_ids left to follow.'
+    msg = "After filtering followed, unfollowed and `{}`, {} user_ids left to follow."
     msg = msg.format(skipped.fname, len(user_ids))
-    self.console_print(msg, 'green')
-    for user_id in tqdm(user_ids, desc='Processed users'):
-        if self.reached_limit('follows'):
+    self.console_print(msg, "green")
+    for user_id in tqdm(user_ids, desc="Processed users"):
+        if self.reached_limit("follows"):
             self.logger.info("Out of follows for today.")
             break
         if not self.follow(user_id):
             if self.api.last_response.status_code == 404:
-                self.console_print("404 error user {user_id} doesn't exist.", 'red')
+                self.console_print("404 error user {user_id} doesn't exist.", "red")
                 broken_items.append(user_id)
 
             elif self.api.last_response.status_code == 200:
@@ -69,13 +69,15 @@ def follow_users(self, user_ids):
                     broken_items += user_ids[i:]
                     break
 
-    self.logger.info("DONE: Now following {} users in total.".format(self.total['follows']))
+    self.logger.info(
+        "DONE: Now following {} users in total.".format(self.total["follows"])
+    )
     return broken_items
 
 
 def follow_followers(self, user_id, nfollows=None):
     self.logger.info("Follow followers of: {}".format(user_id))
-    if self.reached_limit('follows'):
+    if self.reached_limit("follows"):
         self.logger.info("Out of follows for today.")
         return
     if not user_id:
@@ -91,7 +93,7 @@ def follow_followers(self, user_id, nfollows=None):
 
 def follow_following(self, user_id, nfollows=None):
     self.logger.info("Follow following of: {}".format(user_id))
-    if self.reached_limit('follows'):
+    if self.reached_limit("follows"):
         self.logger.info("Out of follows for today.")
         return
     if not user_id:
@@ -107,7 +109,7 @@ def follow_following(self, user_id, nfollows=None):
 def approve_pending_follow_requests(self):
     pending = self.get_pending_follow_requests()
     if pending:
-        for u in tqdm(pending, desc='Approving users'):
+        for u in tqdm(pending, desc="Approving users"):
             user_id = u["pk"]
             username = u["username"]
             self.api.approve_pending_friendship(user_id)
@@ -120,7 +122,7 @@ def approve_pending_follow_requests(self):
 def reject_pending_follow_requests(self):
     pending = self.get_pending_follow_requests()
     if pending:
-        for u in tqdm(pending, desc='Rejecting users'):
+        for u in tqdm(pending, desc="Rejecting users"):
             user_id = u["pk"]
             username = u["username"]
             self.api.reject_pending_friendship(user_id)

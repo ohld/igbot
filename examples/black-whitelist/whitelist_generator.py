@@ -9,15 +9,17 @@ import sys
 import os
 import random
 
-sys.path.append(os.path.join(sys.path[0], '../../'))
+sys.path.append(os.path.join(sys.path[0], "../../"))
 from instabot import Bot
 
 bot = Bot()
 bot.login()
 
-print("This script will generate whitelist.txt file with users"
-      "who will not be unfollowed by bot. "
-      "Press Y to add user to whitelist. Ctrl + C to exit.")
+print(
+    "This script will generate whitelist.txt file with users"
+    "who will not be unfollowed by bot. "
+    "Press Y to add user to whitelist. Ctrl + C to exit."
+)
 your_following = bot.following
 already_whitelisted = bot.read_list_from_file("whitelist.txt")
 rest_users = list(set(your_following) - set(already_whitelisted))

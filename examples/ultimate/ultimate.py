@@ -12,7 +12,7 @@
 import os
 import sys
 
-sys.path.append(os.path.join(sys.path[0], '../../'))
+sys.path.append(os.path.join(sys.path[0], "../../"))
 from instabot import Bot
 
 bot = Bot()
@@ -30,13 +30,13 @@ print("Going to like users:", like_users_list)
 
 tasks_list = []
 for item in follow_followers_list:
-    tasks_list.append((bot.follow_followers, {'user_id': item, 'nfollows': None}))
+    tasks_list.append((bot.follow_followers, {"user_id": item, "nfollows": None}))
 for item in follow_following_list:
-    tasks_list.append((bot.follow_following, {'user_id': item}))
+    tasks_list.append((bot.follow_following, {"user_id": item}))
 for item in like_hashtags_list:
-    tasks_list.append((bot.like_hashtag, {'hashtag': item, 'amount': None}))
+    tasks_list.append((bot.like_hashtag, {"hashtag": item, "amount": None}))
 for item in like_users_list:
-    tasks_list.append((bot.like_user, {'user_id': item, 'amount': None}))
+    tasks_list.append((bot.like_user, {"user_id": item, "amount": None}))
 
 # shuffle(tasks_list)
 for func, arg in tasks_list:
