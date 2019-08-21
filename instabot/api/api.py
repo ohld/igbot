@@ -1526,11 +1526,22 @@ class API(object):
         url = "direct_v2/pending_inbox/?persistentBadging=true&use_unified_inbox=true"
         return self.send_request(url)
 
+    # ACCEPT button in pending request
     def approve_pending_thread(self, thread_id):
-        data = self.json_data(
-            {"_uuid": self.uuid, "_uid": self.user_id, "_csrftoken": self.token}
-        )
+        data = self.json_data({"_uuid": self.uuid, "_csrftoken": self.token})
         url = "direct_v2/threads/{}/approve/".format(thread_id)
+        return self.send_request(url, post=data)
+
+    # DELETE button in pending request
+    def hide_pending_thread(self, thread_id):
+        data = self.json_data({"_uuid": self.uuid, "_csrftoken": self.token})
+        url = "direct_v2/threads/{}/hide/".format(thread_id)
+        return self.send_request(url, post=data)
+
+    # BLOCK button in pending request
+    def decline_pending_thread(self, thread_id):
+        data = self.json_data({"_uuid": self.uuid, "_csrftoken": self.token})
+        url = "direct_v2/threads/{}/decline/".format(thread_id)
         return self.send_request(url, post=data)
 
     def open_instagram_link(self, link):
