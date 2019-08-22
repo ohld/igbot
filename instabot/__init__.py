@@ -1,5 +1,5 @@
+from . import utils
 from .api import API
 from .bot import Bot
-from . import utils
 
-assert all((API, Bot, utils))  # silence pyflakes
+__all__ = ["utils", "API", "Bot"]

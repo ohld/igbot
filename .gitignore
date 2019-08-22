@@ -116,3 +116,6 @@ nohup.out
 *.txt
 *.checkpoint
 *_uuid_and_cookie.json
+
+# Qiskit junkies
+*qiskit*

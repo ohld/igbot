@@ -1,3 +1,3 @@
 from .api import API
 
-assert API  # silence pyflakes
+__all__ = ["API"]
