@@ -6,35 +6,40 @@ import time
 
 from tqdm import tqdm
 
-sys.path.append(os.path.join(sys.path[0], '../'))
-from instabot import Bot
+sys.path.append(os.path.join(sys.path[0], "../"))
+from instabot import Bot  # noqa: E402
 
 
 # initial
+
 
 def initial_checker():
     files = [hashtag_file, users_file, whitelist, blacklist, comment, setting]
     try:
         for f in files:
-            with open(f, 'r') as f:
+            with open(f, "r") as f:
                 pass
     except BaseException:
         for f in files:
-            with open(f, 'w') as f:
+            with open(f, "w") as f:
                 pass
-        print("""
+        print(
+            """
         Welcome to instabot, it seems this is the first time you've used this bot.
         Before starting, let's setup the basics.
         So the bot functions the way you want.
-        """)
+        """
+        )
         setting_input()
-        print("""
+        print(
+            """
         You can add hashtag database, competitor database,
         whitelists, blacklists and also add users in setting menu.
         Have fun with the bot!
-        """)
+        """
+        )
         time.sleep(5)
-        os.system('cls')
+        os.system("cls")
 
 
 def read_input(f, msg, n=None):
@@ -49,31 +54,66 @@ def read_input(f, msg, n=None):
 
 # setting function start here
 def setting_input():
-    inputs = [("How many likes do you want to do in a day?", 1000),
-              ("How about unlike? ", 1000),
-              ("How many follows do you want to do in a day? ", 350),
-              ("How about unfollow? ", 350),
-              ("How many comments do you want to do in a day? ", 100),
-              (("Maximal likes in media you will like?\n"
-                "We will skip media that have greater like than this value "), 100),
-              (("Maximal followers of account you want to follow?\n"
-                "We will skip media that have greater followers than this value "), 2000),
-              (("Minimum followers a account should have before we follow?\n"
-                "We will skip media that have lesser followers than this value "), 10),
-              (("Maximum following of account you want to follow?\n"
-                "We will skip media that have a greater following than this value "), 7500),
-              (("Minimum following of account you want to follow?\n"
-                "We will skip media that have lesser following from this value "), 10),
-              ("Maximal followers to following_ratio ", 10),
-              ("Maximal following to followers_ratio ", 2),
-              (("Minimal media the account you will follow have.\n"
-                "We will skip media that have lesser media from this value "), 3),
-              ("Delay from one like to another like you will perform ", 10),
-              ("Delay from one unlike to another unlike you will perform ", 10),
-              ("Delay from one follow to another follow you will perform ", 30),
-              ("Delay from one unfollow to another unfollow you will perform ", 30),
-              ("Delay from one comment to another comment you will perform ", 60),
-              ("Want to use proxy? insert your proxy or leave it blank if no. (just enter", 'None')]
+    inputs = [
+        ("How many likes do you want to do in a day?", 1000),
+        ("How about unlike? ", 1000),
+        ("How many follows do you want to do in a day? ", 350),
+        ("How about unfollow? ", 350),
+        ("How many comments do you want to do in a day? ", 100),
+        (
+            (
+                "Maximal likes in media you will like?\n"
+                "We will skip media that have greater like than this value "
+            ),
+            100,
+        ),
+        (
+            (
+                "Maximal followers of account you want to follow?\n"
+                "We will skip media that have greater followers than this value "
+            ),
+            2000,
+        ),
+        (
+            (
+                "Minimum followers a account should have before we follow?\n"
+                "We will skip media that have lesser followers than this value "
+            ),
+            10,
+        ),
+        (
+            (
+                "Maximum following of account you want to follow?\n"
+                "We will skip media that have a greater following than this value "
+            ),
+            7500,
+        ),
+        (
+            (
+                "Minimum following of account you want to follow?\n"
+                "We will skip media that have lesser following from this value "
+            ),
+            10,
+        ),
+        ("Maximal followers to following_ratio ", 10),
+        ("Maximal following to followers_ratio ", 2),
+        (
+            (
+                "Minimal media the account you will follow have.\n"
+                "We will skip media that have lesser media from this value "
+            ),
+            3,
+        ),
+        ("Delay from one like to another like you will perform ", 10),
+        ("Delay from one unlike to another unlike you will perform ", 10),
+        ("Delay from one follow to another follow you will perform ", 30),
+        ("Delay from one unfollow to another unfollow you will perform ", 30),
+        ("Delay from one comment to another comment you will perform ", 60),
+        (
+            "Want to use proxy? insert your proxy or leave it blank if no. (just enter",
+            "None",
+        ),
+    ]
 
     with open(setting, "w") as f:
         while True:
@@ -84,25 +124,27 @@ def setting_input():
 
 
 def parameter_setting():
-    settings = ["Max likes per day: ",
-                "Max unlikes per day: ",
-                "Max follows per day: ",
-                "Max unfollows per day: ",
-                "Max comments per day: ",
-                "Max likes to like: ",
-                "Max followers to follow: ",
-                "Min followers to follow: ",
-                "Max following to follow: ",
-                "Min following to follow: ",
-                "Max followers to following_ratio: ",
-                "Max following to followers_ratio: ",
-                "Min media_count to follow:",
-                "Like delay: ",
-                "Unlike delay: ",
-                "Follow delay: ",
-                "Unfollow delay: ",
-                "Comment delay: ",
-                "Proxy: "]
+    settings = [
+        "Max likes per day: ",
+        "Max unlikes per day: ",
+        "Max follows per day: ",
+        "Max unfollows per day: ",
+        "Max comments per day: ",
+        "Max likes to like: ",
+        "Max followers to follow: ",
+        "Min followers to follow: ",
+        "Max following to follow: ",
+        "Min following to follow: ",
+        "Max followers to following_ratio: ",
+        "Max following to followers_ratio: ",
+        "Min media_count to follow:",
+        "Like delay: ",
+        "Unlike delay: ",
+        "Follow delay: ",
+        "Unfollow delay: ",
+        "Comment delay: ",
+        "Proxy: ",
+    ]
 
     with open(setting) as f:
         data = f.readlines()
@@ -119,7 +161,9 @@ def username_adder():
         while True:
             print("Enter your login: ")
             f.write(str(sys.stdin.readline().strip()) + ":")
-            print("Enter your password: (it will not be shown due to security reasons - just start typing and press Enter)")
+            print(
+                "Enter your password: (it will not be shown due to security reasons - just start typing and press Enter)"
+            )
             f.write(getpass.getpass() + "\n")
             print("Do you want to add another account? (y/n)")
             if "y" not in sys.stdin.readline():
@@ -131,47 +175,50 @@ def get_adder(name, fname):
         print("Current Database:")
         print(bot.read_list_from_file(fname))
         with open(fname, "a") as f:
-            print('Add {} to database'.format(name))
+            print("Add {} to database".format(name))
             while True:
                 print("Enter {}: ".format(name))
                 f.write(str(sys.stdin.readline().strip()) + "\n")
                 print("Do you want to add another {}? (y/n)\n".format(name))
                 if "y" not in sys.stdin.readline():
-                    print('Done adding {}s to database'.format(name))
+                    print("Done adding {}s to database".format(name))
                     break
+
     return _adder()
 
 
 def hashtag_adder():
-    return get_adder('hashtag', fname=hashtag_file)
+    return get_adder("hashtag", fname=hashtag_file)
 
 
 def competitor_adder():
-    return get_adder('username', fname=users_file)
+    return get_adder("username", fname=users_file)
 
 
 def blacklist_adder():
-    return get_adder('username', fname=blacklist)
+    return get_adder("username", fname=blacklist)
 
 
 def whitelist_adder():
-    return get_adder('username', fname=whitelist)
+    return get_adder("username", fname=whitelist)
 
 
 def comment_adder():
-    return get_adder('comment', fname=comment)
+    return get_adder("comment", fname=comment)
 
 
 def userlist_maker():
-    return get_adder('username', userlist)
+    return get_adder("username", userlist)
 
 
 # all menu start here
 
+
 def menu():
     ans = True
     while ans:
-        print("""
+        print(
+            """
         1.Follow
         2.Like
         3.Comment
@@ -179,7 +226,8 @@ def menu():
         5.Block
         6.Setting
         7.Exit
-        """)
+        """
+        )
         ans = input("What would you like to do?\n").strip()
         if ans == "1":
             menu_follow()
@@ -203,23 +251,33 @@ def menu():
 def menu_follow():
     ans = True
     while ans:
-        print("""
+        print(
+            """
         1. Follow from hashtag
         2. Follow followers
         3. Follow following
         4. Follow by likes on media
         5. Main menu
-        """)
+        """
+        )
         ans = input("How do you want to follow?\n").strip()
 
         if ans == "1":
-            print("""
+            print(
+                """
             1.Insert hashtag
             2.Use hashtag database
-            """)
+            """
+            )
             hashtags = []
             if "1" in sys.stdin.readline():
-                hashtags = input("Insert hashtags separated by spaces\nExample: cat dog\nwhat hashtags?\n").strip().split(' ')
+                hashtags = (
+                    input(
+                        "Insert hashtags separated by spaces\nExample: cat dog\nwhat hashtags?\n"
+                    )
+                    .strip()
+                    .split(" ")
+                )
             else:
                 hashtags = bot.read_list_from_file(hashtag_file)
             for hashtag in hashtags:
@@ -229,10 +287,12 @@ def menu_follow():
             menu_follow()
 
         elif ans == "2":
-            print("""
+            print(
+                """
             1.Insert username
             2.Use username database
-            """)
+            """
+            )
             if "1" in sys.stdin.readline():
                 user_id = input("who?\n").strip()
             else:
@@ -241,10 +301,12 @@ def menu_follow():
             menu_follow()
 
         elif ans == "3":
-            print("""
+            print(
+                """
             1.Insert username
             2.Use username database
-            """)
+            """
+            )
             if "1" in sys.stdin.readline():
                 user_id = input("who?\n").strip()
             else:
@@ -253,10 +315,12 @@ def menu_follow():
             menu_follow()
 
         elif ans == "4":
-            print("""
+            print(
+                """
             1.Insert username
             2.Use username database
-            """)
+            """
+            )
             if "1" in sys.stdin.readline():
                 user_id = input("who?\n").strip()
             else:
@@ -278,34 +342,46 @@ def menu_follow():
 def menu_like():
     ans = True
     while ans:
-        print("""
+        print(
+            """
         1. Like from hashtag(s)
         2. Like followers
         3. Like following
         4. Like last media likers
         5. Like our timeline
         6. Main menu
-        """)
+        """
+        )
         ans = input("How do you want to like?\n").strip()
 
         if ans == "1":
-            print("""
+            print(
+                """
             1.Insert hashtag(s)
             2.Use hashtag database
-            """)
+            """
+            )
             hashtags = []
             if "1" in sys.stdin.readline():
-                hashtags = input("Insert hashtags separated by spaces\nExample: cat dog\nwhat hashtags?\n").strip().split(' ')
+                hashtags = (
+                    input(
+                        "Insert hashtags separated by spaces\nExample: cat dog\nwhat hashtags?\n"
+                    )
+                    .strip()
+                    .split(" ")
+                )
             else:
                 hashtags.append(random.choice(bot.read_list_from_file(hashtag_file)))
             for hashtag in hashtags:
                 bot.like_hashtag(hashtag)
 
         elif ans == "2":
-            print("""
+            print(
+                """
             1.Insert username
             2.Use username database
-            """)
+            """
+            )
             if "1" in sys.stdin.readline():
                 user_id = input("who?\n").strip()
             else:
@@ -313,10 +389,12 @@ def menu_like():
             bot.like_followers(user_id)
 
         elif ans == "3":
-            print("""
+            print(
+                """
             1.Insert username
             2.Use username database
-            """)
+            """
+            )
             if "1" in sys.stdin.readline():
                 user_id = input("who?\n").strip()
             else:
@@ -324,10 +402,12 @@ def menu_like():
             bot.like_following(user_id)
 
         elif ans == "4":
-            print("""
+            print(
+                """
             1.Insert username
             2.Use username database
-            """)
+            """
+            )
             if "1" in sys.stdin.readline():
                 user_id = input("who?\n").strip()
             else:
@@ -352,20 +432,24 @@ def menu_like():
 def menu_comment():
     ans = True
     while ans:
-        print("""
+        print(
+            """
         1. Comment from hashtag
         2. Comment spesific user media
         3. Comment userlist
         4. Comment our timeline
         5. Main menu
-        """)
+        """
+        )
         ans = input("How do you want to comment?\n").strip()
 
         if ans == "1":
-            print("""
+            print(
+                """
             1.Insert hashtag
             2.Use hashtag database
-            """)
+            """
+            )
             if "1" in sys.stdin.readline():
                 hashtag = input("what?").strip()
             else:
@@ -373,10 +457,12 @@ def menu_comment():
             bot.comment_hashtag(hashtag)
 
         elif ans == "2":
-            print("""
+            print(
+                """
             1.Insert username
             2.Use username database
-            """)
+            """
+            )
             if "1" in sys.stdin.readline():
                 user_id = input("who?\n").strip()
             else:
@@ -384,19 +470,19 @@ def menu_comment():
             bot.comment_medias(bot.get_user_medias(user_id, filtration=False))
 
         elif ans == "3":
-            print("""
+            print(
+                """
             1.Make a list
             2.Use existing list
-            """)
+            """
+            )
             if "1" in sys.stdin.readline():
                 userlist_maker()
             if "2" in sys.stdin.readline():
                 print(userlist)
             users = bot.read_list_from_file(userlist)
             for user_id in users:
-                bot.comment_medias(
-                    bot.get_user_medias(
-                        user_id, filtration=True))
+                bot.comment_medias(bot.get_user_medias(user_id, filtration=True))
 
         elif ans == "4":
             bot.comment_medias(bot.get_timeline_medias())
@@ -412,11 +498,13 @@ def menu_comment():
 def menu_unfollow():
     ans = True
     while ans:
-        print("""
+        print(
+            """
         1. Unfollow non followers
         2. Unfollow everyone
         3. Main menu
-        """)
+        """
+        )
         ans = input("How do you want to unfollow?\n").strip()
 
         if ans == "1":
@@ -438,10 +526,12 @@ def menu_unfollow():
 def menu_block():
     ans = True
     while ans:
-        print("""
+        print(
+            """
         1. Block bot
         2. Main menu
-        """)
+        """
+        )
         ans = input("how do you want to block?\n").strip()
         if ans == "1":
             bot.block_bots()
@@ -458,7 +548,8 @@ def menu_block():
 def menu_setting():
     ans = True
     while ans:
-        print("""
+        print(
+            """
         1. Setting bot parameter
         2. Add user accounts
         3. Add competitor database
@@ -468,13 +559,14 @@ def menu_setting():
         7. Add whitelist
         8. Clear all database
         9. Main menu
-        """)
+        """
+        )
         ans = input("What setting do you need?\n").strip()
 
         if ans == "1":
             parameter_setting()
             change = input("Want to change it? y/n\n").strip()
-            if change == 'y' or change == 'Y':
+            if change == "y" or change == "Y":
                 setting_input()
             else:
                 menu_setting()
@@ -492,13 +584,14 @@ def menu_setting():
             whitelist_adder()
         elif ans == "8":
             print(
-                "Whis will clear all database except your user accounts and paramater settings")
+                "Whis will clear all database except your user accounts and paramater settings"
+            )
             time.sleep(5)
-            open(hashtag_file, 'w')
-            open(users_file, 'w')
-            open(whitelist, 'w')
-            open(blacklist, 'w')
-            open(comment, 'w')
+            open(hashtag_file, "w")
+            open(users_file, "w")
+            open(whitelist, "w")
+            open(blacklist, "w")
+            open(comment, "w")
             print("Done, you can add new one!")
         elif ans == "9":
             menu()
@@ -576,18 +669,20 @@ bot = Bot(
     blacklist_file=blacklist,
     comments_file=comment,
     stop_words=[
-        'order',
-        'shop',
-        'store',
-        'free',
-        'doodleartindonesia',
-        'doodle art indonesia',
-        'fullofdoodleart',
-        'commission',
-        'vector',
-        'karikatur',
-        'jasa',
-        'open'])
+        "order",
+        "shop",
+        "store",
+        "free",
+        "doodleartindonesia",
+        "doodle art indonesia",
+        "fullofdoodleart",
+        "commission",
+        "vector",
+        "karikatur",
+        "jasa",
+        "open",
+    ],
+)
 
 bot.login()
 

@@ -1,4 +1,3 @@
-
 import random
 from collections import OrderedDict
 
@@ -9,12 +8,12 @@ class file(object):
     def __init__(self, fname, verbose=True):
         self.fname = fname
         self.verbose = verbose
-        open(self.fname, 'a').close()
+        open(self.fname, "a").close()
 
     @property
     def list(self):
-        with open(self.fname, 'r') as f:
-            lines = [x.strip('\n') for x in f.readlines()]
+        with open(self.fname, "r") as f:
+            lines = [x.strip("\n") for x in f.readlines()]
             return [x for x in lines if x]
 
     @property
@@ -38,8 +37,8 @@ class file(object):
             print(bold(orange(msg)))
             return
 
-        with open(self.fname, 'a') as f:
-            f.write('{item}\n'.format(item=item))
+        with open(self.fname, "a") as f:
+            f.write("{item}\n".format(item=item))
 
     def remove(self, x):
         x = str(x)
@@ -57,6 +56,6 @@ class file(object):
         return list(OrderedDict.fromkeys(self.list))
 
     def save_list(self, items):
-        with open(self.fname, 'w') as f:
+        with open(self.fname, "w") as f:
             for item in items:
-                f.write('{item}\n'.format(item=item))
+                f.write("{item}\n".format(item=item))
