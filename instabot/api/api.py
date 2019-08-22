@@ -67,7 +67,9 @@ class API(object):
 
         if save_logfile is True:
             if log_filename is None:
-                log_filename = os.path.join(base_path, "instabot_{}.log".format(id(self)))
+                log_filename = os.path.join(
+                    base_path, "instabot_{}.log".format(id(self))
+                )
 
             fh = logging.FileHandler(filename=log_filename)
             fh.setLevel(logging.INFO)
@@ -395,7 +397,7 @@ class API(object):
             except JSONDecodeError:
                 return False
         else:
-            print(endpoint, post, response.content)
+            # print(endpoint, post, response.content)
             if response.status_code != 404 and response.status_code != "404":
                 self.logger.error(
                     "Request returns {} error!".format(response.status_code)
