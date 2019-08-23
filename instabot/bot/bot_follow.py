@@ -1,5 +1,5 @@
 import time
-
+import random
 from tqdm import tqdm
 
 
@@ -10,7 +10,8 @@ def follow(self, user_id):
     if not self.check_user(user_id):
         return False
     if not self.reached_limit('follows'):
-        self.delay('follow')
+        rand = random.randint(60, 180)
+        time.sleep(rand)  
         if self.api.follow(user_id):
             msg = '===> FOLLOWED <==== `user_id`: {}.'.format(user_id)
             self.console_print(msg, 'green')
