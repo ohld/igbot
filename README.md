@@ -1,6 +1,6 @@
 # Instabot
 
-Free Instagram python bot, [private Instagram API wrapper](https://github.com/instagrambot/instabot/tree/master/instabot/api) and a [huge amount of ready-to-use automation scripts](https://github.com/instagrambot/instabot/tree/master/examples). 
+Free Instagram python bot, [private Instagram API wrapper](https://github.com/instagrambot/instabot/tree/master/instabot/api) and a [huge amount of ready-to-use automation scripts](https://github.com/instagrambot/instabot/tree/master/examples).
 
 We are the most used Instagram library on GitHub (according to "Used by" counter). 🎉 Join our [Large Telegram community](https://t.me/instabotproject) for more Instagram tricks. 🚀
 

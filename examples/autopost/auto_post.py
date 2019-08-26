@@ -2,15 +2,14 @@ import glob
 import os
 import sys
 import time
-
 from io import open
 
-sys.path.append(os.path.join(sys.path[0], '../../'))
-from instabot import Bot
+sys.path.append(os.path.join(sys.path[0], "../../"))
+from instabot import Bot  # noqa: E402
 
 posted_pic_list = []
 try:
-    with open('pics.txt', 'r', encoding='utf8') as f:
+    with open("pics.txt", "r", encoding="utf8") as f:
         posted_pic_list = f.read().splitlines()
 except Exception:
     posted_pic_list = []
@@ -40,7 +39,7 @@ while True:
 
             if pic not in posted_pic_list:
                 posted_pic_list.append(pic)
-                with open('pics.txt', 'a', encoding='utf8') as f:
+                with open("pics.txt", "a", encoding="utf8") as f:
                     f.write(pic + "\n")
 
             time.sleep(timeout)

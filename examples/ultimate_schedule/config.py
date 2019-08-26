@@ -25,8 +25,9 @@ PICS_PATH = "/Path/to/pics/folder/"
 # The path of the directory containing the photos the bot will upload
 # NOTE: Being a directory, it must end with '/'
 
-PICS_HASHTAGS = ("#hashtag1 #hashtag2 #hashtag3 #hashtag4 "
-                 "#hashtag5 #hashtag6 #hashtag7")
+PICS_HASHTAGS = (
+    "#hashtag1 #hashtag2 #hashtag3 #hashtag4 " "#hashtag5 #hashtag6 #hashtag7"
+)
 # The bot will comment each photo it posts with the hashtags in PICS_HASHTAGS
 # Each string but the last must end with a space
 # NOTE: Instagram allows only for a maximum of 30 hashtags per post.

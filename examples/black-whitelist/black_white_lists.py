@@ -13,25 +13,24 @@
             1234124512
 """
 
-import sys
-import os
-from tqdm import tqdm
 import argparse
+import os
+import sys
 
-sys.path.append(os.path.join(sys.path[0], '../../'))
-from instabot import Bot
+from tqdm import tqdm
+
+sys.path.append(os.path.join(sys.path[0], "../../"))
+from instabot import Bot  # noqa: E402
 
 parser = argparse.ArgumentParser(add_help=True)
-parser.add_argument('-u', type=str, help="username")
-parser.add_argument('-p', type=str, help="password")
-parser.add_argument('-proxy', type=str, help="proxy")
+parser.add_argument("-u", type=str, help="username")
+parser.add_argument("-p", type=str, help="password")
+parser.add_argument("-proxy", type=str, help="proxy")
 args = parser.parse_args()
 
-bot = Bot(whitelist_file="whitelist.txt",
-          blacklist_file="blacklist.txt")
+bot = Bot(whitelist_file="whitelist.txt", blacklist_file="blacklist.txt")
 
-bot.login(username=args.u, password=args.p,
-          proxy=args.proxy)
+bot.login(username=args.u, password=args.p, proxy=args.proxy)
 
 timeline_medias = bot.get_timeline_medias()
 for media in tqdm(timeline_medias, desc="timeline"):

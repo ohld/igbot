@@ -4,9 +4,7 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [dev-packages]
-pycodestyle = "*"
 pytest = "*"
-pyflakes = "*"
 pysocks = "*"
 bumpversion = "*"
 pytest-cov = '*'
@@ -19,6 +17,7 @@ requests-toolbelt = "*"
 responses = "*"
 six = "*"
 huepy = "*"
+pytz = "*"
 
 [requires]
 python_version = "3.7"
