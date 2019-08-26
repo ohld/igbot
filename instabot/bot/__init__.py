@@ -1,3 +1,3 @@
 from .bot import Bot
 
-assert Bot  # silence pyflakes
+__all__ = ["Bot"]

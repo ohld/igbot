@@ -11,16 +11,25 @@ python:
   - "pypy"
   - "pypy3.5"
 
+env:
+  - PRE_COMMIT_CMD=""
+
 matrix:
+  include:
+    - name: "pre-commit"
+      python: "3.7"
+      env:
+        - PRE_COMMIT_CMD="pre-commit run --all-files"
   allow_failures:
     - python: "3.8-dev"
     - python: "nightly"
 
 install:
-  - pip install tox-travis codecov
+  - pip install tox-travis codecov pre_commit
 
 script:
  - tox
+ - $PRE_COMMIT_CMD
 
 after_success:
  - codecov
