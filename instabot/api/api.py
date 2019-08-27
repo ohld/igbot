@@ -90,6 +90,8 @@ class API(object):
         self.username = username
         self.password = password
 
+        self.logger = logging.getLogger("[instabot_{}]".format(self.username))
+
         if set_device is True:
             self.set_device()
 
@@ -184,7 +186,7 @@ class API(object):
         self.set_proxy()  # Only happens if `self.proxy`
 
         self.cookie_fname = cookie_fname
-        if self.cookie_fname:
+        if self.cookie_fname is None:
             cookie_fname = "{username}_uuid_and_cookie.json".format(username=username)
             self.cookie_fname = os.path.join(self.base_path, cookie_fname)
 
@@ -202,11 +204,14 @@ class API(object):
                     cookie_is_loaded = True
                     self.save_successful_login()
                 else:
+                    self.logger.info("Login flow failed, the cookie is broken. Relogin again.")
                     set_device = generate_all_uuids = False
+                    force = True
             # except Exception:
             #     print("The cookie is not found, but don't worry `instabot` will create it for you using your login details.")
 
         if not cookie_is_loaded and (not self.is_logged_in or force):
+            self.session = requests.Session()
             if use_uuid is True:
                 if (
                     self.load_uuid_and_cookie(
@@ -389,8 +394,8 @@ class API(object):
             self.logger.warning(str(e))
             return False
 
+        self.last_response = response
         if response.status_code == 200:
-            self.last_response = response
             try:
                 self.last_json = json.loads(response.text)
                 return True

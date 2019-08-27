@@ -185,7 +185,7 @@ def load_uuid_and_cookie(self, load_uuid=True, load_cookie=True):
     if os.path.isfile(self.cookie_fname) is False:
         return False
 
-    with open(fname, "r") as f:
+    with open(self.cookie_fname, "r") as f:
         data = json.load(f)
         if "cookie" in data:
             self.last_login = data["timing_value"]["last_login"]
@@ -212,7 +212,7 @@ def load_uuid_and_cookie(self, load_uuid=True, load_cookie=True):
 
             self.logger.info(
                 "Recovery from {}: COOKIE {} - UUIDs {} - TIMING, DEVICE and ... \n- user-agent={}\n- phone_id={}\n- uuid={}\n- client_session_id={}\n- device_id={}".format(
-                    fname,
+                    self.cookie_fname,
                     load_cookie,
                     load_uuid,
                     self.user_agent,
@@ -226,7 +226,9 @@ def load_uuid_and_cookie(self, load_uuid=True, load_cookie=True):
             self.logger.info(
                 "The cookie seems to be the with the older structure. Load and init again all uuids"
             )
-            self.session.cookies = requests.utils.cookiejar_from_dict(data["cookie"])
+            self.session.cookies = requests.utils.cookiejar_from_dict(data)
+            self.last_login = time.time()
+            self.last_experiments = time.time()
             cookie_username = self.cookie_dict["ds_user"]
             assert cookie_username == self.username
             self.set_device()
