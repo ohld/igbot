@@ -115,3 +115,7 @@ nohup.out
 # Settings files
 *.txt
 *.checkpoint
+*_uuid_and_cookie.json
+
+# Qiskit junkies
+*qiskit*
