@@ -17,7 +17,7 @@ matrix:
     - python: "nightly"
 
 install:
-  - pip install tox-travis codecov 
+  - pip install tox-travis codecov bumpversion
 
 script:
  - tox
