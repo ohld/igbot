@@ -27,10 +27,19 @@ while True:
             if pic in posted_pic_list:
                 continue
 
-            caption = pic[:-4].split(" ")
-            caption = " ".join(caption[1:])
+            pic_name = pic[:-4].split("-")
+            pic_name = "-".join(pic_name[1:])
 
-            print("upload: " + caption)
+            print("upload: " + pic_name)
+
+            description_file = "./pics/" + pic_name + '.txt'
+
+            if os.path.isfile(description_file):
+                with open(description_file, 'r') as file:
+                    caption = file.read()
+            else:
+                caption = pic_name
+
             bot.upload_photo(pic, caption=caption)
             if bot.api.last_response.status_code != 200:
                 print(bot.api.last_response)
