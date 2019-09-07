@@ -20,7 +20,8 @@ bot = Bot()
 bot.login()
 
 while True:
-    pics = glob.glob("./pics/*.jpg")
+    folder_path = "d:/OneDrive/Documente/UrbanExperience/autopost"
+    pics = glob.glob(folder_path + "/*.jpg")
     pics = sorted(pics)
     try:
         for pic in pics:
@@ -32,13 +33,13 @@ while True:
 
             print("upload: " + pic_name)
 
-            description_file = "./pics/" + pic_name + '.txt'
+            description_file = folder_path + "/" + pic_name + '.txt'
 
             if os.path.isfile(description_file):
                 with open(description_file, 'r') as file:
                     caption = file.read()
             else:
-                caption = pic_name
+                caption = pic_name.replace("-", " ")
 
             bot.upload_photo(pic, caption=caption)
             if bot.api.last_response.status_code != 200:
