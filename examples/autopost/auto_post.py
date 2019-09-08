@@ -20,7 +20,7 @@ bot = Bot()
 bot.login()
 
 while True:
-    folder_path = "d:/OneDrive/Documente/UrbanExperience/autopost"
+    folder_path = "./pics"
     pics = glob.glob(folder_path + "/*.jpg")
     pics = sorted(pics)
     try:
