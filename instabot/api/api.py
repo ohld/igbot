@@ -980,6 +980,11 @@ class API(object):
         url = "friendships/destroy/{user_id}/".format(user_id=user_id)
         return self.send_request(url, data)
 
+    def remove_follower(self, user_id):
+        data = self.json_data({'user_id': user_id})
+        url = 'friendships/remove_follower/{user_id}/'.format(user_id=user_id)
+        return self.send_request(url, data)
+
     def block(self, user_id):
         data = self.json_data({"user_id": user_id})
         url = "friendships/block/{user_id}/".format(user_id=user_id)
