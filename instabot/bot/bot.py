@@ -170,8 +170,9 @@ class Bot(object):
         blocked_actions_protection=True,
         verbosity=True,
         device=None,
+        save_logfile=True,
     ):
-        self.api = API(device=device, base_path=base_path)
+        self.api = API(device=device, base_path=base_path, save_logfile=save_logfile)
         self.base_path = base_path
 
         self.total = {
