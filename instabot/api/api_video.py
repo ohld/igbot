@@ -256,7 +256,7 @@ def resize_video(fname, thumbnail=None):
     print("Analizing `{}`".format(fname))
     h_lim = {"w": 90.0, "h": 47.0}
     v_lim = {"w": 4.0, "h": 5.0}
-    d_lim = 30
+    d_lim = 60
     vid = mp.VideoFileClip(fname)
     (w, h) = vid.size
     deg = vid.rotation
