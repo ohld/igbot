@@ -67,9 +67,7 @@ class API(object):
 
         if save_logfile is True:
             if log_filename is None:
-                log_filename = os.path.join(
-                    base_path, "instabot_{}.log".format(id(self))
-                )
+                log_filename = os.path.join(base_path, "instabot_{}.log".format(id(self)))
 
             fh = logging.FileHandler(filename=log_filename)
             fh.setLevel(logging.INFO)
@@ -125,7 +123,11 @@ class API(object):
 
     def log_attribution(self, usage="default"):
         data = json.dumps({"adid": self.advertising_id})
-        return self.send_request("attribution/log_attribution/", data, login=True)
+        return self.send_request(
+            "attribution/log_attribution/",
+            data,
+            login=True
+        )
 
     # ====== ALL METHODS IMPORT FROM api_login ====== #
     def sync_device_features(self, login=False):
@@ -187,38 +189,29 @@ class API(object):
 
         self.cookie_fname = cookie_fname
         if self.cookie_fname is None:
-            cookie_fname = "{username}_uuid_and_cookie.json".format(username=username)
+            fmt = "{username}_uuid_and_cookie.json"
+            cookie_fname = fmt.format(username=username)
             self.cookie_fname = os.path.join(self.base_path, cookie_fname)
 
         cookie_is_loaded = False
+        msg = "Login flow failed, the cookie is broken. Relogin again."
 
         if use_cookie is True:
             # try:
-            if (
-                self.load_uuid_and_cookie(load_cookie=use_cookie, load_uuid=use_uuid)
-                is True
-            ):
-                if (
-                    self.login_flow(False) is True
-                ):  # Check if the token loaded is valid.
+            if (self.load_uuid_and_cookie(load_cookie=use_cookie, load_uuid=use_uuid) is True):
+                # Check if the token loaded is valid.
+                if (self.login_flow(False) is True):
                     cookie_is_loaded = True
                     self.save_successful_login()
                 else:
-                    self.logger.info("Login flow failed, the cookie is broken. Relogin again.")
+                    self.logger.info(msg)
                     set_device = generate_all_uuids = False
                     force = True
-            # except Exception:
-            #     print("The cookie is not found, but don't worry `instabot` will create it for you using your login details.")
 
         if not cookie_is_loaded and (not self.is_logged_in or force):
             self.session = requests.Session()
             if use_uuid is True:
-                if (
-                    self.load_uuid_and_cookie(
-                        load_cookie=use_cookie, load_uuid=use_uuid
-                    )
-                    is False
-                ):
+                if (self.load_uuid_and_cookie(load_cookie=use_cookie, load_uuid=use_uuid) is False):
                     if set_device is True:
                         self.set_device()
                     if generate_all_uuids is True:
@@ -240,11 +233,9 @@ class API(object):
             if self.send_request("accounts/login/", data, True):
                 self.save_successful_login()
                 self.login_flow(True)
-                # self.device_id = self.uuid
                 return True
-            elif (
-                self.last_json.get("error_type", "") == "checkpoint_challenge_required"
-            ):
+
+            elif (self.last_json.get("error_type", "") == "checkpoint_challenge_required"):
                 self.logger.info("Checkpoint challenge required...")
                 if ask_for_code is True:
                     solved = self.solve_challenge()
@@ -340,9 +331,7 @@ class API(object):
         if not self.is_logged_in:
             return True
         data = json.dumps({})
-        self.is_logged_in = not self.send_request(
-            "accounts/logout/", data, with_signature=False
-        )
+        self.is_logged_in = not self.send_request("accounts/logout/", data, with_signature=False)
         return not self.is_logged_in
 
     def set_proxy(self):
@@ -352,7 +341,7 @@ class API(object):
             self.session.proxies["http"] = scheme + self.proxy
             self.session.proxies["https"] = scheme + self.proxy
 
-    def send_request(  # noqa: C901
+    def send_request(
         self,
         endpoint,
         post=None,
@@ -529,8 +518,8 @@ class API(object):
             "scale": 3,
             "version": 1,
             "vc_policy": "default",
-            "surfaces_to_triggers": '{"5734":["instagram_feed_prompt"],"4715":["instagram_feed_header"],"5858":["instagram_feed_tool_tip"]}',
-            "surfaces_to_queries": '{"5734":"viewer() {eligible_promotions.trigger_context_v2(<trigger_context_v2>).ig_parameters(<ig_parameters>).trigger_name(<trigger_name>).surface_nux_id(<surface>).external_gating_permitted_qps(<external_gating_permitted_qps>).supports_client_filters(true).include_holdouts(true) {edges {client_ttl_seconds,log_eligibility_waterfall,is_holdout,priority,time_range {start,end},node {id,promotion_id,logging_data,max_impressions,triggers,contextual_filters {clause_type,filters {filter_type,unknown_action,value {name,required,bool_value,int_value,string_value},extra_datas {name,required,bool_value,int_value,string_value}},clauses {clause_type,filters {filter_type,unknown_action,value {name,required,bool_value,int_value,string_value},extra_datas {name,required,bool_value,int_value,string_value}},clauses {clause_type,filters {filter_type,unknown_action,value {name,required,bool_value,int_value,string_value},extra_datas {name,required,bool_value,int_value,string_value}},clauses {clause_type,filters {filter_type,unknown_action,value {name,required,bool_value,int_value,string_value},extra_datas {name,required,bool_value,int_value,string_value}}}}}},is_uncancelable,template {name,parameters {name,required,bool_value,string_value,color_value,}},creatives {title {text},content {text},footer {text},social_context {text},social_context_images,primary_action{title {text},url,limit,dismiss_promotion},secondary_action{title {text},url,limit,dismiss_promotion},dismiss_action{title {text},url,limit,dismiss_promotion},image.scale(<scale>) {uri,width,height}}}}}}","4715":"viewer() {eligible_promotions.trigger_context_v2(<trigger_context_v2>).ig_parameters(<ig_parameters>).trigger_name(<trigger_name>).surface_nux_id(<surface>).external_gating_permitted_qps(<external_gating_permitted_qps>).supports_client_filters(true).include_holdouts(true) {edges {client_ttl_seconds,log_eligibility_waterfall,is_holdout,priority,time_range {start,end},node {id,promotion_id,logging_data,max_impressions,triggers,contextual_filters {clause_type,filters {filter_type,unknown_action,value {name,required,bool_value,int_value,string_value},extra_datas {name,required,bool_value,int_value,string_value}},clauses {clause_type,filters {filter_type,unknown_action,value {name,required,bool_value,int_value,string_value},extra_datas {name,required,bool_value,int_value,string_value}},clauses {clause_type,filters {filter_type,unknown_action,value {name,required,bool_value,int_value,string_value},extra_datas {name,required,bool_value,int_value,string_value}},clauses {clause_type,filters {filter_type,unknown_action,value {name,required,bool_value,int_value,string_value},extra_datas {name,required,bool_value,int_value,string_value}}}}}},is_uncancelable,template {name,parameters {name,required,bool_value,string_value,color_value,}},creatives {title {text},content {text},footer {text},social_context {text},social_context_images,primary_action{title {text},url,limit,dismiss_promotion},secondary_action{title {text},url,limit,dismiss_promotion},dismiss_action{title {text},url,limit,dismiss_promotion},image.scale(<scale>) {uri,width,height}}}}}}","5858":"viewer() {eligible_promotions.trigger_context_v2(<trigger_context_v2>).ig_parameters(<ig_parameters>).trigger_name(<trigger_name>).surface_nux_id(<surface>).external_gating_permitted_qps(<external_gating_permitted_qps>).supports_client_filters(true).include_holdouts(true) {edges {client_ttl_seconds,log_eligibility_waterfall,is_holdout,priority,time_range {start,end},node {id,promotion_id,logging_data,max_impressions,triggers,contextual_filters {clause_type,filters {filter_type,unknown_action,value {name,required,bool_value,int_value,string_value},extra_datas {name,required,bool_value,int_value,string_value}},clauses {clause_type,filters {filter_type,unknown_action,value {name,required,bool_value,int_value,string_value},extra_datas {name,required,bool_value,int_value,string_value}},clauses {clause_type,filters {filter_type,unknown_action,value {name,required,bool_value,int_value,string_value},extra_datas {name,required,bool_value,int_value,string_value}},clauses {clause_type,filters {filter_type,unknown_action,value {name,required,bool_value,int_value,string_value},extra_datas {name,required,bool_value,int_value,string_value}}}}}},is_uncancelable,template {name,parameters {name,required,bool_value,string_value,color_value,}},creatives {title {text},content {text},footer {text},social_context {text},social_context_images,primary_action{title {text},url,limit,dismiss_promotion},secondary_action{title {text},url,limit,dismiss_promotion},dismiss_action{title {text},url,limit,dismiss_promotion},image.scale(<scale>) {uri,width,height}}}}}}"}',  # Just copied from request.
+            "surfaces_to_triggers": '{"5734":["instagram_feed_prompt"],"4715":["instagram_feed_header"],"5858":["instagram_feed_tool_tip"]}', # noqa
+            "surfaces_to_queries": '{"5734":"viewer() {eligible_promotions.trigger_context_v2(<trigger_context_v2>).ig_parameters(<ig_parameters>).trigger_name(<trigger_name>).surface_nux_id(<surface>).external_gating_permitted_qps(<external_gating_permitted_qps>).supports_client_filters(true).include_holdouts(true) {edges {client_ttl_seconds,log_eligibility_waterfall,is_holdout,priority,time_range {start,end},node {id,promotion_id,logging_data,max_impressions,triggers,contextual_filters {clause_type,filters {filter_type,unknown_action,value {name,required,bool_value,int_value,string_value},extra_datas {name,required,bool_value,int_value,string_value}},clauses {clause_type,filters {filter_type,unknown_action,value {name,required,bool_value,int_value,string_value},extra_datas {name,required,bool_value,int_value,string_value}},clauses {clause_type,filters {filter_type,unknown_action,value {name,required,bool_value,int_value,string_value},extra_datas {name,required,bool_value,int_value,string_value}},clauses {clause_type,filters {filter_type,unknown_action,value {name,required,bool_value,int_value,string_value},extra_datas {name,required,bool_value,int_value,string_value}}}}}},is_uncancelable,template {name,parameters {name,required,bool_value,string_value,color_value,}},creatives {title {text},content {text},footer {text},social_context {text},social_context_images,primary_action{title {text},url,limit,dismiss_promotion},secondary_action{title {text},url,limit,dismiss_promotion},dismiss_action{title {text},url,limit,dismiss_promotion},image.scale(<scale>) {uri,width,height}}}}}}","4715":"viewer() {eligible_promotions.trigger_context_v2(<trigger_context_v2>).ig_parameters(<ig_parameters>).trigger_name(<trigger_name>).surface_nux_id(<surface>).external_gating_permitted_qps(<external_gating_permitted_qps>).supports_client_filters(true).include_holdouts(true) {edges {client_ttl_seconds,log_eligibility_waterfall,is_holdout,priority,time_range {start,end},node {id,promotion_id,logging_data,max_impressions,triggers,contextual_filters {clause_type,filters {filter_type,unknown_action,value {name,required,bool_value,int_value,string_value},extra_datas {name,required,bool_value,int_value,string_value}},clauses {clause_type,filters {filter_type,unknown_action,value {name,required,bool_value,int_value,string_value},extra_datas {name,required,bool_value,int_value,string_value}},clauses {clause_type,filters {filter_type,unknown_action,value {name,required,bool_value,int_value,string_value},extra_datas {name,required,bool_value,int_value,string_value}},clauses {clause_type,filters {filter_type,unknown_action,value {name,required,bool_value,int_value,string_value},extra_datas {name,required,bool_value,int_value,string_value}}}}}},is_uncancelable,template {name,parameters {name,required,bool_value,string_value,color_value,}},creatives {title {text},content {text},footer {text},social_context {text},social_context_images,primary_action{title {text},url,limit,dismiss_promotion},secondary_action{title {text},url,limit,dismiss_promotion},dismiss_action{title {text},url,limit,dismiss_promotion},image.scale(<scale>) {uri,width,height}}}}}}","5858":"viewer() {eligible_promotions.trigger_context_v2(<trigger_context_v2>).ig_parameters(<ig_parameters>).trigger_name(<trigger_name>).surface_nux_id(<surface>).external_gating_permitted_qps(<external_gating_permitted_qps>).supports_client_filters(true).include_holdouts(true) {edges {client_ttl_seconds,log_eligibility_waterfall,is_holdout,priority,time_range {start,end},node {id,promotion_id,logging_data,max_impressions,triggers,contextual_filters {clause_type,filters {filter_type,unknown_action,value {name,required,bool_value,int_value,string_value},extra_datas {name,required,bool_value,int_value,string_value}},clauses {clause_type,filters {filter_type,unknown_action,value {name,required,bool_value,int_value,string_value},extra_datas {name,required,bool_value,int_value,string_value}},clauses {clause_type,filters {filter_type,unknown_action,value {name,required,bool_value,int_value,string_value},extra_datas {name,required,bool_value,int_value,string_value}},clauses {clause_type,filters {filter_type,unknown_action,value {name,required,bool_value,int_value,string_value},extra_datas {name,required,bool_value,int_value,string_value}}}}}},is_uncancelable,template {name,parameters {name,required,bool_value,string_value,color_value,}},creatives {title {text},content {text},footer {text},social_context {text},social_context_images,primary_action{title {text},url,limit,dismiss_promotion},secondary_action{title {text},url,limit,dismiss_promotion},dismiss_action{title {text},url,limit,dismiss_promotion},image.scale(<scale>) {uri,width,height}}}}}}"}',  # noqa (Just copied from request)
         }
         data = self.json_data(data)
         return self.send_request("qp/batch_fetch/", data)
@@ -599,7 +588,8 @@ class API(object):
         @param photo         Path to photo file (String)
         @param caption       Media description (String)
         @param upload_id     Unique upload_id (String). When None, then generate automatically
-        @param from_video    A flag that signals whether the photo is loaded from the video or by itself (Boolean, DEPRECATED: not used)
+        @param from_video    A flag that signals whether the photo is loaded from the video or by itself
+                            (Boolean, DEPRECATED: not used)
         @param force_resize  Force photo resize (Boolean)
         @param options       Object with difference options, e.g. configure_timeout, rename (Dict)
                              Designed to reduce the number of function arguments!
@@ -787,8 +777,8 @@ class API(object):
         url = "media/{comment_id}/comment_unlike/".format(comment_id=comment_id)
         return self.send_request(url, data)
 
-    # From profile => "is_carousel_bumped_post":"false", "container_module":"feed_contextual_profile", "feed_position":"0"
-    # From home/feed => "inventory_source":"media_or_ad", "is_carousel_bumped_post":"false", "container_module":"feed_timeline", "feed_position":"0"
+    # From profile => "is_carousel_bumped_post":"false", "container_module":"feed_contextual_profile", "feed_position":"0" # noqa
+    # From home/feed => "inventory_source":"media_or_ad", "is_carousel_bumped_post":"false", "container_module":"feed_timeline", "feed_position":"0" # noqa
     def like(
         self,
         media_id,
@@ -913,7 +903,7 @@ class API(object):
         return self.send_request(url.format(rank_token=self.rank_token))
 
     def get_user_feed(self, user_id, max_id="", min_timestamp=None):
-        url = "feed/user/{user_id}/?max_id={max_id}&min_timestamp={min_timestamp}&rank_token={rank_token}&ranked_content=true"
+        url = "feed/user/{user_id}/?max_id={max_id}&min_timestamp={min_timestamp}&rank_token={rank_token}&ranked_content=true" # noqa
         url = url.format(
             user_id=user_id,
             max_id=max_id,
