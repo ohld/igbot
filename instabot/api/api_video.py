@@ -162,7 +162,7 @@ def upload_video(self, video, caption=None, upload_id=None, thumbnail=None, opti
                 {"Content-Length": str(end - start), "Content-Range": content_range}
             )
             response = self.session.post(
-                upload_url, data=video_data[start : start + length]
+                upload_url, data=video_data[start: start + length]
             )
         self.session.headers = headers
 

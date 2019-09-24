@@ -106,7 +106,8 @@ def upload_photo(
     @param photo         Path to photo file (String)
     @param caption       Media description (String)
     @param upload_id     Unique upload_id (String). When None, then generate automatically
-    @param from_video    A flag that signals whether the photo is loaded from the video or by itself (Boolean, DEPRECATED: not used)
+    @param from_video    A flag that signals whether the photo is loaded from the video or by itself
+                         (Boolean, DEPRECATED: not used)
     @param force_resize  Force photo resize (Boolean)
     @param options       Object with difference options, e.g. configure_timeout, rename (Dict)
                          Designed to reduce the number of function arguments!

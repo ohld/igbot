@@ -116,12 +116,8 @@ def like_media_comments(self, media_id):
     for comment in tqdm(comment_ids):
         if not self.like_comment(comment):
             self.error_delay()
-            broken_items = comment_ids[comment_ids.index(comment) :]
-    self.logger.info(
-        "DONE: Liked {count} comments.".format(
-            count=len(comment_ids) - len(broken_items)
-        )
-    )
+            broken_items = comment_ids[comment_ids.index(comment):]
+    self.logger.info("DONE: Liked {count} comments.".format(count=len(comment_ids) - len(broken_items)))
     return broken_items
 
 

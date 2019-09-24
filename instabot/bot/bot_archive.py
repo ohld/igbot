@@ -24,7 +24,7 @@ def archive_medias(self, medias):
     for media in tqdm(medias):
         if not self.archive(media):
             self.error_delay()
-            broken_items = medias[medias.index(media) :]
+            broken_items = medias[medias.index(media):]
             break
     self.logger.info("DONE: Total archived %d medias." % self.total["archived"])
     return broken_items
@@ -39,7 +39,7 @@ def unarchive_medias(self, medias):
     for media in tqdm(medias):
         if not self.unarchive(media):
             self.error_delay()
-            broken_items = medias[medias.index(media) :]
+            broken_items = medias[medias.index(media):]
             break
     self.logger.info("DONE: Total unarchived %d medias." % self.total["unarchived"])
     return broken_items

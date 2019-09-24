@@ -34,7 +34,7 @@ def unlike_media_comments(self, media_id):
     for comment in tqdm(comment_ids):
         if not self.unlike_comment(comment):
             self.error_delay()
-            broken_items = comment_ids[comment_ids.index(comment) :]
+            broken_items = comment_ids[comment_ids.index(comment):]
     self.logger.info(
         "DONE: Unliked {count} comments.".format(
             count=len(comment_ids) - len(broken_items)
@@ -49,7 +49,7 @@ def unlike_medias(self, medias):
     for media in tqdm(medias):
         if not self.unlike(media):
             self.error_delay()
-            broken_items = medias[medias.index(media) :]
+            broken_items = medias[medias.index(media):]
             break
     self.logger.info("DONE: Total unliked %d medias." % self.total["unlikes"])
     return broken_items

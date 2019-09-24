@@ -161,9 +161,8 @@ def username_adder():
         while True:
             print("Enter your login: ")
             f.write(str(sys.stdin.readline().strip()) + ":")
-            print(
-                "Enter your password: (it will not be shown due to security reasons - just start typing and press Enter)"
-            )
+            print("Enter your password: (it will not be shown due to security "
+                  "reasons - just start typing and press Enter)")
             f.write(getpass.getpass() + "\n")
             print("Do you want to add another account? (y/n)")
             if "y" not in sys.stdin.readline():
