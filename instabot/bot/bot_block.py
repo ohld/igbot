@@ -35,7 +35,7 @@ def block_users(self, user_ids):
     for user_id in tqdm(user_ids):
         if not self.block(user_id):
             self.error_delay()
-            broken_items = user_ids[user_ids.index(user_id) :]
+            broken_items = user_ids[user_ids.index(user_id):]
             break
     self.logger.info("DONE: Total blocked %d users." % self.total["blocks"])
     return broken_items

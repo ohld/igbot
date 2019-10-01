@@ -57,9 +57,9 @@ def reply_to_comment(self, media_id, comment_text, parent_comment_id):
                 return False
         self.delay("comment")
         if comment_text[0] != "@":
-            self.logger.error(
-                "A reply must start with mention, so '@' must be the 1st char, followed by the username you're replying to"
-            )
+            msg = ("A reply must start with mention, so '@' must be the 1st char, "
+                   "followed by the username you're replying to")
+            self.logger.error(msg)
             return False
         if comment_text.split(" ")[0][1:] == self.get_username_from_user_id(
             self.user_id
@@ -92,7 +92,7 @@ def comment_medias(self, medias):
             self.logger.info("Commented with text: %s" % text)
             if not self.comment(media, text):
                 self.delay("comment")
-                broken_items = medias[medias.index(media) :]
+                broken_items = medias[medias.index(media):]
                 break
     self.logger.info("DONE: Total commented on %d medias. " % self.total["comments"])
     return broken_items

@@ -26,10 +26,14 @@ parser.add_argument(
 parser.add_argument("-get", type=str, help="followers or followings", required=True)
 parser.add_argument("-file", type=str, help="speficy filename", required=True)
 # optional arguments
+
+help_msg = ("set the total amount of followers/followings to check "
+            "(if you set filters, returned amount could be less than this)")
+
 parser.add_argument(
     "-amount",
     type=int,
-    help="set the total amount of followers/followings to check (if you set filters, returned amount could be less than this)",
+    help=help_msg,
 )
 parser.add_argument(
     "-overwrite",

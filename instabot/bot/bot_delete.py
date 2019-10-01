@@ -20,7 +20,7 @@ def delete_medias(self, medias):
     for media in tqdm(medias):
         if not self.delete_media(media):
             self.error_delay()
-            broken_items = medias[medias.index(media) :]
+            broken_items = medias[medias.index(media):]
             break
     self.logger.info(
         "DONE: Total deleted %d medias." % (len(medias) - len(broken_items))

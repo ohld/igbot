@@ -1,3 +1,4 @@
+# flake8: noqa
 # Devices taken from
 # https://github.com/mgp25/Instagram-API/blob/master/src/Devices/GoodDevices.php
 DEFAULT_DEVICE = "one_plus_7"

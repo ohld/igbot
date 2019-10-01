@@ -42,7 +42,7 @@ def send_messages(self, text, user_ids):
     for user in tqdm(user_ids):
         if not self.send_message(text, user):
             self.error_delay()
-            broken_items = user_ids[user_ids.index(user) :]
+            broken_items = user_ids[user_ids.index(user):]
             break
     return broken_items
 
@@ -91,7 +91,7 @@ def send_medias(self, media_id, user_ids, text):
     for user in tqdm(user_ids):
         if not self.send_media(media_id, user, text):
             self.error_delay()
-            broken_items = user_ids[user_ids.index(user) :]
+            broken_items = user_ids[user_ids.index(user):]
             break
     return broken_items
 

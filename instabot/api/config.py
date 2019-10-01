@@ -1,3 +1,4 @@
+# flake8: noqa
 """
 Configuration file of the project
 """
