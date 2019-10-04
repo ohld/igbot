@@ -23,7 +23,7 @@ def follow(self, user_id):
     return False
 
 
-def follow_users(self, user_ids):
+def follow_users(self, user_ids, nfollows=None):
     broken_items = []
     if self.reached_limit("follows"):
         self.logger.info("Out of follows for today.")
@@ -37,6 +37,7 @@ def follow_users(self, user_ids):
 
     # Remove skipped and already followed and unfollowed list from user_ids
     user_ids = list(set(user_ids) - skipped.set - followed.set - unfollowed.set)
+    user_ids = user_ids[:nfollows] if nfollows else user_ids
     msg = "After filtering followed, unfollowed and `{}`, {} user_ids left to follow."
     msg = msg.format(skipped.fname, len(user_ids))
     self.console_print(msg, "green")
