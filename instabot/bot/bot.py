@@ -720,8 +720,8 @@ class Bot(object):
     def follow(self, user_id):
         return follow(self, user_id)
 
-    def follow_users(self, user_ids):
-        return follow_users(self, user_ids)
+    def follow_users(self, user_ids, nfollows=None):
+        return follow_users(self, user_ids, nfollows)
 
     def follow_followers(self, user_id, nfollows=None):
         return follow_followers(self, user_id, nfollows)
