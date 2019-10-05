@@ -1826,7 +1826,6 @@ class API(object):
             "direct_v2/pending_inbox/?persistentBadging=true"
             "&use_unified_inbox=true"
         )
-        
         return self.send_request(url)
 
     # ACCEPT button in pending request
