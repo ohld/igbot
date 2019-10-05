@@ -7,7 +7,9 @@ def delete_media(self, media_id):
     media = media[0] if isinstance(media, list) else media
     if self.api.delete_media(media):
         return True
-    self.logger.info("Media with {} is not {}.".format(media.get("id"), "deleted"))
+    self.logger.info("Media with {} is not {}.".format(
+        media.get("id"), "deleted")
+    )
     return False
 
 
@@ -33,6 +35,8 @@ def delete_comment(self, media_id, comment_id):
         self.small_delay()
         return True
     self.logger.info(
-        "Comment with {} in media {} is not deleted.".format(comment_id, media_id)
+        "Comment with {} in media {} is not deleted.".format(
+            comment_id, media_id
+        )
     )
     return False

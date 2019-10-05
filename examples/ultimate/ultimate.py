@@ -30,7 +30,9 @@ print("Going to like users:", like_users_list)
 
 tasks_list = []
 for item in follow_followers_list:
-    tasks_list.append((bot.follow_followers, {"user_id": item, "nfollows": None}))
+    tasks_list.append((bot.follow_followers, {
+        "user_id": item, "nfollows": None
+    }))
 for item in follow_following_list:
     tasks_list.append((bot.follow_following, {"user_id": item}))
 for item in like_hashtags_list:

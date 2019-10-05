@@ -21,11 +21,14 @@ def unlike_comment(self, comment_id):
 def unlike_media_comments(self, media_id):
     broken_items = []
     media_comments = self.get_media_comments(media_id)
-    comment_ids = [item["pk"] for item in media_comments if item["has_liked_comment"]]
+    comment_ids = [
+        item["pk"] for item in media_comments if item["has_liked_comment"]
+    ]
 
     if not comment_ids:
         self.logger.info(
-            "None comments received: comments not found or comments have been filtered."
+            "None comments received: comments not found"
+            " or comments have been filtered."
         )
         return broken_items
 

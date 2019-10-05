@@ -25,7 +25,7 @@ def initial_checker():
                 pass
         print(
             """
-        Welcome to instabot, it seems this is the first time you've used this bot.
+        Welcome to instabot, it seems this is your first time.
         Before starting, let's setup the basics.
         So the bot functions the way you want.
         """
@@ -70,28 +70,32 @@ def setting_input():
         (
             (
                 "Maximal followers of account you want to follow?\n"
-                "We will skip media that have greater followers than this value "
+                "We will skip media that have greater followers than " +
+                "this value "
             ),
             2000,
         ),
         (
             (
                 "Minimum followers a account should have before we follow?\n"
-                "We will skip media that have lesser followers than this value "
+                "We will skip media that have lesser followers than " +
+                "this value "
             ),
             10,
         ),
         (
             (
                 "Maximum following of account you want to follow?\n"
-                "We will skip media that have a greater following than this value "
+                "We will skip media that have a greater following " +
+                "than this value "
             ),
             7500,
         ),
         (
             (
                 "Minimum following of account you want to follow?\n"
-                "We will skip media that have lesser following from this value "
+                "We will skip media that have lesser following " +
+                "from this value "
             ),
             10,
         ),
@@ -110,7 +114,8 @@ def setting_input():
         ("Delay from one unfollow to another unfollow you will perform ", 30),
         ("Delay from one comment to another comment you will perform ", 60),
         (
-            "Want to use proxy? insert your proxy or leave it blank if no. (just enter",
+            "Want to use proxy? insert your proxy or leave it blank " +
+            "if no. (just enter",
             "None",
         ),
     ]
@@ -272,7 +277,8 @@ def menu_follow():
             if "1" in sys.stdin.readline():
                 hashtags = (
                     input(
-                        "Insert hashtags separated by spaces\nExample: cat dog\nwhat hashtags?\n"
+                        "Insert hashtags separated by spaces\n"
+                        "Example: cat dog\nwhat hashtags?\n"
                     )
                     .strip()
                     .split(" ")
@@ -364,13 +370,16 @@ def menu_like():
             if "1" in sys.stdin.readline():
                 hashtags = (
                     input(
-                        "Insert hashtags separated by spaces\nExample: cat dog\nwhat hashtags?\n"
+                        "Insert hashtags separated by spaces\n"
+                        "Example: cat dog\nwhat hashtags?\n"
                     )
                     .strip()
                     .split(" ")
                 )
             else:
-                hashtags.append(random.choice(bot.read_list_from_file(hashtag_file)))
+                hashtags.append(
+                    random.choice(bot.read_list_from_file(hashtag_file))
+                )
             for hashtag in hashtags:
                 bot.like_hashtag(hashtag)
 
@@ -466,7 +475,9 @@ def menu_comment():
                 user_id = input("who?\n").strip()
             else:
                 user_id = random.choice(bot.read_list_from_file(users_file))
-            bot.comment_medias(bot.get_user_medias(user_id, filtration=False))
+            bot.comment_medias(
+                bot.get_user_medias(user_id, filtration=False)
+            )
 
         elif ans == "3":
             print(
@@ -481,7 +492,9 @@ def menu_comment():
                 print(userlist)
             users = bot.read_list_from_file(userlist)
             for user_id in users:
-                bot.comment_medias(bot.get_user_medias(user_id, filtration=True))
+                bot.comment_medias(bot.get_user_medias(
+                    user_id, filtration=True
+                ))
 
         elif ans == "4":
             bot.comment_medias(bot.get_timeline_medias())
@@ -583,7 +596,8 @@ def menu_setting():
             whitelist_adder()
         elif ans == "8":
             print(
-                "Whis will clear all database except your user accounts and paramater settings"
+                "Whis will clear all database except your "
+                "user accounts and paramater settings"
             )
             time.sleep(5)
             open(hashtag_file, "w")

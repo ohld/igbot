@@ -14,7 +14,8 @@ except ImportError:
 
 class TestBotFilter(TestBot):
     @pytest.mark.parametrize(
-        "filter_users,filter_business_accounts,filter_verified_accounts,expected",
+        "filter_users,filter_business_accounts," +
+        "filter_verified_accounts,expected",
         [
             (False, False, False, True),
             (True, False, False, True),
@@ -45,7 +46,10 @@ class TestBotFilter(TestBot):
         response_data = {"status": "ok", "user": TEST_USERNAME_INFO_ITEM}
         responses.add(
             responses.GET,
-            "{api_url}users/{user_id}/info/".format(api_url=API_URL, user_id=user_id),
+            "{api_url}users/{user_id}/info/".format(
+                api_url=API_URL,
+                user_id=user_id
+            ),
             status=200,
             json=response_data,
         )

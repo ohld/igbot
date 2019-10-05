@@ -3,7 +3,10 @@ def download_stories(self, username):
     list_image, list_video = self.get_user_stories(user_id)
     if list_image == [] and list_video == []:
         self.logger.error(
-            "Make sure that '{}' is NOT private and that posted some stories".format(
+            (
+                "Make sure that '{}' is NOT private and that "
+                "posted some stories"
+            ).format(
                 username
             )
         )
@@ -31,7 +34,8 @@ def watch_users_reels(self, user_ids, max_users=100):
         user_ids - the list of user_id to get their stories
         max_users - max amount of users to get stories from.
 
-        It seems like Instagram doesn't allow to get stories from more that 100 users at once.
+        It seems like Instagram doesn't allow to get stories
+        from more that 100 users at once.
     """
 
     # In case of only one user were passed
@@ -46,14 +50,21 @@ def watch_users_reels(self, user_ids, max_users=100):
         # strange output
         return False
 
-    reels = {k: v for k, v in reels.items() if "items" in v and len(v["items"]) > 0}
+    reels = {
+        k: v for k,
+        v in reels.items() if "items" in v and len(v["items"]) > 0
+    }
 
     # Filter reels that were not seen before
     unseen_reels = []
     for _, reels_data in reels.items():
         last_reel_seen_at = reels_data["seen"] if "seen" in reels_data else 0
         unseen_reels.extend(
-            [r for r in reels_data["items"] if r["taken_at"] > last_reel_seen_at]
+            [
+                r
+                for r in reels_data["items"]
+                if r["taken_at"] > last_reel_seen_at
+            ]
         )
 
     # See reels that were not seen before

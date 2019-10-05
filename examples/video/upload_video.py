@@ -40,7 +40,9 @@ if not args.video:
     videos = []
     exts = ["mp4", "MP4", "mov", "MOV"]
     for ext in exts:
-        videos += [os.path.basename(x) for x in glob.glob("media/*.{}".format(ext))]
+        videos += [os.path.basename(x) for x in glob.glob("media/*.{}".format(
+            ext
+        ))]
     from random import shuffle
 
     shuffle(videos)
@@ -52,7 +54,9 @@ if len(videos) == 0:
         bot.logger.warning("NO MORE VIDEO TO UPLOAD")
         exit()
     else:
-        bot.logger.error("The video `{}` has already been posted".format(videos[0]))
+        bot.logger.error("The video `{}` has already been posted".format(
+            videos[0]
+        ))
 try:
     for video in videos:
         bot.logger.info("Checking {}".format(video))
@@ -64,11 +68,13 @@ try:
             else:
                 try:
                     caption = raw_input(
-                        "No caption found for this media. Type the caption now: "
+                        "No caption found for this media. "
+                        "Type the caption now: "
                     )
                 except NameError:
                     caption = input(
-                        "No caption found for this media. Type the caption now: "
+                        "No caption found for this media. "
+                        "Type the caption now: "
                     )
         bot.logger.info(
             "Uploading video `{video}` with caption: `{caption}`".format(
