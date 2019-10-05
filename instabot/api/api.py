@@ -1388,9 +1388,11 @@ class API(object):
                             sleep_track += 1
                             if sleep_track >= 20000:
                                 sleep_time = random.uniform(120, 180)
-                                msg = "\nWaiting {:.2f} min. " +
-                                "due to too many requests."
-                                print(msg.format(sleep_time / 60))
+                                msg = (
+                                    "\nWaiting {:.2f} min. "
+                                    "due to too many requests."
+                                ).format(sleep_time / 60)
+                                print(msg)
                                 time.sleep(sleep_time)
                                 sleep_track = 0
                     if not last_json["users"] or len(result) >= total:
@@ -1820,8 +1822,11 @@ class API(object):
         )
 
     def get_pending_inbox(self):
-        url = "direct_v2/pending_inbox/?persistentBadging=true" +
-        "&use_unified_inbox=true"
+        url = (
+            "direct_v2/pending_inbox/?persistentBadging=true"
+            "&use_unified_inbox=true"
+        )
+        
         return self.send_request(url)
 
     # ACCEPT button in pending request
