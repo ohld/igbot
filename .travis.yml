@@ -17,9 +17,10 @@ matrix:
     - python: "nightly"
 
 install:
-  - pip install tox-travis codecov bumpversion
+  - pip install tox-travis codecov bumpversion pycodestyle
 
 script:
+ - pycodestyle --show-source
  - tox
 
 after_success:
