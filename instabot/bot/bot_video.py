@@ -6,8 +6,10 @@ def upload_video(self, video, caption="", thumbnail=None, options={}):
 
     @param video      Path to video file (String)
     @param caption    Media description (String)
-    @param thumbnail  Path to thumbnail for video (String). When None, then thumbnail is generate automatically
-    @param options    Object with difference options, e.g. configure_timeout, rename_thumbnail, rename (Dict)
+    @param thumbnail  Path to thumbnail for video (String). When None, then
+                      thumbnail is generate automatically
+    @param options    Object with difference options, e.g. configure_timeout,
+                      rename_thumbnail, rename (Dict)
                       Designed to reduce the number of function arguments!
 
     @return           Object with state of uploading to Instagram (or False)

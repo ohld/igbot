@@ -55,7 +55,10 @@ class TestBotGet(TestBot):
             "message": "feedback_required",
             "spam": True,
             "feedback_title": "Sorry, this feature isn't available right now",
-            "feedback_message": "An error occurred while processing this request. Please try again later. We restrict certain content and actions to protect our community. Tell us if you think we made a mistake.",
+            "feedback_message": "An error occurred while processing this " +
+            "request. Please try again later. We restrict certain content " +
+            "and actions to protect our community. Tell us if you think we " +
+            "made a mistake.",
             "feedback_url": "repute/report_problem/instagram_comment/",
             "feedback_appeal_label": "Report problem",
             "feedback_ignore_label": "OK",
@@ -75,7 +78,8 @@ class TestBotGet(TestBot):
 
     @responses.activate
     @pytest.mark.parametrize(
-        "blocked_actions_protection,blocked_actions", [(True, False), (False, False)]
+        "blocked_actions_protection,blocked_actions",
+        [(True, False), (False, False)]
     )
     @patch("time.sleep", return_value=None)
     def test_comment(

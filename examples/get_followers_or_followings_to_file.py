@@ -23,13 +23,19 @@ parser.add_argument(
     help="username whose followers or followings you want to get",
     required=True,
 )
-parser.add_argument("-get", type=str, help="followers or followings", required=True)
+parser.add_argument(
+    "-get", type=str, help="followers or followings", required=True
+)
 parser.add_argument("-file", type=str, help="speficy filename", required=True)
 # optional arguments
+
+help_msg = ("set the total amount of followers/followings to check "
+            "(if you set filters, returned amount could be less than this)")
+
 parser.add_argument(
     "-amount",
     type=int,
-    help="set the total amount of followers/followings to check (if you set filters, returned amount could be less than this)",
+    help=help_msg,
 )
 parser.add_argument(
     "-overwrite",
@@ -61,7 +67,8 @@ args = parser.parse_args()
 if args.get != "followers" and args.get != "followings":
     print(
         "Wrong option! You can get 'followers' or 'followings'.\n"
-        "Type `python get_followers_or_followings_to_file.py --help` for help and options list"
+        "Type `python get_followers_or_followings_to_file.py "
+        "--help` for help and options list"
     )
     exit()
 

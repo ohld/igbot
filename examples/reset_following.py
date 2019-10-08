@@ -72,7 +72,7 @@ class Task(object):
         unfollow = list(
             set(your_following) - set(friends)
         )  # removing your friends from the list to unfollow
-        bot.unfollow_users(unfollow)  # unfollowing people who are not your friends
+        bot.unfollow_users(unfollow)  # unfollowing people who're not friends
         Task.start(bot)  # go back to the start menu
 
 
@@ -82,10 +82,10 @@ bot.login()
 # welcome message
 print(
     """
-        Welcome to this bot.
-        It will now get a list of all of the users you are following.
-        You will need this if you follow bot your account and you want to reset your
-        following to just your friends.
-"""
+    Welcome to this bot.
+    It will now get a list of all of the users you are following.
+    You will need this if you follow bot your account and you want
+    to reset your following to just your friends.
+    """
 )
 Task.start(bot)  # running the start script

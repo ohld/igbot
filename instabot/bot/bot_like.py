@@ -20,7 +20,8 @@ def like(
             self.logger.warning("YOUR `LIKE` ACTION IS BLOCKED")
             if self.blocked_actions_protection:
                 self.logger.warning(
-                    "blocked_actions_protection ACTIVE. Skipping `like` action."
+                    "blocked_actions_protection ACTIVE. "
+                    "Skipping `like` action."
                 )
                 return False
         self.delay("like")
@@ -71,11 +72,16 @@ def like_comment(self, comment_id):
             if self.blocked_actions_protection:
                 from datetime import timedelta
 
-                next_reset = (self.start_time.date() + timedelta(days=1)).strftime(
+                next_reset = (
+                    self.start_time.date() + timedelta(days=1)
+                ).strftime(
                     "%Y-%m-%d %H:%M:%S"
                 )
                 self.logger.warning(
-                    "blocked_actions_protection ACTIVE. Skipping `like` action till, at least, {}.".format(
+                    (
+                        "blocked_actions_protection ACTIVE. Skipping `like` "
+                        "action till, at least, {}."
+                    ).format(
                         next_reset
                     )
                 )
@@ -107,7 +113,8 @@ def like_media_comments(self, media_id):
 
     if not comment_ids:
         self.logger.info(
-            "None comments received: comments not found or comments have been filtered."
+            "None comments received: comments not "
+            "found or comments have been filtered."
         )
         return broken_items
 
@@ -116,11 +123,9 @@ def like_media_comments(self, media_id):
     for comment in tqdm(comment_ids):
         if not self.like_comment(comment):
             self.error_delay()
-            broken_items = comment_ids[comment_ids.index(comment) :]
-    self.logger.info(
-        "DONE: Liked {count} comments.".format(
-            count=len(comment_ids) - len(broken_items)
-        )
+            broken_items = comment_ids[comment_ids.index(comment):]
+    self.logger.info("DONE: Liked {count} comments.".format(
+        count=len(comment_ids) - len(broken_items))
     )
     return broken_items
 
@@ -180,7 +185,8 @@ def like_user(self, user_id, amount=None, filtration=True):
     medias = self.get_user_medias(user_id, filtration=filtration)
     if not medias:
         self.logger.info(
-            "None medias received: account is closed or medias have been filtered."
+            "None medias received: account is "
+            "closed or medias have been filtered."
         )
         return False
     return self.like_medias(medias[:amount], filtration)
@@ -271,7 +277,9 @@ def like_location_feed(self, place, amount):
             counter = 0
             while counter < amount:
                 location_to_filter = location_feed["items"][:amount]
-                medias = self.filter_medias(location_to_filter, filtration=False)
+                medias = self.filter_medias(
+                    location_to_filter, filtration=False
+                )
                 self.like_medias(medias)
                 counter += 1
                 if location_feed.get("next_max_id"):
@@ -282,7 +290,10 @@ def like_location_feed(self, place, amount):
                 location_feed = self.api.last_json
         else:
             self.logger.error(
-                " '{}' does not seem to have pictures. Select a different location.".format(
+                (
+                    " '{}' does not seem to have pictures. "
+                    "Select a different location."
+                ).format(
                     place
                 )
             )

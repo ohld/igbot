@@ -25,7 +25,10 @@ class TestBot:
         bot.api.session = requests.Session()
 
         cookies = Mock()
-        cookies.return_value = {"csrftoken": self.TOKEN, "ds_user_id": self.USER_ID}
+        cookies.return_value = {
+            "csrftoken": self.TOKEN,
+            "ds_user_id": self.USER_ID
+        }
         bot.api.session.cookies.get_dict = cookies
         bot.api.set_user(self.USERNAME, self.PASSWORD)
 

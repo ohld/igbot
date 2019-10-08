@@ -34,8 +34,11 @@ notified_users = utils.file(NOTIFIED_USERS_PATH)
 if not notified_users.list:
     notified_users.save_list(followers)
     print(
-        "All followers saved in file {users_path}.\n"
-        "In a next time, for all new followers script will send messages.".format(
+        (
+            "All followers saved in file {users_path}.\n"
+            "In a next time, for all new followers "
+            "script will send messages."
+        ).format(
             users_path=NOTIFIED_USERS_PATH
         )
     )

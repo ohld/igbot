@@ -23,7 +23,7 @@ def follow(self, user_id):
     return False
 
 
-def follow_users(self, user_ids):
+def follow_users(self, user_ids, nfollows=None):
     broken_items = []
     if self.reached_limit("follows"):
         self.logger.info("Out of follows for today.")
@@ -36,9 +36,14 @@ def follow_users(self, user_ids):
     self.console_print(msg, "green")
 
     # Remove skipped and already followed and unfollowed list from user_ids
-    user_ids = list(set(user_ids) - skipped.set - followed.set - unfollowed.set)
-    msg = "After filtering followed, unfollowed and `{}`, {} user_ids left to follow."
-    msg = msg.format(skipped.fname, len(user_ids))
+    user_ids = list(
+        set(user_ids) - skipped.set - followed.set - unfollowed.set
+    )
+    user_ids = user_ids[:nfollows] if nfollows else user_ids
+    msg = (
+        "After filtering followed, unfollowed and "
+        "`{}`, {} user_ids left to follow."
+    ).format(skipped.fname, len(user_ids))
     self.console_print(msg, "green")
     for user_id in tqdm(user_ids, desc="Processed users"):
         if self.reached_limit("follows"):
@@ -46,7 +51,9 @@ def follow_users(self, user_ids):
             break
         if not self.follow(user_id):
             if self.api.last_response.status_code == 404:
-                self.console_print("404 error user {user_id} doesn't exist.", "red")
+                self.console_print(
+                    "404 error user {user_id} doesn't exist.", "red"
+                )
                 broken_items.append(user_id)
 
             elif self.api.last_response.status_code == 200:
@@ -85,7 +92,9 @@ def follow_followers(self, user_id, nfollows=None):
     followers = self.get_user_followers(user_id, nfollows)
     followers = list(set(followers) - set(self.blacklist))
     if not followers:
-        self.logger.info("{} not found / closed / has no followers.".format(user_id))
+        self.logger.info(
+            "{} not found / closed / has no followers.".format(user_id)
+        )
     else:
         self.follow_users(followers[:nfollows])
 
@@ -100,7 +109,9 @@ def follow_following(self, user_id, nfollows=None):
         return
     followings = self.get_user_following(user_id)
     if not followings:
-        self.logger.info("{} not found / closed / has no following.".format(user_id))
+        self.logger.info(
+            "{} not found / closed / has no following.".format(user_id)
+        )
     else:
         self.follow_users(followings[:nfollows])
 

@@ -79,7 +79,13 @@ class TestBotFilter(TestBot):
         ],
     )
     @patch("time.sleep", return_value=None)
-    def test_unlike_medias(self, patched_time_sleep, media_ids, total, max_per_day):
+    def test_unlike_medias(
+        self,
+        patched_time_sleep,
+        media_ids,
+        total,
+        max_per_day
+    ):
         self.bot.total["unlikes"] = total
         self.bot.max_per_day["unlikes"] = max_per_day
         for media_id in media_ids:
@@ -93,7 +99,8 @@ class TestBotFilter(TestBot):
             )
         broken_items = self.bot.unlike_medias(media_ids)
         test_unliked = self.bot.total["unlikes"] == max_per_day
-        test_broken = len(broken_items) == len(media_ids) - (max_per_day - total)
+        test_broken = len(broken_items) == \
+            len(media_ids) - (max_per_day - total)
         assert test_unliked and test_broken
 
     @responses.activate
@@ -173,7 +180,10 @@ class TestBotFilter(TestBot):
         }
         responses.add(
             responses.GET,
-            "{api_url}feed/user/{user_id}/".format(api_url=API_URL, user_id=user_id),
+            "{api_url}feed/user/{user_id}/".format(
+                api_url=API_URL,
+                user_id=user_id
+            ),
             json=response_data,
             status=200,
         )
