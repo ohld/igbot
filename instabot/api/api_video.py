@@ -12,7 +12,13 @@ from requests_toolbelt import MultipartEncoder
 from . import config
 
 
-def download_video(self, media_id, filename=None, media=False, folder="videos"):
+def download_video(
+    self,
+    media_id,
+    filename=None,
+    media=False,
+    folder="videos"
+):
     video_urls = []
     if not media:
         self.media_info(media_id)
@@ -53,17 +59,26 @@ def get_video_info(filename):
     res = {}
     try:
         terminalResult = subprocess.Popen(
-            ["ffprobe", filename], stdout=subprocess.PIPE, stderr=subprocess.STDOUT
+            ["ffprobe", filename],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT
         )
         for x in terminalResult.stdout.readlines():
             # Duration: 00:00:59.51, start: 0.000000, bitrate: 435 kb/s
             m = re.search(
-                r"duration: (\d\d:\d\d:\d\d\.\d\d),", str(x), flags=re.IGNORECASE
+                r"duration: (\d\d:\d\d:\d\d\.\d\d),",
+                str(x),
+                flags=re.IGNORECASE
             )
             if m is not None:
                 res["duration"] = m.group(1)
-            # Video: h264 (Constrained Baseline) (avc1 / 0x31637661), yuv420p, 480x268
-            m = re.search(r"video:\s.*\s(\d+)x(\d+)\s", str(x), flags=re.IGNORECASE)
+            # Video: h264 (Constrained Baseline)
+            # (avc1 / 0x31637661), yuv420p, 480x268
+            m = re.search(
+                r"video:\s.*\s(\d+)x(\d+)\s",
+                str(x),
+                flags=re.IGNORECASE
+            )
             if m is not None:
                 res["width"] = m.group(1)
                 res["height"] = m.group(2)
@@ -78,14 +93,24 @@ def get_video_info(filename):
     return res
 
 
-def upload_video(self, video, caption=None, upload_id=None, thumbnail=None, options={}):
+def upload_video(
+    self,
+    video,
+    caption=None,
+    upload_id=None,
+    thumbnail=None,
+    options={}
+):
     """Upload video to Instagram
 
     @param video      Path to video file (String)
     @param caption    Media description (String)
-    @param upload_id  Unique upload_id (String). When None, then generate automatically
-    @param thumbnail  Path to thumbnail for video (String). When None, then thumbnail is generate automatically
-    @param options    Object with difference options, e.g. configure_timeout, rename_thumbnail, rename (Dict)
+    @param upload_id  Unique upload_id (String). When None, then generate
+                      automatically
+    @param thumbnail  Path to thumbnail for video (String). When None, then
+                      thumbnail is generate automatically
+    @param options    Object with difference options, e.g. configure_timeout,
+                      rename_thumbnail, rename (Dict)
                       Designed to reduce the number of function arguments!
                       This is the simplest request object.
 
@@ -118,7 +143,9 @@ def upload_video(self, video, caption=None, upload_id=None, thumbnail=None, opti
             "User-Agent": self.user_agent,
         }
     )
-    response = self.session.post(config.API_URL + "upload/video/", data=m.to_string())
+    response = self.session.post(
+        config.API_URL + "upload/video/", data=m.to_string()
+    )
     if response.status_code == 200:
         body = json.loads(response.text)
         upload_url = body["video_upload_urls"][3]["url"]
@@ -126,7 +153,8 @@ def upload_video(self, video, caption=None, upload_id=None, thumbnail=None, opti
 
         with open(video, "rb") as video_bytes:
             video_data = video_bytes.read()
-        # solve issue #85 TypeError: slice indices must be integers or None or have an __index__ method
+        # solve issue #85 TypeError:
+        # slice indices must be integers or None or have an __index__ method
         request_size = len(video_data) // 4
         last_request_extra = len(video_data) - 3 * request_size
 
@@ -159,7 +187,10 @@ def upload_video(self, video, caption=None, upload_id=None, thumbnail=None, opti
             ).encode("utf-8")
 
             self.session.headers.update(
-                {"Content-Length": str(end - start), "Content-Range": content_range}
+                {
+                    "Content-Length": str(end - start),
+                    "Content-Range": content_range
+                }
             )
             response = self.session.post(
                 upload_url, data=video_data[start: start + length]
@@ -192,18 +223,28 @@ def upload_video(self, video, caption=None, upload_id=None, thumbnail=None, opti
 
 
 def configure_video(
-    self, upload_id, video, thumbnail, width, height, duration, caption="", options={}
+    self,
+    upload_id,
+    video,
+    thumbnail,
+    width,
+    height,
+    duration,
+    caption="",
+    options={}
 ):
-    """Post Configure Video (send caption, thumbnail and more else to Instagram)
+    """Post Configure Video (send caption, thumbnail and more to Instagram)
 
     @param upload_id  Unique upload_id (String). Received from "upload_video"
     @param video      Path to video file (String)
-    @param thumbnail  Path to thumbnail for video (String). When None, then thumbnail is generate automatically
+    @param thumbnail  Path to thumbnail for video (String). When None,
+                      then thumbnail is generate automatically
     @param width      Width in px (Integer)
     @param height     Height in px (Integer)
     @param duration   Duration in seconds (Integer)
     @param caption    Media description (String)
-    @param options    Object with difference options, e.g. configure_timeout, rename_thumbnail, rename (Dict)
+    @param options    Object with difference options, e.g. configure_timeout,
+                      rename_thumbnail, rename (Dict)
                       Designed to reduce the number of function arguments!
                       This is the simplest request object.
     """
@@ -262,7 +303,12 @@ def resize_video(fname, thumbnail=None):
     deg = vid.rotation
     ratio = w * 1.0 / h * 1.0
     print(
-        "FOUND w:{w}, h:{h}, rotation={d}, ratio={r}".format(w=w, h=h, r=ratio, d=deg)
+        "FOUND w:{w}, h:{h}, rotation={d}, ratio={r}".format(
+            w=w,
+            h=h,
+            r=ratio,
+            d=deg
+        )
     )
     if w > h:
         print("Horizontal video")
@@ -302,7 +348,13 @@ def resize_video(fname, thumbnail=None):
         print("Cutting video to {} sec from start".format(d_lim))
         vid = vid.subclip(0, d_lim)
     new_fname = "{}.CONVERTED.mp4".format(fname)
-    print("Saving new video w:{w} h:{h} to `{f}`".format(w=w, h=h, f=new_fname))
+    print(
+        "Saving new video w:{w} h:{h} to `{f}`".format(
+            w=w,
+            h=h,
+            f=new_fname
+        )
+    )
     vid.write_videofile(new_fname, codec="libx264", audio_codec="aac")
     if not thumbnail:
         print("Generating thumbnail...")

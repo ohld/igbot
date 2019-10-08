@@ -31,13 +31,22 @@ class Checkpoint(object):
         self.total_requests = bot.api.total_requests
 
     def fill_following(self, bot):
-        self._following = [item["pk"] for item in bot.api.get_total_self_followings()]
+        self._following = [
+            item["pk"] for item in bot.api.get_total_self_followings()
+        ]
 
     def fill_followers(self, bot):
-        self._followers = [item["pk"] for item in bot.api.get_total_self_followers()]
+        self._followers = [
+            item["pk"] for item in bot.api.get_total_self_followers()
+        ]
 
     def dump(self):
-        return (self.total, self.blocked_actions, self.total_requests, self.start_time)
+        return (
+            self.total,
+            self.blocked_actions,
+            self.total_requests,
+            self.start_time
+        )
 
 
 def save_checkpoint(self):

@@ -155,8 +155,9 @@ def get_locations_from_coordinates(self, latitude, longitude):
         location_lat = location["location"]["lat"]
         location_lng = location["location"]["lng"]
 
-        if int(location_lat) == int(latitude) and int(location_lng) == int(longitude):
-            filtered_locations.append(location)
+        if int(location_lat) == int(latitude):
+            if int(location_lng) == int(longitude):
+                filtered_locations.append(location)
 
     return filtered_locations
 
@@ -177,7 +178,9 @@ def get_timeline_users(self):
         return []
     if "items" in self.api.last_json:
         return [
-            str(i["user"]["pk"]) for i in self.api.last_json["items"] if i.get("user")
+            str(i["user"]["pk"])
+            for i in self.api.last_json["items"]
+            if i.get("user")
         ]
     elif "feed_items" in self.api.last_json:
         return [
@@ -475,7 +478,10 @@ def get_messages(self):
     if self.api.get_inbox_v2():
         return self.api.last_json
     else:
-        self.logger.info("Messages were not found, something went wrong.")
+        self.logger.info(
+            "Messages were not found, "
+            "something went wrong."
+        )
         return None
 
 

@@ -12,7 +12,8 @@ def add_credentials():
         print("Enter your login: ")
         f.write(str(sys.stdin.readline().strip()) + ":")
         print(
-            "Enter your password: (it will not be shown due to security reasons - just start typing and press Enter)"
+            "Enter your password: (it will not be shown due to security " +
+            "reasons - just start typing and press Enter)"
         )
         f.write(getpass.getpass() + "\n")
 
@@ -69,12 +70,16 @@ def check_secret():
                     else:
                         return True
                 except Exception:
-                    print("Your file is broken. We will delete it " "and try again.")
+                    print(
+                        "Your file is broken. We will delete it " +
+                        "and try again."
+                    )
                     os.remove(SECRET_FILE)
         else:
             print(
                 "We need to create a text file '%s' where "
-                "we will store your login and password from Instagram." % SECRET_FILE
+                "we will store your login and password from Instagram."
+                % SECRET_FILE
             )
             print("Don't worry. It will be stored locally.")
             while True:

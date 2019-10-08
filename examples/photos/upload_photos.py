@@ -40,7 +40,9 @@ if not args.photo:
     pics = []
     exts = ["jpg", "JPG", "jpeg", "JPEG", "png", "PNG"]
     for ext in exts:
-        pics += [os.path.basename(x) for x in glob.glob("media/*.{}".format(ext))]
+        pics += [
+            os.path.basename(x) for x in glob.glob("media/*.{}".format(ext))
+        ]
     from random import shuffle
 
     shuffle(pics)
@@ -52,7 +54,9 @@ if len(pics) == 0:
         bot.logger.warn("NO MORE PHOTO TO UPLOAD")
         exit()
     else:
-        bot.logger.error("The photo `{}` has already been posted".format(pics[0]))
+        bot.logger.error("The photo `{}` has already been posted".format(
+            pics[0])
+        )
 try:
     for pic in pics:
         bot.logger.info("Checking {}".format(pic))
@@ -64,11 +68,13 @@ try:
             else:
                 try:
                     caption = raw_input(
-                        "No caption found for this media. Type the caption now: "
+                        "No caption found for this media. "
+                        "Type the caption now: "
                     )
                 except NameError:
                     caption = input(
-                        "No caption found for this media. Type the caption now: "
+                        "No caption found for this media. "
+                        "Type the caption now: "
                     )
         bot.logger.info(
             "Uploading pic `{pic}` with caption: `{caption}`".format(

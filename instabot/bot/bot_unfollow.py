@@ -51,14 +51,17 @@ def unfollow_users(self, user_ids):
             i = filtered_user_ids.index(user_id)
             broken_items = filtered_user_ids[i:]
             break
-    self.logger.info("DONE: Total unfollowed {} users.".format(self.total["unfollows"]))
+    self.logger.info("DONE: Total unfollowed {} users.".format(
+        self.total["unfollows"])
+    )
     return broken_items
 
 
 def unfollow_non_followers(self, n_to_unfollows=None):
     self.logger.info("Unfollowing non-followers.")
     self.console_print(" ===> Start unfollowing non-followers <===", "red")
-    non_followers = set(self.following) - set(self.followers) - self.friends_file.set
+    non_followers = set(self.following) - \
+        set(self.followers) - self.friends_file.set
     non_followers = list(non_followers)
     for user_id in tqdm(non_followers[:n_to_unfollows]):
         if self.reached_limit("unfollows"):

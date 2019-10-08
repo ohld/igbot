@@ -74,7 +74,8 @@ if args.locations:
         if finded_location:
             print(u"Found {}".format(finded_location["title"]))
 
-            ncomments = args.amount or input(u"How much comments per location?\n")
+            ncomments = args.amount or \
+                input(u"How much comments per location?\n")
             comment_location_feed(bot, finded_location, amount=int(ncomments))
 else:
     location_name = input(u"Write location name:\n").strip()

@@ -48,7 +48,11 @@ def sync_user_features(self):
     data["experiments"] = config.EXPERIMENTS
     data = json.dumps(data)
     self.last_experiments = time.time()
-    return self.send_request("qe/sync/", data, headers={"X-DEVICE-ID": self.uuid})
+    return self.send_request(
+        "qe/sync/",
+        data,
+        headers={"X-DEVICE-ID": self.uuid}
+    )
 
 
 # ====== LOGIN/PRE FLOWS METHODS ====== #
@@ -102,7 +106,8 @@ def login_flow(self, just_logged_in=False, app_refresh_interval=1800):
             pull_to_refresh = random.randint(1, 100) % 2 == 0
             check_flow.append(
                 self.get_timeline_feed(
-                    options=["is_pull_to_refresh"] if pull_to_refresh is True else []
+                    options=["is_pull_to_refresh"]
+                    if pull_to_refresh is True else []
                 )
             )  # Random pull_to_refresh :)
             check_flow.append(
@@ -113,7 +118,8 @@ def login_flow(self, just_logged_in=False, app_refresh_interval=1800):
                 )
             )
 
-            is_session_expired = (time.time() - self.last_login) > app_refresh_interval
+            is_session_expired = \
+                (time.time() - self.last_login) > app_refresh_interval
             if is_session_expired:
                 self.last_login = time.time()
                 self.client_session_id = self.generate_UUID(uuid_type=True)
@@ -209,8 +215,9 @@ def load_uuid_and_cookie(self, load_uuid=True, load_cookie=True):
                 self.device_settings = data["device_settings"]
                 self.user_agent = data["user_agent"]
 
-            msg = ("Recovery from {}: COOKIE {} - UUIDs {} - TIMING, DEVICE and ..."
-                   "\n- user-agent={}\n- phone_id={}\n- uuid={}\n- client_session_id={}\n- device_id={}")
+            msg = ("Recovery from {}: COOKIE {} - UUIDs {} - TIMING, DEVICE "
+                   "and ...\n- user-agent={}\n- phone_id={}\n- uuid={}\n- "
+                   "client_session_id={}\n- device_id={}")
 
             self.logger.info(msg.format(
                 self.cookie_fname,
@@ -225,7 +232,8 @@ def load_uuid_and_cookie(self, load_uuid=True, load_cookie=True):
             )
         else:
             self.logger.info(
-                "The cookie seems to be the with the older structure. Load and init again all uuids"
+                "The cookie seems to be the with the older structure. "
+                "Load and init again all uuids"
             )
             self.session.cookies = requests.utils.cookiejar_from_dict(data)
             self.last_login = time.time()

@@ -51,7 +51,9 @@ if bot.api.get_inbox_v2():
             if choice("Do you want to reply to this message?(y/n)"):
                 text = input("write your message: ")
                 if choice("send message?(y/n)"):
-                    bot.send_message(text, user_id, thread_id=item["thread_id"])
+                    bot.send_message(
+                        text, user_id, thread_id=item["thread_id"]
+                    )
                 continue
         else:
             print(item_type)

@@ -172,7 +172,11 @@ class Bot(object):
         device=None,
         save_logfile=True,
     ):
-        self.api = API(device=device, base_path=base_path, save_logfile=save_logfile)
+        self.api = API(
+            device=device,
+            base_path=base_path,
+            save_logfile=save_logfile
+        )
         self.base_path = base_path
 
         self.total = dict.fromkeys([
@@ -207,7 +211,8 @@ class Bot(object):
         # limits - follow
         self.filter_users = filter_users
         self.filter_private_users = filter_private_users
-        self.filter_users_without_profile_photo = filter_users_without_profile_photo
+        self.filter_users_without_profile_photo \
+            = filter_users_without_profile_photo
         self.filter_business_accounts = filter_business_accounts
         self.filter_verified_accounts = filter_verified_accounts
         self.filter_previously_followed = filter_previously_followed
@@ -242,8 +247,10 @@ class Bot(object):
         self.min_followers_to_follow = min_followers_to_follow
         self.max_following_to_follow = max_following_to_follow
         self.min_following_to_follow = min_following_to_follow
-        self.max_followers_to_following_ratio = max_followers_to_following_ratio
-        self.max_following_to_followers_ratio = max_following_to_followers_ratio
+        self.max_followers_to_following_ratio \
+            = max_followers_to_following_ratio
+        self.max_following_to_followers_ratio = \
+            max_following_to_followers_ratio
         self.min_media_count_to_follow = min_media_count_to_follow
         self.stop_words = stop_words
         self.blacklist_hashtags = blacklist_hashtags
@@ -303,7 +310,8 @@ class Bot(object):
 
     @property
     def blacklist(self):
-        # This is a fast operation because `get_user_id_from_username` is cached.
+        # This is a fast operation because
+        # `get_user_id_from_username` is cached.
         return [
             self.convert_to_user_id(i)
             for i in self.blacklist_file.list
@@ -312,15 +320,22 @@ class Bot(object):
 
     @property
     def whitelist(self):
-        # This is a fast operation because `get_user_id_from_username` is cached.
-        return [self.convert_to_user_id(i) for i in self.whitelist_file.list if i is not None]
+        # This is a fast operation because
+        # `get_user_id_from_username` is cached.
+        return [
+            self.convert_to_user_id(i)
+            for i in self.whitelist_file.list
+            if i is not None
+        ]
 
     @property
     def following(self):
         now = time.time()
         last = self.last.get("updated_following", now)
         if self._following is None or (now - last) > 7200:
-            self.console_print("`bot.following` is empty, will download.", "green")
+            self.console_print(
+                "`bot.following` is empty, will download.", "green"
+            )
             self._following = self.get_user_following(self.user_id)
             self.last["updated_following"] = now
         return self._following
@@ -330,7 +345,9 @@ class Bot(object):
         now = time.time()
         last = self.last.get("updated_followers", now)
         if self._followers is None or (now - last) > 7200:
-            self.console_print("`bot.followers` is empty, will download.", "green")
+            self.console_print(
+                "`bot.followers` is empty, will download.", "green"
+            )
             self._followers = self.get_user_followers(self.user_id)
             self.last["updated_followers"] = now
         return self._followers
@@ -351,7 +368,10 @@ class Bot(object):
 
     def logout(self, *args, **kwargs):
         self.api.logout()
-        self.logger.info("Bot stopped. " "Worked: %s", datetime.datetime.now() - self.start_time)
+        self.logger.info(
+            "Bot stopped. " "Worked: %s",
+            datetime.datetime.now() - self.start_time
+        )
         self.print_counters()
 
     def login(self, **args):
@@ -374,7 +394,8 @@ class Bot(object):
     def prepare(self):
         storage = load_checkpoint(self)
         if storage is not None:
-            total, self.blocked_actions, self.api.total_requests, self.start_time = (storage)
+            total, self.blocked_actions, self.api.total_requests, \
+                self.start_time = (storage)
 
             for k, v in total.items():
                 self.total[k] = v
@@ -394,10 +415,15 @@ class Bot(object):
         for key, val in self.blocked_actions.items():
             if val:
                 self.logger.info("Blocked {}".format(key))
-        self.logger.info("Total requests: {}".format(self.api.total_requests))
+        self.logger.info(
+            "Total requests: {}".format(self.api.total_requests)
+        )
 
     def delay(self, key):
-        """Sleep only if elapsed time since `self.last[key]` < `self.delay[key]`."""
+        """
+        Sleep only if elapsed time since
+        `self.last[key]` < `self.delay[key]`.
+        """
         last_action, target_delay = self.last[key], self.delays[key]
         elapsed_time = time.time() - last_action
         if elapsed_time < target_delay:
@@ -446,14 +472,16 @@ class Bot(object):
 
     def get_your_medias(self, as_dict=False):
         """
-        Returns your media ids. With parameter as_dict=True returns media as dict.
+        Returns your media ids. With parameter
+        as_dict=True returns media as dict.
         :type as_dict: bool
         """
         return get_your_medias(self, as_dict)
 
     def get_archived_medias(self, as_dict=False):
         """
-        Returns your archived media ids. With parameter as_dict=True returns media as dict.
+        Returns your archived media ids. With parameter
+        as_dict=True returns media as dict.
         :type as_dict: bool
         """
         return get_archived_medias(self, as_dict)
@@ -677,27 +705,56 @@ class Bot(object):
         return watch_users_reels(self, user_ids, max_users=max_users)
 
     # photo
-    def download_photo(self, media_id, folder="photos", filename=None, save_description=False):
-        return download_photo(self, media_id, folder, filename, save_description)
+    def download_photo(
+        self,
+        media_id,
+        folder="photos",
+        filename=None,
+        save_description=False
+    ):
+        return download_photo(
+            self,
+            media_id,
+            folder,
+            filename,
+            save_description
+        )
 
     def download_photos(self, medias, folder="photos", save_description=False):
         return download_photos(self, medias, folder, save_description)
 
-    def upload_photo(self, photo, caption=None, upload_id=None, from_video=False, options={}):
+    def upload_photo(
+        self,
+        photo,
+        caption=None,
+        upload_id=None,
+        from_video=False,
+        options={}
+    ):
         """Upload photo to Instagram
-
-        @param photo         Path to photo file (String)
-        @param caption       Media description (String)
-        @param upload_id     Unique upload_id (String). When None, then generate automatically
-        @param from_video    A flag that signals whether the photo is loaded from the video or by itself
+        @param photo        Path to photo file (String)
+        @param caption      Media description (String)
+        @param upload_id    Unique upload_id (String). When None, then
+                            generate automatically
+        @param from_video   A flag that signals whether the photo is loaded
+                            from the video or by itself
                             (Boolean, DEPRECATED: not used)
-        @param options       Object with difference options, e.g. configure_timeout, rename (Dict)
-                             Designed to reduce the number of function arguments!
-                             This is the simplest request object.
+        @param options      Object with difference options,
+                            e.g. configure_timeout, rename (Dict)
+                            Designed to reduce the number of function
+                            arguments! This is the simplest request object.
 
-        @return              Object with state of uploading to Instagram (or False)
+        @return             Object with state of uploading to
+                            Instagram (or False)
         """
-        return upload_photo(self, photo, caption, upload_id, from_video, options)
+        return upload_photo(
+            self,
+            photo,
+            caption,
+            upload_id,
+            from_video,
+            options
+        )
 
     # video
     def upload_video(self, video, caption="", thumbnail=None, options={}):
@@ -705,16 +762,30 @@ class Bot(object):
 
         @param video      Path to video file (String)
         @param caption    Media description (String)
-        @param thumbnail  Path to thumbnail for video (String). When None, then thumbnail is generate automatically
-        @param options    Object with difference options, e.g. configure_timeout, rename_thumbnail, rename (Dict)
+        @param thumbnail  Path to thumbnail for video (String). When None,
+                          then thumbnail is generated automatically
+        @param options    Object with difference options, e.g.
+                          configure_timeout, rename_thumbnail, rename (Dict)
                           Designed to reduce the number of function arguments!
 
-        @return           Object with state of uploading to Instagram (or False)
+        @return           Object with Instagram upload state (or False)
         """
         return upload_video(self, video, caption, thumbnail, options)
 
-    def download_video(self, media_id, folder="videos", filename=None, save_description=False):
-        return download_video(self, media_id, folder, filename, save_description)
+    def download_video(
+        self,
+        media_id,
+        folder="videos",
+        filename=None,
+        save_description=False
+    ):
+        return download_video(
+            self,
+            media_id,
+            folder,
+            filename,
+            save_description
+        )
 
     # follow
     def follow(self, user_id):
@@ -804,7 +875,12 @@ class Bot(object):
         return comment(self, media_id, comment_text)
 
     def reply_to_comment(self, media_id, comment_text, parent_comment_id):
-        return reply_to_comment(self, media_id, comment_text, parent_comment_id)
+        return reply_to_comment(
+            self,
+            media_id,
+            comment_text,
+            parent_comment_id
+        )
 
     def comment_hashtag(self, hashtag, amount=None):
         return comment_hashtag(self, hashtag, amount)
@@ -841,7 +917,13 @@ class Bot(object):
         return block_bots(self)
 
     # filter
-    def filter_medias(self, media_items, filtration=True, quiet=False, is_comment=False):
+    def filter_medias(
+        self,
+        media_items,
+        filtration=True,
+        quiet=False,
+        is_comment=False
+    ):
         return filter_medias(self, media_items, filtration, quiet, is_comment)
 
     def check_media(self, media):

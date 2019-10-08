@@ -44,11 +44,16 @@ def download_photo(self, media_id, filename, media=False, folder="photos"):
                 video_included = True
                 continue
             filename_i = (
-                "{}_{}_{}.jpg".format(media["user"]["username"], media_id, index)
+                "{}_{}_{}.jpg".format(
+                    media["user"]["username"],
+                    media_id,
+                    index
+                )
                 if not filename
                 else "{}_{}.jpg".format(filename, index)
             )
-            images = media["carousel_media"][index]["image_versions2"]["candidates"]
+            images = \
+                media["carousel_media"][index]["image_versions2"]["candidates"]
             fname = os.path.join(folder, filename_i)
             if os.path.exists(fname):
                 return os.path.abspath(fname)
@@ -105,23 +110,31 @@ def upload_photo(
 
     @param photo         Path to photo file (String)
     @param caption       Media description (String)
-    @param upload_id     Unique upload_id (String). When None, then generate automatically
-    @param from_video    A flag that signals whether the photo is loaded from the video or by itself
+    @param upload_id     Unique upload_id (String). When None, then generate
+                         automatically
+    @param from_video    A flag that signals whether the photo is loaded from
+                         the video or by itself
                          (Boolean, DEPRECATED: not used)
     @param force_resize  Force photo resize (Boolean)
-    @param options       Object with difference options, e.g. configure_timeout, rename (Dict)
+    @param options       Object with difference options, e.g.
+                         configure_timeout, rename (Dict)
                          Designed to reduce the number of function arguments!
                          This is the simplest request object.
 
     @return Boolean
     """
-    options = dict({"configure_timeout": 15, "rename": True}, **(options or {}))
+    options = dict(
+        {"configure_timeout": 15, "rename": True},
+        **(options or {})
+    )
     if upload_id is None:
         upload_id = str(int(time.time() * 1000))
     if not photo:
         return False
     if not compatible_aspect_ratio(get_image_size(photo)):
-        self.logger.error("Photo does not have a compatible photo aspect ratio.")
+        self.logger.error(
+            "Photo does not have a compatible photo aspect ratio."
+        )
         if force_resize:
             photo = resize_image(photo)
         else:
@@ -134,7 +147,8 @@ def upload_photo(
         "upload_id": upload_id,
         "_uuid": self.uuid,
         "_csrftoken": self.token,
-        "image_compression": '{"lib_name":"jt","lib_version":"1.3.0","quality":"87"}',
+        "image_compression": '{"lib_name":"jt","lib_version":"1.3.0",' +
+        '"quality":"87"}',
         "photo": (
             "pending_media_%s.jpg" % upload_id,
             photo_bytes,
@@ -155,7 +169,10 @@ def upload_photo(
             "User-Agent": self.user_agent,
         }
     )
-    response = self.session.post(config.API_URL + "upload/photo/", data=m.to_string())
+    response = self.session.post(
+        config.API_URL + "upload/photo/",
+        data=m.to_string()
+    )
 
     configure_timeout = options.get("configure_timeout")
     if response.status_code == 200:
@@ -284,7 +301,11 @@ def resize_image(fname):
             img = img.resize((1080, 1080), Image.ANTIALIAS)
     (w, h) = img.size
     new_fname = "{}.CONVERTED.jpg".format(fname)
-    print("Saving new image w:{w} h:{h} to `{f}`".format(w=w, h=h, f=new_fname))
+    print("Saving new image w:{w} h:{h} to `{f}`".format(
+        w=w,
+        h=h,
+        f=new_fname)
+    )
     new = Image.new("RGB", img.size, (255, 255, 255))
     new.paste(img, (0, 0, w, h), img)
     new.save(new_fname, quality=95)
@@ -293,12 +314,11 @@ def resize_image(fname):
 
 def stories_shaper(fname):
     """
-    Find out the size of the uploaded image.
-    Processing is not needed if the image is already 1080x1920 pixels.
-    Otherwise, the image height should be 1920 pixels.
-    Substrate formation: Crop the image under 1080x1920 pixels and apply a Gaussian Blur filter.
-    Centering the image depending on its aspect ratio and paste it onto the substrate.
-    Save the image.
+    Find out the size of the uploaded image. Processing is not needed if the
+    image is already 1080x1920 pixels. Otherwise, the image height should be
+    1920 pixels. Substrate formation: Crop the image under 1080x1920 pixels
+    and apply a Gaussian Blur filter. Centering the image depending on its
+    aspect ratio and paste it onto the substrate. Save the image.
     """
     try:
         from PIL import Image, ImageFilter
@@ -349,7 +369,9 @@ def stories_shaper(fname):
                 height_size = int(float(img.size[1]) * float(width_percent))
                 img = img.resize((min_width, height_size), Image.ANTIALIAS)
                 img_bg.paste(
-                    img, (int(540 - img.size[0] / 2), int(960 - img.size[1] / 2))
+                    img, (int(540 - img.size[0] / 2), int(
+                        960 - img.size[1] / 2
+                    ))
                 )
             else:
                 img_bg.paste(img, (int(540 - img.size[0] / 2), 0))
@@ -357,14 +379,19 @@ def stories_shaper(fname):
             width_percent = min_width / float(img.size[0])
             height_size = int(float(img.size[1]) * float(width_percent))
             img = img.resize((min_width, height_size), Image.ANTIALIAS)
-            img_bg.paste(img, (int(540 - img.size[0] / 2), int(960 - img.size[1] / 2)))
+            img_bg.paste(img, (int(540 - img.size[0] / 2), int(
+                960 - img.size[1] / 2
+            )))
         new_fname = "{}.STORIES.jpg".format(fname)
         print(
             "Saving new image w:{w} h:{h} to `{f}`".format(
                 w=img_bg.size[0], h=img_bg.size[1], f=new_fname
             )
         )
-        new = Image.new("RGB", (img_bg.size[0], img_bg.size[1]), (255, 255, 255))
+        new = Image.new(
+            "RGB",
+            (img_bg.size[0], img_bg.size[1]), (255, 255, 255)
+        )
         new.paste(img_bg, (0, 0, img_bg.size[0], img_bg.size[1]))
         new.save(new_fname)
         return new_fname

@@ -99,7 +99,10 @@ class TestBotGet(TestBot):
         results = 5
         responses.add(
             responses.GET,
-            "{api_url}feed/popular/?people_teaser_supported=1&rank_token={rank_token}&ranked_content=true&".format(
+            (
+                "{api_url}feed/popular/?people_teaser_supported=1" +
+                "&rank_token={rank_token}&ranked_content=true&"
+            ).format(
                 api_url=API_URL, rank_token=self.bot.api.rank_token
             ),
             json={
@@ -131,7 +134,9 @@ class TestBotGet(TestBot):
                 "status": "ok",
                 "next_max_id": None,
                 "more_available": False,
-                "feed_items": [TEST_TIMELINE_PHOTO_ITEM for _ in range(results)],
+                "feed_items": [
+                    TEST_TIMELINE_PHOTO_ITEM for _ in range(results)
+                ],
             },
             status=200,
         )
@@ -165,7 +170,9 @@ class TestBotGet(TestBot):
                 "status": "ok",
                 "next_max_id": None,
                 "more_available": False,
-                "feed_items": [TEST_TIMELINE_PHOTO_ITEM for _ in range(results)],
+                "feed_items": [
+                    TEST_TIMELINE_PHOTO_ITEM for _ in range(results)
+                ],
             },
             status=200,
         )
@@ -248,7 +255,9 @@ class TestBotGet(TestBot):
         responses.add(
             responses.GET,
             "{api_url}feed/user/{user_id}/".format(
-                api_url=API_URL, user_id=user_id, rank_token=self.bot.api.rank_token
+                api_url=API_URL,
+                user_id=user_id,
+                rank_token=self.bot.api.rank_token
             ),
             json=response_data,
             status=200,
@@ -257,13 +266,21 @@ class TestBotGet(TestBot):
         # no need to test is_comment=True because there's no item 'comments' in
         # user feed object returned by `feed/user/{user_id}/` API call.
 
-        medias = self.bot.get_user_medias(user_id, filtration=False, is_comment=False)
+        medias = self.bot.get_user_medias(
+            user_id,
+            filtration=False,
+            is_comment=False
+        )
         assert medias == [
             test_photo_item["id"] for test_photo_item in my_test_photo_items
         ]
         assert len(medias) == results
 
-        medias = self.bot.get_user_medias(user_id, filtration=True, is_comment=False)
+        medias = self.bot.get_user_medias(
+            user_id,
+            filtration=True,
+            is_comment=False
+        )
         assert medias == [
             test_photo_item["id"]
             for test_photo_item in my_test_photo_items
@@ -289,7 +306,10 @@ class TestBotGet(TestBot):
         }
         responses.add(
             responses.GET,
-            "{api_url}feed/only_me_feed/?rank_token={rank_token}&ranked_content=true&".format(
+            (
+                "{api_url}feed/only_me_feed/?rank_token={rank_token}&" +
+                "ranked_content=true&"
+            ).format(
                 api_url=API_URL, rank_token=self.bot.api.rank_token
             ),
             json=response_data,
@@ -320,7 +340,10 @@ class TestBotGet(TestBot):
         }
         responses.add(
             responses.GET,
-            "{api_url}users/search/?ig_sig_key_version={sig_key}&is_typeahead=true&query={query}&rank_token={rank_token}".format(
+            (
+                "{api_url}users/search/?ig_sig_key_version={sig_key}&" +
+                "is_typeahead=true&query={query}&rank_token={rank_token}"
+            ).format(
                 api_url=API_URL,
                 rank_token=self.bot.api.rank_token,
                 query=query,
@@ -341,7 +364,10 @@ class TestBotGet(TestBot):
         response_data = {"status": "fail"}
         responses.add(
             responses.GET,
-            "{api_url}users/search/?ig_sig_key_version={sig_key}&is_typeahead=true&query={query}&rank_token={rank_token}".format(
+            (
+                "{api_url}users/search/?ig_sig_key_version={sig_key}" +
+                "&is_typeahead=true&query={query}&rank_token={rank_token}"
+            ).format(
                 api_url=API_URL,
                 rank_token=self.bot.api.rank_token,
                 query=query,
@@ -410,7 +436,9 @@ class TestBotGet(TestBot):
         )
 
         comments = self.bot.get_media_comments(media_id, only_text=True)
-        expected_result = [comment["text"] for comment in response_data["comments"]]
+        expected_result = [
+            comment["text"] for comment in response_data["comments"]
+        ]
 
         assert comments == expected_result
         assert len(comments) == results
@@ -518,7 +546,10 @@ class TestBotGet(TestBot):
 
         responses.add(
             responses.GET,
-            "{api_url}users/{user_id}/info/".format(api_url=API_URL, user_id=user_id),
+            "{api_url}users/{user_id}/info/".format(
+                api_url=API_URL,
+                user_id=user_id
+            ),
             status=200,
             json=response_data,
         )
@@ -536,7 +567,10 @@ class TestBotGet(TestBot):
 
         responses.add(
             responses.GET,
-            "{api_url}users/{user_id}/info/".format(api_url=API_URL, user_id=user_id),
+            "{api_url}users/{user_id}/info/".format(
+                api_url=API_URL,
+                user_id=user_id
+            ),
             status=200,
             json=response_data,
         )
@@ -552,7 +586,10 @@ class TestBotGet(TestBot):
         response_data = {"status": "fail", "message": "User not found"}
         responses.add(
             responses.GET,
-            "{api_url}users/{user_id}/info/".format(api_url=API_URL, user_id=user_id),
+            "{api_url}users/{user_id}/info/".format(
+                api_url=API_URL,
+                user_id=user_id
+            ),
             status=404,
             json=response_data,
         )
@@ -609,7 +646,13 @@ class TestBotGet(TestBot):
         ],
     )
     @patch("time.sleep", return_value=None)
-    def test_convert_to_user_id(self, patched_time_sleep, username, url, result):
+    def test_convert_to_user_id(
+        self,
+        patched_time_sleep,
+        username,
+        url,
+        result
+    ):
         response_data = {"status": "ok", "user": TEST_SEARCH_USERNAME_ITEM}
         responses.add(
             responses.GET,
@@ -630,8 +673,13 @@ class TestBotGet(TestBot):
         results = 8
         responses.add(
             responses.GET,
-            "{api_url}usertags/{user_id}/feed/?rank_token={rank_token}&ranked_content=true&".format(
-                api_url=API_URL, user_id=user_id, rank_token=self.bot.api.rank_token
+            (
+                "{api_url}usertags/{user_id}/feed/?rank_token={rank_token}" +
+                "&ranked_content=true&"
+            ).format(
+                api_url=API_URL,
+                user_id=user_id,
+                rank_token=self.bot.api.rank_token
             ),
             json={
                 "status": "ok",
@@ -648,7 +696,9 @@ class TestBotGet(TestBot):
 
         medias = self.bot.get_user_tags_medias(user_id)
 
-        assert medias == [str(TEST_USER_TAG_ITEM["pk"]) for _ in range(results)]
+        assert medias == [
+            str(TEST_USER_TAG_ITEM["pk"]) for _ in range(results)
+        ]
         assert len(medias) == results
 
     @responses.activate
@@ -678,7 +728,10 @@ class TestBotGet(TestBot):
 
         responses.add(
             responses.GET,
-            "{api_url}feed/tag/{hashtag}/?max_id={max_id}&rank_token={rank_token}&ranked_content=true&".format(
+            (
+                "{api_url}feed/tag/{hashtag}/?max_id={max_id}&rank_token=" +
+                "{rank_token}&ranked_content=true&"
+            ).format(
                 api_url=API_URL,
                 hashtag=hashtag,
                 max_id="",
@@ -735,7 +788,10 @@ class TestBotGet(TestBot):
 
         responses.add(
             responses.GET,
-            "{api_url}feed/tag/{hashtag}/?max_id={max_id}&rank_token={rank_token}&ranked_content=true&".format(
+            (
+                "{api_url}feed/tag/{hashtag}/?max_id={max_id}" +
+                "&rank_token={rank_token}&ranked_content=true&"
+            ).format(
                 api_url=API_URL,
                 hashtag=hashtag,
                 max_id="",
@@ -749,7 +805,8 @@ class TestBotGet(TestBot):
             hashtag, amount=amount, filtration=False
         )
         assert medias == [
-            test_photo_item["id"] for test_photo_item in my_test_photo_items[:amount]
+            test_photo_item["id"]
+            for test_photo_item in my_test_photo_items[:amount]
         ]
         assert len(medias) == amount
 
@@ -804,7 +861,10 @@ class TestBotGet(TestBot):
 
         responses.add(
             responses.GET,
-            "{api_url}feed/user/{user_id}/?max_id={max_id}&min_timestamp={min_timestamp}&rank_token={rank_token}&ranked_content=true".format(
+            (
+                "{api_url}feed/user/{user_id}/?max_id={max_id}&min_timestamp" +
+                "={min_timestamp}&rank_token={rank_token}&ranked_content=true"
+            ).format(
                 api_url=API_URL,
                 user_id=user_id,
                 max_id="",
@@ -835,7 +895,10 @@ class TestBotGet(TestBot):
 
         responses.add(
             responses.GET,
-            "{api_url}feed/user/{user_id}/?max_id={max_id}&min_timestamp={min_timestamp}&rank_token={rank_token}&ranked_content=true".format(
+            (
+                "{api_url}feed/user/{user_id}/?max_id={max_id}&min_timestamp" +
+                "={min_timestamp}&rank_token={rank_token}&ranked_content=true"
+            ).format(
                 api_url=API_URL,
                 user_id=user_id,
                 max_id="",
@@ -857,7 +920,10 @@ class TestBotGet(TestBot):
         results_1 = 1
         responses.add(
             responses.GET,
-            "{api_url}feed/user/{user_id}/?max_id={max_id}&min_timestamp={min_timestamp}&rank_token={rank_token}&ranked_content=true".format(
+            (
+                "{api_url}feed/user/{user_id}/?max_id={max_id}&min_timestamp" +
+                "={min_timestamp}&rank_token={rank_token}&ranked_content=true"
+            ).format(
                 api_url=API_URL,
                 user_id=user_id,
                 max_id="",
@@ -890,7 +956,9 @@ class TestBotGet(TestBot):
 
         user_ids = self.bot.get_user_likers(user_id)
 
-        assert user_ids == list({str(TEST_MEDIA_LIKER["pk"]) for _ in range(results_2)})
+        assert user_ids == list(
+            {str(TEST_MEDIA_LIKER["pk"]) for _ in range(results_2)}
+        )
         assert len(user_ids) == len(
             list({str(TEST_MEDIA_LIKER["pk"]) for _ in range(results_2)})
         )
@@ -914,7 +982,10 @@ class TestBotGet(TestBot):
         response_data_2 = {"status": "ok", "user": TEST_USERNAME_INFO_ITEM}
         responses.add(
             responses.GET,
-            "{api_url}users/{user_id}/info/".format(api_url=API_URL, user_id=username),
+            "{api_url}users/{user_id}/info/".format(
+                api_url=API_URL,
+                user_id=username
+            ),
             status=200,
             json=response_data_2,
         )
@@ -929,8 +1000,13 @@ class TestBotGet(TestBot):
         }
         responses.add(
             responses.GET,
-            "{api_url}friendships/{user_id}/followers/?rank_token={rank_token}".format(
-                api_url=API_URL, user_id=username, rank_token=self.bot.api.rank_token
+            (
+                "{api_url}friendships/{user_id}/followers/?" +
+                "rank_token={rank_token}"
+            ).format(
+                api_url=API_URL,
+                user_id=username,
+                rank_token=self.bot.api.rank_token
             ),
             json=response_data_3,
             status=200,
@@ -938,7 +1014,9 @@ class TestBotGet(TestBot):
 
         user_ids = self.bot.get_user_followers(username)
 
-        assert user_ids == [str(TEST_FOLLOWER_ITEM["pk"]) for _ in range(results_3)]
+        assert user_ids == [
+            str(TEST_FOLLOWER_ITEM["pk"]) for _ in range(results_3)
+        ]
 
     @responses.activate
     @pytest.mark.parametrize("username", ["1234567890", 1234567890])
@@ -959,7 +1037,10 @@ class TestBotGet(TestBot):
         response_data_2 = {"status": "ok", "user": TEST_USERNAME_INFO_ITEM}
         responses.add(
             responses.GET,
-            "{api_url}users/{user_id}/info/".format(api_url=API_URL, user_id=username),
+            "{api_url}users/{user_id}/info/".format(
+                api_url=API_URL,
+                user_id=username
+            ),
             status=200,
             json=response_data_2,
         )
@@ -974,7 +1055,10 @@ class TestBotGet(TestBot):
         }
         responses.add(
             responses.GET,
-            "{api_url}friendships/{user_id}/following/?max_id={max_id}&ig_sig_key_version={sig_key}&rank_token={rank_token}".format(
+            (
+                "{api_url}friendships/{user_id}/following/?max_id={max_id}" +
+                "&ig_sig_key_version={sig_key}&rank_token={rank_token}"
+            ).format(
                 api_url=API_URL,
                 user_id=username,
                 rank_token=self.bot.api.rank_token,
@@ -987,7 +1071,9 @@ class TestBotGet(TestBot):
 
         user_ids = self.bot.get_user_following(username)
 
-        assert user_ids == [str(TEST_FOLLOWING_ITEM["pk"]) for _ in range(results_3)]
+        assert user_ids == [
+            str(TEST_FOLLOWING_ITEM["pk"]) for _ in range(results_3)
+        ]
 
     @responses.activate
     @pytest.mark.parametrize("hashtag", ["hashtag1", "hashtag2"])
@@ -1016,7 +1102,10 @@ class TestBotGet(TestBot):
 
         responses.add(
             responses.GET,
-            "{api_url}feed/tag/{hashtag}/?max_id={max_id}&rank_token={rank_token}&ranked_content=true&".format(
+            (
+                "{api_url}feed/tag/{hashtag}/?max_id={max_id}" +
+                "&rank_token={rank_token}&ranked_content=true&"
+            ).format(
                 api_url=API_URL,
                 hashtag=hashtag,
                 max_id="",
@@ -1034,7 +1123,13 @@ class TestBotGet(TestBot):
         assert len(medias) == results
 
     @responses.activate
-    @pytest.mark.parametrize("comment_id", ["12345678901234567", 12345678901234567])
+    @pytest.mark.parametrize(
+        "comment_id",
+        [
+            "12345678901234567",
+            12345678901234567
+        ]
+    )
     def test_get_comment_likers(self, comment_id):
         results = 5
         response_data = {
@@ -1050,7 +1145,10 @@ class TestBotGet(TestBot):
             status=200,
         )
         user_ids = self.bot.get_comment_likers(comment_id)
-        assert user_ids == [str(TEST_COMMENT_LIKER_ITEM["pk"]) for _ in range(results)]
+        assert user_ids == [
+            str(TEST_COMMENT_LIKER_ITEM["pk"])
+            for _ in range(results)
+        ]
         assert len(user_ids) == results
 
     @responses.activate
@@ -1066,7 +1164,10 @@ class TestBotGet(TestBot):
         }
         responses.add(
             responses.GET,
-            "{api_url}fbsearch/places/?rank_token={rank_token}&query={query}&lat={lat}&lng={lng}".format(
+            (
+                "{api_url}fbsearch/places/?rank_token={rank_token}" +
+                "&query={query}&lat={lat}&lng={lng}"
+            ).format(
                 api_url=API_URL,
                 rank_token=self.bot.api.rank_token,
                 query="",
@@ -1076,7 +1177,10 @@ class TestBotGet(TestBot):
             json=response_data,
             status=200,
         )
-        locations = self.bot.get_locations_from_coordinates(latitude, longitude)
+        locations = self.bot.get_locations_from_coordinates(
+            latitude,
+            longitude
+        )
         assert locations == [TEST_LOCATION_ITEM for _ in range(results)]
         assert len(locations) == results
 
