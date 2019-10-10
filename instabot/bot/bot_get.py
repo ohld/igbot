@@ -510,6 +510,7 @@ def get_pending_thread_requests(self):
         self.logger.info("There isn't any pending thread request.")
     return threads
 
+
 def get_muted_friends(self, muted_content):
     """
     friends who's stories or reels are muted
