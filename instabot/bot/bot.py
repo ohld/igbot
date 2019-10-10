@@ -81,6 +81,7 @@ from .bot_get import (
     get_username_from_user_id,
     get_your_medias,
     search_users,
+    get_muted_friends,
 )
 from .bot_like import (
     like,
@@ -584,6 +585,9 @@ class Bot(object):
 
     def search_users(self, query):
         return search_users(self, query)
+
+    def get_muted_friends(self, muted_content='all'):
+        return get_muted_friends(self, muted_content)
 
     def convert_to_user_id(self, usernames):
         return convert_to_user_id(self, usernames)

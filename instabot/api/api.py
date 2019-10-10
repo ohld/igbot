@@ -1223,6 +1223,17 @@ class API(object):
         url = "friendships/mute_posts_or_story_from_follow/"
         return self.send_request(url, data)
 
+    def get_muted_friends(self, muted_content):
+        # ToDo update endpoints for posts and all
+        if muted_content == 'stories':
+            url = "friendships/muted_reels"
+        elif muted_content == 'posts':
+            url = "friendships/muted_reels"
+        else:
+            url = "friendships/muted_reels"
+
+        return self.send_request(url)
+
     def unmute_user(self, user, unmute_posts=False, unmute_stories=False):
         data_dict = {}
         if unmute_posts:
