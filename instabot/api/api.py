@@ -1228,9 +1228,15 @@ class API(object):
         if muted_content == 'stories':
             url = "friendships/muted_reels"
         elif muted_content == 'posts':
-            raise NotImplementedError('API does not support getting friends with muted {}'.format(muted_content))
+            raise NotImplementedError(
+                'API does not support getting friends '
+                'with muted {}'.format(muted_content)
+            )
         else:
-            raise NotImplementedError('API does not support getting friends with muted {}'.format(muted_content))
+            raise NotImplementedError(
+                'API does not support getting friends'
+                ' with muted {}'.format(muted_content)
+            )
 
         return self.send_request(url)
 

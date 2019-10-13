@@ -522,5 +522,6 @@ def get_muted_friends(self, muted_content):
             for user in self.api.last_json.get('users')
         ]
     else:
-        self.logger.info("No users with muted {} in your friends".format(muted_content))
+        self.logger.info("No users with muted {} "
+                         "in your friends".format(muted_content))
         return []
