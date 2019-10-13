@@ -20,8 +20,21 @@ def unfollow(self, user_id):
     if self.check_user(user_id, unfollowing=True):
         return True  # whitelisted user
     if not self.reached_limit("unfollows"):
+        if self.blocked_actions["unfollows"]:
+            self.logger.warning("YOUR `UNFOLLOW` ACTION IS BLOCKED")
+            if self.blocked_actions_protection:
+                self.logger.warning(
+                    "blocked_actions_protection ACTIVE. "
+                    "Skipping `unfollow` action."
+                )
+                return False
         self.delay("unfollow")
-        if self.api.unfollow(user_id):
+        _r = self.api.unfollow(user_id)
+        if _r == "feedback_required":
+            self.logger.error("`Unfollow` action has been BLOCKED...!!!")
+            self.blocked_actions["unfollows"] = True
+            return False
+        if _r:
             msg = "===> Unfollowed, `user_id`: {}, user_name: {}"
             self.console_print(msg.format(user_id, username), "yellow")
             self.unfollowed_file.append(user_id)
