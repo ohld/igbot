@@ -1224,13 +1224,13 @@ class API(object):
         return self.send_request(url, data)
 
     def get_muted_friends(self, muted_content):
-        # ToDo update endpoints for posts and all
+        # ToDo update endpoints for posts
         if muted_content == 'stories':
             url = "friendships/muted_reels"
         elif muted_content == 'posts':
-            url = "friendships/muted_reels"
+            raise NotImplementedError('API does not support getting friends with muted {}'.format(muted_content))
         else:
-            url = "friendships/muted_reels"
+            raise NotImplementedError('API does not support getting friends with muted {}'.format(muted_content))
 
         return self.send_request(url)
 

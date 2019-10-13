@@ -586,7 +586,7 @@ class Bot(object):
     def search_users(self, query):
         return search_users(self, query)
 
-    def get_muted_friends(self, muted_content='all'):
+    def get_muted_friends(self, muted_content='stories'):
         return get_muted_friends(self, muted_content)
 
     def convert_to_user_id(self, usernames):
