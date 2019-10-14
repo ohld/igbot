@@ -454,7 +454,6 @@ class API(object):
                         "ATTENTION!: `feedback_required`"
                         + str(response_data.get("feedback_message"))
                     )
-                    return "feedback_required"
             except ValueError:
                 self.logger.error(
                     "Error checking for `feedback_required`, "
