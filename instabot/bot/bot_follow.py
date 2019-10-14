@@ -9,8 +9,21 @@ def follow(self, user_id):
     if not self.check_user(user_id):
         return False
     if not self.reached_limit("follows"):
+        if self.blocked_actions["follows"]:
+            self.logger.warning("YOUR `FOLLOW` ACTION IS BLOCKED")
+            if self.blocked_actions_protection:
+                self.logger.warning(
+                    "blocked_actions_protection ACTIVE. "
+                    "Skipping `follow` action."
+                )
+                return False
         self.delay("follow")
-        if self.api.follow(user_id):
+        _r = self.api.follow(user_id)
+        if _r == "feedback_required":
+            self.logger.error("`Follow` action has been BLOCKED...!!!")
+            self.blocked_actions["follows"] = True
+            return False
+        if _r:
             msg = "===> FOLLOWED <==== `user_id`: {}.".format(user_id)
             self.console_print(msg, "green")
             self.total["follows"] += 1
