@@ -1,5 +1,5 @@
 from tqdm import tqdm
-
+import time
 
 def unfollow(self, user_id):
     user_id = self.convert_to_user_id(user_id)
@@ -32,7 +32,20 @@ def unfollow(self, user_id):
         _r = self.api.unfollow(user_id)
         if _r == "feedback_required":
             self.logger.error("`Unfollow` action has been BLOCKED...!!!")
-            self.blocked_actions["unfollows"] = True
+            if not self.blocked_actions_sleep:
+                if self.blocked_actions_protection:
+                    self.logger.warning("Activating blocked actions protection for `Unfollow` action.")
+                    self.blocked_actions["unfollows"] = True
+            else:
+                if self.sleeping_actions["unfollows"] and self.blocked_actions_protection:
+                    self.logger.warning("This is the second blocked `Unfollow` action.")
+                    self.logger.warning("Activating blocked actions protection for `Unfollow` action.")
+                    self.sleeping_actions["unfollows"] = False
+                    self.blocked_actions["unfollows"] = True
+                else:
+                    self.logger.info("`Unfollow` action is going to sleep for %s seconds." % self.blocked_actions_sleep_delay)
+                    self.sleeping_actions["unfollows"] = True
+                    time.sleep(self.blocked_actions_sleep_delay)
             return False
         if _r:
             msg = "===> Unfollowed, `user_id`: {}, user_name: {}"
@@ -41,6 +54,9 @@ def unfollow(self, user_id):
             self.total["unfollows"] += 1
             if user_id in self.following:
                 self.following.remove(user_id)
+            if self.blocked_actions_sleep and self.sleeping_actions["unfollows"]:
+                self.logger.info("`Unfollow` action is no longer sleeping.")
+                self.sleeping_actions["unfollows"] = False
             return True
     else:
         self.logger.info("Out of unfollows for today.")
