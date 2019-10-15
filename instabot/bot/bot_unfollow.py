@@ -40,7 +40,7 @@ def unfollow(self, user_id):
                     self.blocked_actions["unfollows"] = True
             else:
                 if self.sleeping_actions["unfollows"] \
-                and self.blocked_actions_protection:
+                        and self.blocked_actions_protection:
                     self.logger.warning("This is the second blocked \
                         `Unfollow` action.")
                     self.logger.warning("Activating blocked actions \
@@ -61,7 +61,7 @@ def unfollow(self, user_id):
             if user_id in self.following:
                 self.following.remove(user_id)
             if self.blocked_actions_sleep \
-            and self.sleeping_actions["unfollows"]:
+                    and self.sleeping_actions["unfollows"]:
                 self.logger.info("`Unfollow` action is no longer sleeping.")
                 self.sleeping_actions["unfollows"] = False
             return True

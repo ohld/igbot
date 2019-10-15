@@ -66,7 +66,7 @@ def like(
                 # if the action is sleeping and another block,
                 # then enable blocked actions protection
                 if self.sleeping_actions["likes"] \
-                and self.blocked_actions_protection:
+                        and self.blocked_actions_protection:
                     self.logger.warning("This is the second blocked \
                         `Like` action.")
                     self.logger.warning("Activating blocked actions \
