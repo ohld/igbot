@@ -55,7 +55,7 @@ def like(
         )
         if _r == "feedback_required":
             self.logger.error("`Like` action has been BLOCKED...!!!")
-            # if no sleep enabled, default flow, 
+            # if no sleep enabled, default flow,
             # with message of activating blocked actions protection
             if not self.blocked_actions_sleep:
                 if self.blocked_actions_protection:
@@ -63,17 +63,17 @@ def like(
                          protection for `Like` action.")
                     self.blocked_actions["likes"] = True
             else:
-                # if the action is sleeping and another block, 
+                # if the action is sleeping and another block,
                 # then enable blocked actions protection
                 if self.sleeping_actions["likes"] \
-                    and self.blocked_actions_protection:
+                and self.blocked_actions_protection:
                     self.logger.warning("This is the second blocked \
                         `Like` action.")
                     self.logger.warning("Activating blocked actions \
                         protection for `Like` action.")
                     self.sleeping_actions["likes"] = False
                     self.blocked_actions["likes"] = True
-                # otherwise (first block or no protection) 
+                # otherwise (first block or no protection)
                 # sleep for specified time
                 else:
                     self.logger.info("`Like` action is going to sleep for \

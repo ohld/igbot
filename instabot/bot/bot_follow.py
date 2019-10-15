@@ -28,7 +28,7 @@ def follow(self, user_id):
                     self.blocked_actions["follows"] = True
             else:
                 if self.sleeping_actions["follows"] \
-                    and self.blocked_actions_protection:
+                and self.blocked_actions_protection:
                     self.logger.warning("This is the second blocked \
                         `Follow` action.")
                     self.logger.warning("Activating blocked actions \
