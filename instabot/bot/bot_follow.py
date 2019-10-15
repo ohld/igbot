@@ -23,16 +23,21 @@ def follow(self, user_id):
             self.logger.error("`Follow` action has been BLOCKED...!!!")
             if not self.blocked_actions_sleep:
                 if self.blocked_actions_protection:
-                    self.logger.warning("Activating blocked actions protection for `Follow` action.")
+                    self.logger.warning("Activating blocked actions \
+                        protection for `Follow` action.")
                     self.blocked_actions["follows"] = True
             else:
-                if self.sleeping_actions["follows"] and self.blocked_actions_protection:
-                    self.logger.warning("This is the second blocked `Follow` action.")
-                    self.logger.warning("Activating blocked actions protection for `Follow` action.")
+                if self.sleeping_actions["follows"] \
+                    and self.blocked_actions_protection:
+                    self.logger.warning("This is the second blocked \
+                        `Follow` action.")
+                    self.logger.warning("Activating blocked actions \
+                        protection for `Follow` action.")
                     self.sleeping_actions["follows"] = False
                     self.blocked_actions["follows"] = True
                 else:
-                    self.logger.info("`Follow` action is going to sleep for %s seconds." % self.blocked_actions_sleep_delay)
+                    self.logger.info("`Follow` action is going to sleep \
+                        for %s seconds." % self.blocked_actions_sleep_delay)
                     self.sleeping_actions["follows"] = True
                     time.sleep(self.blocked_actions_sleep_delay)
             return False
