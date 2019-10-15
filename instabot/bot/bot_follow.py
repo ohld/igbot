@@ -21,7 +21,25 @@ def follow(self, user_id):
         _r = self.api.follow(user_id)
         if _r == "feedback_required":
             self.logger.error("`Follow` action has been BLOCKED...!!!")
-            self.blocked_actions["follows"] = True
+            if not self.blocked_actions_sleep:
+                if self.blocked_actions_protection:
+                    self.logger.warning("Activating blocked actions \
+                        protection for `Follow` action.")
+                    self.blocked_actions["follows"] = True
+            else:
+                if self.sleeping_actions["follows"] \
+                        and self.blocked_actions_protection:
+                    self.logger.warning("This is the second blocked \
+                        `Follow` action.")
+                    self.logger.warning("Activating blocked actions \
+                        protection for `Follow` action.")
+                    self.sleeping_actions["follows"] = False
+                    self.blocked_actions["follows"] = True
+                else:
+                    self.logger.info("`Follow` action is going to sleep \
+                        for %s seconds." % self.blocked_actions_sleep_delay)
+                    self.sleeping_actions["follows"] = True
+                    time.sleep(self.blocked_actions_sleep_delay)
             return False
         if _r:
             msg = "===> FOLLOWED <==== `user_id`: {}.".format(user_id)
@@ -30,6 +48,9 @@ def follow(self, user_id):
             self.followed_file.append(user_id)
             if user_id not in self.following:
                 self.following.append(user_id)
+            if self.blocked_actions_sleep and self.sleeping_actions["follows"]:
+                self.logger.info("`Follow` action is no longer sleeping.")
+                self.sleeping_actions["follows"] = False
             return True
     else:
         self.logger.info("Out of follows for today.")

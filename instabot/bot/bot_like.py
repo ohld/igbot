@@ -1,4 +1,5 @@
 from tqdm import tqdm
+import time
 
 
 def like(
@@ -54,11 +55,39 @@ def like(
         )
         if _r == "feedback_required":
             self.logger.error("`Like` action has been BLOCKED...!!!")
-            self.blocked_actions["likes"] = True
+            # if no sleep enabled, default flow,
+            # with message of activating blocked actions protection
+            if not self.blocked_actions_sleep:
+                if self.blocked_actions_protection:
+                    self.logger.warning("Activating blocked actions \
+                         protection for `Like` action.")
+                    self.blocked_actions["likes"] = True
+            else:
+                # if the action is sleeping and another block,
+                # then enable blocked actions protection
+                if self.sleeping_actions["likes"] \
+                        and self.blocked_actions_protection:
+                    self.logger.warning("This is the second blocked \
+                        `Like` action.")
+                    self.logger.warning("Activating blocked actions \
+                        protection for `Like` action.")
+                    self.sleeping_actions["likes"] = False
+                    self.blocked_actions["likes"] = True
+                # otherwise (first block or no protection)
+                # sleep for specified time
+                else:
+                    self.logger.info("`Like` action is going to sleep for \
+                        %s seconds." % self.blocked_actions_sleep_delay)
+                    self.sleeping_actions["likes"] = True
+                    time.sleep(self.blocked_actions_sleep_delay)
             return False
         if _r:
             self.logger.info("Liked media %s." % media_id)
             self.total["likes"] += 1
+            # if action just slept and now successful, then no longer sleeping
+            if self.blocked_actions_sleep and self.sleeping_actions["likes"]:
+                self.logger.info("`Like` action is no longer sleeping.")
+                self.sleeping_actions["likes"] = False
             return True
     else:
         self.logger.info("Out of likes for today.")

@@ -169,6 +169,8 @@ class Bot(object):
         stop_words=("shop", "store", "free"),
         blacklist_hashtags=["#shop", "#store", "#free"],
         blocked_actions_protection=True,
+        blocked_actions_sleep=False,
+        blocked_actions_sleep_delay=300,
         verbosity=True,
         device=None,
         save_logfile=True,
@@ -232,6 +234,20 @@ class Bot(object):
         self.blocked_actions_protection = blocked_actions_protection
 
         self.blocked_actions = dict.fromkeys([
+            "likes",
+            "unlikes",
+            "follows",
+            "unfollows",
+            "comments",
+            "blocks",
+            "unblocks",
+            "messages"
+        ], False)
+
+        self.blocked_actions_sleep = blocked_actions_sleep
+        self.blocked_actions_sleep_delay = blocked_actions_sleep_delay
+
+        self.sleeping_actions = dict.fromkeys([
             "likes",
             "unlikes",
             "follows",
