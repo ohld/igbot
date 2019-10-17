@@ -12,11 +12,16 @@ def unfollow(self, user_id):
 
     username = user_info.get("username")
 
-    self.console_print(
-        "===> Going to unfollow `user_id`: {} with username: {}".format(
-            user_id, username
+    if self.log_follow_unfollow:
+        msg = "Going to unfollow `user_id` {} with username {}.".format(
+            user_id, username)
+        self.logger.info(msg)
+    else:
+        self.console_print(
+            "===> Going to unfollow `user_id`: {} with username: {}".format(
+                user_id, username
+            )
         )
-    )
 
     if self.check_user(user_id, unfollowing=True):
         return True  # whitelisted user
@@ -54,8 +59,13 @@ def unfollow(self, user_id):
                     time.sleep(self.blocked_actions_sleep_delay)
             return False
         if _r:
-            msg = "===> Unfollowed, `user_id`: {}, user_name: {}"
-            self.console_print(msg.format(user_id, username), "yellow")
+            if self.log_follow_unfollow:
+                msg = "Unfollowed `user_id` {} with username {}".format(
+                    user_id, username)
+                self.logger.info(msg)
+            else:
+                msg = "===> Unfollowed, `user_id`: {}, user_name: {}"
+                self.console_print(msg.format(user_id, username), "yellow")
             self.unfollowed_file.append(user_id)
             self.total["unfollows"] += 1
             if user_id in self.following:

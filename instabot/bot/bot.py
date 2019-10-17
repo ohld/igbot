@@ -174,7 +174,8 @@ class Bot(object):
         verbosity=True,
         device=None,
         save_logfile=True,
-        log_filename=None
+        log_filename=None,
+        log_follow_unfollow=True
     ):
         self.api = API(
             device=device,
@@ -182,6 +183,7 @@ class Bot(object):
             save_logfile=save_logfile,
             log_filename=log_filename
         )
+        self.log_follow_unfollow = log_follow_unfollow
         self.base_path = base_path
 
         self.total = dict.fromkeys([

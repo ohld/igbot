@@ -4,8 +4,12 @@ from tqdm import tqdm
 
 def follow(self, user_id):
     user_id = self.convert_to_user_id(user_id)
-    msg = " ===> Going to follow `user_id`: {}.".format(user_id)
-    self.console_print(msg)
+    if self.log_follow_unfollow:
+        msg = "Going to follow `user_id` {}.".format(user_id)
+        self.logger.info(msg)
+    else:
+        msg = " ===> Going to follow `user_id`: {}.".format(user_id)
+        self.console_print(msg)
     if not self.check_user(user_id):
         return False
     if not self.reached_limit("follows"):
@@ -42,8 +46,12 @@ def follow(self, user_id):
                     time.sleep(self.blocked_actions_sleep_delay)
             return False
         if _r:
-            msg = "===> FOLLOWED <==== `user_id`: {}.".format(user_id)
-            self.console_print(msg, "green")
+            if self.log_follow_unfollow:
+                msg = "Followed `user_id` {}.".format(user_id)
+                self.logger.info(msg)
+            else:
+                msg = "===> FOLLOWED <==== `user_id`: {}.".format(user_id)
+                self.console_print(msg, "green")
             self.total["follows"] += 1
             self.followed_file.append(user_id)
             if user_id not in self.following:
