@@ -16,7 +16,6 @@ import requests.utils
 import six.moves.urllib as urllib
 from requests_toolbelt import MultipartEncoder
 from tqdm import tqdm
-import traceback
 
 from . import config, devices
 from .api_login import (
@@ -450,14 +449,15 @@ class API(object):
                 )
             try:
                 response_data = json.loads(response.text)
-                if "feedback_required" in str(response_data.get("message").encode('utf-8')):
+                if "feedback_required" in str(
+                        response_data.get("message").encode('utf-8')):
                     self.logger.error(
                         "ATTENTION!: `feedback_required`"
-                        + str(response_data.get("feedback_message").encode('utf-8'))
+                        + str(response_data.get("feedback_message"
+                        ).encode('utf-8'))
                     )
                     return "feedback_required"
             except ValueError:
-                self.logger.error(traceback.format_exc())
                 self.logger.error(
                     "Error checking for `feedback_required`, "
                     "response text is not JSON"
