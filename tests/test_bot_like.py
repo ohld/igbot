@@ -591,11 +591,13 @@ class TestBotGet(TestBot):
     @responses.activate
     @pytest.mark.parametrize(
         "blocked_actions_protection,blocked_actions_sleep,result",
-        [(True, True, False), (True, False, True), (False, True, False), (False, False, False)],
+        [(True, True, False), (True, False, True), 
+        (False, True, False), (False, False, False)],
     )
     @patch("time.sleep", return_value=None)
     def test_sleep_feedback_successful(
-        self, patched_time_sleep, blocked_actions_protection, blocked_actions_sleep, result
+        self, patched_time_sleep, blocked_actions_protection, 
+        blocked_actions_sleep, result
     ):
         self.bot.blocked_actions_protection = blocked_actions_protection
         # self.bot.blocked_actions["likes"] = False
@@ -642,11 +644,13 @@ class TestBotGet(TestBot):
     @responses.activate
     @pytest.mark.parametrize(
         "blocked_actions_protection,blocked_actions_sleep,result",
-        [(True, True, True), (True, False, True), (False, True, False), (False, False, False)],
+        [(True, True, True), (True, False, True), 
+        (False, True, False), (False, False, False)],
     )
     @patch("time.sleep", return_value=None)
     def test_sleep_feedback_unsuccessful(
-        self, patched_time_sleep, blocked_actions_protection, blocked_actions_sleep, result
+        self, patched_time_sleep, blocked_actions_protection, 
+        blocked_actions_sleep, result
     ):
         self.bot.blocked_actions_protection = blocked_actions_protection
         # self.bot.blocked_actions["likes"] = False
@@ -668,7 +672,7 @@ class TestBotGet(TestBot):
             u"feedback_url": u"repute/report_problem/instagram_like_add/",
         }
         # both likes blocked
-        for x in range (1, 2):
+        for x in range(1, 2):
             responses.add(
                 responses.POST,
                 "{api_url}media/{media_id}/like/".format(
