@@ -453,8 +453,8 @@ class API(object):
                         response_data.get("message")):
                     self.logger.error(
                         "ATTENTION!: `feedback_required`"
-                        + str(response_data.get("feedback_message"
-                        ).encode('utf-8'))
+                        + str(response_data.get(
+                            "feedback_message").encode('utf-8'))
                     )
                     return "feedback_required"
             except ValueError:
