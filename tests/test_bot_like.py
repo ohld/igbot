@@ -591,12 +591,12 @@ class TestBotGet(TestBot):
     @responses.activate
     @pytest.mark.parametrize(
         "blocked_actions_protection,blocked_actions_sleep,result",
-        [(True, True, False), (True, False, True), 
-        (False, True, False), (False, False, False)],
+        [(True, True, False), (True, False, True),
+         (False, True, False), (False, False, False)],
     )
     @patch("time.sleep", return_value=None)
     def test_sleep_feedback_successful(
-        self, patched_time_sleep, blocked_actions_protection, 
+        self, patched_time_sleep, blocked_actions_protection,
         blocked_actions_sleep, result
     ):
         self.bot.blocked_actions_protection = blocked_actions_protection
@@ -644,12 +644,12 @@ class TestBotGet(TestBot):
     @responses.activate
     @pytest.mark.parametrize(
         "blocked_actions_protection,blocked_actions_sleep,result",
-        [(True, True, True), (True, False, True), 
-        (False, True, False), (False, False, False)],
+        [(True, True, True), (True, False, True),
+         (False, True, False), (False, False, False)],
     )
     @patch("time.sleep", return_value=None)
     def test_sleep_feedback_unsuccessful(
-        self, patched_time_sleep, blocked_actions_protection, 
+        self, patched_time_sleep, blocked_actions_protection,
         blocked_actions_sleep, result
     ):
         self.bot.blocked_actions_protection = blocked_actions_protection
