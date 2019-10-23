@@ -373,7 +373,8 @@ class Bot(object):
             self.last["updated_followers"] = now
         return self._followers
 
-    def version(self):
+    @staticmethod
+    def version():
         try:
             from pip._vendor import pkg_resources
         except ImportError:
