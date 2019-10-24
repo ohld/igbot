@@ -458,8 +458,6 @@ class API(object):
                         + str(response_data.get(
                             "feedback_message").encode('utf-8'))
                     )
-                    if not response_data.get("two_factor_required"):
-                        return "feedback_required"
             except ValueError:
                 self.logger.error(
                     "Error checking for `feedback_required`, "
