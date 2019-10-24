@@ -435,6 +435,7 @@ class API(object):
             return False
 
         self.last_response = response
+        self.logger.debug(response)
         if response.status_code == 200:
             try:
                 self.last_json = json.loads(response.text)
@@ -449,8 +450,9 @@ class API(object):
                 )
             try:
                 response_data = json.loads(response.text)
-                if "feedback_required" in str(
-                        response_data.get("message")):
+                if response_data.get("message") is not None \
+                    and "feedback_required" in str(
+                        response_data.get("message").encode('utf-8')):
                     self.logger.error(
                         "ATTENTION!: `feedback_required`"
                         + str(response_data.get(
