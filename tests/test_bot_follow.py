@@ -510,3 +510,101 @@ class TestBotFilter(TestBot):
             str(my_test_username_info_items[i]["pk"]) for i in range(results_3)
         ]
         assert test_follows and test_following and test_followed
+
+    @responses.activate
+    @pytest.mark.parametrize(
+        "blocked_actions_protection,blocked_actions_sleep,result",
+        [(True, True, False), (True, False, True),
+         (False, True, False), (False, False, False)],
+    )
+    @patch("time.sleep", return_value=None)
+    def test_sleep_feedback_successful(
+        self, patched_time_sleep, blocked_actions_protection,
+        blocked_actions_sleep, result
+    ):
+        self.bot.blocked_actions_protection = blocked_actions_protection
+        # self.bot.blocked_actions["likes"] = False
+        self.bot.blocked_actions_sleep = blocked_actions_sleep
+        user_id = 1234567890
+        response_data = {
+            u"status": u"fail",
+            u"feedback_title": u"feedback_required",
+            u"feedback_message": u"This action was blocked. Please"
+            u" try again later. We restrict certain content and "
+            u"actions to protect our community. Tell us if you think"
+            u" we made a mistake.",
+            u"spam": True,
+            u"feedback_action": u"report_problem",
+            u"feedback_appeal_label": u"Report problem",
+            u"feedback_ignore_label": u"OK",
+            u"message": u"feedback_required",
+            u"feedback_url": u"repute/report_problem/instagram_like_add/",
+        }
+        responses.add(
+            responses.POST,
+            "{api_url}friendships/create/{user_id}/".format(
+                api_url=API_URL, user_id=user_id
+            ),
+            json=response_data,
+            status=400,
+        )
+        responses.add(
+            responses.POST,
+            "{api_url}friendships/create/{user_id}/".format(
+                api_url=API_URL, user_id=user_id
+            ),
+            status=200,
+            json={"status": "ok"},
+        )
+        self.bot.follow(user_id, check_user=False)
+        self.bot.follow(user_id, check_user=False)
+        assert self.bot.blocked_actions["follows"] == result
+
+    @responses.activate
+    @pytest.mark.parametrize(
+        "blocked_actions_protection,blocked_actions_sleep,result",
+        [(True, True, True), (True, False, True),
+         (False, True, False), (False, False, False)],
+    )
+    @patch("time.sleep", return_value=None)
+    def test_sleep_feedback_unsuccessful(
+        self, patched_time_sleep, blocked_actions_protection,
+        blocked_actions_sleep, result
+    ):
+        self.bot.blocked_actions_protection = blocked_actions_protection
+        # self.bot.blocked_actions["likes"] = False
+        self.bot.blocked_actions_sleep = blocked_actions_sleep
+        user_id = 1234567890
+        response_data = {
+            u"status": u"fail",
+            u"feedback_title": u"feedback_required",
+            u"feedback_message": u"This action was blocked. Please"
+            u" try again later. We restrict certain content and "
+            u"actions to protect our community. Tell us if you think"
+            u" we made a mistake.",
+            u"spam": True,
+            u"feedback_action": u"report_problem",
+            u"feedback_appeal_label": u"Report problem",
+            u"feedback_ignore_label": u"OK",
+            u"message": u"feedback_required",
+            u"feedback_url": u"repute/report_problem/instagram_like_add/",
+        }
+        responses.add(
+            responses.POST,
+            "{api_url}friendships/create/{user_id}/".format(
+                api_url=API_URL, user_id=user_id
+            ),
+            json=response_data,
+            status=400,
+        )
+        responses.add(
+            responses.POST,
+            "{api_url}friendships/create/{user_id}/".format(
+                api_url=API_URL, user_id=user_id
+            ),
+            json=response_data,
+            status=400,
+        )
+        self.bot.follow(user_id, check_user=False)
+        self.bot.follow(user_id, check_user=False)
+        assert self.bot.blocked_actions["follows"] == result
