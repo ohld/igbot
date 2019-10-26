@@ -70,11 +70,15 @@ class API(object):
 
         if not os.path.exists("./config/"):
             os.makedirs("./config/")  # create base_path if not exists
+            
+            
+        if not os.path.exists("./log/"):
+            os.makedirs("./log/")  # create log path if not exists
 
         if save_logfile is True:
             if log_filename is None:
                 log_filename = os.path.join(
-                    base_path, "instabot_{}.log".format(id(self))
+                    base_path, "./log/instabot_{}.log".format(id(self))
                 )
 
             fh = logging.FileHandler(filename=log_filename)
