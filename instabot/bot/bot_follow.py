@@ -2,7 +2,7 @@ import time
 from tqdm import tqdm
 
 
-def follow(self, user_id):
+def follow(self, user_id, check_user):
     user_id = self.convert_to_user_id(user_id)
     if self.log_follow_unfollow:
         msg = "Going to follow `user_id` {}.".format(user_id)
@@ -10,7 +10,7 @@ def follow(self, user_id):
     else:
         msg = " ===> Going to follow `user_id`: {}.".format(user_id)
         self.console_print(msg)
-    if not self.check_user(user_id):
+    if check_user and not self.check_user(user_id):
         return False
     if not self.reached_limit("follows"):
         if self.blocked_actions["follows"]:

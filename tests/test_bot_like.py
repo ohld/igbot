@@ -590,6 +590,104 @@ class TestBotGet(TestBot):
 
     @responses.activate
     @pytest.mark.parametrize(
+        "blocked_actions_protection,blocked_actions_sleep,result",
+        [(True, True, False), (True, False, True),
+         (False, True, False), (False, False, False)],
+    )
+    @patch("time.sleep", return_value=None)
+    def test_sleep_feedback_successful(
+        self, patched_time_sleep, blocked_actions_protection,
+        blocked_actions_sleep, result
+    ):
+        self.bot.blocked_actions_protection = blocked_actions_protection
+        # self.bot.blocked_actions["likes"] = False
+        self.bot.blocked_actions_sleep = blocked_actions_sleep
+        media_id = 1234567890
+        response_data = {
+            u"status": u"fail",
+            u"feedback_title": u"You\u2019re Temporarily Blocked",
+            u"feedback_message": u"It looks like you were misusing this " +
+            u"feature by going too fast. You\u2019ve been temporarily " +
+            u"blocked from using it. We restrict certain content and " +
+            u"actions to protect our community. Tell us if you think we " +
+            u"made a mistake.",
+            u"spam": True,
+            u"feedback_action": u"report_problem",
+            u"feedback_appeal_label": u"Report problem",
+            u"feedback_ignore_label": u"OK",
+            u"message": u"feedback_required",
+            u"feedback_url": u"repute/report_problem/instagram_like_add/",
+        }
+        # first like blocked
+        responses.add(
+            responses.POST,
+            "{api_url}media/{media_id}/like/".format(
+                api_url=API_URL, media_id=media_id
+            ),
+            json=response_data,
+            status=400,
+        )
+        # second like successful
+        responses.add(
+            responses.POST,
+            "{api_url}media/{media_id}/like/".format(
+                api_url=API_URL, media_id=media_id
+            ),
+            status=200,
+            json={"status": "ok"},
+        )
+        # do 2 likes
+        self.bot.like(media_id, check_media=False)
+        self.bot.like(media_id, check_media=False)
+        assert self.bot.blocked_actions["likes"] == result
+
+    @responses.activate
+    @pytest.mark.parametrize(
+        "blocked_actions_protection,blocked_actions_sleep,result",
+        [(True, True, True), (True, False, True),
+         (False, True, False), (False, False, False)],
+    )
+    @patch("time.sleep", return_value=None)
+    def test_sleep_feedback_unsuccessful(
+        self, patched_time_sleep, blocked_actions_protection,
+        blocked_actions_sleep, result
+    ):
+        self.bot.blocked_actions_protection = blocked_actions_protection
+        # self.bot.blocked_actions["likes"] = False
+        self.bot.blocked_actions_sleep = blocked_actions_sleep
+        media_id = 1234567890
+        response_data = {
+            u"status": u"fail",
+            u"feedback_title": u"You\u2019re Temporarily Blocked",
+            u"feedback_message": u"It looks like you were misusing this " +
+            u"feature by going too fast. You\u2019ve been temporarily " +
+            u"blocked from using it. We restrict certain content and " +
+            u"actions to protect our community. Tell us if you think we " +
+            u"made a mistake.",
+            u"spam": True,
+            u"feedback_action": u"report_problem",
+            u"feedback_appeal_label": u"Report problem",
+            u"feedback_ignore_label": u"OK",
+            u"message": u"feedback_required",
+            u"feedback_url": u"repute/report_problem/instagram_like_add/",
+        }
+        # both likes blocked
+        for x in range(1, 2):
+            responses.add(
+                responses.POST,
+                "{api_url}media/{media_id}/like/".format(
+                    api_url=API_URL, media_id=media_id
+                ),
+                json=response_data,
+                status=400,
+            )
+        # do 2 likes
+        self.bot.like(media_id, check_media=False)
+        self.bot.like(media_id, check_media=False)
+        assert self.bot.blocked_actions["likes"] == result
+
+    @responses.activate
+    @pytest.mark.parametrize(
         "blocked_actions_protection,blocked_actions",
         [(True, True), (True, False), (False, True), (False, True)],
     )
