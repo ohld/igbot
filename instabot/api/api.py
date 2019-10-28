@@ -284,9 +284,68 @@ class API(object):
                         return False
                 else:
                     return False
+            elif self.last_json.get("two_factor_required"):
+                if two_factor_auth(self):
+                    self.save_successful_login()
+                    self.login_flow(True)
+                    return True
+                else:
+                    self.save_failed_login()
+                    return False
             else:
                 self.save_failed_login()
                 return False
+
+    def two_factor_auth(self):
+        self.logger.info("Two-factor authentication required")
+        two_factor_code = input("Enter 2FA verification code: ")
+        two_factor_id = self.last_json["two_factor_info"][
+            "two_factor_identifier"
+        ]
+
+        login = self.session.post(
+            config.API_URL + "accounts/two_factor_login/",
+            data={
+                "username": self.username,
+                "verification_code": two_factor_code,
+                "two_factor_identifier": two_factor_id,
+                "password": self.password,
+                "device_id": self.device_id,
+                "ig_sig_key_version": 4,
+            },
+            allow_redirects=True,
+        )
+
+        if login.status_code == 200:
+            resp_json = json.loads(login.text)
+            if resp_json["status"] != "ok":
+                if "message" in resp_json:
+                    self.logger.error(
+                        "Login error: {}".format(
+                            resp_json["message"]
+                        )
+                    )
+                else:
+                    self.logger.error(
+                        (
+                            'Login error: "{}" status and'
+                            ' message {}.'
+                        ).format(
+                            resp_json["status"], login.text
+                        )
+                    )
+                return False
+            return True
+        else:
+            self.logger.error(
+                (
+                    "Two-factor authentication request returns "
+                    "{} error with message {} !"
+                ).format(
+                    login.status_code, login.text
+                )
+            )
+            return False
 
     def save_successful_login(self):
         self.is_logged_in = True
@@ -435,6 +494,7 @@ class API(object):
             return False
 
         self.last_response = response
+        self.logger.debug(response)
         if response.status_code == 200:
             try:
                 self.last_json = json.loads(response.text)
@@ -449,11 +509,20 @@ class API(object):
                 )
             try:
                 response_data = json.loads(response.text)
-                if "feedback_required" in str(response_data.get("message")):
+                if response_data.get("message") is not None \
+                    and "feedback_required" in str(
+                        response_data.get("message").encode('utf-8')):
                     self.logger.error(
                         "ATTENTION!: `feedback_required`"
-                        + str(response_data.get("feedback_message"))
+                        + str(response_data.get(
+                            "feedback_message").encode('utf-8'))
                     )
+                    try:
+                        self.last_response = response
+                        self.last_json = json.loads(response.text)
+                    except Exception:
+                        pass
+                    return "feedback_required"
             except ValueError:
                 self.logger.error(
                     "Error checking for `feedback_required`, "
@@ -472,55 +541,12 @@ class API(object):
 
                 # PERFORM Interactive Two-Factor Authentication
                 if response_data.get("two_factor_required"):
-                    self.logger.info("Two-factor authentication required")
-                    two_factor_code = input("Enter 2FA verification code: ")
-                    two_factor_id = response_data["two_factor_info"][
-                        "two_factor_identifier"
-                    ]
-
-                    login = self.session.post(
-                        config.API_URL + "accounts/two_factor_login/",
-                        data={
-                            "username": self.username,
-                            "verification_code": two_factor_code,
-                            "two_factor_identifier": two_factor_id,
-                            "password": self.password,
-                            "device_id": self.device_id,
-                            "ig_sig_key_version": 4,
-                        },
-                        allow_redirects=True,
-                    )
-
-                    if login.status_code == 200:
-                        resp_json = json.loads(login.text)
-                        if resp_json["status"] != "ok":
-                            if "message" in resp_json:
-                                self.logger.error(
-                                    "Login error: {}".format(
-                                        resp_json["message"]
-                                    )
-                                )
-                            else:
-                                self.logger.error(
-                                    (
-                                        'Login error: "{}" status and'
-                                        ' message {}.'
-                                    ).format(
-                                        resp_json["status"], login.text
-                                    )
-                                )
-                            return False
-                        return True
-                    else:
-                        self.logger.error(
-                            (
-                                "Two-factor authentication request returns "
-                                "{} error with message {} !"
-                            ).format(
-                                login.status_code, login.text
-                            )
-                        )
-                        return False
+                    try:
+                        self.last_response = response
+                        self.last_json = json.loads(response.text)
+                    except Exception:
+                        pass
+                    return self.two_factor_auth()
                 # End of Interactive Two-Factor Authentication
                 else:
                     msg = "Instagram's error message: {}"
