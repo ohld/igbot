@@ -70,7 +70,7 @@ class API(object):
 
         if not os.path.exists("./config/"):
             os.makedirs("./config/")  # create base_path if not exists
-            
+
         if not os.path.exists("./log/"):
             os.makedirs("./log/")  # create log folder if not exists
 
