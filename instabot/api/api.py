@@ -31,9 +31,6 @@ from .api_login import (
     sync_launcher,
     sync_user_features,
 )
-from .api_get import (
-    get_user_id_from_username,
-)
 from .api_photo import configure_photo, download_photo, upload_photo
 from .api_story import configure_story, download_story, upload_story_photo
 from .api_video import configure_video, download_video, upload_video
@@ -1900,6 +1897,3 @@ class API(object):
         return self.send_request(
             "oembed/?url={}".format(urllib.parse.quote(link, safe=""))
         )
-
-    def get_user_id_from_username(self, username):
-        return get_user_id_from_username(self, username)
