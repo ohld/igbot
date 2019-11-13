@@ -201,7 +201,6 @@ class Bot(object):
             "message": message_delay,
         }
 
-
         # limits - follow
         self.filter_users = filter_users
         self.filter_private_users = filter_private_users

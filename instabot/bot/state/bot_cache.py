@@ -1,7 +1,8 @@
 from instabot.singleton import Singleton
 
 
-class BotCache(object, metaclass=Singleton):
+class BotCache(object):
+    __metaclass__ = Singleton
 
     def __init__(self):
         self.following = None

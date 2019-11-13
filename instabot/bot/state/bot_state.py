@@ -3,7 +3,8 @@ import datetime
 from singleton import Singleton
 
 
-class BotState(object, metaclass=Singleton):
+class BotState(object):
+    __metaclass__ = Singleton
 
     def __init__(self):
         self.start_time = datetime.datetime.now()
@@ -53,4 +54,3 @@ class BotState(object, metaclass=Singleton):
 
     def __repr__(self):
         return self.__dict__
-
