@@ -528,11 +528,11 @@ class API(object):
                     "Error checking for `feedback_required`, "
                     "response text is not JSON"
                 )
-                self.logger.error(
+                self.logger.info(
                     'Full Response: {}'.format(str(response))
                 )
                 try:
-                    self.logger.error(
+                    self.logger.info(
                         'Response Text: {}'.format(str(response.text))
                     )
                 except Exception as e:
