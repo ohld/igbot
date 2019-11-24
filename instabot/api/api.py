@@ -531,11 +531,11 @@ class API(object):
                 self.logger.error(
                     'Full Response JSON: {}'.format(str(response))
                 )
-                try: 
+                try:
                     self.logger.error(
                         'Response Text: {}'.format(str(response.text))
                     )
-                except: 
+                except Exception as e:
                     pass
 
             if response.status_code == 429:
