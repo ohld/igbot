@@ -174,7 +174,7 @@ def upload_photo(
 #     )
 
     dataEncoded = MultipartEncoder(data, boundary=self.uuid).to_string()
-    response = self.send_request(config.API_URL + 'upload/photo/', dataEncoded, False, False)
+    response = self.send_request('upload/photo/', dataEncoded, with_signature=False)
 
     configure_timeout = options.get("configure_timeout")
 #     if response.status_code == 200:
