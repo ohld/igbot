@@ -156,9 +156,6 @@ def upload_photo(
             {"Content-Transfer-Encoding": "binary"},
         ),
     }
-    dataEncoded = MultipartEncoder(data, boundary=self.uuid).to_string()
-    response = self.send_request(endpoint = config.API_URL + 'upload/photo/', post=dataEncoded, with_signature=False)
-    
 #     self.session.headers.update(
 #         {
 #             "X-IG-Capabilities": "3Q4=",
@@ -175,6 +172,9 @@ def upload_photo(
 #         config.API_URL + "upload/photo/",
 #         data=m.to_string()
 #     )
+
+    dataEncoded = MultipartEncoder(data, boundary=self.uuid).to_string()
+    response = self.send_request(endpoint=config.API_URL + 'upload/photo/', post=dataEncoded, with_signature=False)
 
     configure_timeout = options.get("configure_timeout")
 #     if response.status_code == 200:
