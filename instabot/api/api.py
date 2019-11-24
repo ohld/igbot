@@ -528,6 +528,9 @@ class API(object):
                     "Error checking for `feedback_required`, "
                     "response text is not JSON"
                 )
+                self.logger.error('Full Response JSON: {}'.format(str(response)))
+                try: self.logger.error('Response Text: {}'.format(str(response.text)))
+                except: pass
 
             if response.status_code == 429:
                 sleep_minutes = 5
