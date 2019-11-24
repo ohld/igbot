@@ -529,7 +529,7 @@ class API(object):
                     "response text is not JSON"
                 )
                 self.logger.error(
-                    'Full Response JSON: {}'.format(str(response))
+                    'Full Response: {}'.format(str(response))
                 )
                 try:
                     self.logger.error(
