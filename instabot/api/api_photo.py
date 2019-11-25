@@ -156,26 +156,33 @@ def upload_photo(
             {"Content-Transfer-Encoding": "binary"},
         ),
     }
-    m = MultipartEncoder(data, boundary=self.uuid)
-    self.session.headers.update(
-        {
-            "X-IG-Capabilities": "3Q4=",
-            "X-IG-Connection-Type": "WIFI",
-            "Cookie2": "$Version=1",
-            "Accept-Language": "en-US",
-            "Accept-Encoding": "gzip, deflate",
-            "Content-type": m.content_type,
-            "Connection": "close",
-            "User-Agent": self.user_agent,
-        }
-    )
-    response = self.session.post(
-        config.API_URL + "upload/photo/",
-        data=m.to_string()
-    )
+#     self.session.headers.update(
+#         {
+#             "X-IG-Capabilities": "3Q4=",
+#             "X-IG-Connection-Type": "WIFI",
+#             "Cookie2": "$Version=1",
+#             "Accept-Language": "en-US",
+#             "Accept-Encoding": "gzip, deflate",
+#             "Content-type": m.content_type,
+#             "Connection": "close",
+#             "User-Agent": self.user_agent,
+#         }
+#     )
+#     response = self.session.post(
+#         config.API_URL + "upload/photo/",
+#         data=m.to_string()
+#     )
 
+    dataEncoded = MultipartEncoder(data, boundary=self.uuid).to_string()
+    response = self.send_request(
+        'upload/photo/',
+        dataEncoded,
+        login=True,
+        with_signature=False
+    )
     configure_timeout = options.get("configure_timeout")
-    if response.status_code == 200:
+#     if response.status_code == 200:
+    if response:
         for attempt in range(4):
             if configure_timeout:
                 time.sleep(configure_timeout)
