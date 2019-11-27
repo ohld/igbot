@@ -19,6 +19,8 @@ class TestBot:
         self.TOKEN = "abcdef123456"
         self.bot = Bot()
         self.prepare_api(self.bot)
+        self.bot.reset_counters()
+        self.bot.reset_cache()
 
     def prepare_api(self, bot):
         bot.api.is_logged_in = True
