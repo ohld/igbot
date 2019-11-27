@@ -321,7 +321,7 @@ def resize_video(fname, thumbnail=None):
             bottom = h
             vid = vid.crop(x1=left, y1=top, x2=right, y2=bottom)
             (w, h) = vid.size
-        if w > 1080:
+        if w > 1081:
             print("Resizing video")
             vid = vid.resize(width=1080)
     elif w < h:
@@ -335,12 +335,12 @@ def resize_video(fname, thumbnail=None):
             bottom = h - cut
             vid = vid.crop(x1=left, y1=top, x2=right, y2=bottom)
             (w, h) = vid.size
-        if h > 1080:
+        if h > 1081:
             print("Resizing video")
             vid = vid.resize(height=1080)
     else:
         print("Square video")
-        if w > 1080:
+        if w > 1081:
             print("Resizing video")
             vid = vid.resize(width=1080)
     (w, h) = vid.size
