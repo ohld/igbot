@@ -1809,6 +1809,17 @@ class API(object):
     def get_presence(self):
         return self.send_request("direct_v2/get_presence/")
 
+    def get_thread(self, thread_id, cursor_id=None):
+        data = {
+            "use_unified_inbox": "true"
+        }
+        if cursor_id is not None:
+            data["cursor"] = cursor_id
+        return self.send_request(
+            "direct_v2/threads/{}/".format(thread_id),
+            json.dumps(data)
+        )
+
     def get_ranked_recipients(self, mode, show_threads, query=None):
         data = {
             "mode": mode,
