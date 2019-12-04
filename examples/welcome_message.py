@@ -14,7 +14,7 @@ sys.path.append(os.path.join(sys.path[0], "../"))
 from instabot import Bot  # noqa: E402
 
 RETRY_DELAY = 60
-DELAY = 30
+DELAY = 30 * 60
 
 
 def get_recent_followers(bot, from_time):
