@@ -444,7 +444,7 @@ class API(object):
         return not self.is_logged_in
 
     def set_proxy(self):
-        if self.proxy:
+        if getattr(self, 'proxy', None):
             parsed = urllib.parse.urlparse(self.proxy)
             scheme = "http://" if not parsed.scheme else ""
             self.session.proxies["http"] = scheme + self.proxy
@@ -459,6 +459,7 @@ class API(object):
         headers=None,
         extra_sig=None,
     ):
+        self.set_proxy()  # Only happens if `self.proxy`
         if not self.is_logged_in and not login:
             msg = "Not logged in!"
             self.logger.critical(msg)
