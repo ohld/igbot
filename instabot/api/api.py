@@ -71,10 +71,13 @@ class API(object):
         if not os.path.exists("./config/"):
             os.makedirs("./config/")  # create base_path if not exists
 
+        if not os.path.exists("./log/"):
+            os.makedirs("./log/")  # create log folder if not exists
+
         if save_logfile is True:
             if log_filename is None:
                 log_filename = os.path.join(
-                    base_path, "instabot_{}.log".format(id(self))
+                    base_path, "./log/instabot_{}.log".format(id(self))
                 )
 
             fh = logging.FileHandler(filename=log_filename)
@@ -529,6 +532,15 @@ class API(object):
                     "Error checking for `feedback_required`, "
                     "response text is not JSON"
                 )
+                self.logger.info(
+                    'Full Response: {}'.format(str(response))
+                )
+                try:
+                    self.logger.info(
+                        'Response Text: {}'.format(str(response.text))
+                    )
+                except Exception as e:
+                    pass
 
             if response.status_code == 429:
                 sleep_minutes = 5
@@ -1797,6 +1809,17 @@ class API(object):
 
     def get_presence(self):
         return self.send_request("direct_v2/get_presence/")
+
+    def get_thread(self, thread_id, cursor_id=None):
+        data = {
+            "use_unified_inbox": "true"
+        }
+        if cursor_id is not None:
+            data["cursor"] = cursor_id
+        return self.send_request(
+            "direct_v2/threads/{}/".format(thread_id),
+            json.dumps(data)
+        )
 
     def get_ranked_recipients(self, mode, show_threads, query=None):
         data = {
