@@ -39,14 +39,13 @@ def download_video(
     except Exception:
         return False
 
-    fname = os.path.join(folder, filename)
-    if os.path.exists(fname):
-        return os.path.abspath(fname)
-
     for counter, video_url in enumerate(video_urls):
+        fname = os.path.join(folder, "{}_{}".format(counter, filename))
+        if os.path.exists(fname):
+            print('File %s is exists, return it' % fname)
+            return os.path.abspath(fname)
         response = self.session.get(video_url, stream=True)
         if response.status_code == 200:
-            fname = os.path.join(folder, "{}_{}".format(counter, filename))
             with open(fname, "wb") as f:
                 response.raw.decode_content = True
                 shutil.copyfileobj(response.raw, f)
