@@ -288,7 +288,7 @@ class API(object):
                 else:
                     return False
             elif self.last_json.get("two_factor_required"):
-                if two_factor_auth(self):
+                if self.two_factor_auth():
                     self.save_successful_login()
                     self.login_flow(True)
                     return True
