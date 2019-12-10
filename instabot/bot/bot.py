@@ -7,6 +7,8 @@ import time
 
 from .. import utils
 from ..api import API
+from .state.bot_state import BotState
+from .state.bot_cache import BotCache
 from .bot_archive import archive, archive_medias, unarchive_medias
 from .bot_block import block, block_bots, block_users, unblock, unblock_users
 from .bot_checkpoint import load_checkpoint, save_checkpoint
@@ -81,6 +83,7 @@ from .bot_get import (
     get_username_from_user_id,
     get_your_medias,
     search_users,
+    get_muted_friends,
 )
 from .bot_like import (
     like,
@@ -168,32 +171,24 @@ class Bot(object):
         stop_words=("shop", "store", "free"),
         blacklist_hashtags=["#shop", "#store", "#free"],
         blocked_actions_protection=True,
+        blocked_actions_sleep=False,
+        blocked_actions_sleep_delay=300,
         verbosity=True,
         device=None,
         save_logfile=True,
+        log_filename=None,
+        log_follow_unfollow=True
     ):
         self.api = API(
             device=device,
             base_path=base_path,
-            save_logfile=save_logfile
+            save_logfile=save_logfile,
+            log_filename=log_filename
         )
+        self.log_follow_unfollow = log_follow_unfollow
         self.base_path = base_path
 
-        self.total = dict.fromkeys([
-            "likes",
-            "unlikes",
-            "follows",
-            "unfollows",
-            "comments",
-            "blocks",
-            "unblocks",
-            "messages",
-            "archived",
-            "unarchived",
-            "stories_viewed",
-        ], 0)
-
-        self.start_time = datetime.datetime.now()
+        self.state = BotState()
 
         self.delays = {
             "like": like_delay,
@@ -205,8 +200,6 @@ class Bot(object):
             "unblock": unblock_delay,
             "message": message_delay,
         }
-
-        self.last = {key: 0 for key in self.delays.keys()}
 
         # limits - follow
         self.filter_users = filter_users
@@ -230,16 +223,8 @@ class Bot(object):
 
         self.blocked_actions_protection = blocked_actions_protection
 
-        self.blocked_actions = dict.fromkeys([
-            "likes",
-            "unlikes",
-            "follows",
-            "unfollows",
-            "comments",
-            "blocks",
-            "unblocks",
-            "messages"
-        ], False)
+        self.blocked_actions_sleep = blocked_actions_sleep
+        self.blocked_actions_sleep_delay = blocked_actions_sleep_delay
 
         self.max_likes_to_like = max_likes_to_like
         self.min_likes_to_like = min_likes_to_like
@@ -259,10 +244,7 @@ class Bot(object):
         self.max_following_to_block = max_following_to_block
 
         # current following and followers
-        self._following = None
-        self._followers = None
-        self._user_infos = {}  # User info cache
-        self._usernames = {}  # `username` to `user_id` mapping
+        self.cache = BotCache()
 
         # Adjust file paths
         followed_file = os.path.join(base_path, followed_file)
@@ -352,7 +334,80 @@ class Bot(object):
             self.last["updated_followers"] = now
         return self._followers
 
-    def version(self):
+    @property
+    def start_time(self):
+        return self.state.start_time
+
+    @start_time.setter
+    def start_time(self, value):
+        self.state.start_time = value
+
+    @property
+    def total(self):
+        return self.state.total
+
+    @total.setter
+    def total(self, value):
+        self.state.total = value
+
+    @property
+    def sleeping_actions(self):
+        return self.state.sleeping_actions
+
+    @sleeping_actions.setter
+    def sleeping_actions(self, value):
+        self.state.sleeping_actions = value
+
+    @property
+    def blocked_actions(self):
+        return self.state.blocked_actions
+
+    @blocked_actions.setter
+    def blocked_actions(self, value):
+        self.state.blocked_actions = value
+
+    @property
+    def last(self):
+        return self.state.last
+
+    @last.setter
+    def last(self, value):
+        self.state.last = value
+
+    @property
+    def _following(self):
+        return self.cache.following
+
+    @_following.setter
+    def _following(self, value):
+        self.cache.following = value
+
+    @property
+    def _followers(self):
+        return self.cache.followers
+
+    @_followers.setter
+    def _followers(self, value):
+        self.cache.followers = value
+
+    @property
+    def _user_infos(self):
+        return self.cache.user_infos
+
+    @_user_infos.setter
+    def _user_infos(self, value):
+        self.cache.user_infos = value
+
+    @property
+    def _usernames(self):
+        return self.cache.usernames
+
+    @_usernames.setter
+    def _usernames(self, value):
+        self.cache.usernames = value
+
+    @staticmethod
+    def version():
         try:
             from pip._vendor import pkg_resources
         except ImportError:
@@ -453,6 +508,12 @@ class Bot(object):
         for k in self.blocked_actions:
             self.blocked_actions[k] = False
         self.start_time = datetime.datetime.now()
+
+    def reset_cache(self):
+        self._following = None
+        self._followers = None
+        self._user_infos = {}
+        self._usernames = {}
 
     # getters
     def get_user_stories(self, user_id):
@@ -584,6 +645,9 @@ class Bot(object):
 
     def search_users(self, query):
         return search_users(self, query)
+
+    def get_muted_friends(self, muted_content='stories'):
+        return get_muted_friends(self, muted_content)
 
     def convert_to_user_id(self, usernames):
         return convert_to_user_id(self, usernames)
@@ -788,8 +852,8 @@ class Bot(object):
         )
 
     # follow
-    def follow(self, user_id):
-        return follow(self, user_id)
+    def follow(self, user_id, check_user=True):
+        return follow(self, user_id, check_user)
 
     def follow_users(self, user_ids, nfollows=None):
         return follow_users(self, user_ids, nfollows)
