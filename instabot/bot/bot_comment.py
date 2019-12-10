@@ -62,6 +62,8 @@ def reply_to_comment(self, media_id, comment_text, parent_comment_id):
                 )
                 return False
         self.delay("comment")
+        comment_text = comment_text.\
+            replace("[[username]]", self.get_username_from_user_id(self.get_media_owner(media_id)))
         if comment_text[0] != "@":
             msg = ("A reply must start with mention, so '@' must be the "
                    "1st char, followed by the username you're replying to")
