@@ -178,9 +178,7 @@ def get_timeline_users(self):
         return []
     if "items" in self.api.last_json:
         return [
-            str(i["user"]["pk"])
-            for i in self.api.last_json["items"]
-            if i.get("user")
+            str(i["user"]["pk"]) for i in self.api.last_json["items"] if i.get("user")
         ]
     elif "feed_items" in self.api.last_json:
         return [
@@ -478,10 +476,7 @@ def get_messages(self):
     if self.api.get_inbox_v2():
         return self.api.last_json
     else:
-        self.logger.info(
-            "Messages were not found, "
-            "something went wrong."
-        )
+        self.logger.info("Messages were not found, " "something went wrong.")
         return None
 
 
@@ -517,11 +512,9 @@ def get_muted_friends(self, muted_content):
     """
     self.api.get_muted_friends(muted_content)
     if self.api.last_json.get("users"):
-        return [
-            str(user.get('pk'))
-            for user in self.api.last_json.get('users')
-        ]
+        return [str(user.get("pk")) for user in self.api.last_json.get("users")]
     else:
-        self.logger.info("No users with muted {} "
-                         "in your friends".format(muted_content))
+        self.logger.info(
+            "No users with muted {} " "in your friends".format(muted_content)
+        )
         return []

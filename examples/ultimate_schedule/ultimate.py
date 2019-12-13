@@ -27,9 +27,7 @@ random_hashtag_file = utils.file(config.HASHTAGS_FILE)
 photo_captions_file = utils.file(config.PHOTO_CAPTIONS_FILE)
 posted_pic_list = utils.file(config.POSTED_PICS_FILE).list
 
-pics = sorted([
-    os.path.basename(x) for x in glob(config.PICS_PATH + "/*.jpg")
-])
+pics = sorted([os.path.basename(x) for x in glob(config.PICS_PATH + "/*.jpg")])
 
 
 def stats():
@@ -37,9 +35,7 @@ def stats():
 
 
 def like_hashtags():
-    bot.like_hashtag(
-        random_hashtag_file.random(), amount=700 // 24
-    )
+    bot.like_hashtag(random_hashtag_file.random(), amount=700 // 24)
 
 
 def like_timeline():
@@ -52,8 +48,7 @@ def like_followers_from_random_user_file():
 
 def follow_followers():
     bot.follow_followers(
-        random_user_file.random(),
-        nfollows=config.NUMBER_OF_FOLLOWERS_TO_FOLLOW
+        random_user_file.random(), nfollows=config.NUMBER_OF_FOLLOWERS_TO_FOLLOW
     )
 
 
@@ -88,9 +83,7 @@ def upload_pictures():  # Automatically post a pic in 'pics' folder
             bot.logger.info("Uploading pic with caption: " + caption)
             bot.upload_photo(config.PICS_PATH + pic, caption=full_caption)
             if bot.api.last_response.status_code != 200:
-                bot.logger.error(
-                    "Something went wrong, read the following ->\n"
-                )
+                bot.logger.error("Something went wrong, read the following ->\n")
                 bot.logger.error(bot.api.last_response)
                 break
 
@@ -143,9 +136,7 @@ schedule.every(1).days.at("08:00").do(run_threaded, unfollow_non_followers)
 schedule.every(12).hours.do(run_threaded, follow_users_from_hashtag_file)
 schedule.every(6).hours.do(run_threaded, comment_hashtag)
 schedule.every(1).days.at("21:28").do(run_threaded, upload_pictures)
-schedule.every(4).days.at("07:50").do(
-    run_threaded, put_non_followers_on_blacklist
-)
+schedule.every(4).days.at("07:50").do(run_threaded, put_non_followers_on_blacklist)
 
 while True:
     schedule.run_pending()

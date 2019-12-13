@@ -70,32 +70,28 @@ def setting_input():
         (
             (
                 "Maximal followers of account you want to follow?\n"
-                "We will skip media that have greater followers than " +
-                "this value "
+                "We will skip media that have greater followers than " + "this value "
             ),
             2000,
         ),
         (
             (
                 "Minimum followers a account should have before we follow?\n"
-                "We will skip media that have lesser followers than " +
-                "this value "
+                "We will skip media that have lesser followers than " + "this value "
             ),
             10,
         ),
         (
             (
                 "Maximum following of account you want to follow?\n"
-                "We will skip media that have a greater following " +
-                "than this value "
+                "We will skip media that have a greater following " + "than this value "
             ),
             7500,
         ),
         (
             (
                 "Minimum following of account you want to follow?\n"
-                "We will skip media that have lesser following " +
-                "from this value "
+                "We will skip media that have lesser following " + "from this value "
             ),
             10,
         ),
@@ -114,8 +110,8 @@ def setting_input():
         ("Delay from one unfollow to another unfollow you will perform ", 30),
         ("Delay from one comment to another comment you will perform ", 60),
         (
-            "Want to use proxy? insert your proxy or leave it blank " +
-            "if no. (just enter",
+            "Want to use proxy? insert your proxy or leave it blank "
+            + "if no. (just enter",
             "None",
         ),
     ]
@@ -166,8 +162,10 @@ def username_adder():
         while True:
             print("Enter your login: ")
             f.write(str(sys.stdin.readline().strip()) + ":")
-            print("Enter your password: (it will not be shown due to security "
-                  "reasons - just start typing and press Enter)")
+            print(
+                "Enter your password: (it will not be shown due to security "
+                "reasons - just start typing and press Enter)"
+            )
             f.write(getpass.getpass() + "\n")
             print("Do you want to add another account? (y/n)")
             if "y" not in sys.stdin.readline():
@@ -377,9 +375,7 @@ def menu_like():
                     .split(" ")
                 )
             else:
-                hashtags.append(
-                    random.choice(bot.read_list_from_file(hashtag_file))
-                )
+                hashtags.append(random.choice(bot.read_list_from_file(hashtag_file)))
             for hashtag in hashtags:
                 bot.like_hashtag(hashtag)
 
@@ -475,9 +471,7 @@ def menu_comment():
                 user_id = input("who?\n").strip()
             else:
                 user_id = random.choice(bot.read_list_from_file(users_file))
-            bot.comment_medias(
-                bot.get_user_medias(user_id, filtration=False)
-            )
+            bot.comment_medias(bot.get_user_medias(user_id, filtration=False))
 
         elif ans == "3":
             print(
@@ -492,9 +486,7 @@ def menu_comment():
                 print(userlist)
             users = bot.read_list_from_file(userlist)
             for user_id in users:
-                bot.comment_medias(bot.get_user_medias(
-                    user_id, filtration=True
-                ))
+                bot.comment_medias(bot.get_user_medias(user_id, filtration=True))
 
         elif ans == "4":
             bot.comment_medias(bot.get_timeline_medias())

@@ -4,11 +4,8 @@ def download_stories(self, username):
     if list_image == [] and list_video == []:
         self.logger.error(
             (
-                "Make sure that '{}' is NOT private and that "
-                "posted some stories"
-            ).format(
-                username
-            )
+                "Make sure that '{}' is NOT private and that " "posted some stories"
+            ).format(username)
         )
         return False
     self.logger.info("Downloading stories...")
@@ -50,21 +47,14 @@ def watch_users_reels(self, user_ids, max_users=100):
         # strange output
         return False
 
-    reels = {
-        k: v for k,
-        v in reels.items() if "items" in v and len(v["items"]) > 0
-    }
+    reels = {k: v for k, v in reels.items() if "items" in v and len(v["items"]) > 0}
 
     # Filter reels that were not seen before
     unseen_reels = []
     for _, reels_data in reels.items():
         last_reel_seen_at = reels_data["seen"] if "seen" in reels_data else 0
         unseen_reels.extend(
-            [
-                r
-                for r in reels_data["items"]
-                if r["taken_at"] > last_reel_seen_at
-            ]
+            [r for r in reels_data["items"] if r["taken_at"] > last_reel_seen_at]
         )
 
     # See reels that were not seen before

@@ -5,12 +5,7 @@ from tqdm import tqdm
 
 
 def upload_photo(
-    self,
-    photo,
-    caption=None,
-    upload_id=None,
-    from_video=False,
-    options={}
+    self, photo, caption=None, upload_id=None, from_video=False, options={}
 ):
     """Upload photo to Instagram
 
@@ -29,11 +24,7 @@ def upload_photo(
     """
     self.small_delay()
     result = self.api.upload_photo(
-        photo,
-        caption,
-        upload_id,
-        from_video,
-        options=options
+        photo, caption, upload_id, from_video, options=options
     )
     if not result:
         self.logger.info("Photo '{}' is not uploaded.".format(photo))
@@ -43,11 +34,7 @@ def upload_photo(
 
 
 def download_photo(
-    self,
-    media_id,
-    folder="photos",
-    filename=None,
-    save_description=False
+    self, media_id, folder="photos", filename=None, save_description=False
 ):
     self.small_delay()
 
@@ -79,9 +66,7 @@ def download_photos(self, medias, folder, save_description=False):
     self.logger.info("Going to download {} medias.".format(len(medias)))
 
     for media in tqdm(medias):
-        if not self.download_photo(
-            media, folder, save_description=save_description
-        ):
+        if not self.download_photo(media, folder, save_description=save_description):
             self.error_delay()
-            broken_items = medias[medias.index(media):]
+            broken_items = medias[medias.index(media) :]
     return broken_items

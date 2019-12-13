@@ -23,9 +23,7 @@ parser = argparse.ArgumentParser(add_help=True)
 parser.add_argument("-u", type=str, help="username")
 parser.add_argument("-p", type=str, help="password")
 parser.add_argument("-proxy", type=str, help="proxy")
-parser.add_argument(
-    "-comments_file", type=str, help="comments_file", required=True
-)
+parser.add_argument("-comments_file", type=str, help="comments_file", required=True)
 parser.add_argument("-link", type=str, help="media_link", required=True)
 args = parser.parse_args()
 
@@ -49,9 +47,7 @@ bot.login(username=args.u, password=args.p, proxy=args.proxy)
 media_id = bot.get_media_id_from_link(args.link)
 comments = bot.get_media_comments(media_id)
 if len(comments) == 0:
-    bot.logger.info("Media `{link}` has got no comments yet.".format(
-        args.link)
-    )
+    bot.logger.info("Media `{link}` has got no comments yet.".format(args.link))
     exit()
 
 commented_users = []
@@ -62,9 +58,7 @@ for comment in tqdm(comments):
     comment_type = comment["type"]
     commenter = comment["user"]["username"]
     text = comment["text"]
-    bot.logger.info("Checking comment from `{commenter}`".format(
-        commenter=commenter)
-    )
+    bot.logger.info("Checking comment from `{commenter}`".format(commenter=commenter))
     try:
         bot.logger.info("Comment text: `{text}`".format(text=text))
     except Exception as e:

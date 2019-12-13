@@ -35,7 +35,7 @@ def block_users(self, user_ids):
     for user_id in tqdm(user_ids):
         if not self.block(user_id):
             self.error_delay()
-            broken_items = user_ids[user_ids.index(user_id):]
+            broken_items = user_ids[user_ids.index(user_id) :]
             break
     self.logger.info("DONE: Total blocked %d users." % self.total["blocks"])
     return broken_items
@@ -48,9 +48,7 @@ def unblock_users(self, user_ids):
         if not self.unblock(user_id):
             self.error_delay()
             broken_items.append(user_id)
-    self.logger.info(
-        "DONE: Total unblocked %d users." % self.total["unblocks"]
-    )
+    self.logger.info("DONE: Total unblocked %d users." % self.total["unblocks"])
     return broken_items
 
 
@@ -64,7 +62,6 @@ def block_bots(self):
         if not self.check_not_bot(user):
             self.logger.info(
                 "Found bot: "
-                "https://instagram.com/%s/"
-                % self.get_user_info(user)["username"]
+                "https://instagram.com/%s/" % self.get_user_info(user)["username"]
             )
             self.block(user)
