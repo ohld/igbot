@@ -10,6 +10,9 @@ import random
 from uuid import uuid4
 
 
+from . import config
+
+
 def download_photo(self, media_id, filename, media=False, folder="photos"):
     if not media:
         self.media_info(media_id)
