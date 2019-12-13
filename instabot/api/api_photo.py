@@ -23,7 +23,9 @@ def download_photo(self, media_id, filename, media=False, folder="photos"):
         return True
     elif media["media_type"] == 1:
         filename = (
-            "{username}_{media_id}.jpg".format(username=media["user"]["username"], media_id=media_id)
+            "{username}_{media_id}.jpg".format(
+                username=media["user"]["username"], media_id=media_id
+            )
             if not filename
             else "{fname}.jpg".format(fname=filename)
         )
@@ -47,9 +49,7 @@ def download_photo(self, media_id, filename, media=False, folder="photos"):
                 continue
             filename_i = (
                 "{username}_{media_id}_{i}.jpg".format(
-                    username=media["user"]["username"],
-                    media_id=media_id,
-                    i=index
+                    username=media["user"]["username"], media_id=media_id, i=index
                 )
                 if not filename
                 else "{fname}_{i}.jpg".format(fname=filename, i=index)
@@ -78,21 +78,23 @@ def compatible_aspect_ratio(size):
     return min_ratio <= ratio <= max_ratio
 
 
-def configure_photo(self, upload_id, photo, caption=''):
+def configure_photo(self, upload_id, photo, caption=""):
     width, height = get_image_size(photo)
-    data = self.json_data({
-        "media_folder": "Instagram",
-        "source_type": 4,
-        "caption": caption,
-        "upload_id": upload_id,
-        "device": self.device_settings,
-        "edits": {
-            "crop_original_size": [width * 1.0, height * 1.0],
-            "crop_center": [0.0, 0.0],
-            "crop_zoom": 1.0,
-        },
-        "extra": {"source_width": width, "source_height": height},
-    })
+    data = self.json_data(
+        {
+            "media_folder": "Instagram",
+            "source_type": 4,
+            "caption": caption,
+            "upload_id": upload_id,
+            "device": self.device_settings,
+            "edits": {
+                "crop_original_size": [width * 1.0, height * 1.0],
+                "crop_center": [0.0, 0.0],
+                "crop_zoom": 1.0,
+            },
+            "extra": {"source_width": width, "source_height": height},
+        }
+    )
     return self.send_request("media/configure/?", data)
 
 
@@ -135,36 +137,41 @@ def upload_photo(
             return False
     waterfall_id = str(uuid4())
     # upload_name example: '1576102477530_0_7823256191'
-    upload_name = '{upload_id}_0_{rand}'.format(
-        upload_id=upload_id,
-        rand=random.randint(1000000000, 9999999999)
+    upload_name = "{upload_id}_0_{rand}".format(
+        upload_id=upload_id, rand=random.randint(1000000000, 9999999999)
     )
     rupload_params = {
         "retry_context": '{"num_step_auto_retry":0,"num_reupload":0,"num_step_manual_retry":0}',
         "media_type": "1",
-        "xsharing_user_ids": '[]',
+        "xsharing_user_ids": "[]",
         "upload_id": upload_id,
-        "image_compression": json.dumps({'lib_name': 'moz', 'lib_version': '3.1.m', 'quality': '80'})
+        "image_compression": json.dumps(
+            {"lib_name": "moz", "lib_version": "3.1.m", "quality": "80"}
+        ),
     }
     photo_data = open(photo, "rb").read()
     photo_len = str(len(photo_data))
-    self.session.headers.update({
-        'X-IG-Connection-Type': 'WIFI',
-        'X-IG-Capabilities': '3brTvwE=',  # old "3Q4="
-        'Accept-Encoding': 'gzip',
-        'X-Instagram-Rupload-Params': json.dumps(rupload_params),
-        'X_FB_PHOTO_WATERFALL_ID': waterfall_id,
-        'X-Entity-Type': 'image/jpeg',
-        'Offset': '0',
-        'X-Entity-Name': upload_name,
-        'X-Entity-Length': photo_len,
-        'Content-Type': 'application/octet-stream',
-        'Content-Length': photo_len,
-        'Accept-Encoding': 'gzip'
-    })
+    self.session.headers.update(
+        {
+            "X-IG-Connection-Type": "WIFI",
+            "X-IG-Capabilities": "3brTvwE=",  # old "3Q4="
+            "Accept-Encoding": "gzip",
+            "X-Instagram-Rupload-Params": json.dumps(rupload_params),
+            "X_FB_PHOTO_WATERFALL_ID": waterfall_id,
+            "X-Entity-Type": "image/jpeg",
+            "Offset": "0",
+            "X-Entity-Name": upload_name,
+            "X-Entity-Length": photo_len,
+            "Content-Type": "application/octet-stream",
+            "Content-Length": photo_len,
+            "Accept-Encoding": "gzip",
+        }
+    )
     response = self.session.post(
-        'https://{domain}/rupload_igphoto/{name}'.format(domain=config.API_DOMAIN, name=upload_name),
-        data=photo_data
+        "https://{domain}/rupload_igphoto/{name}".format(
+            domain=config.API_DOMAIN, name=upload_name
+        ),
+        data=photo_data,
     )
     if response.status_code != 200:
         return False
@@ -368,9 +375,7 @@ def stories_shaper(fname):
             width_percent = min_width / float(img.size[0])
             height_size = int(float(img.size[1]) * float(width_percent))
             img = img.resize((min_width, height_size), Image.ANTIALIAS)
-            img_bg.paste(img, (int(540 - img.size[0] / 2), int(
-                960 - img.size[1] / 2
-            )))
+            img_bg.paste(img, (int(540 - img.size[0] / 2), int(960 - img.size[1] / 2)))
         new_fname = "{fname}.STORIES.jpg".format(fname=fname)
         print(
             "Saving new image w:{w} h:{h} to `{f}`".format(

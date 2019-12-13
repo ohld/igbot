@@ -19,9 +19,11 @@ def download_video(self, media_id, filename=None, media=False, folder="videos"):
         try:
             media = self.last_json["items"][0]
         except IndexError:
-            raise Exception('Media (media_id=%s) not found for download' % media_id)
+            raise Exception("Media (media_id=%s) not found for download" % media_id)
     filename = (
-        "{username}_{media_id}.mp4".format(username=media["user"]["username"], media_id=media_id)
+        "{username}_{media_id}.mp4".format(
+            username=media["user"]["username"], media_id=media_id
+        )
         if not filename
         else "{fname}.mp4".format(fname=filename)
     )
@@ -37,7 +39,9 @@ def download_video(self, media_id, filename=None, media=False, folder="videos"):
         return False
 
     for counter, video_url in enumerate(video_urls):
-        fname = os.path.join(folder, "{cnt}_{fname}".format(cnt=counter, fname=filename))
+        fname = os.path.join(
+            folder, "{cnt}_{fname}".format(cnt=counter, fname=filename)
+        )
         if os.path.exists(fname):
             print("File %s is exists, return it" % fname)
             return os.path.abspath(fname)
@@ -106,44 +110,51 @@ def upload_video(self, video, caption=None, upload_id=None, thumbnail=None, opti
     video, thumbnail, width, height, duration = resize_video(video, thumbnail)
     waterfall_id = str(uuid4())
     # upload_name example: '1576102477530_0_7823256191'
-    upload_name = '{upload_id}_0_{rand}'.format(
-        upload_id=upload_id,
-        rand=random.randint(1000000000, 9999999999)
+    upload_name = "{upload_id}_0_{rand}".format(
+        upload_id=upload_id, rand=random.randint(1000000000, 9999999999)
     )
     rupload_params = {
         "retry_context": '{"num_step_auto_retry":0,"num_reupload":0,"num_step_manual_retry":0}',
         "media_type": "2",
-        "xsharing_user_ids": '[]',
+        "xsharing_user_ids": "[]",
         "upload_id": upload_id,
         "upload_media_duration_ms": str(int(duration * 1000)),
         "upload_media_width": str(width),
-        "upload_media_height": str(height)
+        "upload_media_height": str(height),
     }
-    self.session.headers.update({
-        'X-IG-Connection-Type': 'WIFI',
-        'X-IG-Capabilities': '3brTvwE=',  # old "3Q4="
-        'Accept-Encoding': 'gzip',
-        'X-Instagram-Rupload-Params': json.dumps(rupload_params),
-        'X_FB_VIDEO_WATERFALL_ID': waterfall_id,
-        'X-Entity-Type': 'video/mp4'
-    })
+    self.session.headers.update(
+        {
+            "X-IG-Connection-Type": "WIFI",
+            "X-IG-Capabilities": "3brTvwE=",  # old "3Q4="
+            "Accept-Encoding": "gzip",
+            "X-Instagram-Rupload-Params": json.dumps(rupload_params),
+            "X_FB_VIDEO_WATERFALL_ID": waterfall_id,
+            "X-Entity-Type": "video/mp4",
+        }
+    )
     response = self.session.get(
-        'https://{domain}/rupload_igvideo/{name}'.format(domain=config.API_DOMAIN, name=upload_name)
+        "https://{domain}/rupload_igvideo/{name}".format(
+            domain=config.API_DOMAIN, name=upload_name
+        )
     )
     if response.status_code != 200:
         return False
     video_data = open(video, "rb").read()
     video_len = str(len(video_data))
-    self.session.headers.update({
-        'Offset': '0',
-        'X-Entity-Name': upload_name,
-        'X-Entity-Length': video_len,
-        'Content-Type': 'application/octet-stream',
-        'Content-Length': video_len
-    })
+    self.session.headers.update(
+        {
+            "Offset": "0",
+            "X-Entity-Name": upload_name,
+            "X-Entity-Length": video_len,
+            "Content-Type": "application/octet-stream",
+            "Content-Length": video_len,
+        }
+    )
     response = self.session.post(
-        'https://{domain}/rupload_igvideo/{name}'.format(domain=config.API_DOMAIN, name=upload_name),
-        data=video_data
+        "https://{domain}/rupload_igvideo/{name}".format(
+            domain=config.API_DOMAIN, name=upload_name
+        ),
+        data=video_data,
     )
     if response.status_code != 200:
         return False
@@ -152,7 +163,16 @@ def upload_video(self, video, caption=None, upload_id=None, thumbnail=None, opti
     for attempt in range(4):
         if configure_timeout:
             time.sleep(configure_timeout)
-        if self.configure_video(upload_id, video, thumbnail, width, height, duration, caption, options=options):
+        if self.configure_video(
+            upload_id,
+            video,
+            thumbnail,
+            width,
+            height,
+            duration,
+            caption,
+            options=options,
+        ):
             media = self.last_json.get("media")
             self.expose()
             if options.get("rename"):
@@ -196,16 +216,13 @@ def configure_video(
             "audio_muted": False,
             "filter_type": 0,
             "date_time_original": time.strftime("%Y:%m:%d %H:%M:%S", time.localtime()),
-            "timezone_offset": '10800',
+            "timezone_offset": "10800",
             "width": width,
             "height": height,
-            "clips": [{
-                'length': duration,
-                'source_type': '4'
-            }],
+            "clips": [{"length": duration, "source_type": "4"}],
             "extra": {"source_width": width, "source_height": height},
             "device": self.device_settings,
-            "caption": caption
+            "caption": caption,
         }
     )
     return self.send_request("media/configure/?video=1", data, with_signature=True)
