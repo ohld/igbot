@@ -33,10 +33,10 @@ while True:
 
             print("upload: " + pic_name)
 
-            description_file = folder_path + "/" + pic_name + '.txt'
+            description_file = folder_path + "/" + pic_name + ".txt"
 
             if os.path.isfile(description_file):
-                with open(description_file, 'r') as file:
+                with open(description_file, "r") as file:
                     caption = file.read()
             else:
                 caption = pic_name.replace("-", " ")

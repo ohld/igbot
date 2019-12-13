@@ -21,25 +21,27 @@ def get_recent_followers(bot, from_time):
     followers = []
     ok = bot.api.get_recent_activity()
     if not ok:
-        raise ValueError('failed to get activity')
+        raise ValueError("failed to get activity")
     activity = bot.api.last_json
-    for feed in [activity['new_stories'], activity['old_stories']]:
+    for feed in [activity["new_stories"], activity["old_stories"]]:
         for event in feed:
-            if event.get('args', {}).get('text', '').endswith(
-                    'started following you.'):
-                inline_follow = event['args'].get('inline_follow')
+            if event.get("args", {}).get("text", "").endswith("started following you."):
+                inline_follow = event["args"].get("inline_follow")
                 print(inline_follow)
                 if not inline_follow:
                     continue
                 follow_time = datetime.datetime.utcfromtimestamp(
-                        event['args']['timestamp'])
+                    event["args"]["timestamp"]
+                )
                 if follow_time < from_time:
                     continue
-                followers.append({
-                    'user_id': inline_follow['user_info']['id'],
-                    'username': inline_follow['user_info']['username'],
-                    'follow_time': follow_time
-                })
+                followers.append(
+                    {
+                        "user_id": inline_follow["user_info"]["id"],
+                        "username": inline_follow["user_info"]["username"],
+                        "follow_time": follow_time,
+                    }
+                )
     return followers
 
 
@@ -48,8 +50,13 @@ def main():
     parser.add_argument("-u", type=str, help="username")
     parser.add_argument("-p", type=str, help="password")
     parser.add_argument("-proxy", type=str, help="proxy")
-    parser.add_argument("-message", type=str, nargs="?", help="message text",
-                        default="Hi, thanks for reaching me")
+    parser.add_argument(
+        "-message",
+        type=str,
+        nargs="?",
+        help="message text",
+        default="Hi, thanks for reaching me",
+    )
     args = parser.parse_args()
 
     bot = Bot()
@@ -66,16 +73,17 @@ def main():
             continue
 
         if new_followers:
-            print("Found new followers. Count: {count}".format(
-                count=len(new_followers)))
+            print(
+                "Found new followers. Count: {count}".format(count=len(new_followers))
+            )
 
         for follower in new_followers:
-            print('New follower: {}'.format(follower['username']))
-            bot.send_message(args.message, str(follower['user_id']))
+            print("New follower: {}".format(follower["username"]))
+            bot.send_message(args.message, str(follower["user_id"]))
 
         start_time = datetime.datetime.utcnow()
         time.sleep(DELAY)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

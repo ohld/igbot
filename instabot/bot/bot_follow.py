@@ -17,8 +17,7 @@ def follow(self, user_id, check_user):
             self.logger.warning("YOUR `FOLLOW` ACTION IS BLOCKED")
             if self.blocked_actions_protection:
                 self.logger.warning(
-                    "blocked_actions_protection ACTIVE. "
-                    "Skipping `follow` action."
+                    "blocked_actions_protection ACTIVE. " "Skipping `follow` action."
                 )
                 return False
         self.delay("follow")
@@ -27,21 +26,29 @@ def follow(self, user_id, check_user):
             self.logger.error("`Follow` action has been BLOCKED...!!!")
             if not self.blocked_actions_sleep:
                 if self.blocked_actions_protection:
-                    self.logger.warning("Activating blocked actions \
-                        protection for `Follow` action.")
+                    self.logger.warning(
+                        "Activating blocked actions \
+                        protection for `Follow` action."
+                    )
                     self.blocked_actions["follows"] = True
             else:
-                if self.sleeping_actions["follows"] \
-                        and self.blocked_actions_protection:
-                    self.logger.warning("This is the second blocked \
-                        `Follow` action.")
-                    self.logger.warning("Activating blocked actions \
-                        protection for `Follow` action.")
+                if self.sleeping_actions["follows"] and self.blocked_actions_protection:
+                    self.logger.warning(
+                        "This is the second blocked \
+                        `Follow` action."
+                    )
+                    self.logger.warning(
+                        "Activating blocked actions \
+                        protection for `Follow` action."
+                    )
                     self.sleeping_actions["follows"] = False
                     self.blocked_actions["follows"] = True
                 else:
-                    self.logger.info("`Follow` action is going to sleep \
-                        for %s seconds." % self.blocked_actions_sleep_delay)
+                    self.logger.info(
+                        "`Follow` action is going to sleep \
+                        for %s seconds."
+                        % self.blocked_actions_sleep_delay
+                    )
                     self.sleeping_actions["follows"] = True
                     time.sleep(self.blocked_actions_sleep_delay)
             return False
@@ -78,13 +85,10 @@ def follow_users(self, user_ids, nfollows=None):
     self.console_print(msg, "green")
 
     # Remove skipped and already followed and unfollowed list from user_ids
-    user_ids = list(
-        set(user_ids) - skipped.set - followed.set - unfollowed.set
-    )
+    user_ids = list(set(user_ids) - skipped.set - followed.set - unfollowed.set)
     user_ids = user_ids[:nfollows] if nfollows else user_ids
     msg = (
-        "After filtering followed, unfollowed and "
-        "`{}`, {} user_ids left to follow."
+        "After filtering followed, unfollowed and " "`{}`, {} user_ids left to follow."
     ).format(skipped.fname, len(user_ids))
     self.console_print(msg, "green")
     for user_id in tqdm(user_ids, desc="Processed users"):
@@ -93,9 +97,7 @@ def follow_users(self, user_ids, nfollows=None):
             break
         if not self.follow(user_id):
             if self.api.last_response.status_code == 404:
-                self.console_print(
-                    "404 error user {user_id} doesn't exist.", "red"
-                )
+                self.console_print("404 error user {user_id} doesn't exist.", "red")
                 broken_items.append(user_id)
 
             elif self.api.last_response.status_code == 200:
@@ -134,9 +136,7 @@ def follow_followers(self, user_id, nfollows=None):
     followers = self.get_user_followers(user_id, nfollows)
     followers = list(set(followers) - set(self.blacklist))
     if not followers:
-        self.logger.info(
-            "{} not found / closed / has no followers.".format(user_id)
-        )
+        self.logger.info("{} not found / closed / has no followers.".format(user_id))
     else:
         self.follow_users(followers[:nfollows])
 
@@ -151,9 +151,7 @@ def follow_following(self, user_id, nfollows=None):
         return
     followings = self.get_user_following(user_id)
     if not followings:
-        self.logger.info(
-            "{} not found / closed / has no following.".format(user_id)
-        )
+        self.logger.info("{} not found / closed / has no following.".format(user_id))
     else:
         self.follow_users(followings[:nfollows])
 
