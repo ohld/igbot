@@ -402,7 +402,7 @@ class API(object):
             self.session.proxies["http"] = scheme + self.proxy
             self.session.proxies["https"] = scheme + self.proxy
 
-    def send_request(
+    def send_request(  # noqa: C901
         self,
         endpoint,
         post=None,
@@ -484,7 +484,7 @@ class API(object):
                 self.logger.info("Full Response: {}".format(str(response)))
                 try:
                     self.logger.info("Response Text: {}".format(str(response.text)))
-                except Exception as e:
+                except Exception:
                     pass
 
             if response.status_code == 429:
