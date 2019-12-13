@@ -54,8 +54,7 @@ class TestBotFilter(TestBot):
         )
         my_test_search_username_item["has_anonymous_profile_picture"] = False
         my_test_username_info_item["pk"] = TEST_SEARCH_USERNAME_ITEM["pk"]
-        my_test_username_info_item["username"] = \
-            TEST_SEARCH_USERNAME_ITEM["username"]
+        my_test_username_info_item["username"] = TEST_SEARCH_USERNAME_ITEM["username"]
         my_test_username_info_item["is_verified"] = False
         my_test_username_info_item["is_business"] = False
         my_test_username_info_item["is_private"] = False
@@ -79,10 +78,7 @@ class TestBotFilter(TestBot):
         response_data = {"status": "ok", "user": my_test_username_info_item}
         responses.add(
             responses.GET,
-            "{api_url}users/{user_id}/info/".format(
-                api_url=API_URL,
-                user_id=user_id
-            ),
+            "{api_url}users/{user_id}/info/".format(api_url=API_URL, user_id=user_id),
             status=200,
             json=response_data,
         )
@@ -141,8 +137,7 @@ class TestBotFilter(TestBot):
             self.bot.min_media_count_to_follow + 1
         )
         my_test_search_username_item["has_anonymous_profile_picture"] = False
-        my_test_username_info_item["username"] = \
-            TEST_SEARCH_USERNAME_ITEM["username"]
+        my_test_username_info_item["username"] = TEST_SEARCH_USERNAME_ITEM["username"]
         my_test_username_info_item["is_verified"] = False
         my_test_username_info_item["is_business"] = False
         my_test_username_info_item["is_private"] = False
@@ -157,10 +152,7 @@ class TestBotFilter(TestBot):
             my_test_search_username_item["pk"] = user_id
             my_test_username_info_item["pk"] = user_id
 
-            response_data = {
-                "status": "ok",
-                "user": my_test_search_username_item
-            }
+            response_data = {"status": "ok", "user": my_test_search_username_item}
             responses.add(
                 responses.GET,
                 "{api_url}users/{username}/usernameinfo/".format(
@@ -170,10 +162,7 @@ class TestBotFilter(TestBot):
                 json=response_data,
             )
 
-            response_data = {
-                "status": "ok",
-                "user": my_test_username_info_item
-            }
+            response_data = {"status": "ok", "user": my_test_username_info_item}
             responses.add(
                 responses.GET,
                 "{api_url}users/{user_id}/info/".format(
@@ -197,8 +186,7 @@ class TestBotFilter(TestBot):
         test_follows = self.bot.total["follows"] == follows_at_start + 1
         test_following = self.bot.following == [1, user_ids[0]]
         test_followed = str(user_ids[0]) in self.bot.followed_file.list
-        assert test_broken_items and test_follows \
-            and test_followed and test_following
+        assert test_broken_items and test_follows and test_followed and test_following
 
     @responses.activate
     @pytest.mark.parametrize("username", ["1234567890", 1234567890])
@@ -226,10 +214,7 @@ class TestBotFilter(TestBot):
         response_data_2 = {"status": "ok", "user": TEST_USERNAME_INFO_ITEM}
         responses.add(
             responses.GET,
-            "{api_url}users/{user_id}/info/".format(
-                api_url=API_URL,
-                user_id=username
-            ),
+            "{api_url}users/{user_id}/info/".format(api_url=API_URL, user_id=username),
             status=200,
             json=response_data_2,
         )
@@ -260,12 +245,9 @@ class TestBotFilter(TestBot):
         responses.add(
             responses.GET,
             (
-                "{api_url}friendships/{user_id}/followers/?" +
-                "rank_token={rank_token}"
+                "{api_url}friendships/{user_id}/followers/?" + "rank_token={rank_token}"
             ).format(
-                api_url=API_URL,
-                user_id=username,
-                rank_token=self.bot.api.rank_token
+                api_url=API_URL, user_id=username, rank_token=self.bot.api.rank_token
             ),
             json=response_data_3,
             status=200,
@@ -275,8 +257,7 @@ class TestBotFilter(TestBot):
             my_test_search_username_items[i]["username"] = "{}_{}".format(
                 TEST_FOLLOWER_ITEM["username"], i
             )
-            my_test_search_username_items[i]["pk"] = \
-                TEST_FOLLOWER_ITEM["pk"] + i
+            my_test_search_username_items[i]["pk"] = TEST_FOLLOWER_ITEM["pk"] + i
             my_test_search_username_items[i]["is_verified"] = False
             my_test_search_username_items[i]["is_business"] = False
             my_test_search_username_items[i]["is_private"] = False
@@ -285,8 +266,7 @@ class TestBotFilter(TestBot):
             my_test_search_username_items[i]["media_count"] = (
                 self.bot.min_media_count_to_follow + 1
             )
-            my_test_search_username_items[i]["has_anonymous_profile_picture"] \
-                = False
+            my_test_search_username_items[i]["has_anonymous_profile_picture"] = False
 
             my_test_username_info_items[i]["username"] = "{}_{}".format(
                 TEST_FOLLOWER_ITEM["username"], i
@@ -300,13 +280,9 @@ class TestBotFilter(TestBot):
             my_test_username_info_items[i]["media_count"] = (
                 self.bot.min_media_count_to_follow + 1
             )
-            my_test_username_info_items[i]["has_anonymous_profile_picture"] = \
-                False
+            my_test_username_info_items[i]["has_anonymous_profile_picture"] = False
 
-            response_data = {
-                "status": "ok",
-                "user": my_test_search_username_items[i]
-            }
+            response_data = {"status": "ok", "user": my_test_search_username_items[i]}
             responses.add(
                 responses.GET,
                 "{api_url}users/{username}/usernameinfo/".format(
@@ -317,15 +293,11 @@ class TestBotFilter(TestBot):
                 json=response_data,
             )
 
-            response_data = {
-                "status": "ok",
-                "user": my_test_username_info_items[i]
-            }
+            response_data = {"status": "ok", "user": my_test_username_info_items[i]}
             responses.add(
                 responses.GET,
                 "{api_url}users/{user_id}/info/".format(
-                    api_url=API_URL,
-                    user_id=my_test_username_info_items[i]["pk"]
+                    api_url=API_URL, user_id=my_test_username_info_items[i]["pk"]
                 ),
                 status=200,
                 json=response_data,
@@ -335,8 +307,7 @@ class TestBotFilter(TestBot):
             responses.add(
                 responses.POST,
                 "{api_url}friendships/create/{user_id}/".format(
-                    api_url=API_URL,
-                    user_id=my_test_username_info_items[i]["pk"]
+                    api_url=API_URL, user_id=my_test_username_info_items[i]["pk"]
                 ),
                 json=response_data,
                 status=200,
@@ -344,8 +315,7 @@ class TestBotFilter(TestBot):
 
         self.bot.follow_followers(username)
 
-        test_follows = self.bot.total["follows"] == \
-            follows_at_start + results_3
+        test_follows = self.bot.total["follows"] == follows_at_start + results_3
         test_following = sorted(self.bot.following) == [
             str(my_test_username_info_items[i]["pk"]) for i in range(results_3)
         ]
@@ -380,10 +350,7 @@ class TestBotFilter(TestBot):
         response_data_2 = {"status": "ok", "user": TEST_USERNAME_INFO_ITEM}
         responses.add(
             responses.GET,
-            "{api_url}users/{user_id}/info/".format(
-                api_url=API_URL,
-                user_id=username
-            ),
+            "{api_url}users/{user_id}/info/".format(api_url=API_URL, user_id=username),
             status=200,
             json=response_data_2,
         )
@@ -414,8 +381,8 @@ class TestBotFilter(TestBot):
         responses.add(
             responses.GET,
             (
-                "{api_url}friendships/{user_id}/following/?max_id={max_id}&" +
-                "ig_sig_key_version={sig_key}&rank_token={rank_token}"
+                "{api_url}friendships/{user_id}/following/?max_id={max_id}&"
+                + "ig_sig_key_version={sig_key}&rank_token={rank_token}"
             ).format(
                 api_url=API_URL,
                 user_id=username,
@@ -431,8 +398,7 @@ class TestBotFilter(TestBot):
             my_test_search_username_items[i]["username"] = "{}_{}".format(
                 TEST_FOLLOWING_ITEM["username"], i
             )
-            my_test_search_username_items[i]["pk"] = \
-                TEST_FOLLOWING_ITEM["pk"] + i
+            my_test_search_username_items[i]["pk"] = TEST_FOLLOWING_ITEM["pk"] + i
             my_test_search_username_items[i]["is_verified"] = False
             my_test_search_username_items[i]["is_business"] = False
             my_test_search_username_items[i]["is_private"] = False
@@ -441,14 +407,12 @@ class TestBotFilter(TestBot):
             my_test_search_username_items[i]["media_count"] = (
                 self.bot.min_media_count_to_follow + 1
             )
-            my_test_search_username_items[i]["has_anonymous_profile_picture"] \
-                = False
+            my_test_search_username_items[i]["has_anonymous_profile_picture"] = False
 
             my_test_username_info_items[i]["username"] = "{}_{}".format(
                 TEST_FOLLOWING_ITEM["username"], i
             )
-            my_test_username_info_items[i]["pk"] = \
-                TEST_FOLLOWING_ITEM["pk"] + i
+            my_test_username_info_items[i]["pk"] = TEST_FOLLOWING_ITEM["pk"] + i
             my_test_username_info_items[i]["is_verified"] = False
             my_test_username_info_items[i]["is_business"] = False
             my_test_username_info_items[i]["is_private"] = False
@@ -457,13 +421,9 @@ class TestBotFilter(TestBot):
             my_test_username_info_items[i]["media_count"] = (
                 self.bot.min_media_count_to_follow + 1
             )
-            my_test_username_info_items[i]["has_anonymous_profile_picture"] \
-                = False
+            my_test_username_info_items[i]["has_anonymous_profile_picture"] = False
 
-            response_data = {
-                "status": "ok",
-                "user": my_test_search_username_items[i]
-            }
+            response_data = {"status": "ok", "user": my_test_search_username_items[i]}
             responses.add(
                 responses.GET,
                 "{api_url}users/{username}/usernameinfo/".format(
@@ -474,15 +434,11 @@ class TestBotFilter(TestBot):
                 json=response_data,
             )
 
-            response_data = {
-                "status": "ok",
-                "user": my_test_username_info_items[i]
-            }
+            response_data = {"status": "ok", "user": my_test_username_info_items[i]}
             responses.add(
                 responses.GET,
                 "{api_url}users/{user_id}/info/".format(
-                    api_url=API_URL,
-                    user_id=my_test_username_info_items[i]["pk"]
+                    api_url=API_URL, user_id=my_test_username_info_items[i]["pk"]
                 ),
                 status=200,
                 json=response_data,
@@ -492,8 +448,7 @@ class TestBotFilter(TestBot):
             responses.add(
                 responses.POST,
                 "{api_url}friendships/create/{user_id}/".format(
-                    api_url=API_URL,
-                    user_id=my_test_username_info_items[i]["pk"]
+                    api_url=API_URL, user_id=my_test_username_info_items[i]["pk"]
                 ),
                 json=response_data,
                 status=200,
@@ -501,8 +456,7 @@ class TestBotFilter(TestBot):
 
         self.bot.follow_following(username)
 
-        test_follows = self.bot.total["follows"] == \
-            follows_at_start + results_3
+        test_follows = self.bot.total["follows"] == follows_at_start + results_3
         test_following = sorted(self.bot.following) == [
             str(my_test_username_info_items[i]["pk"]) for i in range(results_3)
         ]
@@ -514,13 +468,20 @@ class TestBotFilter(TestBot):
     @responses.activate
     @pytest.mark.parametrize(
         "blocked_actions_protection,blocked_actions_sleep,result",
-        [(True, True, False), (True, False, True),
-         (False, True, False), (False, False, False)],
+        [
+            (True, True, False),
+            (True, False, True),
+            (False, True, False),
+            (False, False, False),
+        ],
     )
     @patch("time.sleep", return_value=None)
     def test_sleep_feedback_successful(
-        self, patched_time_sleep, blocked_actions_protection,
-        blocked_actions_sleep, result
+        self,
+        patched_time_sleep,
+        blocked_actions_protection,
+        blocked_actions_sleep,
+        result,
     ):
         self.bot.blocked_actions_protection = blocked_actions_protection
         # self.bot.blocked_actions["likes"] = False
@@ -563,13 +524,20 @@ class TestBotFilter(TestBot):
     @responses.activate
     @pytest.mark.parametrize(
         "blocked_actions_protection,blocked_actions_sleep,result",
-        [(True, True, True), (True, False, True),
-         (False, True, False), (False, False, False)],
+        [
+            (True, True, True),
+            (True, False, True),
+            (False, True, False),
+            (False, False, False),
+        ],
     )
     @patch("time.sleep", return_value=None)
     def test_sleep_feedback_unsuccessful(
-        self, patched_time_sleep, blocked_actions_protection,
-        blocked_actions_sleep, result
+        self,
+        patched_time_sleep,
+        blocked_actions_protection,
+        blocked_actions_sleep,
+        result,
     ):
         self.bot.blocked_actions_protection = blocked_actions_protection
         # self.bot.blocked_actions["likes"] = False

@@ -41,29 +41,11 @@ class TestBotGet(TestBot):
             (1234567890, False, False, False, float("inf"), True, True, True),
             (1234567890, False, False, False, float("inf"), True, False, True),
             (1234567890, False, False, False, float("inf"), False, True, True),
-            (
-                1234567890,
-                False,
-                False,
-                False,
-                float("inf"),
-                False,
-                False,
-                True
-            ),
+            (1234567890, False, False, False, float("inf"), False, False, True),
             (1234567890, True, False, False, float("inf"), True, True, False),
             (1234567890, True, False, False, float("inf"), True, False, False),
             (1234567890, True, False, False, float("inf"), False, True, False),
-            (
-                1234567890,
-                True,
-                False,
-                False,
-                float("inf"),
-                False,
-                False,
-                False
-            ),
+            (1234567890, True, False, False, float("inf"), False, False, False),
             (1234567890, False, False, True, False, True, True, True),
             (1234567890, False, False, True, False, True, False, True),
             (1234567890, False, False, True, False, False, True, True),
@@ -141,13 +123,11 @@ class TestBotGet(TestBot):
         TEST_USERNAME_INFO_ITEM[
             "has_anonymous_profile_picture"
         ] = has_anonymous_profile_picture
-        self.bot.filter_users_without_profile_photo = \
-            filter_users_without_profile_photo
+        self.bot.filter_users_without_profile_photo = filter_users_without_profile_photo
         TEST_USERNAME_INFO_ITEM["is_business"] = False
         TEST_USERNAME_INFO_ITEM["is_private"] = False
         TEST_USERNAME_INFO_ITEM["is_verified"] = False
-        TEST_USERNAME_INFO_ITEM["media_count"] = \
-            self.bot.min_media_count_to_follow + 1
+        TEST_USERNAME_INFO_ITEM["media_count"] = self.bot.min_media_count_to_follow + 1
         if comment_txt:
             comment_txt = " ".join(self.bot.blacklist_hashtags)
         else:
@@ -252,13 +232,7 @@ class TestBotGet(TestBot):
 
         assert self.bot.like(media_id, check_media=check_media) == expected
 
-    @pytest.mark.parametrize(
-        "comment_id",
-        [
-            12345678901234567,
-            "12345678901234567"
-        ]
-    )
+    @pytest.mark.parametrize("comment_id", [12345678901234567, "12345678901234567"])
     @responses.activate
     def test_bot_like_comment(self, comment_id):
         responses.add(
@@ -287,9 +261,7 @@ class TestBotGet(TestBot):
             expected_broken_items = []
         else:
             comment_id = "wrong_comment_id"
-            expected_broken_items = [
-                TEST_COMMENT_ITEM["pk"] for _ in range(results)
-            ]
+            expected_broken_items = [TEST_COMMENT_ITEM["pk"] for _ in range(results)]
         response_data = {
             "caption": TEST_CAPTION_ITEM,
             "caption_is_edited": False,
@@ -343,10 +315,7 @@ class TestBotGet(TestBot):
         response_data = {"status": "ok", "user": TEST_USERNAME_INFO_ITEM}
         responses.add(
             responses.GET,
-            "{api_url}users/{user_id}/info/".format(
-                api_url=API_URL,
-                user_id=user_id
-            ),
+            "{api_url}users/{user_id}/info/".format(api_url=API_URL, user_id=user_id),
             status=200,
             json=response_data,
         )
@@ -354,10 +323,7 @@ class TestBotGet(TestBot):
         response_data = {"status": "ok", "user": TEST_USERNAME_INFO_ITEM}
         responses.add(
             responses.GET,
-            "{api_url}users/{user_id}/info/".format(
-                api_url=API_URL,
-                user_id=user_id
-            ),
+            "{api_url}users/{user_id}/info/".format(api_url=API_URL, user_id=user_id),
             status=200,
             json=response_data,
         )
@@ -373,8 +339,8 @@ class TestBotGet(TestBot):
         responses.add(
             responses.GET,
             (
-                "{api_url}feed/user/{user_id}/?max_id={max_id}&min_timestamp" +
-                "={min_timestamp}&rank_token={rank_token}&ranked_content=true"
+                "{api_url}feed/user/{user_id}/?max_id={max_id}&min_timestamp"
+                + "={min_timestamp}&rank_token={rank_token}&ranked_content=true"
             ).format(
                 api_url=API_URL,
                 user_id=user_id,
@@ -505,9 +471,9 @@ class TestBotGet(TestBot):
         responses.add(
             responses.GET,
             (
-                "{api_url}feed/user/{user_id}/?max_id={max_id}&" +
-                "min_timestamp={min_timestamp}&rank_token={rank_token}" +
-                "&ranked_content=true"
+                "{api_url}feed/user/{user_id}/?max_id={max_id}&"
+                + "min_timestamp={min_timestamp}&rank_token={rank_token}"
+                + "&ranked_content=true"
             ).format(
                 api_url=API_URL,
                 user_id=user_ids[0],
@@ -591,13 +557,20 @@ class TestBotGet(TestBot):
     @responses.activate
     @pytest.mark.parametrize(
         "blocked_actions_protection,blocked_actions_sleep,result",
-        [(True, True, False), (True, False, True),
-         (False, True, False), (False, False, False)],
+        [
+            (True, True, False),
+            (True, False, True),
+            (False, True, False),
+            (False, False, False),
+        ],
     )
     @patch("time.sleep", return_value=None)
     def test_sleep_feedback_successful(
-        self, patched_time_sleep, blocked_actions_protection,
-        blocked_actions_sleep, result
+        self,
+        patched_time_sleep,
+        blocked_actions_protection,
+        blocked_actions_sleep,
+        result,
     ):
         self.bot.blocked_actions_protection = blocked_actions_protection
         # self.bot.blocked_actions["likes"] = False
@@ -606,11 +579,11 @@ class TestBotGet(TestBot):
         response_data = {
             u"status": u"fail",
             u"feedback_title": u"You\u2019re Temporarily Blocked",
-            u"feedback_message": u"It looks like you were misusing this " +
-            u"feature by going too fast. You\u2019ve been temporarily " +
-            u"blocked from using it. We restrict certain content and " +
-            u"actions to protect our community. Tell us if you think we " +
-            u"made a mistake.",
+            u"feedback_message": u"It looks like you were misusing this "
+            + u"feature by going too fast. You\u2019ve been temporarily "
+            + u"blocked from using it. We restrict certain content and "
+            + u"actions to protect our community. Tell us if you think we "
+            + u"made a mistake.",
             u"spam": True,
             u"feedback_action": u"report_problem",
             u"feedback_appeal_label": u"Report problem",
@@ -644,13 +617,20 @@ class TestBotGet(TestBot):
     @responses.activate
     @pytest.mark.parametrize(
         "blocked_actions_protection,blocked_actions_sleep,result",
-        [(True, True, True), (True, False, True),
-         (False, True, False), (False, False, False)],
+        [
+            (True, True, True),
+            (True, False, True),
+            (False, True, False),
+            (False, False, False),
+        ],
     )
     @patch("time.sleep", return_value=None)
     def test_sleep_feedback_unsuccessful(
-        self, patched_time_sleep, blocked_actions_protection,
-        blocked_actions_sleep, result
+        self,
+        patched_time_sleep,
+        blocked_actions_protection,
+        blocked_actions_sleep,
+        result,
     ):
         self.bot.blocked_actions_protection = blocked_actions_protection
         # self.bot.blocked_actions["likes"] = False
@@ -659,11 +639,11 @@ class TestBotGet(TestBot):
         response_data = {
             u"status": u"fail",
             u"feedback_title": u"You\u2019re Temporarily Blocked",
-            u"feedback_message": u"It looks like you were misusing this " +
-            u"feature by going too fast. You\u2019ve been temporarily " +
-            u"blocked from using it. We restrict certain content and " +
-            u"actions to protect our community. Tell us if you think we " +
-            u"made a mistake.",
+            u"feedback_message": u"It looks like you were misusing this "
+            + u"feature by going too fast. You\u2019ve been temporarily "
+            + u"blocked from using it. We restrict certain content and "
+            + u"actions to protect our community. Tell us if you think we "
+            + u"made a mistake.",
             u"spam": True,
             u"feedback_action": u"report_problem",
             u"feedback_appeal_label": u"Report problem",
@@ -701,11 +681,11 @@ class TestBotGet(TestBot):
         response_data = {
             u"status": u"fail",
             u"feedback_title": u"You\u2019re Temporarily Blocked",
-            u"feedback_message": u"It looks like you were misusing this " +
-            u"feature by going too fast. You\u2019ve been temporarily " +
-            u"blocked from using it. We restrict certain content and " +
-            u"actions to protect our community. Tell us if you think we " +
-            u"made a mistake.",
+            u"feedback_message": u"It looks like you were misusing this "
+            + u"feature by going too fast. You\u2019ve been temporarily "
+            + u"blocked from using it. We restrict certain content and "
+            + u"actions to protect our community. Tell us if you think we "
+            + u"made a mistake.",
             u"spam": True,
             u"feedback_action": u"report_problem",
             u"feedback_appeal_label": u"Report problem",
@@ -821,8 +801,8 @@ class TestBotGet(TestBot):
         responses.add(
             responses.GET,
             (
-                "{api_url}feed/tag/{hashtag}/?max_id={max_id}" +
-                "&rank_token={rank_token}&ranked_content=true&"
+                "{api_url}feed/tag/{hashtag}/?max_id={max_id}"
+                + "&rank_token={rank_token}&ranked_content=true&"
             ).format(
                 api_url=API_URL,
                 hashtag=hashtag,
@@ -843,12 +823,12 @@ class TestBotGet(TestBot):
                     "following": None,
                     "allow_following": None,
                     "allow_muting_story": None,
-                    "profile_pic_url": "https://instagram.fmxp6-1.fna.fbcdn." +
-                    "net/vp/8e512ee62d218765d3ac46f3da6869de/5E0E0DE3/t51.28" +
-                    "85-15/e35/c148.0.889.889a/s150x150/67618693_24674373801" +
-                    "56007_7054420538339677194_n.jpg?_nc_ht=instagram.fmxp6-" +
-                    "1.fna.fbcdn.net&ig_cache_key=MjExMzI5MDMwNDYxNzY3MDExMQ" +
-                    "%3D%3D.2.c",
+                    "profile_pic_url": "https://instagram.fmxp6-1.fna.fbcdn."
+                    + "net/vp/8e512ee62d218765d3ac46f3da6869de/5E0E0DE3/t51.28"
+                    + "85-15/e35/c148.0.889.889a/s150x150/67618693_24674373801"
+                    + "56007_7054420538339677194_n.jpg?_nc_ht=instagram.fmxp6-"
+                    + "1.fna.fbcdn.net&ig_cache_key=MjExMzI5MDMwNDYxNzY3MDExMQ"
+                    + "%3D%3D.2.c",
                     "non_violating": None,
                     "related_tags": None,
                     "subtitle": None,
@@ -866,12 +846,10 @@ class TestBotGet(TestBot):
         responses.add(
             responses.GET,
             (
-                "{api_url}tags/search/?is_typeahead=true&q={query}" +
-                "&rank_token={rank_token}"
+                "{api_url}tags/search/?is_typeahead=true&q={query}"
+                + "&rank_token={rank_token}"
             ).format(
-                api_url=API_URL,
-                query=hashtag,
-                rank_token=self.bot.api.rank_token
+                api_url=API_URL, query=hashtag, rank_token=self.bot.api.rank_token
             ),
             json=response_tag,
             status=200,
@@ -969,10 +947,7 @@ class TestBotGet(TestBot):
         response_data_2 = {"status": "ok", "user": TEST_USERNAME_INFO_ITEM}
         responses.add(
             responses.GET,
-            "{api_url}users/{user_id}/info/".format(
-                api_url=API_URL,
-                user_id=username
-            ),
+            "{api_url}users/{user_id}/info/".format(api_url=API_URL, user_id=username),
             status=200,
             json=response_data_2,
         )
@@ -988,12 +963,9 @@ class TestBotGet(TestBot):
         responses.add(
             responses.GET,
             (
-                "{api_url}friendships/{user_id}/followers/" +
-                "?rank_token={rank_token}"
+                "{api_url}friendships/{user_id}/followers/" + "?rank_token={rank_token}"
             ).format(
-                api_url=API_URL,
-                user_id=username,
-                rank_token=self.bot.api.rank_token
+                api_url=API_URL, user_id=username, rank_token=self.bot.api.rank_token
             ),
             json=response_data_3,
             status=200,
@@ -1019,10 +991,7 @@ class TestBotGet(TestBot):
         response_data = {"status": "ok", "user": TEST_USERNAME_INFO_ITEM}
         responses.add(
             responses.GET,
-            "{api_url}users/{user_id}/info/".format(
-                api_url=API_URL,
-                user_id=username
-            ),
+            "{api_url}users/{user_id}/info/".format(api_url=API_URL, user_id=username),
             status=200,
             json=response_data,
         )
@@ -1030,10 +999,7 @@ class TestBotGet(TestBot):
         response_data = {"status": "ok", "user": TEST_USERNAME_INFO_ITEM}
         responses.add(
             responses.GET,
-            "{api_url}users/{user_id}/info/".format(
-                api_url=API_URL,
-                user_id=username
-            ),
+            "{api_url}users/{user_id}/info/".format(api_url=API_URL, user_id=username),
             status=200,
             json=response_data,
         )
@@ -1049,8 +1015,8 @@ class TestBotGet(TestBot):
         responses.add(
             responses.GET,
             (
-                "{api_url}feed/user/{user_id}/?max_id={max_id}&min_timestamp" +
-                "={min_timestamp}&rank_token={rank_token}&ranked_content=true"
+                "{api_url}feed/user/{user_id}/?max_id={max_id}&min_timestamp"
+                + "={min_timestamp}&rank_token={rank_token}&ranked_content=true"
             ).format(
                 api_url=API_URL,
                 user_id=username,
@@ -1129,8 +1095,7 @@ class TestBotGet(TestBot):
         )
 
         self.bot.like_followers(username)
-        assert self.bot.total["likes"] == \
-            liked_at_start + results_3 * results_4
+        assert self.bot.total["likes"] == liked_at_start + results_3 * results_4
 
     @responses.activate
     @pytest.mark.parametrize("username", ["1234567890", 1234567890])
@@ -1154,10 +1119,7 @@ class TestBotGet(TestBot):
         response_data_2 = {"status": "ok", "user": TEST_USERNAME_INFO_ITEM}
         responses.add(
             responses.GET,
-            "{api_url}users/{user_id}/info/".format(
-                api_url=API_URL,
-                user_id=username
-            ),
+            "{api_url}users/{user_id}/info/".format(api_url=API_URL, user_id=username),
             status=200,
             json=response_data_2,
         )
@@ -1173,8 +1135,8 @@ class TestBotGet(TestBot):
         responses.add(
             responses.GET,
             (
-                "{api_url}friendships/{user_id}/following/?max_id={max_id}" +
-                "&ig_sig_key_version={sig_key}&rank_token={rank_token}"
+                "{api_url}friendships/{user_id}/following/?max_id={max_id}"
+                + "&ig_sig_key_version={sig_key}&rank_token={rank_token}"
             ).format(
                 api_url=API_URL,
                 user_id=username,
@@ -1206,10 +1168,7 @@ class TestBotGet(TestBot):
         response_data = {"status": "ok", "user": TEST_USERNAME_INFO_ITEM}
         responses.add(
             responses.GET,
-            "{api_url}users/{user_id}/info/".format(
-                api_url=API_URL,
-                user_id=username
-            ),
+            "{api_url}users/{user_id}/info/".format(api_url=API_URL, user_id=username),
             status=200,
             json=response_data,
         )
@@ -1217,10 +1176,7 @@ class TestBotGet(TestBot):
         response_data = {"status": "ok", "user": TEST_USERNAME_INFO_ITEM}
         responses.add(
             responses.GET,
-            "{api_url}users/{user_id}/info/".format(
-                api_url=API_URL,
-                user_id=username
-            ),
+            "{api_url}users/{user_id}/info/".format(api_url=API_URL, user_id=username),
             status=200,
             json=response_data,
         )
@@ -1236,8 +1192,8 @@ class TestBotGet(TestBot):
         responses.add(
             responses.GET,
             (
-                "{api_url}feed/user/{user_id}/?max_id={max_id}&min_timestamp" +
-                "={min_timestamp}&rank_token={rank_token}&ranked_content=true"
+                "{api_url}feed/user/{user_id}/?max_id={max_id}&min_timestamp"
+                + "={min_timestamp}&rank_token={rank_token}&ranked_content=true"
             ).format(
                 api_url=API_URL,
                 user_id=username,
@@ -1316,8 +1272,7 @@ class TestBotGet(TestBot):
         )
 
         self.bot.like_following(username)
-        assert self.bot.total["likes"] == \
-            liked_at_start + results_3 * results_4
+        assert self.bot.total["likes"] == liked_at_start + results_3 * results_4
 
     @responses.activate
     @patch("time.sleep", return_value=None)
@@ -1342,9 +1297,7 @@ class TestBotGet(TestBot):
                 "status": "ok",
                 "next_max_id": None,
                 "more_available": False,
-                "feed_items": [
-                    my_test_timelime_photo_item for _ in range(results_1)
-                ],
+                "feed_items": [my_test_timelime_photo_item for _ in range(results_1)],
             },
             status=200,
         )

@@ -9,8 +9,6 @@ import time
 import random
 from uuid import uuid4
 
-from . import config
-
 
 def download_photo(self, media_id, filename, media=False, folder="photos"):
     if not media:
@@ -53,8 +51,7 @@ def download_photo(self, media_id, filename, media=False, folder="photos"):
                 if not filename
                 else "{fname}_{i}.jpg".format(fname=filename, i=index)
             )
-            images = \
-                media["carousel_media"][index]["image_versions2"]["candidates"]
+            images = media["carousel_media"][index]["image_versions2"]["candidates"]
             fname = os.path.join(folder, filename_i)
             if os.path.exists(fname):
                 return os.path.abspath(fname)
@@ -122,18 +119,13 @@ def upload_photo(
 
     @return Boolean
     """
-    options = dict(
-        {"configure_timeout": 15, "rename": True},
-        **(options or {})
-    )
+    options = dict({"configure_timeout": 15, "rename": True}, **(options or {}))
     if upload_id is None:
         upload_id = str(int(time.time() * 1000))
     if not photo:
         return False
     if not compatible_aspect_ratio(get_image_size(photo)):
-        self.logger.error(
-            "Photo does not have a compatible photo aspect ratio."
-        )
+        self.logger.error("Photo does not have a compatible photo aspect ratio.")
         if force_resize:
             photo = resize_image(photo)
         else:
@@ -301,11 +293,7 @@ def resize_image(fname):
             img = img.resize((1080, 1080), Image.ANTIALIAS)
     (w, h) = img.size
     new_fname = "{fname}.CONVERTED.jpg".format(fname=fname)
-    print("Saving new image w:{w} h:{h} to `{f}`".format(
-        w=w,
-        h=h,
-        f=new_fname)
-    )
+    print("Saving new image w:{w} h:{h} to `{f}`".format(w=w, h=h, f=new_fname))
     new = Image.new("RGB", img.size, (255, 255, 255))
     new.paste(img, (0, 0, w, h), img)
     new.save(new_fname, quality=95)
@@ -369,9 +357,7 @@ def stories_shaper(fname):
                 height_size = int(float(img.size[1]) * float(width_percent))
                 img = img.resize((min_width, height_size), Image.ANTIALIAS)
                 img_bg.paste(
-                    img, (int(540 - img.size[0] / 2), int(
-                        960 - img.size[1] / 2
-                    ))
+                    img, (int(540 - img.size[0] / 2), int(960 - img.size[1] / 2))
                 )
             else:
                 img_bg.paste(img, (int(540 - img.size[0] / 2), 0))
@@ -388,10 +374,7 @@ def stories_shaper(fname):
                 w=img_bg.size[0], h=img_bg.size[1], f=new_fname
             )
         )
-        new = Image.new(
-            "RGB",
-            (img_bg.size[0], img_bg.size[1]), (255, 255, 255)
-        )
+        new = Image.new("RGB", (img_bg.size[0], img_bg.size[1]), (255, 255, 255))
         new.paste(img_bg, (0, 0, img_bg.size[0], img_bg.size[1]))
         new.save(new_fname)
         return new_fname
