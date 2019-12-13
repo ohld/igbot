@@ -10,6 +10,11 @@ repos:
     -   id: check-yaml
     -   id: debug-statements
     -   id: check-ast
+-   repo: https://github.com/ambv/black
+    rev: 19.10b0
+    hooks:
+    - id: black
+      language_version: python3.7
 -   repo: https://gitlab.com/pycqa/flake8
     rev: 3.7.9
     hooks:
@@ -19,11 +24,6 @@ repos:
           - --ignore=E203,E266,E501,W503
           - --max-complexity=18
           - --select=B,C,E,F,W,T4,B9
--   repo: https://github.com/ambv/black
-    rev: 19.10b0
-    hooks:
-    - id: black
-      language_version: python3.7
 -   repo: https://github.com/asottile/pyupgrade
     rev: v1.25.2
     hooks:
