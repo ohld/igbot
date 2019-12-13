@@ -25,10 +25,9 @@ matrix:
     - python: "nightly"
 
 install:
-  - pip install tox-travis codecov bumpversion pycodestyle pre_commit
+  - pip install tox-travis codecov bumpversion pre_commit
 
 script:
- - pycodestyle --show-source
  - tox
  - $PRE_COMMIT_CMD
 
