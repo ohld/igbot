@@ -28,7 +28,7 @@ parser.add_argument("-user", type=str, help="user")
 args = parser.parse_args()
 
 # in case if you just downloaded zip with sources
-#sys.path.append(os.path.join(sys.path[0], "../../"))
+sys.path.append(os.path.join(sys.path[0], "../../"))
 
 
 def convert_usernames_to_list(usernames):
