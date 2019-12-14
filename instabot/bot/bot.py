@@ -451,7 +451,7 @@ class Bot(object):
             for k, v in total.items():
                 self.total[k] = v
 
-    def print_counters(self):
+    def print_counters(self, *args, **kwargs):
         save_checkpoint(self)
         for key, val in self.total.items():
             if val > 0:

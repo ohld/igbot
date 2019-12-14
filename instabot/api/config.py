@@ -5,7 +5,8 @@ Configuration file of the project
 # Config variables taken from
 # https://github.com/ping/instagram_private_api/blob/master/
 #   instagram_private_api/constants.py
-API_URL = "https://i.instagram.com/api/v1/"
+API_DOMAIN = "i.instagram.com"
+API_URL = "https://{domain}/api/v1/".format(domain=API_DOMAIN)
 USER_AGENT_BASE = (
     "Instagram {instagram_version} "
     "Android ({android_version}/{android_release}; "

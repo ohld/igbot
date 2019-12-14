@@ -1,13 +1,13 @@
-# -*- coding: utf-8 -*-
-import copy
+from __future__ import unicode_literals
+
 import json
 import os
 import re
 import shutil
 import subprocess
 import time
-
-from requests_toolbelt import MultipartEncoder
+import random
+from uuid import uuid4
 
 from . import config
 
@@ -16,11 +16,16 @@ def download_video(self, media_id, filename=None, media=False, folder="videos"):
     video_urls = []
     if not media:
         self.media_info(media_id)
-        media = self.last_json["items"][0]
+        try:
+            media = self.last_json["items"][0]
+        except IndexError:
+            raise Exception("Media (media_id=%s) not found for download" % media_id)
     filename = (
-        "{}_{}.mp4".format(media["user"]["username"], media_id)
+        "{username}_{media_id}.mp4".format(
+            username=media["user"]["username"], media_id=media_id
+        )
         if not filename
-        else "{}.mp4".format(filename)
+        else "{fname}.mp4".format(fname=filename)
     )
 
     try:
@@ -34,7 +39,9 @@ def download_video(self, media_id, filename=None, media=False, folder="videos"):
         return False
 
     for counter, video_url in enumerate(video_urls):
-        fname = os.path.join(folder, "{}_{}".format(counter, filename))
+        fname = os.path.join(
+            folder, "{cnt}_{fname}".format(cnt=counter, fname=filename)
+        )
         if os.path.exists(fname):
             print("File %s is exists, return it" % fname)
             return os.path.abspath(fname)
@@ -101,97 +108,76 @@ def upload_video(self, video, caption=None, upload_id=None, thumbnail=None, opti
     if upload_id is None:
         upload_id = str(int(time.time() * 1000))
     video, thumbnail, width, height, duration = resize_video(video, thumbnail)
-    data = {
-        "upload_id": upload_id,
-        "_csrftoken": self.token,
+    waterfall_id = str(uuid4())
+    # upload_name example: '1576102477530_0_7823256191'
+    upload_name = "{upload_id}_0_{rand}".format(
+        upload_id=upload_id, rand=random.randint(1000000000, 9999999999)
+    )
+    rupload_params = {
+        "retry_context": '{"num_step_auto_retry":0,"num_reupload":0,"num_step_manual_retry":0}',
         "media_type": "2",
-        "_uuid": self.uuid,
+        "xsharing_user_ids": "[]",
+        "upload_id": upload_id,
+        "upload_media_duration_ms": str(int(duration * 1000)),
+        "upload_media_width": str(width),
+        "upload_media_height": str(height),
     }
-    m = MultipartEncoder(data, boundary=self.uuid)
     self.session.headers.update(
         {
-            "X-IG-Capabilities": "3Q4=",
             "X-IG-Connection-Type": "WIFI",
-            "Host": "i.instagram.com",
-            "Cookie2": "$Version=1",
-            "Accept-Language": "en-US",
-            "Accept-Encoding": "gzip, deflate",
-            "Content-type": m.content_type,
-            "Connection": "keep-alive",
-            "User-Agent": self.user_agent,
+            "X-IG-Capabilities": "3brTvwE=",  # old "3Q4="
+            "Accept-Encoding": "gzip",
+            "X-Instagram-Rupload-Params": json.dumps(rupload_params),
+            "X_FB_VIDEO_WATERFALL_ID": waterfall_id,
+            "X-Entity-Type": "video/mp4",
         }
     )
-    response = self.session.post(config.API_URL + "upload/video/", data=m.to_string())
-    if response.status_code == 200:
-        body = json.loads(response.text)
-        upload_url = body["video_upload_urls"][3]["url"]
-        upload_job = body["video_upload_urls"][3]["job"]
-
-        with open(video, "rb") as video_bytes:
-            video_data = video_bytes.read()
-        # solve issue #85 TypeError:
-        # slice indices must be integers or None or have an __index__ method
-        request_size = len(video_data) // 4
-        last_request_extra = len(video_data) - 3 * request_size
-
-        headers = copy.deepcopy(self.session.headers)
-        self.session.headers.update(
-            {
-                "X-IG-Capabilities": "3Q4=",
-                "X-IG-Connection-Type": "WIFI",
-                "Cookie2": "$Version=1",
-                "Accept-Language": "en-US",
-                "Accept-Encoding": "gzip, deflate",
-                "Content-type": "application/octet-stream",
-                "Session-ID": upload_id,
-                "Connection": "keep-alive",
-                "Content-Disposition": 'attachment; filename="video.mov"',
-                "job": upload_job,
-                "Host": "upload.instagram.com",
-                "User-Agent": self.user_agent,
-            }
+    response = self.session.get(
+        "https://{domain}/rupload_igvideo/{name}".format(
+            domain=config.API_DOMAIN, name=upload_name
         )
-        for i in range(4):
-            start = i * request_size
-            if i == 3:
-                end = i * request_size + last_request_extra
-            else:
-                end = (i + 1) * request_size
-            length = last_request_extra if i == 3 else request_size
-            content_range = "bytes {start}-{end}/{len_video}".format(
-                start=start, end=end - 1, len_video=len(video_data)
-            ).encode("utf-8")
-
-            self.session.headers.update(
-                {"Content-Length": str(end - start), "Content-Range": content_range}
-            )
-            response = self.session.post(
-                upload_url, data=video_data[start : start + length]
-            )
-        self.session.headers = headers
-
-        configure_timeout = options.get("configure_timeout")
-        if response.status_code == 200:
-            for attempt in range(4):
-                if configure_timeout:
-                    time.sleep(configure_timeout)
-                if self.configure_video(
-                    upload_id,
-                    video,
-                    thumbnail,
-                    width,
-                    height,
-                    duration,
-                    caption,
-                    options=options,
-                ):
-                    media = self.last_json.get("media")
-                    self.expose()
-                    if options.get("rename"):
-                        from os import rename
-
-                        rename(video, "{}.REMOVE_ME".format(video))
-                    return media
+    )
+    if response.status_code != 200:
+        return False
+    video_data = open(video, "rb").read()
+    video_len = str(len(video_data))
+    self.session.headers.update(
+        {
+            "Offset": "0",
+            "X-Entity-Name": upload_name,
+            "X-Entity-Length": video_len,
+            "Content-Type": "application/octet-stream",
+            "Content-Length": video_len,
+        }
+    )
+    response = self.session.post(
+        "https://{domain}/rupload_igvideo/{name}".format(
+            domain=config.API_DOMAIN, name=upload_name
+        ),
+        data=video_data,
+    )
+    if response.status_code != 200:
+        return False
+    # CONFIGURE
+    configure_timeout = options.get("configure_timeout")
+    for attempt in range(4):
+        if configure_timeout:
+            time.sleep(configure_timeout)
+        if self.configure_video(
+            upload_id,
+            video,
+            thumbnail,
+            width,
+            height,
+            duration,
+            caption,
+            options=options,
+        ):
+            media = self.last_json.get("media")
+            self.expose()
+            if options.get("rename"):
+                os.rename(video, "{fname}.REMOVE_ME".format(fname=video))
+            return media
     return False
 
 
@@ -213,7 +199,6 @@ def configure_video(
                       Designed to reduce the number of function arguments!
                       This is the simplest request object.
     """
-    # clipInfo = get_video_info(video)
     options = {"rename": options.get("rename_thumbnail", True)}
     self.upload_photo(
         photo=thumbnail,
@@ -225,23 +210,22 @@ def configure_video(
     data = self.json_data(
         {
             "upload_id": upload_id,
-            "source_type": 3,
+            "source_type": 4,
             "poster_frame_index": 0,
-            "length": 0.00,
+            "length": duration,
             "audio_muted": False,
             "filter_type": 0,
-            "video_result": "deprecated",
-            "clips": {
-                "length": duration,
-                "source_type": "3",
-                "camera_position": "back",
-            },
+            "date_time_original": time.strftime("%Y:%m:%d %H:%M:%S", time.localtime()),
+            "timezone_offset": "10800",
+            "width": width,
+            "height": height,
+            "clips": [{"length": duration, "source_type": "4"}],
             "extra": {"source_width": width, "source_height": height},
             "device": self.device_settings,
             "caption": caption,
         }
     )
-    return self.send_request("media/configure/?video=1", data)
+    return self.send_request("media/configure/?video=1", data, with_signature=True)
 
 
 def resize_video(fname, thumbnail=None):
@@ -250,7 +234,7 @@ def resize_video(fname, thumbnail=None):
     try:
         import moviepy.editor as mp
     except ImportError as e:
-        print("ERROR: {}".format(e))
+        print("ERROR: {err}".format(err=e))
         print(
             "Required module `moviepy` not installed\n"
             "Install with `pip install moviepy` and retry.\n\n"
@@ -259,7 +243,7 @@ def resize_video(fname, thumbnail=None):
             "pip install numpy --upgrade --ignore-installed"
         )
         return False
-    print("Analizing `{}`".format(fname))
+    print("Analizing `{fname}`".format(fname=fname))
     h_lim = {"w": 90.0, "h": 47.0}
     v_lim = {"w": 4.0, "h": 5.0}
     d_lim = 60
@@ -304,14 +288,15 @@ def resize_video(fname, thumbnail=None):
             print("Resizing video")
             vid = vid.resize(width=1080)
     (w, h) = vid.size
+    return fname, thumbnail, w, h, vid.duration
     if vid.duration > d_lim:
-        print("Cutting video to {} sec from start".format(d_lim))
+        print("Cutting video to {lim} sec from start".format(lim=d_lim))
         vid = vid.subclip(0, d_lim)
-    new_fname = "{}.CONVERTED.mp4".format(fname)
+    new_fname = "{fname}.CONVERTED.mp4".format(fname=fname)
     print("Saving new video w:{w} h:{h} to `{f}`".format(w=w, h=h, f=new_fname))
     vid.write_videofile(new_fname, codec="libx264", audio_codec="aac")
     if not thumbnail:
         print("Generating thumbnail...")
-        thumbnail = "{}.jpg".format(fname)
+        thumbnail = "{fname}.jpg".format(fname=fname)
         vid.save_frame(thumbnail, t=(vid.duration / 2))
     return new_fname, thumbnail, w, h, vid.duration
