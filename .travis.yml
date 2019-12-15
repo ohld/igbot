@@ -19,7 +19,7 @@ matrix:
     - name: "pre-commit"
       python: "3.7"
       env:
-        - PRE_COMMIT_CMD="pre-commit run --all-files"
+        - PRE_COMMIT_CMD="pre-commit run --all-files --show-diff-on-failure"
   allow_failures:
     - python: "3.8-dev"
     - python: "nightly"
