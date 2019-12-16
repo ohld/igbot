@@ -158,8 +158,10 @@ def username_adder():
         print("Don't worry. It will be stored locally.")
         while True:
             f.write(stripped_input("Enter your login: "))
-            print("Enter your password: (it will not be shown due to security "
-                  "reasons - just start typing and press Enter)")
+            print(
+                "Enter your password: (it will not be shown due to security "
+                "reasons - just start typing and press Enter)"
+            )
             f.write(getpass.getpass() + "\n")
             if input("Do you want to add another account? (y/n)").lower() != "y":
                 break
