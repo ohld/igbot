@@ -30,7 +30,7 @@ print("%d: %s" % (2, "Message Each User From List."))
 print("%d: %s" % (3, "Message Each Your Follower."))
 print("%d: %s" % (4, "Message LatestMediaLikers Of A Page"))
 
-deliveryMethod = int(sys.stdin.readline())
+deliveryMethod = int(input())
 
 bot = Bot()
 bot.login()
