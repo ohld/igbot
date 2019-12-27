@@ -494,6 +494,9 @@ class API(object):
                     "for {} minutes.".format(sleep_minutes)
                 )
                 time.sleep(sleep_minutes * 60)
+                return self.send_request(
+                    endpoint, post, login, with_signature, headers, extra_sig
+                )
             elif response.status_code == 400:
                 response_data = json.loads(response.text)
 
