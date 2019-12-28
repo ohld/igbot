@@ -43,8 +43,9 @@ def get_not_used_medias_from_users(bot, users=None, users_path=USERNAME_DATABASE
         if os.path.exists(USERNAME_DATABASE):
             users = utils.file(users_path).list
         else:
-            print ("No username database")
+            bot.logger.warning("No username database")
             sys.exit()
+    random.shuffle(users)
     users = map(str, users)
     total_medias = []
     for user in users:
