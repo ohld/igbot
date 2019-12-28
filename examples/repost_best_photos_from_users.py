@@ -80,13 +80,13 @@ parser = argparse.ArgumentParser(add_help=True)
 parser.add_argument("-u", type=str, help="username")
 parser.add_argument("-p", type=str, help="password")
 parser.add_argument("-proxy", type=str, help="proxy")
-parser.add_argument("-file", type=str, help="users filename")
+parser.add_argument("-file", type=str, help="users filename", default=USERNAME_DATABASE)
 parser.add_argument("-amount", type=int, help="amount", default=1)
 parser.add_argument("users", type=str, nargs="*", help="users")
 args = parser.parse_args()
 
 bot = Bot()
-bot.login()
+bot.login(username=args.u, password=args.p, proxy=args.proxy)
 
 users = None
 if args.users:
