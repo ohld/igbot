@@ -40,7 +40,11 @@ def sort_best_medias(bot, media_ids, amount=1):
 
 def get_not_used_medias_from_users(bot, users=None, users_path=USERNAME_DATABASE):
     if not users:
-        users = utils.file(users_path).list
+        if os.path.exists(USERNAME_DATABASE):
+            users = utils.file(users_path).list
+        else:
+            print ("No username database")
+            sys.exit()
     users = map(str, users)
     total_medias = []
     for user in users:
@@ -80,7 +84,7 @@ parser = argparse.ArgumentParser(add_help=True)
 parser.add_argument("-u", type=str, help="username")
 parser.add_argument("-p", type=str, help="password")
 parser.add_argument("-proxy", type=str, help="proxy")
-parser.add_argument("-file", type=str, help="users filename", default=USERNAME_DATABASE)
+parser.add_argument("-file", type=str, help="users filename")
 parser.add_argument("-amount", type=int, help="amount", default=1)
 parser.add_argument("users", type=str, nargs="*", help="users")
 args = parser.parse_args()
