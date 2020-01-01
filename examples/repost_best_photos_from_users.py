@@ -1,6 +1,5 @@
 """
     instabot example
-
     Workflow:
     Repost best photos from users to your account
     By default bot checks username_database.txt
@@ -41,18 +40,21 @@ def sort_best_medias(bot, media_ids, amount=1):
 
 def get_not_used_medias_from_users(bot, users=None, users_path=USERNAME_DATABASE):
     if not users:
-        if os.path.exists(USERNAME_DATABASE):
+        if os.stat(USERNAME_DATABASE).st_size == 0:
+            bot.logger.warning("No username(s) in thedatabase")
+            sys.exit()
+        elif os.path.exists(USERNAME_DATABASE):
             users = utils.file(users_path).list
         else:
             bot.logger.warning("No username database")
             sys.exit()
-    random.shuffle(users)
-    users = map(str, users)
+    #users = map(str, users)
     total_medias = []
-    for user in users:
-        medias = bot.get_user_medias(user, filtration=False)
-        medias = [media for media in medias if not exists_in_posted_medias(media)]
-        total_medias.extend(medias)
+    user = random.choice(users)
+    #for user in users:
+    medias = bot.get_user_medias(user, filtration=False)
+    medias = [media for media in medias if not exists_in_posted_medias(media)]
+    total_medias.extend(medias)
     return total_medias
 
 
