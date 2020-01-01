@@ -48,10 +48,10 @@ def get_not_used_medias_from_users(bot, users=None, users_path=USERNAME_DATABASE
         else:
             bot.logger.warning("No username database")
             sys.exit()
-    #users = map(str, users)
+
     total_medias = []
     user = random.choice(users)
-    #for user in users:
+
     medias = bot.get_user_medias(user, filtration=False)
     medias = [media for media in medias if not exists_in_posted_medias(media)]
     total_medias.extend(medias)
