@@ -83,13 +83,9 @@ def repost_photo(bot, new_media_id, path=POSTED_MEDIAS):
     except FileNotFoundError:
         with open(photo_path[:-6] + ".txt", "r") as f:
             text = "".join(f.readlines())
-    else:
-        print("Unknown error")
     if bot.upload_photo(photo_path, text):
         update_posted_medias(new_media_id, path)
         bot.logger.info("Media_id {} is saved in {}".format(new_media_id, path))
-
-
 
 parser = argparse.ArgumentParser(add_help=True)
 parser.add_argument("-u", type=str, help="username")
