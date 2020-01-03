@@ -46,6 +46,8 @@ def read_input(f, msg, n=None):
     if n:
         msg += " (enter to use default number: {})".format(n)
     entered = str(stripped_input(msg))
+    if len(entered) == 0:
+        entered = n
     f.write(f"{entered}\n")
 
 
