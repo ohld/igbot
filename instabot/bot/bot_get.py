@@ -399,9 +399,10 @@ def get_media_id_from_link(self, link):
 
 
 def get_link_from_media_id(self, media_id):
-    if (media_id.find("_")) :    #fetching media ids is sometimes resulting in user id being appended to it using "_"
+    if (media_id.find("_")):
         new = media_id.split("_")
         media_id = new[0]
+
     alphabet = {
         "-": 62,
         "1": 53,
