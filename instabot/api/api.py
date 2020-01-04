@@ -410,6 +410,7 @@ class API(object):
         with_signature=True,
         headers=None,
         extra_sig=None,
+        sleep_minutes=None,
     ):
         self.set_proxy()  # Only happens if `self.proxy`
         if not self.is_logged_in and not login:
@@ -488,14 +489,22 @@ class API(object):
                     pass
 
             if response.status_code == 429:
-                sleep_minutes = 5
+                if sleep_minutes is None:
+                    sleep_minutes = 0
+                sleep_minutes += 5
                 self.logger.warning(
                     "That means 'too many requests'. I'll go to sleep "
                     "for {} minutes.".format(sleep_minutes)
                 )
                 time.sleep(sleep_minutes * 60)
                 return self.send_request(
-                    endpoint, post, login, with_signature, headers, extra_sig
+                    endpoint, 
+                    post, 
+                    login, 
+                    with_signature, 
+                    headers, 
+                    extra_sig, 
+                    sleep_minutes
                 )
             elif response.status_code == 400:
                 response_data = json.loads(response.text)
