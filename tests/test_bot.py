@@ -17,10 +17,31 @@ class TestBot:
         self.PASSWORD = "test_password"
         self.FULLNAME = "test_full_name"
         self.TOKEN = "abcdef123456"
-        self.bot = Bot()
+        self.bot = Bot(
+            max_likes_per_day=1000,
+            max_unlikes_per_day=1000,
+            max_follows_per_day=350,
+            max_unfollows_per_day=350,
+            max_comments_per_day=100,
+            max_blocks_per_day=100,
+            max_unblocks_per_day=100,
+            max_likes_to_like=100,
+            min_likes_to_like=20,
+            max_messages_per_day=300,
+            like_delay=10,
+            unlike_delay=10,
+            follow_delay=30,
+            unfollow_delay=30,
+            comment_delay=60,
+            block_delay=30,
+            unblock_delay=30,
+            message_delay=60,
+            blocked_actions_sleep_delay=300,
+        )
         self.prepare_api(self.bot)
         self.bot.reset_counters()
         self.bot.reset_cache()
+
 
     def prepare_api(self, bot):
         bot.api.is_logged_in = True
