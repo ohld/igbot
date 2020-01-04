@@ -498,12 +498,12 @@ class API(object):
                 )
                 time.sleep(sleep_minutes * 60)
                 return self.send_request(
-                    endpoint, 
-                    post, 
-                    login, 
-                    with_signature, 
-                    headers, 
-                    extra_sig, 
+                    endpoint,
+                    post,
+                    login,
+                    with_signature,
+                    headers,
+                    extra_sig,
                     sleep_minutes,
                 )
             elif response.status_code == 400:
