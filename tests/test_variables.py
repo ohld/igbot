@@ -200,7 +200,9 @@ TEST_PHOTO_ITEM = {
             {
                 "width": 612,
                 "height": 612,
-                "url": "https://scontent-amt2-1.cdninstagram.com/v/t51.2885-15/sh0.08/e35/p750x750/76844872_823008174880077_8222147620082298446_n.jpg?_nc_ht=scontent-amt2-1.cdninstagram.com&_nc_cat=109&_nc_ohc=WjtkR3IzTS0AX8gN3KJ&oh=5a0762689215a84215b67db9acbace86&oe=5E9240B5",
+                "url": "https://scontent-amt2-1.cdninstagram.com/vp/9ef94dbf"
+                + "ea2b8cdb2ba5c9b45f1945fd/5AEFE328/t51.2885-15/e15/11137637_"
+                + "1567371843535625_96536034_n.jpg?ig_cache_key=MTIzNA%3D%3D.2",
             },
             {
                 "width": 240,
