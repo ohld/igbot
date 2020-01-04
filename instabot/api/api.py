@@ -410,7 +410,7 @@ class API(object):
         with_signature=True,
         headers=None,
         extra_sig=None,
-        sleep_minutes=None,
+        timeout_minutes=None,
     ):
         self.set_proxy()  # Only happens if `self.proxy`
         if not self.is_logged_in and not login:
@@ -490,14 +490,14 @@ class API(object):
 
             if response.status_code == 429:
                 # if we come to this error, add 5 minutes of sleep everytime we hit the 429 error (aka soft bann) keep increasing untill we are unbanned
-                if sleep_minutes is None:
-                    sleep_minutes = 0
-                sleep_minutes += 1
+                if timeout_minutes is None:
+                    timeout_minutes = 0
+                timeout_minutes += 1
                 self.logger.warning(
                     "That means 'too many requests'. I'll go to sleep "
-                    "for {} minutes.".format(sleep_minutes)
+                    "for {} minutes.".format(timeout_minutes)
                 )
-                time.sleep(sleep_minutes * 60)
+                time.sleep(timeout_minutes * 60)
                 return self.send_request(
                     endpoint,
                     post,
@@ -505,7 +505,7 @@ class API(object):
                     with_signature,
                     headers,
                     extra_sig,
-                    sleep_minutes,
+                    timeout_minutes,
                 )
             elif response.status_code == 400:
                 response_data = json.loads(response.text)
