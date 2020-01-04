@@ -504,7 +504,7 @@ class API(object):
                     with_signature, 
                     headers, 
                     extra_sig, 
-                    sleep_minutes
+                    sleep_minutes,
                 )
             elif response.status_code == 400:
                 response_data = json.loads(response.text)
