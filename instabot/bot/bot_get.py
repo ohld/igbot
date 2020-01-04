@@ -399,6 +399,10 @@ def get_media_id_from_link(self, link):
 
 
 def get_link_from_media_id(self, media_id):
+    if media_id.find("_"):
+        new = media_id.split("_")
+        media_id = new[0]
+
     alphabet = {
         "-": 62,
         "1": 53,
@@ -467,7 +471,7 @@ def get_link_from_media_id(self, media_id):
     }
     result = ""
     while media_id:
-        media_id, char = media_id // 64, media_id % 64
+        media_id, char = int(media_id) // 64, int(media_id) % 64
         result += list(alphabet.keys())[list(alphabet.values()).index(char)]
     return "https://instagram.com/p/" + result[::-1] + "/"
 
