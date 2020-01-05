@@ -341,7 +341,7 @@ class API(object):
             return False
 
         print("A code has been sent to the method selected, please check.")
-        code = input("Insert code: ")
+        code = input("Insert code: ").replace(" ", "")
 
         data = json.dumps({"security_code": code})
         try:
