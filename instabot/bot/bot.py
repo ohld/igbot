@@ -1,5 +1,6 @@
 import atexit
 import datetime
+import logging
 import os
 import random
 import signal
@@ -177,6 +178,8 @@ class Bot(object):
         device=None,
         save_logfile=True,
         log_filename=None,
+        loglevel_file=logging.INFO,
+        loglevel_stream=logging.DEBUG,
         log_follow_unfollow=True,
     ):
         self.api = API(
@@ -184,6 +187,8 @@ class Bot(object):
             base_path=base_path,
             save_logfile=save_logfile,
             log_filename=log_filename,
+            loglevel_file=loglevel_file,
+            loglevel_stream=loglevel_stream,
         )
         self.log_follow_unfollow = log_follow_unfollow
         self.base_path = base_path
