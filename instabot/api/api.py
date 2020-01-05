@@ -341,7 +341,7 @@ class API(object):
             return False
 
         print("A code has been sent to the method selected, please check.")
-        code = input("Insert code: ")
+        code = input("Insert code: ").replace(" ", "")
 
         data = json.dumps({"security_code": code})
         try:
@@ -494,6 +494,9 @@ class API(object):
                     "for {} minutes.".format(sleep_minutes)
                 )
                 time.sleep(sleep_minutes * 60)
+                return self.send_request(
+                    endpoint, post, login, with_signature, headers, extra_sig
+                )
             elif response.status_code == 400:
                 response_data = json.loads(response.text)
 
