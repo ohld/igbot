@@ -46,7 +46,15 @@ PY2 = sys.version_info[0] == 2
 
 
 class API(object):
-    def __init__(self, device=None, base_path="", save_logfile=True, log_filename=None):
+    def __init__(
+        self,
+        device=None,
+        base_path="",
+        save_logfile=True,
+        log_filename=None,
+        loglevel_file=logging.INFO,
+        loglevel_stream=logging.DEBUG,
+    ):
         # Setup device and user_agent
         self.device = device or devices.DEFAULT_DEVICE
 
@@ -75,13 +83,15 @@ class API(object):
                 )
 
             fh = logging.FileHandler(filename=log_filename)
-            fh.setLevel(logging.INFO)
-            fh.setFormatter(logging.Formatter("%(asctime)s %(message)s"))
+            fh.setLevel(loglevel_file)
+            fh.setFormatter(
+                logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
+            )
 
             self.logger.addHandler(fh)
 
         ch = logging.StreamHandler()
-        ch.setLevel(logging.DEBUG)
+        ch.setLevel(loglevel_stream)
         ch.setFormatter(logging.Formatter("%(asctime)s - %(levelname)s - %(message)s"))
 
         self.logger.addHandler(ch)
@@ -92,8 +102,6 @@ class API(object):
     def set_user(self, username, password, generate_all_uuids=True, set_device=True):
         self.username = username
         self.password = password
-
-        self.logger = logging.getLogger("[instabot_{}]".format(self.username))
 
         if set_device is True:
             self.set_device()
