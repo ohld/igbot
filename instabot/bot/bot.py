@@ -1,5 +1,6 @@
 import atexit
 import datetime
+import logging
 import os
 import random
 import signal
@@ -136,16 +137,16 @@ class Bot(object):
         friends_file="friends.txt",
         base_path="",
         proxy=None,
-        max_likes_per_day=1000,
-        max_unlikes_per_day=1000,
-        max_follows_per_day=350,
-        max_unfollows_per_day=350,
-        max_comments_per_day=100,
-        max_blocks_per_day=100,
-        max_unblocks_per_day=100,
-        max_likes_to_like=100,
-        min_likes_to_like=20,
-        max_messages_per_day=300,
+        max_likes_per_day=random.randint(400, 800),
+        max_unlikes_per_day=random.randint(300, 500),
+        max_follows_per_day=random.randint(100, 300),
+        max_unfollows_per_day=random.randint(50, 150),
+        max_comments_per_day=random.randint(50, 120),
+        max_blocks_per_day=random.randint(50, 200),
+        max_unblocks_per_day=random.randint(50, 200),
+        max_likes_to_like=random.randint(50, 200),
+        min_likes_to_like=random.randint(50, 200),
+        max_messages_per_day=random.randint(100, 300),
         filter_users=True,
         filter_private_users=True,
         filter_users_without_profile_photo=False,
@@ -160,23 +161,25 @@ class Bot(object):
         max_following_to_followers_ratio=15,
         min_media_count_to_follow=3,
         max_following_to_block=2000,
-        like_delay=10,
-        unlike_delay=10,
-        follow_delay=30,
-        unfollow_delay=30,
-        comment_delay=60,
-        block_delay=30,
-        unblock_delay=30,
-        message_delay=60,
+        like_delay=random.randint(30, 70),
+        unlike_delay=random.randint(30, 70),
+        follow_delay=random.randint(30, 70),
+        unfollow_delay=random.randint(30, 70),
+        comment_delay=random.randint(30, 70),
+        block_delay=random.randint(30, 70),
+        unblock_delay=random.randint(30, 70),
+        message_delay=random.randint(30, 70),
         stop_words=("shop", "store", "free"),
         blacklist_hashtags=["#shop", "#store", "#free"],
         blocked_actions_protection=True,
         blocked_actions_sleep=False,
-        blocked_actions_sleep_delay=300,
+        blocked_actions_sleep_delay=random.randint(300, 500),
         verbosity=True,
         device=None,
         save_logfile=True,
         log_filename=None,
+        loglevel_file=logging.INFO,
+        loglevel_stream=logging.DEBUG,
         log_follow_unfollow=True,
     ):
         self.api = API(
@@ -184,6 +187,8 @@ class Bot(object):
             base_path=base_path,
             save_logfile=save_logfile,
             log_filename=log_filename,
+            loglevel_file=loglevel_file,
+            loglevel_stream=loglevel_stream,
         )
         self.log_follow_unfollow = log_follow_unfollow
         self.base_path = base_path

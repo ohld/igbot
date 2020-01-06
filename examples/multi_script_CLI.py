@@ -116,10 +116,8 @@ def setting_input():
     ]
 
     with open(setting, "w") as f:
-        while True:
-            for msg, n in inputs:
-                read_input(f, msg, n)
-            break
+        for msg, n in inputs:
+            read_input(f, msg, n)
         print("Done with all settings!")
 
 
@@ -629,45 +627,29 @@ if os.stat(setting).st_size == 0:
 
 f = open(setting)
 lines = f.readlines()
-setting_0 = int(lines[0].strip())
-setting_1 = int(lines[1].strip())
-setting_2 = int(lines[2].strip())
-setting_3 = int(lines[3].strip())
-setting_4 = int(lines[4].strip())
-setting_5 = int(lines[5].strip())
-setting_6 = int(lines[6].strip())
-setting_7 = int(lines[7].strip())
-setting_8 = int(lines[8].strip())
-setting_9 = int(lines[9].strip())
-setting_10 = int(lines[10].strip())
-setting_11 = int(lines[11].strip())
-setting_12 = int(lines[12].strip())
-setting_13 = int(lines[13].strip())
-setting_14 = int(lines[14].strip())
-setting_15 = int(lines[15].strip())
-setting_16 = int(lines[16].strip())
-setting_17 = int(lines[17].strip())
-setting_18 = lines[18].strip()
+setting = []
+for i in range(0, 19):
+    setting.append(lines[i].strip())
 
 bot = Bot(
-    max_likes_per_day=setting_0,
-    max_unlikes_per_day=setting_1,
-    max_follows_per_day=setting_2,
-    max_unfollows_per_day=setting_3,
-    max_comments_per_day=setting_4,
-    max_likes_to_like=setting_5,
-    max_followers_to_follow=setting_6,
-    min_followers_to_follow=setting_7,
-    max_following_to_follow=setting_8,
-    min_following_to_follow=setting_9,
-    max_followers_to_following_ratio=setting_10,
-    max_following_to_followers_ratio=setting_11,
-    min_media_count_to_follow=setting_12,
-    like_delay=setting_13,
-    unlike_delay=setting_14,
-    follow_delay=setting_15,
-    unfollow_delay=setting_16,
-    comment_delay=setting_17,
+    max_likes_per_day=int(setting[0]),
+    max_unlikes_per_day=int(setting[1]),
+    max_follows_per_day=int(setting[2]),
+    max_unfollows_per_day=int(setting[3]),
+    max_comments_per_day=int(setting[4]),
+    max_likes_to_like=int(setting[5]),
+    max_followers_to_follow=int(setting[6]),
+    min_followers_to_follow=int(setting[7]),
+    max_following_to_follow=int(setting[8]),
+    min_following_to_follow=int(setting[9]),
+    max_followers_to_following_ratio=int(setting[10]),
+    max_following_to_followers_ratio=int(setting[11]),
+    min_media_count_to_follow=int(setting[12]),
+    like_delay=int(setting[13]),
+    unlike_delay=int(setting[14]),
+    follow_delay=int(setting[15]),
+    unfollow_delay=int(setting[16]),
+    comment_delay=int(setting[17]),
     whitelist_file=whitelist,
     blacklist_file=blacklist,
     comments_file=comment,
@@ -687,6 +669,7 @@ bot = Bot(
     ],
 )
 
+# TODO parse setting[18] for proxy
 bot.login()
 
 while True:

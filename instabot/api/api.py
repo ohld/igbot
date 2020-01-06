@@ -46,7 +46,15 @@ PY2 = sys.version_info[0] == 2
 
 
 class API(object):
-    def __init__(self, device=None, base_path="", save_logfile=True, log_filename=None):
+    def __init__(
+        self,
+        device=None,
+        base_path="",
+        save_logfile=True,
+        log_filename=None,
+        loglevel_file=logging.INFO,
+        loglevel_stream=logging.DEBUG,
+    ):
         # Setup device and user_agent
         self.device = device or devices.DEFAULT_DEVICE
 
@@ -75,13 +83,15 @@ class API(object):
                 )
 
             fh = logging.FileHandler(filename=log_filename)
-            fh.setLevel(logging.INFO)
-            fh.setFormatter(logging.Formatter("%(asctime)s %(message)s"))
+            fh.setLevel(loglevel_file)
+            fh.setFormatter(
+                logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
+            )
 
             self.logger.addHandler(fh)
 
         ch = logging.StreamHandler()
-        ch.setLevel(logging.DEBUG)
+        ch.setLevel(loglevel_stream)
         ch.setFormatter(logging.Formatter("%(asctime)s - %(levelname)s - %(message)s"))
 
         self.logger.addHandler(ch)
@@ -92,8 +102,6 @@ class API(object):
     def set_user(self, username, password, generate_all_uuids=True, set_device=True):
         self.username = username
         self.password = password
-
-        self.logger = logging.getLogger("[instabot_{}]".format(self.username))
 
         if set_device is True:
             self.set_device()
@@ -402,7 +410,7 @@ class API(object):
             self.session.proxies["http"] = scheme + self.proxy
             self.session.proxies["https"] = scheme + self.proxy
 
-    def send_request(  # noqa: C901
+    def send_request(  # noqa: C901 make sleep minutes 0 when we do a request
         self,
         endpoint,
         post=None,
@@ -410,6 +418,7 @@ class API(object):
         with_signature=True,
         headers=None,
         extra_sig=None,
+        timeout_minutes=None,
     ):
         self.set_proxy()  # Only happens if `self.proxy`
         if not self.is_logged_in and not login:
@@ -488,14 +497,23 @@ class API(object):
                     pass
 
             if response.status_code == 429:
-                sleep_minutes = 5
+                # if we come to this error, add 5 minutes of sleep everytime we hit the 429 error (aka soft bann) keep increasing untill we are unbanned
+                if timeout_minutes is None:
+                    timeout_minutes = 0
+                timeout_minutes += 1
                 self.logger.warning(
                     "That means 'too many requests'. I'll go to sleep "
-                    "for {} minutes.".format(sleep_minutes)
+                    "for {} minutes.".format(timeout_minutes)
                 )
-                time.sleep(sleep_minutes * 60)
+                time.sleep(timeout_minutes * 60)
                 return self.send_request(
-                    endpoint, post, login, with_signature, headers, extra_sig
+                    endpoint,
+                    post,
+                    login,
+                    with_signature,
+                    headers,
+                    extra_sig,
+                    timeout_minutes,
                 )
             elif response.status_code == 400:
                 response_data = json.loads(response.text)

@@ -25,8 +25,8 @@ bot.login(username=args.u, password=args.p, proxy=args.proxy)
 hashtags = bot.read_list_from_file(args.filename)
 bot.logger.info("Hashtags: " + str(hashtags))
 if not hashtags:
+    bot.logger.warning("No hastag file specified")
     exit()
 
-bot.login()
 for hashtag in hashtags:
     bot.like_hashtag(hashtag)
