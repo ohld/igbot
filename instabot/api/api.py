@@ -410,7 +410,7 @@ class API(object):
             self.session.proxies["http"] = scheme + self.proxy
             self.session.proxies["https"] = scheme + self.proxy
 
-    def send_request(  # noqa: C901
+    def send_request(  # noqa: C901 make sleep minutes 0 when we do a request
         self,
         endpoint,
         post=None,
@@ -418,6 +418,7 @@ class API(object):
         with_signature=True,
         headers=None,
         extra_sig=None,
+        timeout_minutes=None,
     ):
         self.set_proxy()  # Only happens if `self.proxy`
         if not self.is_logged_in and not login:
@@ -496,14 +497,23 @@ class API(object):
                     pass
 
             if response.status_code == 429:
-                sleep_minutes = 5
+                # if we come to this error, add 5 minutes of sleep everytime we hit the 429 error (aka soft bann) keep increasing untill we are unbanned
+                if timeout_minutes is None:
+                    timeout_minutes = 0
+                timeout_minutes += 1
                 self.logger.warning(
                     "That means 'too many requests'. I'll go to sleep "
-                    "for {} minutes.".format(sleep_minutes)
+                    "for {} minutes.".format(timeout_minutes)
                 )
-                time.sleep(sleep_minutes * 60)
+                time.sleep(timeout_minutes * 60)
                 return self.send_request(
-                    endpoint, post, login, with_signature, headers, extra_sig
+                    endpoint,
+                    post,
+                    login,
+                    with_signature,
+                    headers,
+                    extra_sig,
+                    timeout_minutes,
                 )
             elif response.status_code == 400:
                 response_data = json.loads(response.text)
