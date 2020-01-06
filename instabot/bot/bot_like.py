@@ -242,6 +242,14 @@ def like_hashtag(self, hashtag, amount=None):
             if tag["name"] == hashtag:
                 hashtag_id = tag["id"]
                 break
+        else:
+            self.logger.error(
+                "Hashtag ID of {} not found within api response".format(hashtag)
+            )
+            self.logger.debug(
+                "Last JSON results: {}".format(self.api.last_json["results"])
+            )
+            return False
     else:
         self.logger.error("NO INFO FOR HASHTAG: {}".format(hashtag))
         return False
