@@ -26,10 +26,6 @@ def get_recent_followers(bot, from_time):
     for feed in [activity["new_stories"], activity["old_stories"]]:
         for event in feed:
             if event.get("args", {}).get("text", "").endswith("started following you."):
-                inline_follow = event["args"].get("inline_follow")
-                print(inline_follow)
-                if not inline_follow:
-                    continue
                 follow_time = datetime.datetime.utcfromtimestamp(
                     event["args"]["timestamp"]
                 )
@@ -37,8 +33,8 @@ def get_recent_followers(bot, from_time):
                     continue
                 followers.append(
                     {
-                        "user_id": inline_follow["user_info"]["id"],
-                        "username": inline_follow["user_info"]["username"],
+                        "user_id": event["args"]["profile_id"],
+                        "username": event["args"]["profile_name"],
                         "follow_time": follow_time,
                     }
                 )
