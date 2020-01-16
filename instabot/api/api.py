@@ -1035,7 +1035,7 @@ class API(object):
         return self.get_username_info(self.user_id)
 
     def get_recent_activity(self):
-        return self.send_request("news/inbox")
+        return self.send_request("news/inbox/?limited_activity=true&show_su=true")
 
     def get_following_recent_activity(self):
         return self.send_request("news")
