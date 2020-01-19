@@ -677,5 +677,5 @@ while True:
         menu()
     except Exception as e:
         bot.logger.info("error, read exception bellow")
-        bot.logger.info(str(e))
+        bot.logger.exception(str(e))
     time.sleep(1)
