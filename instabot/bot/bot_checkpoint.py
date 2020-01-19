@@ -29,6 +29,7 @@ class Checkpoint(object):
         self.start_time = bot.start_time
         self.date = datetime.now()
         self.total_requests = bot.api.total_requests
+        self.bot = bot
 
     def fill_following(self, bot):
         self._following = [item["pk"] for item in bot.api.get_total_self_followings()]
@@ -44,6 +45,7 @@ def save_checkpoint(self):
     checkpoint = Checkpoint(self)
     fname = CHECKPOINT_PATH.format(fname=self.api.username)
     fname = os.path.join(self.base_path, fname)
+    self.bot.logger.debug("Saving Checkpoint file to: {}".format(fname))
     with open(fname, "wb") as f:
         pickle.dump(checkpoint, f, -1)
     return True
@@ -53,6 +55,7 @@ def load_checkpoint(self):
     try:
         fname = CHECKPOINT_PATH.format(fname=self.api.username)
         fname = os.path.join(self.base_path, fname)
+        self.bot.logger.debug("Loading Checkpoint file from: {}".format(fname))
         with open(fname, "rb") as f:
             checkpoint = pickle.load(f)
         if isinstance(checkpoint, Checkpoint):
