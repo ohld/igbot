@@ -11,7 +11,7 @@ with open(path.join(here, "README.md"), encoding="utf-8") as f:
 
 setup(
     name="instabot",
-    version="0.104.0",
+    version="0.105.0",
     description="Instagram bot scripts for promotion and API python wrapper.",
     long_description=long_description,
     author="Daniil Okhlopkov, Evgeny Kemerov",
