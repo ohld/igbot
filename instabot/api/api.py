@@ -455,7 +455,14 @@ class API(object):
             return False
 
         self.last_response = response
-        self.logger.debug(response)
+        if post is not None:
+            self.logger.debug(
+                "POST to endpoint: {} returned response: {}".format(endpoint, response)
+            )
+        else:
+            self.logger.debug(
+                "GET to endpoint: {} returned response: {}".format(endpoint, response)
+            )
         if response.status_code == 200:
             try:
                 self.last_json = json.loads(response.text)
@@ -463,7 +470,11 @@ class API(object):
             except JSONDecodeError:
                 return False
         else:
-            # print(endpoint, post, response.content)
+            self.logger.debug(
+                "Responsecode indicates error; response content: {}".format(
+                    response.content
+                )
+            )
             if response.status_code != 404 and response.status_code != "404":
                 self.logger.error(
                     "Request returns {} error!".format(response.status_code)
@@ -1024,7 +1035,7 @@ class API(object):
         return self.get_username_info(self.user_id)
 
     def get_recent_activity(self):
-        return self.send_request("news/inbox")
+        return self.send_request("news/inbox/?limited_activity=true&show_su=true")
 
     def get_following_recent_activity(self):
         return self.send_request("news")
