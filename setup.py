@@ -30,7 +30,7 @@ setup(
         "requests>=2.22.0",
         "requests-toolbelt>=0.9.1",
         "responses>=0.10.9",
-        "schedule=>=0.6.0",
+        "schedule>=0.6.0",
         "six>=1.14.0",
         "tqdm>=4.41.1",
         "urllib3>=1.25.7",
