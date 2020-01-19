@@ -270,7 +270,7 @@ class Bot(object):
         self.verbosity = verbosity
 
         self.logger = self.api.logger
-        self.logger.info("Instabot Started")
+        self.logger.info("Instabot Started with API from {}".format(API.__file__))
 
     @property
     def user_id(self):
