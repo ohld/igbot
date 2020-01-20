@@ -14,7 +14,7 @@ import pytz
 import requests
 import requests.utils
 import six.moves.urllib as urllib
-from instabot import Bot
+from ..instabot import Bot
 from requests_toolbelt import MultipartEncoder
 from tqdm import tqdm
 
