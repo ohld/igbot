@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import atexit
 import datetime
 import logging
@@ -6,8 +8,10 @@ import random
 import signal
 import time
 
-from .. import utils
+from instabot import utils
+#from instabot.api.api import API
 from ..api import API
+
 from .state.bot_state import BotState
 from .state.bot_cache import BotCache
 from .bot_archive import archive, archive_medias, unarchive_medias
@@ -123,7 +127,6 @@ from .bot_unlike import (
     unlike_user,
 )
 from .bot_video import download_video, upload_video
-
 
 class Bot(object):
     def __init__(
