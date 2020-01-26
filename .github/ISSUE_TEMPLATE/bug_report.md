@@ -31,7 +31,7 @@ here
 **To Reproduce**
 
 (EXAMPLE:) Steps to reproduce the behavior:
-1. Run file: 
+1. Run file:
 2. Edit '...'
 3. Run '....'
 

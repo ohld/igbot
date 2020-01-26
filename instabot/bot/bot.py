@@ -7,6 +7,7 @@ import signal
 import time
 
 from instabot import utils
+
 # from instabot.api.api import API
 from ..api import API
 
@@ -125,6 +126,7 @@ from .bot_unlike import (
     unlike_user,
 )
 from .bot_video import download_video, upload_video
+
 
 class Bot(object):
     def __init__(

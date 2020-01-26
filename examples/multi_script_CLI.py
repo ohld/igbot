@@ -9,11 +9,11 @@ from tqdm import tqdm
 sys.path.append(os.path.join(sys.path[0], "../"))
 
 from instabot import Bot
- 
 
- def initial_checker():
-     files = [hashtag_file, users_file, whitelist, blacklist, comment, setting_file]
-     try:
+
+def initial_checker():
+    files = [hashtag_file, users_file, whitelist, blacklist, comment, setting_file]
+    try:
         for f in files:
             with open(f, "r") as f:
                 pass
