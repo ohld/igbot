@@ -10,7 +10,6 @@ sys.path.append(os.path.join(sys.path[0], "../"))
 
 from instabot import Bot
 
-
 def initial_checker():
     files = [hashtag_file, users_file, whitelist, blacklist, comment, setting_file]
     try:
