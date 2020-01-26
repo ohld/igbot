@@ -4,10 +4,9 @@ import random
 import sys
 import time
 
-from tqdm import tqdm
-
 sys.path.append(os.path.join(sys.path[0], "../"))
 
+from tqdm import tqdm
 from instabot import Bot
 
 
