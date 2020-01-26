@@ -52,6 +52,7 @@ is_py37 = version_info[:2] == (3, 7)
 
 version = "0.105.0"
 
+
 class API(object):
     def __init__(
         self,
