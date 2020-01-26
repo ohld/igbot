@@ -2,7 +2,7 @@
 name: Question/Others
 about: Not an error or feature request
 title: "[QUESTION] CHANGE THIS TITLE TO YOUR QUESTION"
-labels: ''
+labels: 'question'
 assignees: ''
 
 ---

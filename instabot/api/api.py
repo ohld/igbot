@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 import base64
 import datetime
 import hashlib
@@ -77,8 +75,8 @@ class API(object):
         self.total_requests = 0
 
         # Setup logging
-        #instabot_version = Bot.version()
-        #self.logger = logging.getLogger("[instabot_{}]".format(instabot_version))
+        # instabot_version = Bot.version()
+        # self.logger = logging.getLogger("[instabot_{}]".format(instabot_version))
         self.logger = logging.getLogger("instabot version: " + version)
 
         if not os.path.exists("./config/"):
