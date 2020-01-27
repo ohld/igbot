@@ -1,19 +1,21 @@
 ---
 name: Question/Others
 about: Not an error or feature request
+title: "[QUESTION] CHANGE THIS TITLE TO YOUR QUESTION"
+labels: 'question'
+assignees: ''
 
 ---
 
-## Please follow the guide below
-
-- Issues submitted without this template format will be **ignored**.
-- Rlease read them **carefully** and answer completely.
-- Do not post screenshots of error messages or code.
-- Put an `x` into all the boxes [ ] relevant to your issue (==> [x] *no* spaces).
-- Use the *Preview* tab to see how your issue will actually look like.
-- Any mention of spam-like actions or spam-related tools/libs/etc is strictly **not allowed**.
-
----
+<!--
+Please follow the guide below
+Issues submitted without this template format will be **ignored**.
+Rlease read them **carefully** and answer completely.
+Do not post screenshots of error messages or code.
+Put an `x` into all the boxes [ ] relevant to your issue (==> [x] *no* spaces).
+Use the *Preview* tab to see how your issue will actually look like.
+Any mention of spam-like actions or spam-related tools/libs/etc is strictly **not allowed**.
+-->
 
 ### Before submitting an issue, make sure you have:
 - [ ] Updated to the lastest version
@@ -22,7 +24,11 @@ about: Not an error or feature request
 - [ ] Reviewed the sample code in [tests](https://github.com/instagrambot/instabot/tree/master/tests) and [examples](https://github.com/instagrambot/instabot/tree/master/examples)
 
 ### Which example file are you using?
-- ANSWER HERE
+
+```
+example.py
+or delete this if it has nothing to do with the code
+```
 
 ---
 

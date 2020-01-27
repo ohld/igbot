@@ -17,6 +17,7 @@ import six.moves.urllib as urllib
 from requests_toolbelt import MultipartEncoder
 from tqdm import tqdm
 
+
 from . import config, devices
 from .api_login import (
     change_device_simulation,
@@ -36,13 +37,20 @@ from .api_story import configure_story, download_story, upload_story_photo
 from .api_video import configure_video, download_video, upload_video
 from .prepare import delete_credentials, get_credentials
 
+
 try:
     from json.decoder import JSONDecodeError
 except ImportError:
     JSONDecodeError = ValueError
 
 
-PY2 = sys.version_info[0] == 2
+version_info = sys.version_info[0:3]
+is_py2 = version_info[0] == 2
+is_py3 = version_info[0] == 3
+is_py37 = version_info[:2] == (3, 7)
+
+
+version = "0.105.0"
 
 
 class API(object):
@@ -52,8 +60,8 @@ class API(object):
         base_path="",
         save_logfile=True,
         log_filename=None,
-        loglevel_file=logging.INFO,
-        loglevel_stream=logging.DEBUG,
+        loglevel_file=logging.DEBUG,
+        loglevel_stream=logging.INFO,
     ):
         # Setup device and user_agent
         self.device = device or devices.DEFAULT_DEVICE
@@ -68,7 +76,9 @@ class API(object):
         self.total_requests = 0
 
         # Setup logging
-        self.logger = logging.getLogger("[instabot_{}]".format(id(self)))
+        # instabot_version = Bot.version()
+        # self.logger = logging.getLogger("[instabot_{}]".format(instabot_version))
+        self.logger = logging.getLogger("instabot version: " + version)
 
         if not os.path.exists("./config/"):
             os.makedirs("./config/")  # create base_path if not exists
@@ -85,7 +95,9 @@ class API(object):
             fh = logging.FileHandler(filename=log_filename)
             fh.setLevel(loglevel_file)
             fh.setFormatter(
-                logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
+                logging.Formatter(
+                    "%(asctime)s - %(name)s (%(module)s) - %(levelname)s - %(message)s"
+                )
             )
 
             self.logger.addHandler(fh)

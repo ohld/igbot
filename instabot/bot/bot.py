@@ -6,8 +6,11 @@ import random
 import signal
 import time
 
-from .. import utils
+from instabot import utils
+
+# from instabot.api.api import API
 from ..api import API
+
 from .state.bot_state import BotState
 from .state.bot_cache import BotCache
 from .bot_archive import archive, archive_medias, unarchive_medias
@@ -271,6 +274,7 @@ class Bot(object):
 
         self.logger = self.api.logger
         self.logger.info("Instabot Started")
+        self.logger.debug("Bot imported from {}".format(__file__))
 
     @property
     def user_id(self):

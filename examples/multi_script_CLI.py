@@ -4,17 +4,14 @@ import random
 import sys
 import time
 
-from tqdm import tqdm
-
 sys.path.append(os.path.join(sys.path[0], "../"))
-from instabot import Bot  # noqa: E402
 
-
-# initial
+from tqdm import tqdm
+from instabot import Bot
 
 
 def initial_checker():
-    files = [hashtag_file, users_file, whitelist, blacklist, comment, setting]
+    files = [hashtag_file, users_file, whitelist, blacklist, comment, setting_file]
     try:
         for f in files:
             with open(f, "r") as f:
@@ -115,7 +112,7 @@ def setting_input():
         ),
     ]
 
-    with open(setting, "w") as f:
+    with open(settings, "w") as f:
         for msg, n in inputs:
             read_input(f, msg, n)
         print("Done with all settings!")
@@ -144,7 +141,7 @@ def parameter_setting():
         "Proxy: ",
     ]
 
-    with open(setting) as f:
+    with open(settings) as f:
         data = f.readlines()
 
     print("Current parameters\n")
@@ -614,42 +611,42 @@ whitelist = "whitelist.txt"
 blacklist = "blacklist.txt"
 userlist = "userlist.txt"
 comment = "comment.txt"
-setting = "setting.txt"
+setting_file = "setting.txt"
 SECRET_FILE = "secret.txt"
 
 # check setting first
 initial_checker()
 
-if os.stat(setting).st_size == 0:
+if os.stat(setting_file).st_size == 0:
     print("Looks like setting are broken")
     print("Let's make new one")
     setting_input()
 
-f = open(setting)
+f = open(setting_file)
 lines = f.readlines()
-setting = []
+settings = []
 for i in range(0, 19):
-    setting.append(lines[i].strip())
+    settings.append(lines[i].strip())
 
 bot = Bot(
-    max_likes_per_day=int(setting[0]),
-    max_unlikes_per_day=int(setting[1]),
-    max_follows_per_day=int(setting[2]),
-    max_unfollows_per_day=int(setting[3]),
-    max_comments_per_day=int(setting[4]),
-    max_likes_to_like=int(setting[5]),
-    max_followers_to_follow=int(setting[6]),
-    min_followers_to_follow=int(setting[7]),
-    max_following_to_follow=int(setting[8]),
-    min_following_to_follow=int(setting[9]),
-    max_followers_to_following_ratio=int(setting[10]),
-    max_following_to_followers_ratio=int(setting[11]),
-    min_media_count_to_follow=int(setting[12]),
-    like_delay=int(setting[13]),
-    unlike_delay=int(setting[14]),
-    follow_delay=int(setting[15]),
-    unfollow_delay=int(setting[16]),
-    comment_delay=int(setting[17]),
+    max_likes_per_day=int(settings[0]),
+    max_unlikes_per_day=int(settings[1]),
+    max_follows_per_day=int(settings[2]),
+    max_unfollows_per_day=int(settings[3]),
+    max_comments_per_day=int(settings[4]),
+    max_likes_to_like=int(settings[5]),
+    max_followers_to_follow=int(settings[6]),
+    min_followers_to_follow=int(settings[7]),
+    max_following_to_follow=int(settings[8]),
+    min_following_to_follow=int(settings[9]),
+    max_followers_to_following_ratio=int(settings[10]),
+    max_following_to_followers_ratio=int(settings[11]),
+    min_media_count_to_follow=int(settings[12]),
+    like_delay=int(settings[13]),
+    unlike_delay=int(settings[14]),
+    follow_delay=int(settings[15]),
+    unfollow_delay=int(settings[16]),
+    comment_delay=int(settings[17]),
     whitelist_file=whitelist,
     blacklist_file=blacklist,
     comments_file=comment,
@@ -677,5 +674,6 @@ while True:
         menu()
     except Exception as e:
         bot.logger.info("error, read exception bellow")
-        bot.logger.info(str(e))
+        bot.logger.exception(str(e))
+        bot.logger.debug()
     time.sleep(1)
