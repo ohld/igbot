@@ -8,10 +8,10 @@ Configuration file of the project
 API_DOMAIN = "i.instagram.com"
 API_URL = "https://{domain}/api/v1/".format(domain=API_DOMAIN)
 USER_AGENT_BASE = (
-    "Instagram {instagram_version} "
+    "Instagram {app_version} "
     "Android ({android_version}/{android_release}; "
     "{dpi}; {resolution}; {manufacturer}; "
-    "{device}; {model}; {cpu}; en_US)"
+    "{device}; {model}; {cpu}; en_US; {version_code})"
 )
 SIG_KEY_VERSION = "4"
 # version 105.0.0.18.119 (166149665)
@@ -42,6 +42,7 @@ REQUEST_HEADERS = {
     "Accept-Language": "en-US",
     "Content-type": "application/x-www-form-urlencoded; charset=UTF-8",
     "Cookie2": "$Version=1",
+    "version_code": "138226743",
 }
 
 # Moved to the end as it's quite long
