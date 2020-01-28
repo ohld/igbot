@@ -1,3 +1,7 @@
+#!/usr/bin/python
+# - * - coding: utf-8 - * -
+from __future__ import unicode_literals
+
 import getpass
 import os
 import random
@@ -40,12 +44,13 @@ def initial_checker():
 
 
 def read_input(f, msg, n=None):
-    if n:
+    if n is not None:
         msg += " (enter to use default number: {})".format(n)
-    entered = str(stripped_input(msg))
-    if len(entered) == 0:
-        entered = n
-    f.write(f"{entered}\n")
+    print(msg)
+    entered = sys.stdin.readline().strip() or str(n)
+    if isinstance(n, int):
+        entered = int(entered)
+    f.write(str(entered) + "\n")
 
 
 # setting function start here
@@ -112,7 +117,7 @@ def setting_input():
         ),
     ]
 
-    with open(settings, "w") as f:
+    with open(setting_file, "w") as f:
         for msg, n in inputs:
             read_input(f, msg, n)
         print("Done with all settings!")
@@ -154,7 +159,8 @@ def username_adder():
         print("We will add your instagram account.")
         print("Don't worry. It will be stored locally.")
         while True:
-            f.write(stripped_input("Enter your login: "))
+            print("Enter your login: ")
+            f.write(str(sys.stdin.readline().strip()) + ":")
             print(
                 "Enter your password: (it will not be shown due to security "
                 "reasons - just start typing and press Enter)"
@@ -169,11 +175,13 @@ def get_adder(name, fname):
         print("Current Database:")
         print(bot.read_list_from_file(fname))
         with open(fname, "a") as f:
-            print(f"Add {name} to database")
+            print("Add {} to database".format(name))
             while True:
-                f.write(input(f"Enter {name}: \n"))
-                if input(f"Do you want to add another {name}? (y/n)\n").lower() != "y":
-                    print(f"Done adding {name}s to database")
+                print("Enter {}: ".format(name))
+                f.write(str(sys.stdin.readline().strip()) + "\n")
+                print("Do you want to add another {}? (y/n)\n".format(name))
+                if "y" not in sys.stdin.readline():
+                    print("Done adding {}s to database".format(name))
                     break
 
     return _adder()
@@ -262,7 +270,7 @@ def menu_follow():
             """
             )
             hashtags = []
-            if stripped_input() == "1":
+            if "1" in sys.stdin.readline():
                 hashtags = (
                     input(
                         "Insert hashtags separated by spaces\n"
@@ -286,7 +294,7 @@ def menu_follow():
             2.Use username database
             """
             )
-            if stripped_input() == "1":
+            if "1" in sys.stdin.readline():
                 user_id = input("who?\n").strip()
             else:
                 user_id = random.choice(bot.read_list_from_file(users_file))
@@ -300,7 +308,7 @@ def menu_follow():
             2.Use username database
             """
             )
-            if stripped_input() == "1":
+            if "1" in sys.stdin.readline():
                 user_id = input("who?\n").strip()
             else:
                 user_id = random.choice(bot.read_list_from_file(users_file))
@@ -314,7 +322,7 @@ def menu_follow():
             2.Use username database
             """
             )
-            if stripped_input() == "1":
+            if "1" in sys.stdin.readline():
                 user_id = input("who?\n").strip()
             else:
                 user_id = random.choice(bot.read_list_from_file(users_file))
@@ -355,7 +363,7 @@ def menu_like():
             """
             )
             hashtags = []
-            if stripped_input() == "1":
+            if "1" in sys.stdin.readline():
                 hashtags = (
                     input(
                         "Insert hashtags separated by spaces\n"
@@ -376,7 +384,7 @@ def menu_like():
             2.Use username database
             """
             )
-            if stripped_input() == "1":
+            if "1" in sys.stdin.readline():
                 user_id = input("who?\n").strip()
             else:
                 user_id = random.choice(bot.read_list_from_file(users_file))
@@ -389,7 +397,7 @@ def menu_like():
             2.Use username database
             """
             )
-            if stripped_input() == "1":
+            if "1" in sys.stdin.readline():
                 user_id = input("who?\n").strip()
             else:
                 user_id = random.choice(bot.read_list_from_file(users_file))
@@ -402,7 +410,7 @@ def menu_like():
             2.Use username database
             """
             )
-            if stripped_input() == "1":
+            if "1" in sys.stdin.readline():
                 user_id = input("who?\n").strip()
             else:
                 user_id = random.choice(bot.read_list_from_file(users_file))
@@ -444,7 +452,7 @@ def menu_comment():
             2.Use hashtag database
             """
             )
-            if stripped_input() == "1":
+            if "1" in sys.stdin.readline():
                 hashtag = input("what?").strip()
             else:
                 hashtag = random.choice(bot.read_list_from_file(hashtag_file))
@@ -457,7 +465,7 @@ def menu_comment():
             2.Use username database
             """
             )
-            if stripped_input() == "1":
+            if "1" in sys.stdin.readline():
                 user_id = input("who?\n").strip()
             else:
                 user_id = random.choice(bot.read_list_from_file(users_file))
@@ -470,9 +478,9 @@ def menu_comment():
             2.Use existing list
             """
             )
-            if stripped_input() == "1":
+            if "1" in sys.stdin.readline():
                 userlist_maker()
-            if stripped_input() == "2":
+            if "2" in sys.stdin.readline():
                 print(userlist)
             users = bot.read_list_from_file(userlist)
             for user_id in users:
@@ -596,13 +604,10 @@ def menu_setting():
 
 
 # for input compability
-def stripped_input(param=None):
-    if param:
-        result = input(param)
-    else:
-        result = input()
-    return result.strip()
-
+try:
+    input = raw_input
+except NameError:
+    pass
 
 # files location
 hashtag_file = "hashtagsdb.txt"
