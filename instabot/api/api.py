@@ -523,7 +523,7 @@ class API(object):
                 # if we come to this error, add 5 minutes of sleep everytime we hit the 429 error (aka soft bann) keep increasing untill we are unbanned
                 if timeout_minutes is None:
                     timeout_minutes = 0
-                timeout_minutes += 1
+                timeout_minutes += 5
                 self.logger.warning(
                     "That means 'too many requests'. I'll go to sleep "
                     "for {} minutes.".format(timeout_minutes)
