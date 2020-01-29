@@ -45,7 +45,7 @@ def save_checkpoint(self):
     checkpoint = Checkpoint(self)
     fname = CHECKPOINT_PATH.format(fname=self.api.username)
     fname = os.path.join(self.base_path, fname)
-    self.bot.logger.debug("Saving Checkpoint file to: {}".format(fname))
+    self.logger.debug("Saving Checkpoint file to: {}".format(fname))
     with open(fname, "wb") as f:
         pickle.dump(checkpoint, f, -1)
     return True
@@ -55,7 +55,7 @@ def load_checkpoint(self):
     try:
         fname = CHECKPOINT_PATH.format(fname=self.api.username)
         fname = os.path.join(self.base_path, fname)
-        self.bot.logger.debug("Loading Checkpoint file from: {}".format(fname))
+        self.logger.debug("Loading Checkpoint file from: {}".format(fname))
         with open(fname, "rb") as f:
             checkpoint = pickle.load(f)
         if isinstance(checkpoint, Checkpoint):
