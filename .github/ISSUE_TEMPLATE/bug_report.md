@@ -44,5 +44,6 @@ A clear and concise description of what you expected to happen.
 Add any other context about the problem here.
 
 **Version**
+
 Python version (`python -v`):
-OS: Win/Linux/MacOS 
+OS: Win/Linux/MacOS
