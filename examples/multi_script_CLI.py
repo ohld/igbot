@@ -112,7 +112,7 @@ def setting_input():
         ),
     ]
 
-    with open(settings, "w") as f:
+    with open(setting_file, "w") as f:
         for msg, n in inputs:
             read_input(f, msg, n)
         print("Done with all settings!")
