@@ -7,7 +7,7 @@ We are the most used Instagram library on GitHub (according to "Used by" counter
 
 ### Important
 
-Right now the usage of this library (as probably others too) may harm your Instagram's profile because of new script-detection algorithms. You was warned.
+Right now the usage of this library (as probably others too) may harm your Instagram's profile because of new script-detection algorithms. You were warned.
 
 ---
 ### [Read the Docs](https://instagrambot.github.io/docs/) | [Contribute](https://github.com/instagrambot/docs/blob/master/CONTRIBUTING.md)
@@ -32,7 +32,7 @@ pip install -U instabot
 
 <img src="https://user-images.githubusercontent.com/5613295/62396780-b6441c80-b57c-11e9-89b0-931c159f0cab.png" width="400">
 
-Instabot has a lot of predefined filters (like skipping very popular accounts because they will not notice you) which maximize the overall impact. But you can remove them if you like or even set your own parameters: (full list [here](https://github.com/instagrambot/instabot/blob/master/instabot/bot/bot.py#L86))
+Instabot has a lot of predefined filters (like skipping very popular accounts because they will not notice you) which maximizes the overall impact. But you can remove them if you like or even set your parameters: (full list [here](https://github.com/instagrambot/instabot/blob/master/instabot/bot/bot.py#L86))
 
 <img src="https://user-images.githubusercontent.com/5613295/62396777-b5ab8600-b57c-11e9-90a7-56b7294a9a6a.png" width="400">
 
@@ -46,4 +46,4 @@ If this library solved some of your problems, please consider [buying](https://w
 * We reserve the right to block any user of this repository that does not meet these conditions.
 
 # Legal
-This code is in no way affiliated with, authorized, maintained, sponsored or endorsed by Instagram, Facebook inc. or any of its affiliates or subsidiaries. This is an independent and unofficial API. Use at your own risk.
+This code is in no way affiliated with, authorized, maintained, sponsored or endorsed by Instagram, Facebook inc. or any of its affiliates or subsidiaries. This is an independent and unofficial API. Use it at your own risk.
