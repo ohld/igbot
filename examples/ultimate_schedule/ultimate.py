@@ -4,9 +4,10 @@ import os
 import sys
 import threading
 import time
-from glob import glob
-
+import argparse
 import config
+
+from glob import glob
 
 sys.path.append(os.path.join(sys.path[0], "../../"))
 import schedule  # noqa: E402
@@ -19,7 +20,13 @@ bot = Bot(
     whitelist_file=config.WHITELIST_FILE,
     friends_file=config.FRIENDS_FILE,
 )
-bot.login()
+parser = argparse.ArgumentParser(add_help=True)
+parser.add_argument("-u", type=str, help="username")
+parser.add_argument("-p", type=str, help="password")
+parser.add_argument("-proxy", type=str, help="proxy")
+args = parser.parse_args()
+
+bot.login(username=args.u, password=args.p, proxy=args.proxy)
 bot.logger.info("ULTIMATE script. Safe to run 24/7!")
 
 random_user_file = utils.file(config.USERS_FILE)
@@ -88,8 +95,8 @@ def upload_pictures():  # Automatically post a pic in 'pics' folder
                 break
 
             if pic not in posted_pic_list:
-                # After posting a pic, comment it with all the hashtags specified
-                # In config.PICS_HASHTAGS
+                # After posting a pic, comment it with all the
+                # hashtags specified in config.PICS_HASHTAGS
                 posted_pic_list.append(pic)
                 with open("pics.txt", "a") as f:
                     f.write(pic + "\n")

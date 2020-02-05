@@ -25,7 +25,8 @@ def unlike_media_comments(self, media_id):
 
     if not comment_ids:
         self.logger.info(
-            "None comments received: comments not found or comments have been filtered."
+            "None comments received: comments not found"
+            " or comments have been filtered."
         )
         return broken_items
 

@@ -4,17 +4,14 @@ import random
 import sys
 import time
 
-from tqdm import tqdm
-
 sys.path.append(os.path.join(sys.path[0], "../"))
-from instabot import Bot  # noqa: E402
 
-
-# initial
+from tqdm import tqdm
+from instabot import Bot
 
 
 def initial_checker():
-    files = [hashtag_file, users_file, whitelist, blacklist, comment, setting]
+    files = [hashtag_file, users_file, whitelist, blacklist, comment, setting_file]
     try:
         for f in files:
             with open(f, "r") as f:
@@ -25,7 +22,7 @@ def initial_checker():
                 pass
         print(
             """
-        Welcome to instabot, it seems this is the first time you've used this bot.
+        Welcome to instabot, it seems this is your first time.
         Before starting, let's setup the basics.
         So the bot functions the way you want.
         """
@@ -43,13 +40,12 @@ def initial_checker():
 
 
 def read_input(f, msg, n=None):
-    if n is not None:
+    if n:
         msg += " (enter to use default number: {})".format(n)
-    print(msg)
-    entered = sys.stdin.readline().strip() or str(n)
-    if isinstance(n, int):
-        entered = int(entered)
-    f.write(str(entered) + "\n")
+    entered = str(stripped_input(msg))
+    if len(entered) == 0:
+        entered = n
+    f.write(f"{entered}\n")
 
 
 # setting function start here
@@ -70,28 +66,28 @@ def setting_input():
         (
             (
                 "Maximal followers of account you want to follow?\n"
-                "We will skip media that have greater followers than this value "
+                "We will skip media that have greater followers than " + "this value "
             ),
             2000,
         ),
         (
             (
                 "Minimum followers a account should have before we follow?\n"
-                "We will skip media that have lesser followers than this value "
+                "We will skip media that have lesser followers than " + "this value "
             ),
             10,
         ),
         (
             (
                 "Maximum following of account you want to follow?\n"
-                "We will skip media that have a greater following than this value "
+                "We will skip media that have a greater following " + "than this value "
             ),
             7500,
         ),
         (
             (
                 "Minimum following of account you want to follow?\n"
-                "We will skip media that have lesser following from this value "
+                "We will skip media that have lesser following " + "from this value "
             ),
             10,
         ),
@@ -110,16 +106,15 @@ def setting_input():
         ("Delay from one unfollow to another unfollow you will perform ", 30),
         ("Delay from one comment to another comment you will perform ", 60),
         (
-            "Want to use proxy? insert your proxy or leave it blank if no. (just enter",
+            "Want to use proxy? insert your proxy or leave it blank "
+            + "if no. (just enter",
             "None",
         ),
     ]
 
-    with open(setting, "w") as f:
-        while True:
-            for msg, n in inputs:
-                read_input(f, msg, n)
-            break
+    with open(settings, "w") as f:
+        for msg, n in inputs:
+            read_input(f, msg, n)
         print("Done with all settings!")
 
 
@@ -146,7 +141,7 @@ def parameter_setting():
         "Proxy: ",
     ]
 
-    with open(setting) as f:
+    with open(settings) as f:
         data = f.readlines()
 
     print("Current parameters\n")
@@ -159,14 +154,13 @@ def username_adder():
         print("We will add your instagram account.")
         print("Don't worry. It will be stored locally.")
         while True:
-            print("Enter your login: ")
-            f.write(str(sys.stdin.readline().strip()) + ":")
+            f.write(stripped_input("Enter your login: "))
             print(
-                "Enter your password: (it will not be shown due to security reasons - just start typing and press Enter)"
+                "Enter your password: (it will not be shown due to security "
+                "reasons - just start typing and press Enter)"
             )
             f.write(getpass.getpass() + "\n")
-            print("Do you want to add another account? (y/n)")
-            if "y" not in sys.stdin.readline():
+            if input("Do you want to add another account? (y/n)").lower() != "y":
                 break
 
 
@@ -175,13 +169,11 @@ def get_adder(name, fname):
         print("Current Database:")
         print(bot.read_list_from_file(fname))
         with open(fname, "a") as f:
-            print("Add {} to database".format(name))
+            print(f"Add {name} to database")
             while True:
-                print("Enter {}: ".format(name))
-                f.write(str(sys.stdin.readline().strip()) + "\n")
-                print("Do you want to add another {}? (y/n)\n".format(name))
-                if "y" not in sys.stdin.readline():
-                    print("Done adding {}s to database".format(name))
+                f.write(input(f"Enter {name}: \n"))
+                if input(f"Do you want to add another {name}? (y/n)\n").lower() != "y":
+                    print(f"Done adding {name}s to database")
                     break
 
     return _adder()
@@ -270,10 +262,11 @@ def menu_follow():
             """
             )
             hashtags = []
-            if "1" in sys.stdin.readline():
+            if stripped_input() == "1":
                 hashtags = (
                     input(
-                        "Insert hashtags separated by spaces\nExample: cat dog\nwhat hashtags?\n"
+                        "Insert hashtags separated by spaces\n"
+                        "Example: cat dog\nwhat hashtags?\n"
                     )
                     .strip()
                     .split(" ")
@@ -293,7 +286,7 @@ def menu_follow():
             2.Use username database
             """
             )
-            if "1" in sys.stdin.readline():
+            if stripped_input() == "1":
                 user_id = input("who?\n").strip()
             else:
                 user_id = random.choice(bot.read_list_from_file(users_file))
@@ -307,7 +300,7 @@ def menu_follow():
             2.Use username database
             """
             )
-            if "1" in sys.stdin.readline():
+            if stripped_input() == "1":
                 user_id = input("who?\n").strip()
             else:
                 user_id = random.choice(bot.read_list_from_file(users_file))
@@ -321,7 +314,7 @@ def menu_follow():
             2.Use username database
             """
             )
-            if "1" in sys.stdin.readline():
+            if stripped_input() == "1":
                 user_id = input("who?\n").strip()
             else:
                 user_id = random.choice(bot.read_list_from_file(users_file))
@@ -362,10 +355,11 @@ def menu_like():
             """
             )
             hashtags = []
-            if "1" in sys.stdin.readline():
+            if stripped_input() == "1":
                 hashtags = (
                     input(
-                        "Insert hashtags separated by spaces\nExample: cat dog\nwhat hashtags?\n"
+                        "Insert hashtags separated by spaces\n"
+                        "Example: cat dog\nwhat hashtags?\n"
                     )
                     .strip()
                     .split(" ")
@@ -382,7 +376,7 @@ def menu_like():
             2.Use username database
             """
             )
-            if "1" in sys.stdin.readline():
+            if stripped_input() == "1":
                 user_id = input("who?\n").strip()
             else:
                 user_id = random.choice(bot.read_list_from_file(users_file))
@@ -395,7 +389,7 @@ def menu_like():
             2.Use username database
             """
             )
-            if "1" in sys.stdin.readline():
+            if stripped_input() == "1":
                 user_id = input("who?\n").strip()
             else:
                 user_id = random.choice(bot.read_list_from_file(users_file))
@@ -408,7 +402,7 @@ def menu_like():
             2.Use username database
             """
             )
-            if "1" in sys.stdin.readline():
+            if stripped_input() == "1":
                 user_id = input("who?\n").strip()
             else:
                 user_id = random.choice(bot.read_list_from_file(users_file))
@@ -450,7 +444,7 @@ def menu_comment():
             2.Use hashtag database
             """
             )
-            if "1" in sys.stdin.readline():
+            if stripped_input() == "1":
                 hashtag = input("what?").strip()
             else:
                 hashtag = random.choice(bot.read_list_from_file(hashtag_file))
@@ -463,7 +457,7 @@ def menu_comment():
             2.Use username database
             """
             )
-            if "1" in sys.stdin.readline():
+            if stripped_input() == "1":
                 user_id = input("who?\n").strip()
             else:
                 user_id = random.choice(bot.read_list_from_file(users_file))
@@ -476,9 +470,9 @@ def menu_comment():
             2.Use existing list
             """
             )
-            if "1" in sys.stdin.readline():
+            if stripped_input() == "1":
                 userlist_maker()
-            if "2" in sys.stdin.readline():
+            if stripped_input() == "2":
                 print(userlist)
             users = bot.read_list_from_file(userlist)
             for user_id in users:
@@ -584,7 +578,8 @@ def menu_setting():
             whitelist_adder()
         elif ans == "8":
             print(
-                "Whis will clear all database except your user accounts and paramater settings"
+                "Whis will clear all database except your "
+                "user accounts and paramater settings"
             )
             time.sleep(5)
             open(hashtag_file, "w")
@@ -601,10 +596,13 @@ def menu_setting():
 
 
 # for input compability
-try:
-    input = raw_input
-except NameError:
-    pass
+def stripped_input(param=None):
+    if param:
+        result = input(param)
+    else:
+        result = input()
+    return result.strip()
+
 
 # files location
 hashtag_file = "hashtagsdb.txt"
@@ -613,58 +611,42 @@ whitelist = "whitelist.txt"
 blacklist = "blacklist.txt"
 userlist = "userlist.txt"
 comment = "comment.txt"
-setting = "setting.txt"
+setting_file = "setting.txt"
 SECRET_FILE = "secret.txt"
 
 # check setting first
 initial_checker()
 
-if os.stat(setting).st_size == 0:
+if os.stat(setting_file).st_size == 0:
     print("Looks like setting are broken")
     print("Let's make new one")
     setting_input()
 
-f = open(setting)
+f = open(setting_file)
 lines = f.readlines()
-setting_0 = int(lines[0].strip())
-setting_1 = int(lines[1].strip())
-setting_2 = int(lines[2].strip())
-setting_3 = int(lines[3].strip())
-setting_4 = int(lines[4].strip())
-setting_5 = int(lines[5].strip())
-setting_6 = int(lines[6].strip())
-setting_7 = int(lines[7].strip())
-setting_8 = int(lines[8].strip())
-setting_9 = int(lines[9].strip())
-setting_10 = int(lines[10].strip())
-setting_11 = int(lines[11].strip())
-setting_12 = int(lines[12].strip())
-setting_13 = int(lines[13].strip())
-setting_14 = int(lines[14].strip())
-setting_15 = int(lines[15].strip())
-setting_16 = int(lines[16].strip())
-setting_17 = int(lines[17].strip())
-setting_18 = lines[18].strip()
+settings = []
+for i in range(0, 19):
+    settings.append(lines[i].strip())
 
 bot = Bot(
-    max_likes_per_day=setting_0,
-    max_unlikes_per_day=setting_1,
-    max_follows_per_day=setting_2,
-    max_unfollows_per_day=setting_3,
-    max_comments_per_day=setting_4,
-    max_likes_to_like=setting_5,
-    max_followers_to_follow=setting_6,
-    min_followers_to_follow=setting_7,
-    max_following_to_follow=setting_8,
-    min_following_to_follow=setting_9,
-    max_followers_to_following_ratio=setting_10,
-    max_following_to_followers_ratio=setting_11,
-    min_media_count_to_follow=setting_12,
-    like_delay=setting_13,
-    unlike_delay=setting_14,
-    follow_delay=setting_15,
-    unfollow_delay=setting_16,
-    comment_delay=setting_17,
+    max_likes_per_day=int(settings[0]),
+    max_unlikes_per_day=int(settings[1]),
+    max_follows_per_day=int(settings[2]),
+    max_unfollows_per_day=int(settings[3]),
+    max_comments_per_day=int(settings[4]),
+    max_likes_to_like=int(settings[5]),
+    max_followers_to_follow=int(settings[6]),
+    min_followers_to_follow=int(settings[7]),
+    max_following_to_follow=int(settings[8]),
+    min_following_to_follow=int(settings[9]),
+    max_followers_to_following_ratio=int(settings[10]),
+    max_following_to_followers_ratio=int(settings[11]),
+    min_media_count_to_follow=int(settings[12]),
+    like_delay=int(settings[13]),
+    unlike_delay=int(settings[14]),
+    follow_delay=int(settings[15]),
+    unfollow_delay=int(settings[16]),
+    comment_delay=int(settings[17]),
     whitelist_file=whitelist,
     blacklist_file=blacklist,
     comments_file=comment,
@@ -684,6 +666,7 @@ bot = Bot(
     ],
 )
 
+# TODO parse setting[18] for proxy
 bot.login()
 
 while True:
@@ -691,5 +674,6 @@ while True:
         menu()
     except Exception as e:
         bot.logger.info("error, read exception bellow")
-        bot.logger.info(str(e))
+        bot.logger.exception(str(e))
+        bot.logger.debug()
     time.sleep(1)

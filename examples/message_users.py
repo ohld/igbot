@@ -30,7 +30,7 @@ print("%d: %s" % (2, "Message Each User From List."))
 print("%d: %s" % (3, "Message Each Your Follower."))
 print("%d: %s" % (4, "Message LatestMediaLikers Of A Page"))
 
-deliveryMethod = int(sys.stdin.readline())
+deliveryMethod = int(input())
 
 bot = Bot()
 bot.login()
@@ -65,7 +65,8 @@ elif deliveryMethod == 4:
     scrape = input("what page likers do you want to message? :")
     with open("scrape.txt", "w") as file:
         file.write(scrape)
-pages_to_scrape = bot.read_list_from_file("scrape.txt")  # usernames to get likers from
+# usernames to get likers from
+pages_to_scrape = bot.read_list_from_file("scrape.txt")
 f = open("medialikers.txt", "w")  # stored likers in user_ids
 for users in pages_to_scrape:
     medias = bot.get_user_medias(users, filtration=False)

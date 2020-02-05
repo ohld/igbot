@@ -1,3 +1,10 @@
+"""
+    instabot example
+
+    Workflow:
+        If media is commented, reply to comments
+        if you didn't reply yet to that user.
+"""
 from __future__ import unicode_literals
 
 import argparse
@@ -5,15 +12,6 @@ import os
 import sys
 
 from tqdm import tqdm
-
-# coding=utf-8
-"""
-    instabot example
-
-    Workflow:
-        If media is commented, reply to comments if you didn't reply yet to that user.
-"""
-
 
 sys.path.append(os.path.join(sys.path[0], "../../"))
 from instabot import Bot  # noqa: E402

@@ -89,7 +89,7 @@ def get_user_medias(self, user_id, filtration=True, is_comment=False):
     user_id = self.convert_to_user_id(user_id)
     self.api.get_user_feed(user_id)
     if self.api.last_json["status"] == "fail":
-        self.logger.warning("This is a closed account.")
+        self.logger.warning("This is a private account.")
         return []
     return self.filter_medias(
         self.api.last_json.get("items"), filtration, is_comment=is_comment
@@ -100,7 +100,7 @@ def get_total_user_medias(self, user_id):
     user_id = self.convert_to_user_id(user_id)
     medias = self.api.get_total_user_feed(user_id)
     if self.api.last_json["status"] == "fail":
-        self.logger.warning("This is a closed account.")
+        self.logger.warning("This is a private account.")
         return []
     return self.filter_medias(medias, filtration=False)
 
@@ -109,7 +109,7 @@ def get_last_user_medias(self, user_id, amount):
     user_id = self.convert_to_user_id(user_id)
     medias = self.api.get_last_user_feed(user_id, amount)
     if self.api.last_json["status"] == "fail":
-        self.logger.warning("This is a closed account.")
+        self.logger.warning("This is a private account.")
         return []
     return self.filter_medias(medias, filtration=False)
 
@@ -155,8 +155,9 @@ def get_locations_from_coordinates(self, latitude, longitude):
         location_lat = location["location"]["lat"]
         location_lng = location["location"]["lng"]
 
-        if int(location_lat) == int(latitude) and int(location_lng) == int(longitude):
-            filtered_locations.append(location)
+        if int(location_lat) == int(latitude):
+            if int(location_lng) == int(longitude):
+                filtered_locations.append(location)
 
     return filtered_locations
 
@@ -398,6 +399,10 @@ def get_media_id_from_link(self, link):
 
 
 def get_link_from_media_id(self, media_id):
+    if media_id.find("_"):
+        new = media_id.split("_")
+        media_id = new[0]
+
     alphabet = {
         "-": 62,
         "1": 53,
@@ -466,7 +471,7 @@ def get_link_from_media_id(self, media_id):
     }
     result = ""
     while media_id:
-        media_id, char = media_id // 64, media_id % 64
+        media_id, char = int(media_id) // 64, int(media_id) % 64
         result += list(alphabet.keys())[list(alphabet.values()).index(char)]
     return "https://instagram.com/p/" + result[::-1] + "/"
 
@@ -475,7 +480,7 @@ def get_messages(self):
     if self.api.get_inbox_v2():
         return self.api.last_json
     else:
-        self.logger.info("Messages were not found, something went wrong.")
+        self.logger.info("Messages were not found, " "something went wrong.")
         return None
 
 
@@ -503,3 +508,17 @@ def get_pending_thread_requests(self):
     if not threads:
         self.logger.info("There isn't any pending thread request.")
     return threads
+
+
+def get_muted_friends(self, muted_content):
+    """
+    friends whom stories or posts are muted
+    """
+    self.api.get_muted_friends(muted_content)
+    if self.api.last_json.get("users"):
+        return [str(user.get("pk")) for user in self.api.last_json.get("users")]
+    else:
+        self.logger.info(
+            "No users with muted {} " "in your friends".format(muted_content)
+        )
+        return []

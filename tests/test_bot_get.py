@@ -99,9 +99,10 @@ class TestBotGet(TestBot):
         results = 5
         responses.add(
             responses.GET,
-            "{api_url}feed/popular/?people_teaser_supported=1&rank_token={rank_token}&ranked_content=true&".format(
-                api_url=API_URL, rank_token=self.bot.api.rank_token
-            ),
+            (
+                "{api_url}feed/popular/?people_teaser_supported=1"
+                + "&rank_token={rank_token}&ranked_content=true&"
+            ).format(api_url=API_URL, rank_token=self.bot.api.rank_token),
             json={
                 "auto_load_more_enabled": True,
                 "num_results": results,
@@ -289,9 +290,10 @@ class TestBotGet(TestBot):
         }
         responses.add(
             responses.GET,
-            "{api_url}feed/only_me_feed/?rank_token={rank_token}&ranked_content=true&".format(
-                api_url=API_URL, rank_token=self.bot.api.rank_token
-            ),
+            (
+                "{api_url}feed/only_me_feed/?rank_token={rank_token}&"
+                + "ranked_content=true&"
+            ).format(api_url=API_URL, rank_token=self.bot.api.rank_token),
             json=response_data,
             status=200,
         )
@@ -320,7 +322,10 @@ class TestBotGet(TestBot):
         }
         responses.add(
             responses.GET,
-            "{api_url}users/search/?ig_sig_key_version={sig_key}&is_typeahead=true&query={query}&rank_token={rank_token}".format(
+            (
+                "{api_url}users/search/?ig_sig_key_version={sig_key}&"
+                + "is_typeahead=true&query={query}&rank_token={rank_token}"
+            ).format(
                 api_url=API_URL,
                 rank_token=self.bot.api.rank_token,
                 query=query,
@@ -341,7 +346,10 @@ class TestBotGet(TestBot):
         response_data = {"status": "fail"}
         responses.add(
             responses.GET,
-            "{api_url}users/search/?ig_sig_key_version={sig_key}&is_typeahead=true&query={query}&rank_token={rank_token}".format(
+            (
+                "{api_url}users/search/?ig_sig_key_version={sig_key}"
+                + "&is_typeahead=true&query={query}&rank_token={rank_token}"
+            ).format(
                 api_url=API_URL,
                 rank_token=self.bot.api.rank_token,
                 query=query,
@@ -630,7 +638,10 @@ class TestBotGet(TestBot):
         results = 8
         responses.add(
             responses.GET,
-            "{api_url}usertags/{user_id}/feed/?rank_token={rank_token}&ranked_content=true&".format(
+            (
+                "{api_url}usertags/{user_id}/feed/?rank_token={rank_token}"
+                + "&ranked_content=true&"
+            ).format(
                 api_url=API_URL, user_id=user_id, rank_token=self.bot.api.rank_token
             ),
             json={
@@ -678,7 +689,10 @@ class TestBotGet(TestBot):
 
         responses.add(
             responses.GET,
-            "{api_url}feed/tag/{hashtag}/?max_id={max_id}&rank_token={rank_token}&ranked_content=true&".format(
+            (
+                "{api_url}feed/tag/{hashtag}/?max_id={max_id}&rank_token="
+                + "{rank_token}&ranked_content=true&"
+            ).format(
                 api_url=API_URL,
                 hashtag=hashtag,
                 max_id="",
@@ -735,7 +749,10 @@ class TestBotGet(TestBot):
 
         responses.add(
             responses.GET,
-            "{api_url}feed/tag/{hashtag}/?max_id={max_id}&rank_token={rank_token}&ranked_content=true&".format(
+            (
+                "{api_url}feed/tag/{hashtag}/?max_id={max_id}"
+                + "&rank_token={rank_token}&ranked_content=true&"
+            ).format(
                 api_url=API_URL,
                 hashtag=hashtag,
                 max_id="",
@@ -804,7 +821,10 @@ class TestBotGet(TestBot):
 
         responses.add(
             responses.GET,
-            "{api_url}feed/user/{user_id}/?max_id={max_id}&min_timestamp={min_timestamp}&rank_token={rank_token}&ranked_content=true".format(
+            (
+                "{api_url}feed/user/{user_id}/?max_id={max_id}&min_timestamp"
+                + "={min_timestamp}&rank_token={rank_token}&ranked_content=true"
+            ).format(
                 api_url=API_URL,
                 user_id=user_id,
                 max_id="",
@@ -835,7 +855,10 @@ class TestBotGet(TestBot):
 
         responses.add(
             responses.GET,
-            "{api_url}feed/user/{user_id}/?max_id={max_id}&min_timestamp={min_timestamp}&rank_token={rank_token}&ranked_content=true".format(
+            (
+                "{api_url}feed/user/{user_id}/?max_id={max_id}&min_timestamp"
+                + "={min_timestamp}&rank_token={rank_token}&ranked_content=true"
+            ).format(
                 api_url=API_URL,
                 user_id=user_id,
                 max_id="",
@@ -857,7 +880,10 @@ class TestBotGet(TestBot):
         results_1 = 1
         responses.add(
             responses.GET,
-            "{api_url}feed/user/{user_id}/?max_id={max_id}&min_timestamp={min_timestamp}&rank_token={rank_token}&ranked_content=true".format(
+            (
+                "{api_url}feed/user/{user_id}/?max_id={max_id}&min_timestamp"
+                + "={min_timestamp}&rank_token={rank_token}&ranked_content=true"
+            ).format(
                 api_url=API_URL,
                 user_id=user_id,
                 max_id="",
@@ -929,7 +955,9 @@ class TestBotGet(TestBot):
         }
         responses.add(
             responses.GET,
-            "{api_url}friendships/{user_id}/followers/?rank_token={rank_token}".format(
+            (
+                "{api_url}friendships/{user_id}/followers/?" + "rank_token={rank_token}"
+            ).format(
                 api_url=API_URL, user_id=username, rank_token=self.bot.api.rank_token
             ),
             json=response_data_3,
@@ -974,7 +1002,10 @@ class TestBotGet(TestBot):
         }
         responses.add(
             responses.GET,
-            "{api_url}friendships/{user_id}/following/?max_id={max_id}&ig_sig_key_version={sig_key}&rank_token={rank_token}".format(
+            (
+                "{api_url}friendships/{user_id}/following/?max_id={max_id}"
+                + "&ig_sig_key_version={sig_key}&rank_token={rank_token}"
+            ).format(
                 api_url=API_URL,
                 user_id=username,
                 rank_token=self.bot.api.rank_token,
@@ -1016,7 +1047,10 @@ class TestBotGet(TestBot):
 
         responses.add(
             responses.GET,
-            "{api_url}feed/tag/{hashtag}/?max_id={max_id}&rank_token={rank_token}&ranked_content=true&".format(
+            (
+                "{api_url}feed/tag/{hashtag}/?max_id={max_id}"
+                + "&rank_token={rank_token}&ranked_content=true&"
+            ).format(
                 api_url=API_URL,
                 hashtag=hashtag,
                 max_id="",
@@ -1066,7 +1100,10 @@ class TestBotGet(TestBot):
         }
         responses.add(
             responses.GET,
-            "{api_url}fbsearch/places/?rank_token={rank_token}&query={query}&lat={lat}&lng={lng}".format(
+            (
+                "{api_url}fbsearch/places/?rank_token={rank_token}"
+                + "&query={query}&lat={lat}&lng={lng}"
+            ).format(
                 api_url=API_URL,
                 rank_token=self.bot.api.rank_token,
                 query="",

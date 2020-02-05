@@ -36,3 +36,10 @@ If you want to add a new documentation page in any language please follow the gu
 Install the dependencies using [pipenv](https://github.com/pypa/pipenv): `pipenv install`
 
 See `.travis.yml` for the most up to date test and lint commands.
+
+We use [`pre-commit`](https://pre-commit.com) to keep a consistent code style, so ``pip install pre_commit`` and run
+```bash
+pre-commit install  # only need to do this once!
+```
+to install the hooks.
+These will then automatically run upon each commit.

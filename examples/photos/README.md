@@ -16,7 +16,7 @@ python upload_photos.py -h
 ```
 python upload_photos.py
 ```
-- To upload a speficic photo, run the script
+- To upload a specific photo, run the script
 ```
 python upload_photos.py -photo {photo_name} -caption "{your_caption}"
 ```
@@ -34,7 +34,7 @@ python upload_photos.py -photo {photo_name} -caption "{your_caption}"
   - 1:1 (1080x1080 px) if square
 - After convert and cropping/resizing, a temporary photo be saved to `{photo_name}.CONVERTED.jpg` in _media_ folder
 - After failed upload, temporary photo `{photo_name}.CONVERTED.jpg` will be left in _media_ folder for debugging purposes
-- After succefull upload, temporary photo will be renamed to `{photo_name}.CONVERTED.jpg.REMOVE_ME` in _media_ folder
+- After successful upload, temporary photo will be renamed to `{photo_name}.CONVERTED.jpg.REMOVE_ME` in _media_ folder
 - Uploaded pics names will be stored in _pics.txt_
 ___
 _by @maxdevblock_

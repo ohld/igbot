@@ -156,7 +156,6 @@ def generate_all_uuids(self):
     self.device_id = self.generate_device_id(
         self.get_seed(self.username, self.password)
     )
-    # self.logger.info("uuid GENERATE! phone_id={}, uuid={}, session_id={}, device_id={}".format( self.phone_id, self.uuid, self.client_session_id, self.device_id ))
 
 
 def reinstall_app_simulation(self):
@@ -210,8 +209,14 @@ def load_uuid_and_cookie(self, load_uuid=True, load_cookie=True):
                 self.device_settings = data["device_settings"]
                 self.user_agent = data["user_agent"]
 
+            msg = (
+                "Recovery from {}: COOKIE {} - UUIDs {} - TIMING, DEVICE "
+                "and ...\n- user-agent={}\n- phone_id={}\n- uuid={}\n- "
+                "client_session_id={}\n- device_id={}"
+            )
+
             self.logger.info(
-                "Recovery from {}: COOKIE {} - UUIDs {} - TIMING, DEVICE and ... \n- user-agent={}\n- phone_id={}\n- uuid={}\n- client_session_id={}\n- device_id={}".format(
+                msg.format(
                     self.cookie_fname,
                     load_cookie,
                     load_uuid,
@@ -224,7 +229,8 @@ def load_uuid_and_cookie(self, load_uuid=True, load_cookie=True):
             )
         else:
             self.logger.info(
-                "The cookie seems to be the with the older structure. Load and init again all uuids"
+                "The cookie seems to be the with the older structure. "
+                "Load and init again all uuids"
             )
             self.session.cookies = requests.utils.cookiejar_from_dict(data)
             self.last_login = time.time()

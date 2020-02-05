@@ -11,20 +11,28 @@ python:
   - "pypy"
   - "pypy3.5"
 
+env:
+  - PRE_COMMIT_CMD=""
+
 matrix:
+  include:
+    - name: "pre-commit"
+      python: "3.7"
+      env:
+        - PRE_COMMIT_CMD="pre-commit run --all-files --show-diff-on-failure"
   allow_failures:
     - python: "3.8-dev"
     - python: "nightly"
 
 install:
-  - pip install tox-travis codecov bumpversion
+  - pip install tox-travis codecov bumpversion pre_commit
 
 script:
  - tox
+ - $PRE_COMMIT_CMD
 
 after_success:
  - codecov
  - if [ "$TRAVIS_PULL_REQUEST" = "false" ] && [ "$TRAVIS_BRANCH" = "master" ]; then bumpversion --verbose minor && bash push.sh; fi
 
 cache: pip
-

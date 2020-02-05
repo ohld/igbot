@@ -14,7 +14,7 @@ except ImportError:
 
 class TestBotFilter(TestBot):
     @pytest.mark.parametrize(
-        "filter_users,filter_business_accounts,filter_verified_accounts,expected",
+        "filter_users,filter_business_accounts," + "filter_verified_accounts,expected",
         [
             (False, False, False, True),
             (True, False, False, True),

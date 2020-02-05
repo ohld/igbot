@@ -1,6 +1,5 @@
 """
     instabot example
-
     Workflow:
     Repost best photos from users to your account
     By default bot checks username_database.txt
@@ -10,6 +9,7 @@
 import argparse
 import os
 import sys
+import random
 
 from tqdm import tqdm
 
@@ -40,13 +40,21 @@ def sort_best_medias(bot, media_ids, amount=1):
 
 def get_not_used_medias_from_users(bot, users=None, users_path=USERNAME_DATABASE):
     if not users:
-        users = utils.file(users_path).list
-    users = map(str, users)
+        if os.stat(USERNAME_DATABASE).st_size == 0:
+            bot.logger.warning("No username(s) in thedatabase")
+            sys.exit()
+        elif os.path.exists(USERNAME_DATABASE):
+            users = utils.file(users_path).list
+        else:
+            bot.logger.warning("No username database")
+            sys.exit()
+
     total_medias = []
-    for user in users:
-        medias = bot.get_user_medias(user, filtration=False)
-        medias = [media for media in medias if not exists_in_posted_medias(media)]
-        total_medias.extend(medias)
+    user = random.choice(users)
+
+    medias = bot.get_user_medias(user, filtration=False)
+    medias = [media for media in medias if not exists_in_posted_medias(media)]
+    total_medias.extend(medias)
     return total_medias
 
 
@@ -69,11 +77,20 @@ def repost_photo(bot, new_media_id, path=POSTED_MEDIAS):
     if not photo_path or not isinstance(photo_path, str):
         # photo_path could be True, False, or a file path.
         return False
-    with open(photo_path[:-3] + "txt", "r") as f:
-        text = "".join(f.readlines())
+    try:
+        with open(photo_path[:-3] + "txt", "r") as f:
+            text = "".join(f.readlines())
+    except FileNotFoundError:
+        try:
+            with open(photo_path[:-6] + ".txt", "r") as f:
+                text = "".join(f.readlines())
+        except FileNotFoundError:
+            text = ""
+            pass
     if bot.upload_photo(photo_path, text):
         update_posted_medias(new_media_id, path)
         bot.logger.info("Media_id {} is saved in {}".format(new_media_id, path))
+    return True
 
 
 parser = argparse.ArgumentParser(add_help=True)
@@ -86,7 +103,7 @@ parser.add_argument("users", type=str, nargs="*", help="users")
 args = parser.parse_args()
 
 bot = Bot()
-bot.login()
+bot.login(username=args.u, password=args.p, proxy=args.proxy)
 
 users = None
 if args.users:

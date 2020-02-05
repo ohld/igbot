@@ -338,7 +338,10 @@ class TestBotGet(TestBot):
         }
         responses.add(
             responses.GET,
-            "{api_url}feed/user/{user_id}/?max_id={max_id}&min_timestamp={min_timestamp}&rank_token={rank_token}&ranked_content=true".format(
+            (
+                "{api_url}feed/user/{user_id}/?max_id={max_id}&min_timestamp"
+                + "={min_timestamp}&rank_token={rank_token}&ranked_content=true"
+            ).format(
                 api_url=API_URL,
                 user_id=user_id,
                 max_id="",
@@ -467,7 +470,11 @@ class TestBotGet(TestBot):
         }
         responses.add(
             responses.GET,
-            "{api_url}feed/user/{user_id}/?max_id={max_id}&min_timestamp={min_timestamp}&rank_token={rank_token}&ranked_content=true".format(
+            (
+                "{api_url}feed/user/{user_id}/?max_id={max_id}&"
+                + "min_timestamp={min_timestamp}&rank_token={rank_token}"
+                + "&ranked_content=true"
+            ).format(
                 api_url=API_URL,
                 user_id=user_ids[0],
                 max_id="",
@@ -549,6 +556,118 @@ class TestBotGet(TestBot):
 
     @responses.activate
     @pytest.mark.parametrize(
+        "blocked_actions_protection,blocked_actions_sleep,result",
+        [
+            (True, True, False),
+            (True, False, True),
+            (False, True, False),
+            (False, False, False),
+        ],
+    )
+    @patch("time.sleep", return_value=None)
+    def test_sleep_feedback_successful(
+        self,
+        patched_time_sleep,
+        blocked_actions_protection,
+        blocked_actions_sleep,
+        result,
+    ):
+        self.bot.blocked_actions_protection = blocked_actions_protection
+        # self.bot.blocked_actions["likes"] = False
+        self.bot.blocked_actions_sleep = blocked_actions_sleep
+        media_id = 1234567890
+        response_data = {
+            u"status": u"fail",
+            u"feedback_title": u"You\u2019re Temporarily Blocked",
+            u"feedback_message": u"It looks like you were misusing this "
+            + u"feature by going too fast. You\u2019ve been temporarily "
+            + u"blocked from using it. We restrict certain content and "
+            + u"actions to protect our community. Tell us if you think we "
+            + u"made a mistake.",
+            u"spam": True,
+            u"feedback_action": u"report_problem",
+            u"feedback_appeal_label": u"Report problem",
+            u"feedback_ignore_label": u"OK",
+            u"message": u"feedback_required",
+            u"feedback_url": u"repute/report_problem/instagram_like_add/",
+        }
+        # first like blocked
+        responses.add(
+            responses.POST,
+            "{api_url}media/{media_id}/like/".format(
+                api_url=API_URL, media_id=media_id
+            ),
+            json=response_data,
+            status=400,
+        )
+        # second like successful
+        responses.add(
+            responses.POST,
+            "{api_url}media/{media_id}/like/".format(
+                api_url=API_URL, media_id=media_id
+            ),
+            status=200,
+            json={"status": "ok"},
+        )
+        # do 2 likes
+        self.bot.like(media_id, check_media=False)
+        self.bot.like(media_id, check_media=False)
+        assert self.bot.blocked_actions["likes"] == result
+
+    @responses.activate
+    @pytest.mark.parametrize(
+        "blocked_actions_protection,blocked_actions_sleep,result",
+        [
+            (True, True, True),
+            (True, False, True),
+            (False, True, False),
+            (False, False, False),
+        ],
+    )
+    @patch("time.sleep", return_value=None)
+    def test_sleep_feedback_unsuccessful(
+        self,
+        patched_time_sleep,
+        blocked_actions_protection,
+        blocked_actions_sleep,
+        result,
+    ):
+        self.bot.blocked_actions_protection = blocked_actions_protection
+        # self.bot.blocked_actions["likes"] = False
+        self.bot.blocked_actions_sleep = blocked_actions_sleep
+        media_id = 1234567890
+        response_data = {
+            u"status": u"fail",
+            u"feedback_title": u"You\u2019re Temporarily Blocked",
+            u"feedback_message": u"It looks like you were misusing this "
+            + u"feature by going too fast. You\u2019ve been temporarily "
+            + u"blocked from using it. We restrict certain content and "
+            + u"actions to protect our community. Tell us if you think we "
+            + u"made a mistake.",
+            u"spam": True,
+            u"feedback_action": u"report_problem",
+            u"feedback_appeal_label": u"Report problem",
+            u"feedback_ignore_label": u"OK",
+            u"message": u"feedback_required",
+            u"feedback_url": u"repute/report_problem/instagram_like_add/",
+        }
+        # both likes blocked
+        for x in range(1, 2):
+            responses.add(
+                responses.POST,
+                "{api_url}media/{media_id}/like/".format(
+                    api_url=API_URL, media_id=media_id
+                ),
+                json=response_data,
+                status=400,
+            )
+        # do 2 likes
+        self.bot.like(media_id, check_media=False)
+        self.bot.like(media_id, check_media=False)
+        assert self.bot.blocked_actions["likes"] == result
+
+    @responses.activate
+    @pytest.mark.parametrize(
         "blocked_actions_protection,blocked_actions",
         [(True, True), (True, False), (False, True), (False, True)],
     )
@@ -562,7 +681,11 @@ class TestBotGet(TestBot):
         response_data = {
             u"status": u"fail",
             u"feedback_title": u"You\u2019re Temporarily Blocked",
-            u"feedback_message": u"It looks like you were misusing this feature by going too fast. You\u2019ve been temporarily blocked from using it. We restrict certain content and actions to protect our community. Tell us if you think we made a mistake.",
+            u"feedback_message": u"It looks like you were misusing this "
+            + u"feature by going too fast. You\u2019ve been temporarily "
+            + u"blocked from using it. We restrict certain content and "
+            + u"actions to protect our community. Tell us if you think we "
+            + u"made a mistake.",
             u"spam": True,
             u"feedback_action": u"report_problem",
             u"feedback_appeal_label": u"Report problem",
@@ -677,7 +800,10 @@ class TestBotGet(TestBot):
         }
         responses.add(
             responses.GET,
-            "{api_url}feed/tag/{hashtag}/?max_id={max_id}&rank_token={rank_token}&ranked_content=true&".format(
+            (
+                "{api_url}feed/tag/{hashtag}/?max_id={max_id}"
+                + "&rank_token={rank_token}&ranked_content=true&"
+            ).format(
                 api_url=API_URL,
                 hashtag=hashtag,
                 max_id="",
@@ -697,7 +823,12 @@ class TestBotGet(TestBot):
                     "following": None,
                     "allow_following": None,
                     "allow_muting_story": None,
-                    "profile_pic_url": "https://instagram.fmxp6-1.fna.fbcdn.net/vp/8e512ee62d218765d3ac46f3da6869de/5E0E0DE3/t51.2885-15/e35/c148.0.889.889a/s150x150/67618693_2467437380156007_7054420538339677194_n.jpg?_nc_ht=instagram.fmxp6-1.fna.fbcdn.net&ig_cache_key=MjExMzI5MDMwNDYxNzY3MDExMQ%3D%3D.2.c",
+                    "profile_pic_url": "https://instagram.fmxp6-1.fna.fbcdn."
+                    + "net/vp/8e512ee62d218765d3ac46f3da6869de/5E0E0DE3/t51.28"
+                    + "85-15/e35/c148.0.889.889a/s150x150/67618693_24674373801"
+                    + "56007_7054420538339677194_n.jpg?_nc_ht=instagram.fmxp6-"
+                    + "1.fna.fbcdn.net&ig_cache_key=MjExMzI5MDMwNDYxNzY3MDExMQ"
+                    + "%3D%3D.2.c",
                     "non_violating": None,
                     "related_tags": None,
                     "subtitle": None,
@@ -714,7 +845,10 @@ class TestBotGet(TestBot):
 
         responses.add(
             responses.GET,
-            "{api_url}tags/search/?is_typeahead=true&q={query}&rank_token={rank_token}".format(
+            (
+                "{api_url}tags/search/?is_typeahead=true&q={query}"
+                + "&rank_token={rank_token}"
+            ).format(
                 api_url=API_URL, query=hashtag, rank_token=self.bot.api.rank_token
             ),
             json=response_tag,
@@ -828,7 +962,9 @@ class TestBotGet(TestBot):
         }
         responses.add(
             responses.GET,
-            "{api_url}friendships/{user_id}/followers/?rank_token={rank_token}".format(
+            (
+                "{api_url}friendships/{user_id}/followers/" + "?rank_token={rank_token}"
+            ).format(
                 api_url=API_URL, user_id=username, rank_token=self.bot.api.rank_token
             ),
             json=response_data_3,
@@ -878,7 +1014,10 @@ class TestBotGet(TestBot):
         }
         responses.add(
             responses.GET,
-            "{api_url}feed/user/{user_id}/?max_id={max_id}&min_timestamp={min_timestamp}&rank_token={rank_token}&ranked_content=true".format(
+            (
+                "{api_url}feed/user/{user_id}/?max_id={max_id}&min_timestamp"
+                + "={min_timestamp}&rank_token={rank_token}&ranked_content=true"
+            ).format(
                 api_url=API_URL,
                 user_id=username,
                 max_id="",
@@ -995,7 +1134,10 @@ class TestBotGet(TestBot):
         }
         responses.add(
             responses.GET,
-            "{api_url}friendships/{user_id}/following/?max_id={max_id}&ig_sig_key_version={sig_key}&rank_token={rank_token}".format(
+            (
+                "{api_url}friendships/{user_id}/following/?max_id={max_id}"
+                + "&ig_sig_key_version={sig_key}&rank_token={rank_token}"
+            ).format(
                 api_url=API_URL,
                 user_id=username,
                 rank_token=self.bot.api.rank_token,
@@ -1049,7 +1191,10 @@ class TestBotGet(TestBot):
         }
         responses.add(
             responses.GET,
-            "{api_url}feed/user/{user_id}/?max_id={max_id}&min_timestamp={min_timestamp}&rank_token={rank_token}&ranked_content=true".format(
+            (
+                "{api_url}feed/user/{user_id}/?max_id={max_id}&min_timestamp"
+                + "={min_timestamp}&rank_token={rank_token}&ranked_content=true"
+            ).format(
                 api_url=API_URL,
                 user_id=username,
                 max_id="",

@@ -1,4 +1,5 @@
 from tqdm import tqdm
+import time
 
 
 def like(
@@ -20,7 +21,7 @@ def like(
             self.logger.warning("YOUR `LIKE` ACTION IS BLOCKED")
             if self.blocked_actions_protection:
                 self.logger.warning(
-                    "blocked_actions_protection ACTIVE. Skipping `like` action."
+                    "blocked_actions_protection ACTIVE. " "Skipping `like` action."
                 )
                 return False
         self.delay("like")
@@ -53,11 +54,47 @@ def like(
         )
         if _r == "feedback_required":
             self.logger.error("`Like` action has been BLOCKED...!!!")
-            self.blocked_actions["likes"] = True
+            # if no sleep enabled, default flow,
+            # with message of activating blocked actions protection
+            if not self.blocked_actions_sleep:
+                if self.blocked_actions_protection:
+                    self.logger.warning(
+                        "Activating blocked actions \
+                         protection for `Like` action."
+                    )
+                    self.blocked_actions["likes"] = True
+            else:
+                # if the action is sleeping and another block,
+                # then enable blocked actions protection
+                if self.sleeping_actions["likes"] and self.blocked_actions_protection:
+                    self.logger.warning(
+                        "This is the second blocked \
+                        `Like` action."
+                    )
+                    self.logger.warning(
+                        "Activating blocked actions \
+                        protection for `Like` action."
+                    )
+                    self.sleeping_actions["likes"] = False
+                    self.blocked_actions["likes"] = True
+                # otherwise (first block or no protection)
+                # sleep for specified time
+                else:
+                    self.logger.info(
+                        "`Like` action is going to sleep for \
+                        %s seconds."
+                        % self.blocked_actions_sleep_delay
+                    )
+                    self.sleeping_actions["likes"] = True
+                    time.sleep(self.blocked_actions_sleep_delay)
             return False
         if _r:
             self.logger.info("Liked media %s." % media_id)
             self.total["likes"] += 1
+            # if action just slept and now successful, then no longer sleeping
+            if self.blocked_actions_sleep and self.sleeping_actions["likes"]:
+                self.logger.info("`Like` action is no longer sleeping.")
+                self.sleeping_actions["likes"] = False
             return True
     else:
         self.logger.info("Out of likes for today.")
@@ -75,9 +112,10 @@ def like_comment(self, comment_id):
                     "%Y-%m-%d %H:%M:%S"
                 )
                 self.logger.warning(
-                    "blocked_actions_protection ACTIVE. Skipping `like` action till, at least, {}.".format(
-                        next_reset
-                    )
+                    (
+                        "blocked_actions_protection ACTIVE. Skipping `like` "
+                        "action till, at least, {}."
+                    ).format(next_reset)
                 )
                 return False
         self.delay("like")
@@ -107,7 +145,8 @@ def like_media_comments(self, media_id):
 
     if not comment_ids:
         self.logger.info(
-            "None comments received: comments not found or comments have been filtered."
+            "None comments received: comments not "
+            "found or comments have been filtered."
         )
         return broken_items
 
@@ -180,7 +219,7 @@ def like_user(self, user_id, amount=None, filtration=True):
     medias = self.get_user_medias(user_id, filtration=filtration)
     if not medias:
         self.logger.info(
-            "None medias received: account is closed or medias have been filtered."
+            "None medias received: account is " "closed or medias have been filtered."
         )
         return False
     return self.like_medias(medias[:amount], filtration)
@@ -203,6 +242,14 @@ def like_hashtag(self, hashtag, amount=None):
             if tag["name"] == hashtag:
                 hashtag_id = tag["id"]
                 break
+        else:
+            self.logger.error(
+                "Hashtag ID of {} not found within api response".format(hashtag)
+            )
+            self.logger.debug(
+                "Last JSON results: {}".format(self.api.last_json["results"])
+            )
+            return False
     else:
         self.logger.error("NO INFO FOR HASHTAG: {}".format(hashtag))
         return False
@@ -282,8 +329,9 @@ def like_location_feed(self, place, amount):
                 location_feed = self.api.last_json
         else:
             self.logger.error(
-                " '{}' does not seem to have pictures. Select a different location.".format(
-                    place
-                )
+                (
+                    " '{}' does not seem to have pictures. "
+                    "Select a different location."
+                ).format(place)
             )
             return False

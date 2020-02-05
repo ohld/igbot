@@ -2,7 +2,7 @@
 
 BLACKLIST_FILE = "blacklist.txt"  # List of the users you don't want to follow
 
-WHITELIST_FILE = "whitelist.txt"  # List of the users you don't want to unfollow
+WHITELIST_FILE = "whitelist.txt"  # List of users you don't want to unfollow
 
 COMMENTS_FILE = "comments.txt"  # Contains random comments posted by the bot
 
@@ -19,7 +19,7 @@ USERS_FILE = "username_database.txt"
 # followers and like their posts
 
 POSTED_PICS_FILE = "pics.txt"
-# The file containing all the photos already posted from the PICS_PATH directory
+# File containing all the photos already posted from the PICS_PATH directory
 
 PICS_PATH = "/Path/to/pics/folder/"
 # The path of the directory containing the photos the bot will upload
@@ -51,6 +51,7 @@ NUMBER_OF_NON_FOLLOWERS_TO_UNFOLLOW = 50
 # NOTE: Because the bot follows a bunch of people through job7 (follow
 # people by a random hashtag in HASHTAGS_FILE), I recommend setting
 # NUMBER_OF_FOLLOWERS_TO_FOLLOW between 15 and 30, and
-# NUMBER_OF_NON_FOLLOWERS_TO_UNFOLLOW between 50 and 60. Following and unfollowing
-# many people in the same day can cause a temporary "follow ban" by Instagram:
-# basically you can't follow or unfollow anybody for 24 hours.
+# NUMBER_OF_NON_FOLLOWERS_TO_UNFOLLOW between 50 and 60. Following and
+# unfollowing many people in the same day can cause a temporary
+# "follow ban" by Instagram: basically you can't follow or unfollow
+# anybody for 24 hours.

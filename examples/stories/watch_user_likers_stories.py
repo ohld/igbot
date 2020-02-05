@@ -1,8 +1,10 @@
 """
     Watch user likers stories!
-    This script could be very useful to attract someone's audience to your account.
+    This script could be very useful to attract someone's
+    audience to your account.
 
-    If you will not specify the user_id, the script will use your likers as targets.
+    If you will not specify the user_id, the script will use
+    your likers as targets.
 
     Dependencies:
         pip install -U instabot
@@ -26,7 +28,8 @@ bot.login()
 if len(sys.argv) >= 2:
     bot.logger.info(
         """
-            Going to get '%s' likers and watch their stories (and stories of their likers too).
+            Going to get '%s' likers and watch their stories
+            (and stories of their likers too).
         """
         % (sys.argv[1])
     )
@@ -34,8 +37,9 @@ if len(sys.argv) >= 2:
 else:
     bot.logger.info(
         """
-            Going to get your likers and watch their stories (and stories of their likers too).
-            You can specify username of another user to start (by default we use you as a starting point).
+            Going to get your likers and watch their stories (and stories
+            of their likers too). You can specify username of another user
+            to start (by default we use you as a starting point).
         """
     )
     user_to_get_likers_of = bot.user_id

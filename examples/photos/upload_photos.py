@@ -64,11 +64,11 @@ try:
             else:
                 try:
                     caption = raw_input(
-                        "No caption found for this media. Type the caption now: "
+                        "No caption found for this media. " "Type the caption now: "
                     )
                 except NameError:
                     caption = input(
-                        "No caption found for this media. Type the caption now: "
+                        "No caption found for this media. " "Type the caption now: "
                     )
         bot.logger.info(
             "Uploading pic `{pic}` with caption: `{caption}`".format(

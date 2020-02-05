@@ -8,7 +8,8 @@ def send_message(self, text, user_ids, thread_id=None):
     """
     :param self: bot
     :param text: text of message
-    :param user_ids: list of user_ids for creating group or one user_id for send to one person
+    :param user_ids: list of user_ids for creating group or
+    one user_id for send to one person
     :param thread_id: thread_id
     """
     user_ids = _get_user_ids(self, user_ids)
@@ -52,7 +53,8 @@ def send_media(self, media_id, user_ids, text="", thread_id=None):
     :param media_id:
     :param self: bot
     :param text: text of message
-    :param user_ids: list of user_ids for creating group or one user_id for send to one person
+    :param user_ids: list of user_ids for creating group or one user_id
+    for send to one person
     :param thread_id: thread_id
     """
     user_ids = _get_user_ids(self, user_ids)
@@ -101,7 +103,8 @@ def send_hashtag(self, hashtag, user_ids, text="", thread_id=None):
     :param hashtag: hashtag
     :param self: bot
     :param text: text of message
-    :param user_ids: list of user_ids for creating group or one user_id for send to one person
+    :param user_ids: list of user_ids for creating group or one
+    user_id for send to one person
     :param thread_id: thread_id
     """
     user_ids = _get_user_ids(self, user_ids)
@@ -129,7 +132,8 @@ def send_profile(self, profile_user_id, user_ids, text="", thread_id=None):
     :param profile_user_id: profile_id
     :param self: bot
     :param text: text of message
-    :param user_ids: list of user_ids for creating group or one user_id for send to one person
+    :param user_ids: list of user_ids for creating group or
+    one user_id for send to one person
     :param thread_id: thread_id
     """
     profile_id = self.convert_to_user_id(profile_user_id)
@@ -155,7 +159,8 @@ def send_profile(self, profile_user_id, user_ids, text="", thread_id=None):
 def send_like(self, user_ids, thread_id=None):
     """
     :param self: bot
-    :param user_ids: list of user_ids for creating group or one user_id for send to one person
+    :param user_ids: list of user_ids for creating group or
+    one user_id for send to one person
     :param thread_id: thread_id
     """
     user_ids = _get_user_ids(self, user_ids)
@@ -179,7 +184,8 @@ def send_photo(self, user_ids, filepath, thread_id=None):
     """
     :param self: bot
     :param filepath: file path to send
-    :param user_ids: list of user_ids for creating group or one user_id for send to one person
+    :param user_ids: list of user_ids for creating group or
+    one user_id for send to one person
     :param thread_id: thread_id
     """
     user_ids = _get_user_ids(self, user_ids)

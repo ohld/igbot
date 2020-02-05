@@ -42,7 +42,8 @@ def upload_story_photo(self, photo, upload_id=None):
         "upload_id": upload_id,
         "_uuid": self.uuid,
         "_csrftoken": self.token,
-        "image_compression": '{"lib_name":"jt","lib_version":"1.3.0","quality":"87"}',
+        "image_compression": '{"lib_name":"jt","lib_version":"1.3.0",'
+        + 'quality":"87"}',
         "photo": (
             "pending_media_%s.jpg" % upload_id,
             photo_bytes,
