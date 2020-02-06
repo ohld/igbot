@@ -30,6 +30,7 @@ with open("whitelist.txt", "a") as f:
         print(user_info["username"])
         print(user_info["full_name"])
 
-        if input().lower() == "y":
-            f.write(f"{user_id}\n")
+        input_line = sys.stdin.readline().lower()
+        if "y" in input_line.lower():
+            f.write(str(user_id) + "\n")
             print("ADDED.\r")

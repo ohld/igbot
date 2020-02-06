@@ -36,8 +36,8 @@ setup(
         "urllib3>=1.25.7",
         "mock>=3.0.5",
         "moviepy>=1.0.1",
-        "Pillow>=7.0.0",
-        "pytest>=5.3.3",
+        "Pillow>=6.2.2",
+        "pytest>=4.6.9",
     ],
     classifiers=[
         # How mature is this project? Common values are
