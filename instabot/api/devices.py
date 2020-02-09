@@ -1,10 +1,6 @@
-# Devices taken from:
-# https://github.com/mgp25/Instagram-API/blob/master/src/Devices/GoodDevices.php
-DEFAULT_DEVICE = "huawei_mate_9_pro"
-# from https://www.apkmirror.com/apk/instagram/
-APP_VERSION = "107.0.0.27.121"
+DEFAULT_DEVICE = "one_plus_3"
+APP_VERSION = "117.0.0.28.123"
 DEVICES = {
-    # Released on August 2019
     "one_plus_7": {
         "app_version": APP_VERSION,
         "android_version": 29,
@@ -16,6 +12,18 @@ DEVICES = {
         "model": "OnePlus7",
         "cpu": "qcom",
         "version_code": "168361634",
+    },
+    "one_plus_3": {
+        "app_version": APP_VERSION,
+        "android_version": "28",
+        "android_release": "9.0",
+        "dpi": "420dpi",
+        "resolution": "1080x1920",
+        "manufacturer": "OnePlus",
+        "device": "ONEPLUS A3003",
+        "model": "OnePlus3",
+        "cpu": "qcom",
+        "version_code": "180322800",
     },
     # Released on March 2016
     "samsung_galaxy_s7": {
