@@ -18,7 +18,7 @@ REQUEST_HEADERS = {
     "X-IG-App-Locale": "en_US",
     "X-IG-Device-Locale": "en_US",
     "X-Pigeon-Session-Id": "21aa671b-a5f3-4093-8ec2-0c98420675e1",
-    "X-Pigeon-Rawclienttime": int(round(time.time() * 1000)),
+    "X-Pigeon-Rawclienttime": str(round(time.time() * 1000)),
     "X-IG-Connection-Speed": "-1kbps",
     "X-IG-Bandwidth-Speed-KBPS": str(random.randint(7000, 10000)),
     "X-IG-Bandwidth-TotalBytes-B": str(random.randint(500000, 900000)),
