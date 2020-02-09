@@ -422,7 +422,7 @@ class API(object):
             self.session.proxies["http"] = scheme + self.proxy
             self.session.proxies["https"] = scheme + self.proxy
 
-    def send_request(
+    def send_request(  # noqa: C901 make sleep minutes 0 when we do a request
         self,
         endpoint,
         post=None,
@@ -439,6 +439,7 @@ class API(object):
             raise Exception(msg)
 
         self.session.headers.update(config.REQUEST_HEADERS)
+        
         if headers:
             self.session.headers.update(headers)
         try:
