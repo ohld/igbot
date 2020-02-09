@@ -422,7 +422,7 @@ class API(object):
             self.session.proxies["http"] = scheme + self.proxy
             self.session.proxies["https"] = scheme + self.proxy
 
-    def send_request(  # noqa: C901 make sleep minutes 0 when we do a request
+    def send_request(
         self,
         endpoint,
         post=None,
@@ -439,15 +439,6 @@ class API(object):
             raise Exception(msg)
 
         self.session.headers.update(config.REQUEST_HEADERS)
-        self.session.headers.update(
-            {
-                "User-Agent": self.user_agent,
-                "X-IG-Connection-Speed": "-1kbps",
-                "X-IG-Bandwidth-Speed-KBPS": str(random.randint(7000, 10000)),
-                "X-IG-Bandwidth-TotalBytes-B": str(random.randint(500000, 900000)),
-                "X-IG-Bandwidth-TotalTime-MS": str(random.randint(50, 150)),
-            }
-        )
         if headers:
             self.session.headers.update(headers)
         try:
@@ -522,7 +513,7 @@ class API(object):
             if response.status_code == 429:
                 # if we come to this error, add 5 minutes of sleep everytime we hit the 429 error (aka soft bann) keep increasing untill we are unbanned
                 if timeout_minutes is None:
-                    timeout_minutes = 0
+                    timeout_minutes = 1
                 timeout_minutes += 5
                 self.logger.warning(
                     "That means 'too many requests'. I'll go to sleep "
