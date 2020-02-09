@@ -1,12 +1,10 @@
-# flake8: noqa
-"""
-Configuration file of the project
-"""
-# Config variables taken from
-# https://github.com/ping/instagram_private_api/blob/master/
-#   instagram_private_api/constants.py
+import time
+import random
+
+# version 117.0.0.28.123 (166149665)
 API_DOMAIN = "i.instagram.com"
 API_URL = "https://{domain}/api/v1/".format(domain=API_DOMAIN)
+APP_VERSION = "117.0.0.28.123"
 USER_AGENT_BASE = (
     "Instagram {app_version} "
     "Android ({android_version}/{android_release}; "
@@ -14,35 +12,32 @@ USER_AGENT_BASE = (
     "{device}; {model}; {cpu}; en_US; {version_code})"
 )
 SIG_KEY_VERSION = "4"
-# version 105.0.0.18.119 (166149665)
-# August 6, 2019 from https://www.apkmirror.com/apk/instagram/
-#   instagram-instagram/instagram-instagram-105-0-0-18-119-
-#   release/instagram-105-0-0-18-119-4-android-apk-download/
-# Check website regularly to update IG_SIG_KEY and
-# X-IG-Capabilities in REQUEST_HEADERS
-IG_SIG_KEY = "c36436a942ea1dbb40d7f2d7d45280a620d991ce8c62fb4ce600f0a048c32c11"
+IG_SIG_KEY = "a86109795736d73c9a94172cd9b736917d7d94ca61c9101164894b3f0d43bef4"
 
-# Request variables taken from
-# https://github.com/ping/instagram_private_api/blob/
-#   422d61f0a8cc9de3d5a0e78bcba53751c44e5d63/
-#   instagram_private_api/client.py#L375
 REQUEST_HEADERS = {
-    "Connection": "Keep-Alive",
-    # version 107.0.0.27.121 (166149665)
-    # python3 -c "import base64, struct; print(base64.b64encode(
-    #   struct.pack('<i', 166149665)).decode('ascii'));"
-    "X-IG-Capabilities": "3brTvw==",
-    "X-IG-App-ID": "567067343352427",
-    "X-IG-Connection-Type": "WIFI",
+    "X-IG-App-Locale": "en_US",
+    "X-IG-Device-Locale": "en_US",
+    "X-Pigeon-Session-Id": "21aa671b-a5f3-4093-8ec2-0c98420675e1",
+    "X-Pigeon-Rawclienttime": int(round(time.time() * 1000)),
+    "X-IG-Connection-Speed": "-1kbps",
+    "X-IG-Bandwidth-Speed-KBPS": str(random.randint(7000, 10000)),
+    "X-IG-Bandwidth-TotalBytes-B": str(random.randint(500000, 900000)),
+    "X-IG-Bandwidth-TotalTime-MS": str(random.randint(50, 150)),
     "X-IG-Prefetch-Request": "foreground",
-    "X-IG-VP9-Capable": "false",
-    "X-FB-HTTP-Engine": "Liger",
-    "Accept": "*/*",
-    "Accept-Encoding": "gzip,deflate",
+    "X-Bloks-Version-Id": "0a3ae4c88248863609c67e278f34af44673cff300bc76add965a9fb036bd3ca3",
+    "X-MID": "XkAyKQABAAHizpYQvHzNeBo4E9nm",
+    "X-Bloks-Is-Layout-RTL": "false",
+    "X-IG-Device-ID": "3060a0ff-9663-48d5-8eae-c0ef8d957345",
+    "X-IG-Android-ID": "android-e534f0d97b26819f",
+    "X-IG-Connection-Type": "WIFI",
+    "X-IG-Capabilities": "3brTvwE=",
+    "X-IG-App-ID": "567067343352427",
     "Accept-Language": "en-US",
-    "Content-type": "application/x-www-form-urlencoded; charset=UTF-8",
-    "Cookie2": "$Version=1",
-    "version_code": "168361634",
+    "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+    "Accept-Encoding": "gzip, deflate",
+    "Host": "i.instagram.com",
+    "X-FB-HTTP-Engine": "Liger",
+    "Connection": "close",
 }
 
 LOGIN_EXPERIMENTS = "ig_android_fci_onboarding_friend_search,ig_android_device_detection_info_upload,ig_android_account_linking_upsell_universe,ig_android_direct_main_tab_universe_v2,ig_android_sms_retriever_backtest_universe,ig_android_direct_add_direct_to_android_native_photo_share_sheet,ig_growth_android_profile_pic_prefill_with_fb_pic_2,ig_account_identity_logged_out_signals_global_holdout_universe,ig_android_login_identifier_fuzzy_match,ig_android_video_render_codec_low_memory_gc,ig_android_custom_transitions_universe,ig_android_push_fcm,ig_android_show_login_info_reminder_universe,ig_android_email_fuzzy_matching_universe,ig_android_one_tap_aymh_redesign_universe,ig_android_direct_send_like_from_notification,ig_android_suma_landing_page,ig_android_session_scoped_logger,ig_android_user_session_scoped_class_opt_universe,ig_android_accoun_switch_badge_fix_universe,ig_android_smartlock_hints_universe,ig_android_black_out,ig_activation_global_discretionary_sms_holdout,ig_android_account_switch_infra_universe,ig_android_video_ffmpegutil_pts_fix,ig_android_multi_tap_login_new,ig_android_caption_typeahead_fix_on_o_universe,ig_android_save_pwd_checkbox_reg_universe,ig_android_nux_add_email_device,ig_android_direct_remove_view_mode_stickiness_universe,ig_username_suggestions_on_username_taken,ig_android_ingestion_video_support_hevc_decoding,ig_android_secondary_account_creation_universe,ig_android_account_recovery_auto_login,ig_android_sim_info_upload,ig_android_mobile_http_flow_device_universe,ig_android_hide_fb_button_when_not_installed_universe,ig_android_targeted_one_tap_upsell_universe,ig_android_gmail_oauth_in_reg,ig_android_account_linking_flow_shorten_universe,ig_android_hide_typeahead_for_logged_users,ig_android_vc_interop_use_test_igid_universe,ig_android_log_suggested_users_cache_on_error,ig_android_reg_modularization_universe,ig_android_phone_edit_distance_universe,ig_android_device_verification_separate_endpoint,ig_android_universe_noticiation_channels,ig_smartlock_login,ig_android_igexecutor_sync_optimization_universe,ig_android_account_linking_skip_value_props_universe,ig_android_account_linking_universe,ig_android_hsite_prefill_new_carrier,ig_android_retry_create_account_universe,ig_android_family_apps_user_values_provider_universe,ig_android_reg_nux_headers_cleanup_universe,ig_android_device_info_foreground_reporting,ig_android_shortcuts_2019,ig_android_device_verification_fb_signup,ig_android_onetaplogin_optimization,ig_video_debug_overlay,ig_android_ask_for_permissions_on_reg,ig_assisted_login_universe,ig_android_display_full_country_name_in_reg_universe,ig_android_security_intent_switchoff,ig_android_device_info_job_based_reporting,ig_android_passwordless_auth,ig_android_direct_main_tab_account_switch,ig_android_modularized_dynamic_nux_universe,ig_android_fb_account_linking_sampling_freq_universe,ig_android_fix_sms_read_lollipop,ig_android_access_flow_prefill"
@@ -52,11 +47,11 @@ LAUNCHER_CONFIGS = "ig_android_media_codec_info_collection,stories_gif_sticker,i
 SUPPORTED_CAPABILITIES = [
     {
         "name": "SUPPORTED_SDK_VERSIONS",
-        "value": "13.0,14.0,15.0,16.0,17.0,18.0,19.0,20.0,21.0,22.0,23.0,24."
+        "value": "15.0,16.0,17.0,18.0,19.0,20.0,21.0,22.0,23.0,24."
         + "0,25.0,26.0,27.0,28.0,29.0,30.0,31.0,32.0,33.0,34.0,35.0,36.0,37.0,"
         + "38.0,39.0,40.0,41.0,42.0,43.0,44.0,45.0,46.0,47.0,48.0,49.0,50.0,51"
         + ".0,52.0,53.0,54.0,55.0,56.0,57.0,58.0,59.0,60.0,61.0,62.0,63.0,64.0,65.0"
-        + "66.0,67.0,68.0,69.0",
+        + "66.0,67.0,68.0,69.0,70.0,71.0,72.0,73.0,74.0",
     },
     {"name": "FACE_TRACKER_VERSION", "value": "12"},
     {"name": "segmentation", "value": "segmentation_enabled"},
