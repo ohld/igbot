@@ -439,11 +439,7 @@ class API(object):
             raise Exception(msg)
 
         self.session.headers.update(config.REQUEST_HEADERS)
-        self.session.headers.update(
-            {
-                "User-Agent": self.user_agent,
-            }
-        )
+        self.session.headers.update({"User-Agent": self.user_agent,})
         if headers:
             self.session.headers.update(headers)
         try:
@@ -456,16 +452,16 @@ class API(object):
                     if extra_sig is not None and extra_sig != []:
                         post += "&".join(extra_sig)
                 response = self.session.post(config.API_URL + endpoint, data=post)
-				#time.sleep(random.randint(1,5))
+				# time.sleep(random.randint(1, 5))
             else:  # GET
                 response = self.session.get(config.API_URL + endpoint)
-				#time.sleep(random.randint(1,5))
+				# time.sleep(random.randint(1, 5))
         except Exception as e:
             self.logger.warning(str(e))
             return False
 
         self.last_response = response
-        time.sleep(random.randint(1,5))
+        time.sleep(random.randint(1, 5))
         if post is not None:
             self.logger.debug(
                 "POST to endpoint: {} returned response: {}".format(endpoint, response)
