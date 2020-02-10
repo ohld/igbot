@@ -439,7 +439,7 @@ class API(object):
             raise Exception(msg)
 
         self.session.headers.update(config.REQUEST_HEADERS)
-        self.session.headers.update("User-Agent": self.user_agent)
+        self.session.headers.update({"User-Agent": self.user_agent})
         if headers:
             self.session.headers.update(headers)
         try:
