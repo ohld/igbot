@@ -304,7 +304,7 @@ class API(object):
                 "two_factor_identifier": two_factor_id,
                 "password": self.password,
                 "device_id": self.device_id,
-                "ig_sig_key_version": 4,
+                "ig_sig_key_version": config.SIG_KEY_VERSION,
             },
             allow_redirects=True,
         )
@@ -439,7 +439,7 @@ class API(object):
             raise Exception(msg)
 
         self.session.headers.update(config.REQUEST_HEADERS)
-        self.session.headers.update({"User-Agent": self.user_agent,})
+        self.session.headers.update("User-Agent": self.user_agent)
         if headers:
             self.session.headers.update(headers)
         try:
