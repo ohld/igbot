@@ -536,9 +536,7 @@ class API(object):
             if response.status_code == 400:
                 response_data = json.loads(response.text)
                 if response_data.get("challenge_required"):
-                    self.logger.error(
-                        "Failed to login"
-                    )
+                    self.logger.error("Failed to login")
                     delete_credentials()
                 # PERFORM Interactive Two-Factor Authentication
                 if response_data.get("two_factor_required"):
