@@ -20,7 +20,7 @@ args = parser.parse_args()
 bot = Bot()
 bot.login(username=args.u, password=args.p, proxy=args.proxy)
 
-f = utils.file("non-followers.txt")
+f = utils.file("config/non-followers.txt")
 
 non_followers = set(bot.following) - set(bot.followers) - bot.friends_file.set
 non_followers = list(non_followers)

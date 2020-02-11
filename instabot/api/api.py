@@ -275,6 +275,7 @@ class API(object):
                         self.login_flow(True)
                         return True
                     else:
+                        self.logger.error("Failed to login removing cookies and retrying")
                         self.save_failed_login()
                         return False
                 else:
@@ -285,9 +286,11 @@ class API(object):
                     self.login_flow(True)
                     return True
                 else:
+                    self.logger.error("Failed to login with 2FA!")
                     self.save_failed_login()
                     return False
             else:
+                self.logger.error("Failed to login!")
                 self.save_failed_login()
                 return False
 
@@ -339,6 +342,7 @@ class API(object):
     def save_failed_login(self):
         self.logger.info("Username or password is incorrect.")
         delete_credentials()
+        sys.exit()
 
     def solve_challenge(self):
         challenge_url = self.last_json["challenge"]["api_path"][1:]
@@ -458,7 +462,7 @@ class API(object):
             return False
 
         self.last_response = response
-        time.sleep(random.randint(1, 5))
+        time.sleep(random.randint(1, 2))
         if post is not None:
             self.logger.debug(
                 "POST to endpoint: {} returned response: {}".format(endpoint, response)
@@ -531,7 +535,9 @@ class API(object):
                 )
             if response.status_code == 400:
                 response_data = json.loads(response.text)
-
+                if response_data.get("challenge_required"):
+                    self.logger.error("Account blocked! Change your password in instagram, wait 24 hours and readd your account.")
+                    delete_credentials()
                 # PERFORM Interactive Two-Factor Authentication
                 if response_data.get("two_factor_required"):
                     try:

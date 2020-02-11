@@ -18,7 +18,7 @@ parser.add_argument("-u", type=str, help="username")
 parser.add_argument("-p", type=str, help="password")
 parser.add_argument("-proxy", type=str, help="proxy")
 parser.add_argument("user", type=str, nargs="*", help="user")
-parser.add_argument("-path", type=str, default="", help="path")
+parser.add_argument("-path", type=str, default="config", help="path")
 args = parser.parse_args()
 
 bot = Bot()

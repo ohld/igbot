@@ -609,14 +609,14 @@ except NameError:
     pass
 
 # files location
-hashtag_file = "hashtagsdb.txt"
-users_file = "usersdb.txt"
-whitelist = "whitelist.txt"
-blacklist = "blacklist.txt"
-userlist = "userlist.txt"
-comment = "comment.txt"
-setting_file = "setting.txt"
-SECRET_FILE = "secret.txt"
+hashtag_file = "config/hashtag_database.txt"
+users_file = "config/username_database.txt"
+whitelist = "config/whitelist.txt"
+blacklist = "config/blacklist.txt"
+userlist = "config/userlist.txt"
+comment = "config/comments.txt"
+setting_file = "config/setting.txt"
+SECRET_FILE = "config/secret.txt"
 
 # check setting first
 initial_checker()

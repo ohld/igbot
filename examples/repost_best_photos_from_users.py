@@ -85,7 +85,7 @@ def repost_photo(bot, new_media_id, path=POSTED_MEDIAS):
             with open(photo_path[:-6] + ".txt", "r") as f:
                 text = "".join(f.readlines())
         except FileNotFoundError:
-            text = ""
+            bot.logger.warning("Cannot find the photo that is downloaded")
             pass
     if bot.upload_photo(photo_path, text):
         update_posted_medias(new_media_id, path)
