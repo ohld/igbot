@@ -24,7 +24,7 @@ def initial_checker():
             with open(f, "w") as f:
                 pass
         print(
-            """
+        """
         Welcome to instabot, it seems this is your first time.
         Before starting, let's setup the basics.
         So the bot functions the way you want.
