@@ -609,7 +609,7 @@ try:
 except NameError:
     pass
 
-files location
+# files location
 hashtag_file = "hashtag_database.txt"
 users_file = "username_database.txt"
 whitelist = "whitelist.txt"

@@ -275,7 +275,7 @@ class API(object):
                         self.login_flow(True)
                         return True
                     else:
-                        self.logger.error("Failed to login removing cookies and retrying")
+                        self.logger.error("Failed to login")
                         self.save_failed_login()
                         return False
                 else:
@@ -537,7 +537,7 @@ class API(object):
                 response_data = json.loads(response.text)
                 if response_data.get("challenge_required"):
                     self.logger.error(
-                        "Failed to login removing cookies and retrying"
+                        "Failed to login"
                     )
                     delete_credentials()
                 # PERFORM Interactive Two-Factor Authentication
