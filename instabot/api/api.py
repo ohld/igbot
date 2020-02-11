@@ -51,13 +51,14 @@ is_py37 = version_info[:2] == (3, 7)
 
 
 version = "0.106.0"
+current_path = os.path.abspath(os.getcwd())
 
 
 class API(object):
     def __init__(
         self,
         device=None,
-        base_path="",
+        base_path=current_path + "/config/",
         save_logfile=True,
         log_filename=None,
         loglevel_file=logging.DEBUG,
