@@ -537,7 +537,9 @@ class API(object):
             if response.status_code == 400:
                 response_data = json.loads(response.text)
                 if response_data.get("challenge_required"):
-                    self.logger.warning("Failed to login go to instagram and change your password")
+                    self.logger.warning(
+                        "Failed to login go to instagram and change your password"
+                    )
                     delete_credentials()
                 # PERFORM Interactive Two-Factor Authentication
                 if response_data.get("two_factor_required"):
