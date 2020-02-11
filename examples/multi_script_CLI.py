@@ -652,9 +652,6 @@ bot = Bot(
     follow_delay=int(settings[15]),
     unfollow_delay=int(settings[16]),
     comment_delay=int(settings[17]),
-    whitelist_file=whitelist,
-    blacklist_file=blacklist,
-    comments_file=comment,
 )
 
 # TODO parse setting[18] for proxy
@@ -664,7 +661,6 @@ while True:
     try:
         menu()
     except Exception as e:
-        bot.logger.info("error, read exception bellow")
         bot.logger.exception(str(e))
-        bot.logger.debug()
+        bot.logger.debug("error, retry")
     time.sleep(1)

@@ -81,11 +81,13 @@ class API(object):
         # self.logger = logging.getLogger("[instabot_{}]".format(instabot_version))
         self.logger = logging.getLogger("instabot version: " + version)
 
-        if not os.path.exists("./config/"):
-            os.makedirs("./config/")  # create base_path if not exists
+        if not os.path.exists(base_path):
+            os.makedirs(base_path)  # create base_path if not exists
+            print("Setting config file to:")
 
-        if not os.path.exists("/log/"):
-            os.makedirs("/log/")  # create log folder if not exists
+        if not os.path.exists(base_path + "/log/"):
+            os.makedirs(base_path + "/log/")  # create log folder if not exists
+            print("Setting log file to:")
 
         if save_logfile is True:
             if log_filename is None:
@@ -537,7 +539,7 @@ class API(object):
             if response.status_code == 400:
                 response_data = json.loads(response.text)
                 if response_data.get("challenge_required"):
-                    self.logger.error("Failed to login")
+                    self.logger.error("Failed to login, go to instagram and change your password")
                     delete_credentials()
                 # PERFORM Interactive Two-Factor Authentication
                 if response_data.get("two_factor_required"):
