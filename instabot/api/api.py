@@ -83,11 +83,9 @@ class API(object):
 
         if not os.path.exists(base_path):
             os.makedirs(base_path)  # create base_path if not exists
-            print("Setting config file to:")
 
         if not os.path.exists(base_path + "/log/"):
             os.makedirs(base_path + "/log/")  # create log folder if not exists
-            print("Setting log file to:")
 
         if save_logfile is True:
             if log_filename is None:

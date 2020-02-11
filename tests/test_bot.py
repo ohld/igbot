@@ -4,7 +4,6 @@ import os
 
 import requests
 
-sys.path.append(os.path.join(sys.path[0], "../"))
 from instabot import Bot
 
 try:
@@ -40,6 +39,7 @@ class TestBot:
             unblock_delay=30,
             message_delay=60,
             blocked_actions_sleep_delay=300,
+            save_logfile=False,
         )
         self.prepare_api(self.bot)
         self.bot.reset_counters()
