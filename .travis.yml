@@ -9,7 +9,6 @@ python:
   - "3.8-dev"
   - "nightly"
   - "pypy"
-  - "pypy3.6"
 
 env:
   - PRE_COMMIT_CMD=""
@@ -23,6 +22,7 @@ matrix:
   allow_failures:
     - python: "3.8-dev"
     - python: "nightly"
+    - python: "pypy3.5"
 
 install:
   - pip install tox-travis codecov bumpversion pre_commit
