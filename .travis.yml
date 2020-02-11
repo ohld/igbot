@@ -9,7 +9,7 @@ python:
   - "3.8-dev"
   - "nightly"
   - "pypy"
-  - "pypy3.5"
+  - "pypy3.6"
 
 env:
   - PRE_COMMIT_CMD=""
