@@ -9,6 +9,7 @@ from datetime import datetime
 current_path = os.path.abspath(os.getcwd())
 CHECKPOINT_PATH = current_path + "/config/{fname}.checkpoint"
 
+
 class Checkpoint(object):
     """
         Checkpoint for instabot.Bot class which can store:

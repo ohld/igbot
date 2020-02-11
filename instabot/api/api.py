@@ -275,9 +275,7 @@ class API(object):
                         self.login_flow(True)
                         return True
                     else:
-                        self.logger.error(
-                            "Failed to login removing cookies and retrying"
-                        )
+                        self.logger.error("Failed to login removing cookies and retrying")
                         self.save_failed_login()
                         return False
                 else:
