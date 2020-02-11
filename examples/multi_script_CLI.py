@@ -610,14 +610,14 @@ except NameError:
     pass
 
 # files location
-hashtag_file = "hashtag_database.txt"
-users_file = "username_database.txt"
-whitelist = "whitelist.txt"
-blacklist = "blacklist.txt"
-userlist = "userlist.txt"
-comment = "comments.txt"
+hashtag_file = "config/hashtag_database.txt"
+users_file = "config/username_database.txt"
+whitelist = "config/whitelist.txt"
+blacklist = "config/blacklist.txt"
+userlist = "config/userlist.txt"
+comment = "config/comments.txt"
 setting_file = "config/setting_multiscript.txt"
-SECRET_FILE = "secret.txt"
+SECRET_FILE = "config/secret.txt"
 
 # check setting first
 initial_checker()
