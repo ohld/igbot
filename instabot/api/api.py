@@ -90,7 +90,7 @@ class API(object):
         if save_logfile is True:
             if log_filename is None:
                 log_filename = os.path.join(
-                    base_path, "/log/instabot_{}.log".format(id(self))
+                    base_path, "log/instabot_{}.log".format(id(self))
                 )
 
             fh = logging.FileHandler(filename=log_filename)
