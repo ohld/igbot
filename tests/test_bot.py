@@ -37,6 +37,7 @@ class TestBot:
             unblock_delay=30,
             message_delay=60,
             blocked_actions_sleep_delay=300,
+            save_logfile=False,
         )
         self.prepare_api(self.bot)
         self.bot.reset_counters()
@@ -55,7 +56,7 @@ class TestBot:
 class TestBotAPI(TestBot):
     @patch("instabot.API.load_uuid_and_cookie")
     def test_login(self, load_cookie_mock):
-        self.bot = Bot()
+        self.bot = Bot(save_logfile=False)
 
         load_cookie_mock.side_effect = Exception()
 

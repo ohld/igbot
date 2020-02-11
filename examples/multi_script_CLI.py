@@ -7,15 +7,15 @@ import os
 import random
 import sys
 import time
+from tqdm import tqdm
 
 sys.path.append(os.path.join(sys.path[0], "../"))
-
-from tqdm import tqdm
 from instabot import Bot
 
 
 def initial_checker():
     files = [hashtag_file, users_file, whitelist, blacklist, comment, setting_file]
+    # files = [setting_file]
     try:
         for f in files:
             with open(f, "r") as f:
@@ -610,14 +610,14 @@ except NameError:
     pass
 
 # files location
-hashtag_file = "hashtagsdb.txt"
-users_file = "usersdb.txt"
-whitelist = "whitelist.txt"
-blacklist = "blacklist.txt"
-userlist = "userlist.txt"
-comment = "comment.txt"
-setting_file = "setting.txt"
-SECRET_FILE = "secret.txt"
+hashtag_file = "config/hashtag_database.txt"
+users_file = "config/username_database.txt"
+whitelist = "config/whitelist.txt"
+blacklist = "config/blacklist.txt"
+userlist = "config/userlist.txt"
+comment = "config/comments.txt"
+setting_file = "config/setting_multiscript.txt"
+SECRET_FILE = "config/secret.txt"
 
 # check setting first
 initial_checker()
@@ -652,23 +652,6 @@ bot = Bot(
     follow_delay=int(settings[15]),
     unfollow_delay=int(settings[16]),
     comment_delay=int(settings[17]),
-    whitelist_file=whitelist,
-    blacklist_file=blacklist,
-    comments_file=comment,
-    stop_words=[
-        "order",
-        "shop",
-        "store",
-        "free",
-        "doodleartindonesia",
-        "doodle art indonesia",
-        "fullofdoodleart",
-        "commission",
-        "vector",
-        "karikatur",
-        "jasa",
-        "open",
-    ],
 )
 
 # TODO parse setting[18] for proxy
@@ -678,7 +661,6 @@ while True:
     try:
         menu()
     except Exception as e:
-        bot.logger.info("error, read exception bellow")
         bot.logger.exception(str(e))
-        bot.logger.debug()
+        bot.logger.debug("error, retry")
     time.sleep(1)

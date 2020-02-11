@@ -4,7 +4,8 @@ import getpass
 import os
 import sys
 
-SECRET_FILE = "secret.txt"
+current_path = os.path.abspath(os.getcwd())
+SECRET_FILE = current_path + "/config/secret.txt"
 
 
 def add_credentials():

@@ -50,14 +50,15 @@ is_py3 = version_info[0] == 3
 is_py37 = version_info[:2] == (3, 7)
 
 
-version = "0.105.0"
+version = "0.106.0"
+current_path = os.path.abspath(os.getcwd())
 
 
 class API(object):
     def __init__(
         self,
         device=None,
-        base_path="",
+        base_path=current_path + "/config/",
         save_logfile=True,
         log_filename=None,
         loglevel_file=logging.DEBUG,
@@ -80,16 +81,16 @@ class API(object):
         # self.logger = logging.getLogger("[instabot_{}]".format(instabot_version))
         self.logger = logging.getLogger("instabot version: " + version)
 
-        if not os.path.exists("./config/"):
-            os.makedirs("./config/")  # create base_path if not exists
+        if not os.path.exists(base_path):
+            os.makedirs(base_path)  # create base_path if not exists
 
-        if not os.path.exists("./log/"):
-            os.makedirs("./log/")  # create log folder if not exists
+        if not os.path.exists(base_path + "/log/"):
+            os.makedirs(base_path + "/log/")  # create log folder if not exists
 
         if save_logfile is True:
             if log_filename is None:
                 log_filename = os.path.join(
-                    base_path, "./log/instabot_{}.log".format(id(self))
+                    base_path, "log/instabot_{}.log".format(id(self))
                 )
 
             fh = logging.FileHandler(filename=log_filename)
@@ -275,6 +276,7 @@ class API(object):
                         self.login_flow(True)
                         return True
                     else:
+                        self.logger.error("Failed to login")
                         self.save_failed_login()
                         return False
                 else:
@@ -285,9 +287,11 @@ class API(object):
                     self.login_flow(True)
                     return True
                 else:
+                    self.logger.error("Failed to login with 2FA!")
                     self.save_failed_login()
                     return False
             else:
+                self.logger.error("Failed to login!")
                 self.save_failed_login()
                 return False
 
@@ -304,7 +308,7 @@ class API(object):
                 "two_factor_identifier": two_factor_id,
                 "password": self.password,
                 "device_id": self.device_id,
-                "ig_sig_key_version": 4,
+                "ig_sig_key_version": config.SIG_KEY_VERSION,
             },
             allow_redirects=True,
         )
@@ -339,6 +343,7 @@ class API(object):
     def save_failed_login(self):
         self.logger.info("Username or password is incorrect.")
         delete_credentials()
+        sys.exit()
 
     def solve_challenge(self):
         challenge_url = self.last_json["challenge"]["api_path"][1:]
@@ -422,7 +427,7 @@ class API(object):
             self.session.proxies["http"] = scheme + self.proxy
             self.session.proxies["https"] = scheme + self.proxy
 
-    def send_request(  # noqa: C901 make sleep minutes 0 when we do a request
+    def send_request(
         self,
         endpoint,
         post=None,
@@ -433,21 +438,12 @@ class API(object):
         timeout_minutes=None,
     ):
         self.set_proxy()  # Only happens if `self.proxy`
+        self.session.headers.update(config.REQUEST_HEADERS)
+        self.session.headers.update({"User-Agent": self.user_agent})
         if not self.is_logged_in and not login:
             msg = "Not logged in!"
             self.logger.critical(msg)
             raise Exception(msg)
-
-        self.session.headers.update(config.REQUEST_HEADERS)
-        self.session.headers.update(
-            {
-                "User-Agent": self.user_agent,
-                "X-IG-Connection-Speed": "-1kbps",
-                "X-IG-Bandwidth-Speed-KBPS": str(random.randint(7000, 10000)),
-                "X-IG-Bandwidth-TotalBytes-B": str(random.randint(500000, 900000)),
-                "X-IG-Bandwidth-TotalTime-MS": str(random.randint(50, 150)),
-            }
-        )
         if headers:
             self.session.headers.update(headers)
         try:
@@ -467,6 +463,7 @@ class API(object):
             return False
 
         self.last_response = response
+        time.sleep(random.randint(1, 2))
         if post is not None:
             self.logger.debug(
                 "POST to endpoint: {} returned response: {}".format(endpoint, response)
@@ -518,11 +515,10 @@ class API(object):
                     self.logger.info("Response Text: {}".format(str(response.text)))
                 except Exception:
                     pass
-
             if response.status_code == 429:
                 # if we come to this error, add 5 minutes of sleep everytime we hit the 429 error (aka soft bann) keep increasing untill we are unbanned
                 if timeout_minutes is None:
-                    timeout_minutes = 0
+                    timeout_minutes = 1
                 timeout_minutes += 5
                 self.logger.warning(
                     "That means 'too many requests'. I'll go to sleep "
@@ -538,15 +534,20 @@ class API(object):
                     extra_sig,
                     timeout_minutes,
                 )
-            elif response.status_code == 400:
+            if response.status_code == 400:
                 response_data = json.loads(response.text)
-
+                if response_data.get("challenge_required"):
+                    self.logger.warning(
+                        "Failed to login go to instagram and change your password"
+                    )
+                    delete_credentials()
                 # PERFORM Interactive Two-Factor Authentication
                 if response_data.get("two_factor_required"):
                     try:
                         self.last_response = response
                         self.last_json = json.loads(response.text)
                     except Exception:
+                        self.logger.error("Error unknown send request 400 2FA")
                         pass
                     return self.two_factor_auth()
                 # End of Interactive Two-Factor Authentication
@@ -562,6 +563,7 @@ class API(object):
                 self.last_response = response
                 self.last_json = json.loads(response.text)
             except Exception:
+                self.logger.error("Error unknown send request")
                 pass
             return False
 

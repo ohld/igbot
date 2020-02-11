@@ -6,10 +6,10 @@ python:
   - "3.5"
   - "3.6"
   - "3.7"
-  - "3.8-dev"
+  - "3.8"
   - "nightly"
   - "pypy"
-  - "pypy3.5"
+  - "pypy3"
 
 env:
   - PRE_COMMIT_CMD=""
@@ -21,7 +21,7 @@ matrix:
       env:
         - PRE_COMMIT_CMD="pre-commit run --all-files --show-diff-on-failure"
   allow_failures:
-    - python: "3.8-dev"
+    - python: "3.8"
     - python: "nightly"
 
 install:
@@ -36,3 +36,6 @@ after_success:
  - if [ "$TRAVIS_PULL_REQUEST" = "false" ] && [ "$TRAVIS_BRANCH" = "master" ]; then bumpversion --verbose minor && bash push.sh; fi
 
 cache: pip
+
+notifications:
+    webhooks: https://www.travisbuddy.com/

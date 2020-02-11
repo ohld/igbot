@@ -8,20 +8,20 @@ COMMENTS_FILE = "comments.txt"  # Contains random comments posted by the bot
 
 FRIENDS_FILE = "friends.txt"  # Users IDs of friends
 
-PHOTO_CAPTIONS_FILE = "photo_captions.txt"  # Captions to put under the photos
+PHOTO_CAPTIONS_FILE = "config/photo_captions.txt"  # Captions to put under the photos
 
-HASHTAGS_FILE = "hashtag_database.txt"
+HASHTAGS_FILE = "config/hashtag_database.txt"
 # The file containing hashtags you want to track: the bot will like and comment
 # photos and follow users using the hashtags in this file
 
-USERS_FILE = "username_database.txt"
+USERS_FILE = "config/username_database.txt"
 # Same as HASHTAGS_FILE, but with users. The bot will follow those users'
 # followers and like their posts
 
-POSTED_PICS_FILE = "pics.txt"
+POSTED_PICS_FILE = "config/pics.txt"
 # File containing all the photos already posted from the PICS_PATH directory
 
-PICS_PATH = "/Path/to/pics/folder/"
+PICS_PATH = "config/pics/"
 # The path of the directory containing the photos the bot will upload
 # NOTE: Being a directory, it must end with '/'
 
@@ -43,7 +43,7 @@ NUMBER_OF_FOLLOWERS_TO_FOLLOW = 15
 # bot.follow_followers gets executed. By default, this function gets
 # executed by the bot every 2 days at 11:00.
 
-NUMBER_OF_NON_FOLLOWERS_TO_UNFOLLOW = 50
+NUMBER_OF_NON_FOLLOWERS_TO_UNFOLLOW = 30
 # Specifies the number of people to unfollow each time the function
 # bot.unfollow_non_followers gets executed. By default, this function
 # gets executed every day at 08:00.

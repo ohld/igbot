@@ -6,7 +6,8 @@ import os
 import pickle
 from datetime import datetime
 
-CHECKPOINT_PATH = "{fname}.checkpoint"
+current_path = os.path.abspath(os.getcwd())
+CHECKPOINT_PATH = current_path + "/config/{fname}.checkpoint"
 
 
 class Checkpoint(object):

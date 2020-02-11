@@ -13,12 +13,12 @@ from instabot import Bot  # noqa: E402
 from instabot.bot.bot_support import read_list_from_file  # noqa: E402
 
 
-def exists_in_posted_medias(new_media_id, path="posted_medias.txt"):
+def exists_in_posted_medias(new_media_id, path="config/posted_medias.txt"):
     medias = read_list_from_file(path)
     return new_media_id in medias
 
 
-def update_posted_medias(new_media_id, path="posted_medias.txt"):
+def update_posted_medias(new_media_id, path="config/posted_medias.txt"):
     medias = read_list_from_file(path)
     medias.append(str(new_media_id))
     with open(path, "w") as file:
@@ -26,7 +26,7 @@ def update_posted_medias(new_media_id, path="posted_medias.txt"):
     return True
 
 
-def repost_photo(bot, new_media_id, path="posted_medias.txt"):
+def repost_photo(bot, new_media_id, path="config/posted_medias.txt"):
     if exists_in_posted_medias(new_media_id, path):
         bot.logger.warning("Media {} was uploaded earlier".format(new_media_id))
         return False
