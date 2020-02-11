@@ -1,7 +1,10 @@
 import json
+import sys
+import os
 
 import requests
 
+sys.path.append(os.path.join(sys.path[0], "../"))
 from instabot import Bot
 
 try:
