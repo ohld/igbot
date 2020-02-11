@@ -25,8 +25,7 @@ matrix:
     - python: "nightly"
 
 install:
-  - pip install tox-travis codecov bumpversion pre_commit
-  - pip install -r requirements.txt
+  - pip install tox codecov bumpversion pre_commit
 
 script:
  - tox
