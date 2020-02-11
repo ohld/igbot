@@ -422,7 +422,7 @@ class API(object):
             self.session.proxies["http"] = scheme + self.proxy
             self.session.proxies["https"] = scheme + self.proxy
 
-    def send_request(  # flake8: noqa
+    def send_request(
         self,
         endpoint,
         post=None,
