@@ -8,7 +8,7 @@ secret.txt
 *.tsv
 
 # Photos
-examples/photos/
+#examples/photos/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -111,10 +111,10 @@ nohup.out
 
 # VS Code
 .vscode
-state/
+#state/
 
 # Settings files
-*.txt
+#*.txt
 *.checkpoint
 *_uuid_and_cookie.json
 

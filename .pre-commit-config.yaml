@@ -22,7 +22,7 @@ repos:
         args:
           - --max-line-length=500
           - --ignore=E203,E266,E501,W503,E402
-          - --max-complexity=29
+          - --max-complexity=30
           - --select=B,C,E,F,W,T4,B9
 -   repo: https://github.com/asottile/pyupgrade
     rev: v1.25.2

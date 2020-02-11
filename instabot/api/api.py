@@ -83,13 +83,13 @@ class API(object):
         if not os.path.exists("./config/"):
             os.makedirs("./config/")  # create base_path if not exists
 
-        if not os.path.exists("./log/"):
-            os.makedirs("./log/")  # create log folder if not exists
+        if not os.path.exists("/log/"):
+            os.makedirs("/log/")  # create log folder if not exists
 
         if save_logfile is True:
             if log_filename is None:
                 log_filename = os.path.join(
-                    base_path, "./log/instabot_{}.log".format(id(self))
+                    base_path, "/log/instabot_{}.log".format(id(self))
                 )
 
             fh = logging.FileHandler(filename=log_filename)
@@ -275,7 +275,9 @@ class API(object):
                         self.login_flow(True)
                         return True
                     else:
-                        self.logger.error("Failed to login removing cookies and retrying")
+                        self.logger.error(
+                            "Failed to login removing cookies and retrying"
+                        )
                         self.save_failed_login()
                         return False
                 else:
@@ -536,7 +538,9 @@ class API(object):
             if response.status_code == 400:
                 response_data = json.loads(response.text)
                 if response_data.get("challenge_required"):
-                    self.logger.error("Account blocked! Change your password in instagram, wait 24 hours and readd your account.")
+                        self.logger.error(
+                            "Failed to login removing cookies and retrying"
+                        )
                     delete_credentials()
                 # PERFORM Interactive Two-Factor Authentication
                 if response_data.get("two_factor_required"):

@@ -180,6 +180,7 @@ def load_uuid_and_cookie(self, load_uuid=True, load_cookie=True):
     if self.cookie_fname is None:
         fname = "{}_uuid_and_cookie.json".format(self.username)
         self.cookie_fname = os.path.join(self.base_path, fname)
+        print(os.path.join(self.base_path, fname))
 
     if os.path.isfile(self.cookie_fname) is False:
         return False

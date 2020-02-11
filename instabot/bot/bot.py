@@ -1,3 +1,4 @@
+version = "0.106.0"
 import atexit
 import datetime
 import logging
@@ -129,17 +130,18 @@ from .bot_video import download_video, upload_video
 
 current_path = os.path.abspath(os.getcwd())
 
+
 class Bot(object):
     def __init__(
         self,
-        whitelist_file=current_path + "/config/whitelist.txt",
-        blacklist_file=current_path + "/config/blacklist.txt",
-        comments_file=current_path + "/config/comments.txt",
-        followed_file=current_path + "/config/followed.txt",
-        unfollowed_file=current_path + "/config/unfollowed.txt",
-        skipped_file=current_path + "/config/skipped.txt",
-        friends_file=current_path + "/config/friends.txt",
-        base_path=current_path,
+        base_path=current_path + "/config/",
+        whitelist_file="whitelist.txt",
+        blacklist_file="blacklist.txt",
+        comments_file="comments.txt",
+        followed_file="followed.txt",
+        unfollowed_file="unfollowed.txt",
+        skipped_file="skipped.txt",
+        friends_file="friends.txt",
         proxy=None,
         max_likes_per_day=random.randint(50, 100),
         max_unlikes_per_day=random.randint(50, 100),
@@ -274,7 +276,7 @@ class Bot(object):
         self.verbosity = verbosity
 
         self.logger = self.api.logger
-        self.logger.info("Instabot Started")
+        self.logger.info("Instabot version: " + version + " Started")
         self.logger.debug("Bot imported from {}".format(__file__))
 
     @property
