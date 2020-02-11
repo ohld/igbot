@@ -50,7 +50,7 @@ is_py3 = version_info[0] == 3
 is_py37 = version_info[:2] == (3, 7)
 
 
-version = "0.106.0"
+version = "0.107.0"
 current_path = os.path.abspath(os.getcwd())
 
 
