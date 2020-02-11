@@ -433,13 +433,12 @@ class API(object):
         timeout_minutes=None,
     ):
         self.set_proxy()  # Only happens if `self.proxy`
+        self.session.headers.update(config.REQUEST_HEADERS)
+        self.session.headers.update({"User-Agent": self.user_agent})
         if not self.is_logged_in and not login:
             msg = "Not logged in!"
             self.logger.critical(msg)
             raise Exception(msg)
-
-        self.session.headers.update(config.REQUEST_HEADERS)
-        self.session.headers.update({"User-Agent": self.user_agent})
         if headers:
             self.session.headers.update(headers)
         try:
@@ -513,7 +512,6 @@ class API(object):
                     self.logger.info("Response Text: {}".format(str(response.text)))
                 except Exception:
                     pass
-
             if response.status_code == 429:
                 # if we come to this error, add 5 minutes of sleep everytime we hit the 429 error (aka soft bann) keep increasing untill we are unbanned
                 if timeout_minutes is None:
@@ -533,7 +531,7 @@ class API(object):
                     extra_sig,
                     timeout_minutes,
                 )
-            elif response.status_code == 400:
+            if response.status_code == 400:
                 response_data = json.loads(response.text)
 
                 # PERFORM Interactive Two-Factor Authentication
@@ -542,6 +540,7 @@ class API(object):
                         self.last_response = response
                         self.last_json = json.loads(response.text)
                     except Exception:
+                        self.logger.error("Error unknown send request 400 2FA")
                         pass
                     return self.two_factor_auth()
                 # End of Interactive Two-Factor Authentication
@@ -557,6 +556,7 @@ class API(object):
                 self.last_response = response
                 self.last_json = json.loads(response.text)
             except Exception:
+                self.logger.error("Error unknown send request")
                 pass
             return False
 
