@@ -30,7 +30,6 @@ class Checkpoint(object):
         self.start_time = bot.start_time
         self.date = datetime.now()
         self.total_requests = bot.api.total_requests
-#         self.bot = bot
 
     def fill_following(self, bot):
         self._following = [item["pk"] for item in bot.api.get_total_self_followings()]
