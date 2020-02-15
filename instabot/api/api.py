@@ -272,7 +272,6 @@ class API(object):
 
             elif (
                 self.last_json.get("error_type", "") == "checkpoint_challenge_required"
-
             ):
                 # self.logger.info("Checkpoint challenge required...")
                 if ask_for_code is True:
@@ -1702,14 +1701,22 @@ class API(object):
 
     # ====== DIRECT METHODS ====== #
     def get_inbox_v2(self):
-        data = json.dumps({"visual_message_return_type": "unseen", "persistentBadging": "True", "limit": "0"})
+        data = json.dumps(
+            {
+                "visual_message_return_type": "unseen",
+                "persistentBadging": "True",
+                "limit": "0",
+            }
+        )
         return self.send_request("direct_v2/inbox/", data)
 
     def get_presence(self):
         return self.send_request("direct_v2/get_presence/")
 
     def get_thread(self, thread_id, cursor_id=None):
-        data = json.dumps({"visual_message_return_type": "unseen", "seq_id": "40065", "limit":"10"})
+        data = json.dumps(
+            {"visual_message_return_type": "unseen", "seq_id": "40065", "limit": "10"}
+        )
         if cursor_id is not None:
             data["cursor"] = cursor_id
         return self.send_request(
