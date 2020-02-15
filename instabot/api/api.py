@@ -272,12 +272,9 @@ class API(object):
 
             elif (
                 self.last_json.get("error_type", "") == "checkpoint_challenge_required"
-                self.logger.error(
-                    "Failed to login go to instagram and change your password"
-                )
-                delete_credentials()
+
             ):
-                self.logger.info("Checkpoint challenge required...")
+                # self.logger.info("Checkpoint challenge required...")
                 if ask_for_code is True:
                     solved = self.solve_challenge()
                     if solved:
@@ -285,7 +282,9 @@ class API(object):
                         self.login_flow(True)
                         return True
                     else:
-                        self.logger.error("Failed to login")
+                        self.logger.error(
+                            "Failed to login, unable to solve the challenge"
+                        )
                         self.save_failed_login()
                         return False
                 else:
@@ -300,8 +299,11 @@ class API(object):
                     self.save_failed_login()
                     return False
             else:
-                self.logger.error("Failed to login!")
+                self.logger.error(
+                    "Failed to login go to instagram and change your password"
+                )
                 self.save_failed_login()
+                delete_credentials()
                 return False
 
     def two_factor_auth(self):
@@ -527,7 +529,7 @@ class API(object):
             if response.status_code == 429:
                 # if we come to this error, add 5 minutes of sleep everytime we hit the 429 error (aka soft bann) keep increasing untill we are unbanned
                 if timeout_minutes is None:
-                    timeout_minutes = 1
+                    timeout_minutes = 0
                 timeout_minutes += 5
                 self.logger.warning(
                     "That means 'too many requests'. I'll go to sleep "
