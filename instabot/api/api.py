@@ -31,6 +31,10 @@ from .api_login import (
     sync_device_features,
     sync_launcher,
     sync_user_features,
+    get_prefill_candidates,
+    get_account_family,
+    get_zr_token_result,
+    banyan,
 )
 from .api_photo import configure_photo, download_photo, upload_photo
 from .api_story import configure_story, download_story, upload_story_photo
@@ -125,9 +129,7 @@ class API(object):
     def set_contact_point_prefill(self, usage="prefill"):
         data = json.dumps(
             {
-                "id": self.uuid,
                 "phone_id": self.phone_id,
-                "_csrftoken": self.token,
                 "usage": usage,
             }
         )
@@ -160,7 +162,19 @@ class API(object):
 
     def sync_user_features(self):
         return sync_user_features(self)
+    
+    def get_prefill_candidates(self):
+        return get_prefill_candidates(self)
 
+    def get_account_family(self):
+        return get_account_family(self)
+    
+    def get_zr_token_result(self):
+        return get_zr_token_result(self)
+
+    def banyan(self):
+        return banyan(self)
+    
     def pre_login_flow(self):
         return pre_login_flow(self)
 
@@ -465,15 +479,16 @@ class API(object):
                     )  # Only `send_direct_item` doesn't need a signature
                     if extra_sig is not None and extra_sig != []:
                         post += "&".join(extra_sig)
+                time.sleep(random.randint(1, 2))
                 response = self.session.post(config.API_URL + endpoint, data=post)
             else:  # GET
+                time.sleep(random.randint(1, 2))
                 response = self.session.get(config.API_URL + endpoint)
         except Exception as e:
             self.logger.warning(str(e))
             return False
 
         self.last_response = response
-        time.sleep(random.randint(1, 2))
         if post is not None:
             self.logger.debug(
                 "POST to endpoint: {} returned response: {}".format(endpoint, response)
@@ -705,18 +720,21 @@ class API(object):
         return self.send_request("qp/batch_fetch/", data)
 
     def get_timeline_feed(self, options=[]):
-        headers = {"X-Ads-Opt-Out": "0", "X-DEVICE-ID": self.uuid}
+        headers = {"X-Ads-Opt-Out": "0", "X-DEVICE-ID": self.uuid, "X-CM-Bandwidth-KBPS": str(random.randint(2000, 5000)), "X-CM-Latency": str(random.randint(1, 5))}
         data = {
             "_csrftoken": self.token,
             "_uuid": self.uuid,
             "is_prefetch": 0,
             "phone_id": self.phone_id,
+            "max_ID": "", # TODO fill this
+            "reason": "pagination",
+            "request_id": "", # TODO fill this
             "device_id": self.uuid,
-            "client_session_id": self.client_session_id,
+            "session_id": self.client_session_id,
             "battery_level": random.randint(25, 100),
             "is_charging": random.randint(0, 1),
             "will_sound_on": random.randint(0, 1),
-            "is_on_screen": True,
+            "bloks_versioning_id": "", # TODO fill this
             "timezone_offset": datetime.datetime.now(pytz.timezone("CET")).strftime(
                 "%z"
             ),
@@ -1140,22 +1158,17 @@ class API(object):
 
     # ====== FRIENDSHIPS METHODS ====== #
     def get_user_followings(self, user_id, max_id=""):
-        url = (
-            "friendships/{user_id}/following/?max_id={max_id}"
-            "&ig_sig_key_version={sig_key}&rank_token={rank_token}"
-        ).format(
-            user_id=user_id,
-            max_id=max_id,
-            sig_key=config.SIG_KEY_VERSION,
-            rank_token=self.rank_token,
-        )
+        url = ("friendships/{user_id}/following/?search_surface=follow_list_page&query=&rank_token={rank_token}")
+        url = url.format(user_id=user_id,rank_token=self.rank_token)
+        if max_id:
+            url += "&max_id={max_id}".format(max_id=max_id)
         return self.send_request(url)
 
     def get_self_users_following(self):
         return self.get_user_followings(self.user_id)
 
     def get_user_followers(self, user_id, max_id=""):
-        url = "friendships/{user_id}/followers/?rank_token={rank_token}"
+        url = "friendships/{user_id}/followers/?search_surface=follow_list_page&order=default&query=&rank_token={rank_token}"
         url = url.format(user_id=user_id, rank_token=self.rank_token)
         if max_id:
             url += "&max_id={max_id}".format(max_id=max_id)
@@ -1288,7 +1301,7 @@ class API(object):
             + "."
             + urllib.parse.quote(data)
         )
-        signature = "ig_sig_key_version={sig_key}&signed_body={body}"
+        signature = "signed_body={body}&ig_sig_key_version={sig_key}"
         return signature.format(sig_key=config.SIG_KEY_VERSION, body=body)
 
     @staticmethod
@@ -1569,6 +1582,34 @@ class API(object):
         }
         data = json.dumps(data)
         return self.send_request("feed/reels_tray/", data)
+    
+    def get_reels_media(self): 
+        data = {
+            "supported_capabilities_new": config.SUPPORTED_CAPABILITIES,
+            "source": "feed_timeline",
+            "_csrftoken": self.token,
+            "_uuid": self.uuid,
+            "_uid": self.user_id,
+            "user_ids": self.user_id,
+        }
+        data = json.dumps(data)
+        return self.send_request("feed/reels_media/", data)
+    
+    def push_register(self):
+        data = {
+            "device_type": "android_mqtt",
+            "is_main_push_channel": "true",
+            "device_sub_type": "2",
+            # TODO find out what &device_token={"k":"eyJwbiI6ImNvbS5pbnN0YWdyYW0uYW5kcm9pZCIsImRpIjoiNzhlNGMxNmQtN2YzNC00NDlkLTg4OWMtMTAwZDg5OTU0NDJhIiwiYWkiOjU2NzMxMDIwMzQxNTA1MiwiY2siOiIxNjgzNTY3Mzg0NjQyOTQifQ==","v":0,"t":"fbns-b64"} is
+            "_csrftoken": self.token,
+            "guid": self.uuid,
+            "_uuid": self.uuid,
+            "users": self.user_id,
+            # TODO find out what familiy_device_id is
+            # "familiy_device_id": "9d9aa0f0-40fe-4524-a920-9910f45ba18d"
+        }
+        data = json.dumps(data)
+        return self.send_request("push/register/", data)
 
     def get_users_reel(self, user_ids):
         """
@@ -1696,8 +1737,39 @@ class API(object):
     def get_loom_fetch_config(self):
         return self.send_request("loom/fetch_config/")
 
+    def get_request_country(self):
+        return self.send_request("locations/request_country/")
+    
+    def get_linked_accounts(self):
+        return self.send_request("linked_accounts/get_linkage_status/")
+    
     def get_profile_notice(self):
         return self.send_request("users/profile_notice/")
+
+    def get_business_branded_content(self):
+        return self.send_request("business/branded_content/should_require_professional_account/")
+
+    def get_monetization_products_eligibility_data(self):
+        return self.send_request("business/eligibility/get_monetization_products_eligibility_data/?product_types=branded_content")
+
+    def get_cooldowns(self):
+        # TODO Request returns 405 error fix this
+        data = self.json_data()
+        data = self.generate_signature(data)
+        print(data)
+        return self.send_request("qp/get_cooldowns/", data)
+
+    def log_resurrect_attribution(self):
+        data = {
+            "_csrftoken": self.token,
+            "_uuid": self.uuid,
+            "_uid": self.user_id,
+        }
+        data = json.dumps(data)
+        return self.send_request("attribution/log_resurrect_attribution/", data)
+
+    def arlink_download_info(self):
+        return self.send_request("users/arlink_download_info/?version_override=2.2.1")
 
     # ====== DIRECT METHODS ====== #
     def get_inbox_v2(self):
@@ -1732,6 +1804,13 @@ class API(object):
         if query is not None:
             data["query"] = query
         return self.send_request("direct_v2/ranked_recipients/", json.dumps(data))
+    
+    def get_scores_bootstrap(self):
+        url = (
+            "scores/bootstrap/users/?surfaces={surfaces}"
+        )
+        url = url.format(surfaces='["autocomplete_user_list","coefficient_besties_list_ranking","coefficient_rank_recipient_user_suggestion","coefficient_ios_section_test_bootstrap_ranking","coefficient_direct_recipients_ranking_variant_2"]')
+        return self.send_request(url)
 
     def send_direct_item(self, item_type, users, **options):
         data = {"client_context": self.generate_UUID(True), "action": "send_item"}
