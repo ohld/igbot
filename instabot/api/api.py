@@ -250,6 +250,11 @@ class API(object):
             self.pre_login_flow()
             data = json.dumps(
                 {
+                    "jazoest": "22264",
+                    "country_codes": "1",
+                    "google_tokens": "[]",
+                    "adid": "",
+                    # "enc_password:" "#PWD_INSTAGRAM:4:TIME:ENCRYPTED_PASSWORD"
                     "phone_id": self.phone_id,
                     "_csrftoken": self.token,
                     "username": self.username,
@@ -267,6 +272,10 @@ class API(object):
 
             elif (
                 self.last_json.get("error_type", "") == "checkpoint_challenge_required"
+                self.logger.error(
+                    "Failed to login go to instagram and change your password"
+                )
+                delete_credentials()
             ):
                 self.logger.info("Checkpoint challenge required...")
                 if ask_for_code is True:
