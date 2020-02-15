@@ -1691,14 +1691,14 @@ class API(object):
 
     # ====== DIRECT METHODS ====== #
     def get_inbox_v2(self):
-        data = json.dumps({"persistentBadging": True, "use_unified_inbox": True})
+        data = json.dumps({"visual_message_return_type": "unseen", "persistentBadging": "True", "limit": "0"})
         return self.send_request("direct_v2/inbox/", data)
 
     def get_presence(self):
         return self.send_request("direct_v2/get_presence/")
 
     def get_thread(self, thread_id, cursor_id=None):
-        data = {"use_unified_inbox": "true"}
+        data = json.dumps({"visual_message_return_type": "unseen", "seq_id": "40065", "limit":"10"})
         if cursor_id is not None:
             data["cursor"] = cursor_id
         return self.send_request(
