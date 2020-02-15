@@ -1,20 +1,5 @@
 import time
 import random
-import uuid
-from . import config, devices
-from .api_login import (
-    change_device_simulation,
-    generate_all_uuids,
-    load_uuid_and_cookie,
-    login_flow,
-    pre_login_flow,
-    reinstall_app_simulation,
-    save_uuid_and_cookie,
-    set_device,
-    sync_device_features,
-    sync_launcher,
-    sync_user_features,
-)
 
 # version 117.0.0.28.123 (166149665)
 API_DOMAIN = "i.instagram.com"
@@ -44,8 +29,13 @@ REQUEST_HEADERS = {
     "X-MID": "XkAyKQABAAHizpYQvHzNeBo4E9nm",
     "X-Bloks-Is-Layout-RTL": "false",
     "X-Bloks-Enable-RenderCore": "false",
-    "X-IG-Device-ID": "{uuid}",
-    "X-IG-Android-ID": "{device_id}",
+    
+    # TODO get the uuid from api_login here
+    #"X-IG-Device-ID": "{uuid}",
+    
+    # TODO get the device_id from api_login here
+    #"X-IG-Android-ID": "{device_id}",
+    
     "X-IG-Connection-Type": "WIFI",
     "X-IG-Capabilities": "3brTvwE=",
     "X-IG-App-ID": "567067343352427",
