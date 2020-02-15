@@ -153,8 +153,6 @@ def upload_photo(
     photo_len = str(len(photo_data))
     self.session.headers.update(
         {
-            "X-IG-Connection-Type": "WIFI",
-            "X-IG-Capabilities": "3brTvwE=",  # old "3Q4="
             "Accept-Encoding": "gzip",
             "X-Instagram-Rupload-Params": json.dumps(rupload_params),
             "X_FB_PHOTO_WATERFALL_ID": waterfall_id,

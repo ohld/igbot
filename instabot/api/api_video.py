@@ -124,8 +124,6 @@ def upload_video(self, video, caption=None, upload_id=None, thumbnail=None, opti
     }
     self.session.headers.update(
         {
-            "X-IG-Connection-Type": "WIFI",
-            "X-IG-Capabilities": "3brTvwE=",  # old "3Q4="
             "Accept-Encoding": "gzip",
             "X-Instagram-Rupload-Params": json.dumps(rupload_params),
             "X_FB_VIDEO_WATERFALL_ID": waterfall_id,
