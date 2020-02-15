@@ -1185,6 +1185,10 @@ class API(object):
         url = "friendships/show/{user_id}/".format(user_id=user_id)
         return self.send_request(url, data)
 
+    def all_friendship(self, user_id):
+        url = "friendships/show_many"
+        return self.send_request(url)
+
     def mute_user(self, user, mute_story=False, mute_posts=False):
         data_dict = {}
         if mute_posts:
