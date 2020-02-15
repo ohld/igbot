@@ -127,12 +127,7 @@ class API(object):
             self.generate_all_uuids()
 
     def set_contact_point_prefill(self, usage="prefill"):
-        data = json.dumps(
-            {
-                "phone_id": self.phone_id,
-                "usage": usage,
-            }
-        )
+        data = json.dumps({"phone_id": self.phone_id, "usage": usage})
         return self.send_request("accounts/contact_point_prefill/", data, login=True)
 
     def get_suggested_searches(self, _type="users"):
@@ -162,19 +157,19 @@ class API(object):
 
     def sync_user_features(self):
         return sync_user_features(self)
-    
+
     def get_prefill_candidates(self):
         return get_prefill_candidates(self)
 
     def get_account_family(self):
         return get_account_family(self)
-    
+   
     def get_zr_token_result(self):
         return get_zr_token_result(self)
 
     def banyan(self):
         return banyan(self)
-    
+   
     def pre_login_flow(self):
         return pre_login_flow(self)
 
@@ -720,21 +715,26 @@ class API(object):
         return self.send_request("qp/batch_fetch/", data)
 
     def get_timeline_feed(self, options=[]):
-        headers = {"X-Ads-Opt-Out": "0", "X-DEVICE-ID": self.uuid, "X-CM-Bandwidth-KBPS": str(random.randint(2000, 5000)), "X-CM-Latency": str(random.randint(1, 5))}
+        headers = {
+            "X-Ads-Opt-Out": "0",
+            "X-DEVICE-ID": self.uuid,
+            "X-CM-Bandwidth-KBPS": str(random.randint(2000, 5000)),
+            "X-CM-Latency": str(random.randint(1, 5)),
+        }
         data = {
             "_csrftoken": self.token,
             "_uuid": self.uuid,
             "is_prefetch": 0,
             "phone_id": self.phone_id,
-            "max_ID": "", # TODO fill this
+            "max_ID": "",  # TODO fill this
             "reason": "pagination",
-            "request_id": "", # TODO fill this
+            "request_id": "",  # TODO fill this
             "device_id": self.uuid,
             "session_id": self.client_session_id,
             "battery_level": random.randint(25, 100),
             "is_charging": random.randint(0, 1),
             "will_sound_on": random.randint(0, 1),
-            "bloks_versioning_id": "", # TODO fill this
+            "bloks_versioning_id": "",  # TODO fill this
             "timezone_offset": datetime.datetime.now(pytz.timezone("CET")).strftime(
                 "%z"
             ),
@@ -1158,8 +1158,8 @@ class API(object):
 
     # ====== FRIENDSHIPS METHODS ====== #
     def get_user_followings(self, user_id, max_id=""):
-        url = ("friendships/{user_id}/following/?search_surface=follow_list_page&query=&rank_token={rank_token}")
-        url = url.format(user_id=user_id,rank_token=self.rank_token)
+        url = "friendships/{user_id}/following/?search_surface=follow_list_page&query=&rank_token={rank_token}"
+        url = url.format(user_id=user_id, rank_token=self.rank_token)
         if max_id:
             url += "&max_id={max_id}".format(max_id=max_id)
         return self.send_request(url)
@@ -1582,7 +1582,7 @@ class API(object):
         }
         data = json.dumps(data)
         return self.send_request("feed/reels_tray/", data)
-    
+
     def get_reels_media(self): 
         data = {
             "supported_capabilities_new": config.SUPPORTED_CAPABILITIES,
@@ -1594,7 +1594,7 @@ class API(object):
         }
         data = json.dumps(data)
         return self.send_request("feed/reels_media/", data)
-    
+
     def push_register(self):
         data = {
             "device_type": "android_mqtt",
@@ -1739,18 +1739,22 @@ class API(object):
 
     def get_request_country(self):
         return self.send_request("locations/request_country/")
-    
+
     def get_linked_accounts(self):
         return self.send_request("linked_accounts/get_linkage_status/")
-    
+
     def get_profile_notice(self):
         return self.send_request("users/profile_notice/")
 
     def get_business_branded_content(self):
-        return self.send_request("business/branded_content/should_require_professional_account/")
+        return self.send_request(
+            "business/branded_content/should_require_professional_account/"
+        )
 
     def get_monetization_products_eligibility_data(self):
-        return self.send_request("business/eligibility/get_monetization_products_eligibility_data/?product_types=branded_content")
+        return self.send_request(
+            "business/eligibility/get_monetization_products_eligibility_data/?product_types=branded_content"
+        )
 
     def get_cooldowns(self):
         # TODO Request returns 405 error fix this
@@ -1804,12 +1808,12 @@ class API(object):
         if query is not None:
             data["query"] = query
         return self.send_request("direct_v2/ranked_recipients/", json.dumps(data))
-    
+
     def get_scores_bootstrap(self):
-        url = (
-            "scores/bootstrap/users/?surfaces={surfaces}"
-        )
-        url = url.format(surfaces='["autocomplete_user_list","coefficient_besties_list_ranking","coefficient_rank_recipient_user_suggestion","coefficient_ios_section_test_bootstrap_ranking","coefficient_direct_recipients_ranking_variant_2"]')
+        url = "scores/bootstrap/users/?surfaces={surfaces}"
+        url = url.format(
+            surfaces='["autocomplete_user_list","coefficient_besties_list_ranking","coefficient_rank_recipient_user_suggestion","coefficient_ios_section_test_bootstrap_ranking","coefficient_direct_recipients_ranking_variant_2"]'
+        )        
         return self.send_request(url)
 
     def send_direct_item(self, item_type, users, **options):

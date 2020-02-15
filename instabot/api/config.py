@@ -31,10 +31,10 @@ REQUEST_HEADERS = {
     "X-Bloks-Enable-RenderCore": "false",
     
     # TODO get the uuid from api_login here
-    #"X-IG-Device-ID": "{uuid}",
+    # "X-IG-Device-ID": "{uuid}",
     
     # TODO get the device_id from api_login here
-    #"X-IG-Android-ID": "{device_id}",
+    # "X-IG-Android-ID": "{device_id}",
     
     "X-IG-Connection-Type": "WIFI",
     "X-IG-Capabilities": "3brTvwE=",
@@ -52,7 +52,10 @@ LOGIN_EXPERIMENTS = "ig_android_fci_onboarding_friend_search,ig_android_device_d
 LAUNCHER_CONFIGS = "ig_android_media_codec_info_collection,stories_gif_sticker,ig_android_felix_release_players,bloks_binding,ig_android_camera_network_activity_logger,ig_android_os_version_blocking_config,ig_android_carrier_signals_killswitch,live_special_codec_size_list,fbns,ig_android_aed,ig_client_config_server_side_retrieval,ig_android_bloks_perf_logging,ig_user_session_operation,ig_user_mismatch_soft_error,ig_android_prerelease_event_counter,fizz_ig_android,ig_android_vc_clear_task_flag_killswitch,ig_android_killswitch_perm_direct_ssim,ig_android_codec_high_profile,ig_android_smart_prefill_killswitch,sonar_prober,action_bar_layout_width,ig_auth_headers_device,always_use_server_recents"
 
 SUPPORTED_CAPABILITIES = [
-    {"name": "SUPPORTED_SDK_VERSIONS", "value": "45.0,46.0,47.0,48.0,49.0,50.0,51.0,52.0,53.0,54.0,55.0,56.0,57.0,58.0,59.0,60.0,61.0,62.0,63.0,64.0,65.0,66.0,67.0,68.0,69.0,70.0,71.0,72.0,73.0,74.0,75.0,76.0,77.0,78.0,79.0,80.0,81.0"},
+    {
+        "name": "SUPPORTED_SDK_VERSIONS",
+        "value": "45.0,46.0,47.0,48.0,49.0,50.0,51.0,52.0,53.0,54.0,55.0,56.0,57.0,58.0,59.0,60.0,61.0,62.0,63.0,64.0,65.0,66.0,67.0,68.0,69.0,70.0,71.0,72.0,73.0,74.0,75.0,76.0,77.0,78.0,79.0,80.0,81.0",
+    },
     {"name": "FACE_TRACKER_VERSION", "value": "14"},
     {"name": "COMPRESSION", "value": "ETC2_COMPRESSION"},
     {"name": "world_tracker", "value": "world_tracker_enabled"},
