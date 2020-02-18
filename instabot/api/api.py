@@ -163,13 +163,13 @@ class API(object):
 
     def get_account_family(self):
         return get_account_family(self)
-   
+
     def get_zr_token_result(self):
         return get_zr_token_result(self)
 
     def banyan(self):
         return banyan(self)
-   
+
     def pre_login_flow(self):
         return pre_login_flow(self)
 
@@ -541,7 +541,9 @@ class API(object):
                     timeout_minutes = 0
                 if timeout_minutes == 15:
                     # If we have been waiting for more than 15 minutes, lets restart.
-                    self.logger.error("Since we hit 30 minutes of time outs, we have to restart. Removing session and cookies. Please relogin.")
+                    self.logger.error(
+                        "Since we hit 30 minutes of time outs, we have to restart. Removing session and cookies. Please relogin."
+                    )                    
                     delete_credentials()
                     time.sleep(30)
                     sys.exit()
@@ -1040,7 +1042,9 @@ class API(object):
             endpoint="media/{media_id}/like/".format(media_id=media_id),
             post=json_data,
             extra_sig=["d={}".format(double_tap)],
-            headers={"X-IG-WWW-Claim": "hmac.AR1ETv6FsubYON5DwNj_0CLNmbW7hSNR1yIMeXuhHJORN4n7"}
+            headers={
+                "X-IG-WWW-Claim": "hmac.AR1ETv6FsubYON5DwNj_0CLNmbW7hSNR1yIMeXuhHJORN4n7"
+            },        
         )
 
     def unlike(self, media_id):
@@ -1592,7 +1596,7 @@ class API(object):
         data = json.dumps(data)
         return self.send_request("feed/reels_tray/", data)
 
-    def get_reels_media(self): 
+    def get_reels_media(self):
         data = {
             "supported_capabilities_new": config.SUPPORTED_CAPABILITIES,
             "source": "feed_timeline",
@@ -1822,7 +1826,7 @@ class API(object):
         url = "scores/bootstrap/users/?surfaces={surfaces}"
         url = url.format(
             surfaces='["autocomplete_user_list","coefficient_besties_list_ranking","coefficient_rank_recipient_user_suggestion","coefficient_ios_section_test_bootstrap_ranking","coefficient_direct_recipients_ranking_variant_2"]'
-        )        
+        )
         return self.send_request(url)
 
     def send_direct_item(self, item_type, users, **options):

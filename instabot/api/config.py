@@ -32,10 +32,10 @@ REQUEST_HEADERS = {
     
     # TODO get the uuid from api_login here
     # "X-IG-Device-ID": "{uuid}",
-    
+
     # TODO get the device_id from api_login here
     # "X-IG-Android-ID": "{device_id}",
-    
+
     "X-IG-Connection-Type": "WIFI",
     "X-IG-Capabilities": "3brTvwE=",
     "X-IG-App-ID": "567067343352427",
