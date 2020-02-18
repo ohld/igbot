@@ -1171,7 +1171,7 @@ class API(object):
 
     # ====== FRIENDSHIPS METHODS ====== #
     def get_user_followings(self, user_id, max_id=""):
-        url = "friendships/{user_id}/following/?search_surface=follow_list_page&query={query}&rank_token={rank_token}"
+        url = "friendships/{user_id}/following/?search_surface=follow_list_page&rank_token={rank_token}"
         url = url.format(user_id=user_id, rank_token=self.rank_token)
         if max_id:
             url += "&max_id={max_id}".format(max_id=max_id)
@@ -1181,7 +1181,7 @@ class API(object):
         return self.get_user_followings(self.user_id)
 
     def get_user_followers(self, user_id, max_id=""):
-        url = "friendships/{user_id}/followers/?search_surface=follow_list_page&order=default&query={query}&rank_token={rank_token}"
+        url = "friendships/{user_id}/followers/?search_surface=follow_list_page&order=default&rank_token={rank_token}"
         url = url.format(user_id=user_id, rank_token=self.rank_token)
         if max_id:
             url += "&max_id={max_id}".format(max_id=max_id)
