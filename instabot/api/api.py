@@ -539,6 +539,12 @@ class API(object):
                 # if we come to this error, add 5 minutes of sleep everytime we hit the 429 error (aka soft bann) keep increasing untill we are unbanned
                 if timeout_minutes is None:
                     timeout_minutes = 0
+                if timeout_minutes == 15:
+                    # If we have been waiting for more than 15 minutes, lets restart.
+                    self.logger.error("Since we hit 30 minutes of time outs, we have to restart. Removing session and cookies. Please relogin.")
+                    delete_credentials()
+                    time.sleep(30)
+                    sys.exit()
                 timeout_minutes += 5
                 self.logger.warning(
                     "That means 'too many requests'. I'll go to sleep "
@@ -1007,7 +1013,9 @@ class API(object):
 
         data = self.action_data(
             {
+                "inventory_source": "media_or_ad",
                 "media_id": media_id,
+                "radio_type": "wifi-none",
                 "container_module": container_module,
                 "feed_position": str(feed_position),
                 "is_carousel_bumped_post": "false",
@@ -1032,6 +1040,7 @@ class API(object):
             endpoint="media/{media_id}/like/".format(media_id=media_id),
             post=json_data,
             extra_sig=["d={}".format(double_tap)],
+            headers={"X-IG-WWW-Claim": "hmac.AR1ETv6FsubYON5DwNj_0CLNmbW7hSNR1yIMeXuhHJORN4n7"}
         )
 
     def unlike(self, media_id):
