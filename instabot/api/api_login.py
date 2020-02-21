@@ -80,23 +80,46 @@ def banyan(self):
     return self.send_request(url)
 
 
+def igtv_browse_feed(self):
+    url = "igtv/browse_feed/?prefetch=1"
+    return self.send_request(url)
+
+
+def creatives_ar_class(self):
+    data = {
+        "_csrftoken": self.token,
+        "_uuid": self.uuid,
+    }
+    data = json.dumps(data)
+    return self.send_request("creatives/ar_class/", data)
+
+
 # ====== LOGIN/PRE FLOWS METHODS ====== #
 
 
 def pre_login_flow(self):
     self.logger.info("Not yet logged in starting: PRE-LOGIN FLOW!")
 
+    # /api/v1/accounts/contact_point_prefill/
     self.set_contact_point_prefill("prefill")
-    self.sync_launcher(True)
-    self.sync_device_features(True)
-    # self.get_prefill_candidates()
-    self.set_contact_point_prefill("prefill")
-    self.sync_launcher(True)
-    self.sync_device_features(True)
 
-    # REMOVED: this is not used anymore by the API
-    # self.read_msisdn_header("default")
-    # self.log_attribution()
+    # /api/v1/qe/sync (server_config_retrieval)
+    self.sync_device_features()
+
+    # /api/v1/launcher/sync/ (server_config_retrieval)
+    self.sync_launcher(True)
+
+    # /api/v1/accounts/get_prefill_candidates/
+    self.get_prefill_candidates()
+
+    # /api/v1/accounts/contact_point_prefill/
+    self.set_contact_point_prefill("prefill")
+
+    # /api/v1/launcher/sync/ (server_config_retrieval)
+    self.sync_launcher(True)
+
+    # /api/v1/qe/sync/ (server_config_retrieval)
+    self.sync_device_features()
 
 
 # DO NOT MOVE ANY OF THE ENDPOINTS THEYRE IN THE CORRECT ORDER
@@ -106,80 +129,96 @@ def login_flow(self, just_logged_in=False, app_refresh_interval=1800):
     if just_logged_in:
         try:
             # SYNC
+            # /api/v1/qe/sync/ (server_config_retrieval)
+            check_flow.append(self.sync_device_features())
+
+            # /api/v1/launcher/sync/ (server_config_retrieval)
             check_flow.append(self.sync_launcher(False))
-            check_flow.append(self.get_account_family())
+
+            # /api/v1/zr/token/result/?device_id=android-f14b9731e4869eb&token_hash=&custom_device_id=f3119c98-5663-4c47-95b5-a63b140a2b62&fetch_reason=token_expired
             check_flow.append(self.get_zr_token_result())
-            check_flow.append(self.sync_user_features())
 
-            # TODO fix banyan
-            # /api/v1/banyan/banyan/?views=["story_share_sheet","threads_people_picker","group_stories_share_sheet","reshare_share_sheet"]
-            # check_flow.append(self.banyan())
+            # /api/v1/multiple_accounts/get_account_family/
+            check_flow.append(self.get_account_family())
 
-            # Update feed and timeline
+            # /api/v1/qe/sync/ (server_config_retrieval)
+            check_flow.append(self.sync_device_features())
+
+            # /api/v1/banyan/banyan/?views=%5B%22story_share_sheet%22%2C%22threads_people_picker%22%2C%22group_stories_share_sheet%22%2C%22reshare_share_sheet%22%5D
+            check_flow.append(self.banyan())
+
+            # /api/v1/igtv/browse_feed/?prefetch=1
+            check_flow.append(self.igtv_browse_feed())
+
+            # /api/v1/creatives/ar_class/ (_csrftoken also add _uuid)
+            check_flow.append(self.creatives_ar_class())
+
+            # /api/v1/feed/reels_tray/ (supported_capabilities_new + reason=cold_start + _csrftoken + _uuid)
             check_flow.append(self.get_reels_tray_feed(reason="cold_start"))
+
+            # /api/v1/feed/timeline/ (feed_view_info + phone_id + battery_level + timezone_offset + _csrftoken + device_id + request_id + is_pull_to_refresh=0 + _uuid + is_charging=1 + will_sound_on=0 + seesion_id + bloks_versioning_id)
             check_flow.append(self.get_timeline_feed())
 
-            # TODO fix invalid reel id list
-            # signed_body=0afe4f292ac425ff302808c76d93989524b25074ea77e5794edadf72e0328bc6.{"supported_capabilities_new":"[{\"name\":\"SUPPORTED_SDK_VERSIONS\",\"value\":\"45.0,46.0,47.0,48.0,49.0,50.0,51.0,52.0,53.0,54.0,55.0,56.0,57.0,58.0,59.0,60.0,61.0,62.0,63.0,64.0,65.0,66.0,67.0,68.0,69.0,70.0,71.0,72.0,73.0,74.0,75.0,76.0,77.0,78.0,79.0,80.0,81.0\"},{\"name\":\"FACE_TRACKER_VERSION\",\"value\":\"14\"},{\"name\":\"COMPRESSION\",\"value\":\"ETC2_COMPRESSION\"},{\"name\":\"world_tracker\",\"value\":\"world_tracker_enabled\"}]","source":"feed_timeline","_csrftoken":"mmdoMLXFQEzt2w5xLbfm0FTs7gIgqAlc","_uid":"3149016955","_uuid":"f87b5e9f-0663-42f8-9213-ec72cb49c961","user_ids":["283072796","10680697486","25529439127","218694379","3149016955","33167882"]}&ig_sig_key_version=4
-            # check_flow.append(self.get_reels_media())
+            # /api/v1/feed/reels_media/
+            check_flow.append(self.get_reels_media())
 
-            # TODO fix no token provided
+            # /api/v1/push/register/ (device_type=android_mqtt + is_main_push_channel=true + device_sub_type=2 + device_toke + _csrftoken + guid + _uuid + users + family_device_id)
             # device_type=android_mqtt&is_main_push_channel=true&device_sub_type=2&device_token={"k":"eyJwbiI6ImNvbS5pbnN0YWdyYW0uYW5kcm9pZCIsImRpIjoiNzhlNGMxNmQtN2YzNC00NDlkLTg4OWMtMTAwZDg5OTU0NDJhIiwiYWkiOjU2NzMxMDIwMzQxNTA1MiwiY2siOiIxNjgzNTY3Mzg0NjQyOTQifQ==","v":0,"t":"fbns-b64"}&_csrftoken=mmdoMLXFQEzt2w5xLbfm0FTs7gIgqAlc&guid=f87b5e9f-0663-42f8-9213-ec72cb49c961&_uuid=f87b5e9f-0663-42f8-9213-ec72cb49c961&users=3149016955&family_device_id=9d9aa0f0-40fe-4524-a920-9910f45ba18d
-            # check_flow.append(self.push_register())
+            check_flow.append(self.push_register())
 
-            # TODO fix invalid reel id list
-            # signed_body=0afe4f292ac425ff302808c76d93989524b25074ea77e5794edadf72e0328bc6.{"supported_capabilities_new":"[{\"name\":\"SUPPORTED_SDK_VERSIONS\",\"value\":\"45.0,46.0,47.0,48.0,49.0,50.0,51.0,52.0,53.0,54.0,55.0,56.0,57.0,58.0,59.0,60.0,61.0,62.0,63.0,64.0,65.0,66.0,67.0,68.0,69.0,70.0,71.0,72.0,73.0,74.0,75.0,76.0,77.0,78.0,79.0,80.0,81.0\"},{\"name\":\"FACE_TRACKER_VERSION\",\"value\":\"14\"},{\"name\":\"COMPRESSION\",\"value\":\"ETC2_COMPRESSION\"},{\"name\":\"world_tracker\",\"value\":\"world_tracker_enabled\"}]","source":"feed_timeline","_csrftoken":"mmdoMLXFQEzt2w5xLbfm0FTs7gIgqAlc","_uid":"3149016955","_uuid":"f87b5e9f-0663-42f8-9213-ec72cb49c961","user_ids":["283072796","10680697486","25529439127","218694379","3149016955","33167882"]}&ig_sig_key_version=4
-            # check_flow.append(self.get_reels_media())
+            # /api/v1/feed/reels_media/
+            check_flow.append(self.get_reels_media())
 
+            # /api/v1/media/blocked/
+            check_flow.append(self.media_blocked())
+
+            # /api/v1/news/inbox/
+            check_flow.append(self.get_news_inbox())
+
+            # /api/v1/loom/fetch_config/
             check_flow.append(self.get_loom_fetch_config())
 
-            # getBlockedMedia() ...
-            check_flow.append(self.explore(True))
-
-            check_flow.append(self.get_recent_activity())
+            # /api/v1/scores/bootstrap/users/?surfaces=%5B%22autocomplete_user_list%22%2C%22coefficient_besties_list_ranking%22%2C%22coefficient_rank_recipient_user_suggestion%22%2C%22coefficient_ios_section_test_bootstrap_ranking%22%2C%22coefficient_direct_recipients_ranking_variant_2%22%5D
             check_flow.append(self.get_scores_bootstrap())
-            check_flow.append(self.get_request_country())
 
-            check_flow.append(self.get_linked_accounts())
-            check_flow.append(self.get_business_branded_content())
+            # /api/v1/business/eligibility/get_monetization_products_eligibility_data/?product_types=branded_content
             check_flow.append(self.get_monetization_products_eligibility_data())
 
-            # TODO FIX request error 405
-            # GET /api/v1/qp/get_cooldowns/?signed_body=a7c6081ee2ae5b41a1475f83b6dbc8f1130c67d472f69748221468e1621823b5.%7B%7D&ig_sig_key_version=4
-            # check_flow.append(self.get_cooldowns())
+            # /api/v1/business/branded_content/should_require_professional_account/
+            check_flow.append(self.get_business_branded_content())
 
-            # TODO FIX missing param
-            # signed_body=54ca279b6c0daf5f59ce9ba2634e2dad5c46198b5623250e636ee99141b27cae.{"_csrftoken":"mmdoMLXFQEzt2w5xLbfm0FTs7gIgqAlc","_uid":"3149016955","_uuid":"f87b5e9f-0663-42f8-9213-ec72cb49c961"}&ig_sig_key_version=4
-            # check_flow.append(self.log_resurrect_attribution())
+            # /api/v1/linked_accounts/get_linkage_status/
+            check_flow.append(self.get_linked_accounts())
 
+            # /api/v1/locations/request_country/
+            check_flow.append(self.get_request_country())
+
+            # /api/v1/qp/get_cooldowns/?signed_body=a7c6081ee2ae5b41a1475f83b6dbc8f1130c67d472f69748221468e1621823b5.%7B%7D&ig_sig_key_version=4
+            check_flow.append(self.get_cooldowns())
+
+            # /api/v1/users/arlink_download_info/?version_override=2.2.1
             check_flow.append(self.arlink_download_info())
+
+            # push register
+            check_flow.append(self.push_register())
+
+            # /api/v1/users/self.user_id/info/
             check_flow.append(self.get_username_info(self.user_id))
 
-            # TODO add accounts/process_contact_point_signals/
-            # signed_body=2f3d07b0483aefae12d54abf5572d8499b8c878d5939f072522fcf3954cf313c.{"phone_id":"9d9aa0f0-40fe-4524-a920-9910f45ba18d","_csrftoken":"mmdoMLXFQEzt2w5xLbfm0FTs7gIgqAlc","_uid":"3149016955","device_id":"f87b5e9f-0663-42f8-9213-ec72cb49c961","_uuid":"f87b5e9f-0663-42f8-9213-ec72cb49c961","google_tokens":"[]"}&ig_sig_key_version=4
-            # check_flow.append(self.process_contact_point_signals())
+            # /api/v1/notifications/store_client_push_permissions/
+            check_flow.append(self.log_resurrect_attribution())
+
+            # /api/v1/accounts/process_contact_point_signals
+            check_flow.append(self.process_contact_point_signals())
+
+            # creatives/write_supported_capabilities
+            check_flow.append(self.write_supported_capabilities())
 
             check_flow.append(self.get_presence())
-            check_flow.append(self.get_inbox_v2())
-
-            # TODO add store_client_push_permissions
-            # enabled=true&_csrftoken=mmdoMLXFQEzt2w5xLbfm0FTs7gIgqAlc&device_id=f87b5e9f-0663-42f8-9213-ec72cb49c961&_uuid=f87b5e9f-0663-42f8-9213-ec72cb49c961
-            # check_flow.append(self.store_client_push_permissions())
-
-            check_flow.append(self.get_inbox_v2())
-
-            # TODO add write_supported_capabilities
-            # signed_body=2a39531abaca22a8cfd87f13633ca08442dc1dfd1af9a15a456eb134c7ecb383.{"supported_capabilities_new":"[{\"name\":\"SUPPORTED_SDK_VERSIONS\",\"value\":\"45.0,46.0,47.0,48.0,49.0,50.0,51.0,52.0,53.0,54.0,55.0,56.0,57.0,58.0,59.0,60.0,61.0,62.0,63.0,64.0,65.0,66.0,67.0,68.0,69.0,70.0,71.0,72.0,73.0,74.0,75.0,76.0,77.0,78.0,79.0,80.0,81.0\"},{\"name\":\"FACE_TRACKER_VERSION\",\"value\":\"14\"},{\"name\":\"COMPRESSION\",\"value\":\"ETC2_COMPRESSION\"},{\"name\":\"world_tracker\",\"value\":\"world_tracker_enabled\"}]","_csrftoken":"mmdoMLXFQEzt2w5xLbfm0FTs7gIgqAlc","_uid":"3149016955","_uuid":"f87b5e9f-0663-42f8-9213-ec72cb49c961"}&ig_sig_key_version=4
-            # check_flow.append(self.write_supported_capabilities())
-
-            # TODO add topical_explore
-            # /api/v1/discover/topical_explore/?is_prefetch=true&omit_cover_media=true&use_sectional_payload=true&timezone_offset=0&session_id=0f7bf930-4cef-4fde-8ce9-86aea8a7d901&include_fixed_destinations=true HTTP/1.1
-            # check_flow.append(self.topical_explore())
-
-            # TODO add notifications/badge
-            # phone_id=9d9aa0f0-40fe-4524-a920-9910f45ba18d&_csrftoken=mmdoMLXFQEzt2w5xLbfm0FTs7gIgqAlc&user_ids=3149016955&device_id=f87b5e9f-0663-42f8-9213-ec72cb49c961&_uuid=f87b5e9f-0663-42f8-9213-ec72cb49c961
-            # check_flow.append(self.notifications_badge())
-
+            check_flow.append(self.get_direct_v2_inbox())
+            check_flow.append(self.get_direct_v2_inbox2())
+            check_flow.append(self.topical_explore())
+            check_flow.append(self.notification_badge())
             check_flow.append(self.batch_fetch())
 
             # TODO add facebook_ota

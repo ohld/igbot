@@ -255,21 +255,20 @@ class API(object):
                         self.set_device()
                     if generate_all_uuids is True:
                         self.generate_all_uuids()
-
             self.pre_login_flow()
             data = json.dumps(
                 {
                     "jazoest": "22264",
-                    "country_codes": "1",
-                    "google_tokens": "[]",
-                    "adid": "",
-                    # "enc_password:" "#PWD_INSTAGRAM:4:TIME:ENCRYPTED_PASSWORD"
+                    "country_codes": '[{"country_code":"1","source":["default"]}]',
                     "phone_id": self.phone_id,
                     "_csrftoken": self.token,
                     "username": self.username,
+                    "adid": "",
                     "guid": self.uuid,
                     "device_id": self.device_id,
+                    "google_tokens": "[]",
                     "password": self.password,
+                    # "enc_password:" "#PWD_INSTAGRAM:4:TIME:ENCRYPTED_PASSWORD"
                     "login_attempt_count": "0",
                 }
             )
@@ -730,22 +729,20 @@ class API(object):
             "X-CM-Latency": str(random.randint(1, 5)),
         }
         data = {
-            "_csrftoken": self.token,
-            "_uuid": self.uuid,
-            "is_prefetch": 0,
+            "feed_view_info": "",
             "phone_id": self.phone_id,
-            "max_ID": "",  # TODO fill this
-            "reason": "pagination",
-            "request_id": "",  # TODO fill this
-            "device_id": self.uuid,
-            "session_id": self.client_session_id,
             "battery_level": random.randint(25, 100),
-            "is_charging": random.randint(0, 1),
-            "will_sound_on": random.randint(0, 1),
-            "bloks_versioning_id": "",  # TODO fill this
             "timezone_offset": datetime.datetime.now(pytz.timezone("CET")).strftime(
                 "%z"
             ),
+            "_csrftoken": self.token,
+            "device_id": self.uuid,
+            "request_id": self.device_id,
+            "_uuid": self.uuid,
+            "is_charging": random.randint(0, 1),
+            "will_sound_on": random.randint(0, 1),
+            "session_id": self.client_session_id,
+            "bloks_versioning_id": "e538d4591f238824118bfcb9528c8d005f2ea3becd947a3973c030ac971bb88e",
         }
 
         if "is_pull_to_refresh" in options:
@@ -754,10 +751,6 @@ class API(object):
         elif "is_pull_to_refresh" not in options:
             data["reason"] = "cold_start_fetch"
             data["is_pull_to_refresh"] = "0"
-
-        # unseen_posts
-        # feed_view_info
-        # seen_posts
 
         if "push_disabled" in options:
             data["push_disabled"] = "true"
@@ -1088,6 +1081,9 @@ class API(object):
 
     def get_self_username_info(self):
         return self.get_username_info(self.user_id)
+
+    def get_news_inbox(self):
+        return self.send_request("news/inbox/")
 
     def get_recent_activity(self):
         return self.send_request("news/inbox/?limited_activity=true&show_su=true")
@@ -1619,15 +1615,19 @@ class API(object):
             "is_main_push_channel": "true",
             "device_sub_type": "2",
             # TODO find out what &device_token={"k":"eyJwbiI6ImNvbS5pbnN0YWdyYW0uYW5kcm9pZCIsImRpIjoiNzhlNGMxNmQtN2YzNC00NDlkLTg4OWMtMTAwZDg5OTU0NDJhIiwiYWkiOjU2NzMxMDIwMzQxNTA1MiwiY2siOiIxNjgzNTY3Mzg0NjQyOTQifQ==","v":0,"t":"fbns-b64"} is
+            "device_token": "",
             "_csrftoken": self.token,
             "guid": self.uuid,
             "_uuid": self.uuid,
             "users": self.user_id,
-            # TODO find out what familiy_device_id is
-            # "familiy_device_id": "9d9aa0f0-40fe-4524-a920-9910f45ba18d"
+            "familiy_device_id": "9d9aa0f0-40fe-4524-a920-9910f45ba18d",
         }
         data = json.dumps(data)
         return self.send_request("push/register/", data)
+
+    def media_blocked(self):
+        url = "media/blocked/"
+        return self.send_request(url)
 
     def get_users_reel(self, user_ids):
         """
@@ -1775,11 +1775,11 @@ class API(object):
         )
 
     def get_cooldowns(self):
-        # TODO Request returns 405 error fix this
-        data = self.json_data()
-        data = self.generate_signature(data)
-        print(data)
-        return self.send_request("qp/get_cooldowns/", data)
+        body = self.generate_signature()
+        url = ("qp/get_cooldowns/?signed_body={}&ig_sig_key_version={}").format(
+            body, config.SIG_KEY_VERSION
+        )
+        return self.send_request(url)
 
     def log_resurrect_attribution(self):
         data = {
@@ -1790,8 +1790,67 @@ class API(object):
         data = json.dumps(data)
         return self.send_request("attribution/log_resurrect_attribution/", data)
 
+    def store_client_push_permissions(self):
+        data = {
+            "enabled": "true",
+            "_csrftoken": self.token,
+            "device_id": self.device_id,
+            "_uuid": self.uuid,
+        }
+        data = json.dumps(data)
+        return self.send_request("attribution/log_resurrect_attribution/", data)
+
+    def process_contact_point_signals(self):
+        data = {
+            "phone_id": self.phone_id,
+            "_csrftoken": self.token,
+            "_uid": self.user_id,
+            "device_id": self.device_id,
+            "_uuid": self.uuid,
+            "google_tokens": "",
+        }
+        data = json.dumps(data)
+        return self.send_request("accounts/process_contact_point_signals/", data)
+
+    def write_supported_capabilities(self):
+        data = {
+            "supported_capabilities_new": config.SUPPORTED_CAPABILITIES,
+            "_csrftoken": self.token,
+            "_uid": self.user_id,
+            "_uuid": self.uuid,
+        }
+        data = json.dumps(data)
+        return self.send_request("creatives/write_supported_capabilities/", data)
+
     def arlink_download_info(self):
         return self.send_request("users/arlink_download_info/?version_override=2.2.1")
+
+    def get_direct_v2_inbox(self):
+        return self.send_request(
+            "direct_v2/inbox/?visual_message_return_type=unseen&thread_message_limit=10&persistentBadging=true&limit=20"
+        )
+
+    def get_direct_v2_inbox2(self):
+        return self.send_request(
+            "direct_v2/inbox/?visual_message_return_type=unseen&persistentBadging=true&limit=0"
+        )
+
+    def topical_explore(self):
+        url = (
+            "discover/topical_explore/?is_prefetch=true&omit_cover_media=true&use_sectional_payload=true&timezone_offset=0&session_id={}&include_fixed_destinations=true"
+        ).format(self.client_session_id)
+        return self.send_request(url)
+
+    def notification_badge(self):
+        data = {
+            "phone_id": self.phone_id,
+            "_csrftoken": self.token,
+            "user_ids": self.user_id,
+            "device_id": self.device_id,
+            "_uuid": self.uuid,
+        }
+        data = json.dumps(data)
+        return self.send_request("notifications/badge/", data)
 
     # ====== DIRECT METHODS ====== #
     def get_inbox_v2(self):
