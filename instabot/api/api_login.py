@@ -32,11 +32,10 @@ def sync_launcher(self, login=False):
     data = {
         "id": self.uuid,
         "server_config_retrieval": "1",
-        "experiments": config.LAUNCHER_CONFIGS,
     }
     if login is False:
-        data["_uuid"] = self.uuid
         data["_uid"] = self.user_id
+        data["_uuid"] = self.uuid
         data["_csrftoken"] = self.token
     data = json.dumps(data)
     return self.send_request("launcher/sync/", data, login=login)
@@ -51,47 +50,180 @@ def sync_user_features(self):
     return self.send_request("qe/sync/", data, headers={"X-DEVICE-ID": self.uuid})
 
 
+def get_prefill_candidates(self):
+    data = {
+        "android_device_id": self.device_id,
+        "phone_id": self.phone_id,
+        "usages": '["account_recovery_omnibox"]',
+        "_csrftoken": self.token,
+        "device_id": self.device_id,
+    }
+    data = json.dumps(data)
+    return self.send_request("accounts/get_prefill_candidates/", data)
+
+
+def get_account_family(self):
+    return self.send_request("multiple_accounts/get_account_family/")
+
+
+def get_zr_token_result(self):
+    url = (
+        "zr/token/result/?device_id={rank_token}"
+        "&token_hash=&custom_device_id={custom_device_id}&fetch_reason=token_expired"
+    )
+    url = url.format(rank_token=self.device_id, custom_device_id=self.device_id)
+    return self.send_request(url)
+
+
+def banyan(self):
+    url = "banyan/banyan/?views=['story_share_sheet','threads_people_picker','group_stories_share_sheet','reshare_share_sheet']"
+    return self.send_request(url)
+
+
+def igtv_browse_feed(self):
+    url = "igtv/browse_feed/?prefetch=1"
+    return self.send_request(url)
+
+
+def creatives_ar_class(self):
+    data = {
+        "_csrftoken": self.token,
+        "_uuid": self.uuid,
+    }
+    data = json.dumps(data)
+    return self.send_request("creatives/ar_class/", data)
+
+
 # ====== LOGIN/PRE FLOWS METHODS ====== #
 
 
 def pre_login_flow(self):
-    self.logger.info("PRE-LOGIN FLOW!... ")
+    self.logger.info("Not yet logged in starting: PRE-LOGIN FLOW!")
 
-    self.read_msisdn_header("default")
-    self.sync_launcher(True)
-    self.sync_device_features(True)
-    self.log_attribution()
+    # /api/v1/accounts/contact_point_prefill/
     self.set_contact_point_prefill("prefill")
 
+    # /api/v1/qe/sync (server_config_retrieval)
+    self.sync_device_features()
 
+    # /api/v1/launcher/sync/ (server_config_retrieval)
+    self.sync_launcher(True)
+
+    # /api/v1/accounts/get_prefill_candidates/
+    self.get_prefill_candidates()
+
+    # /api/v1/accounts/contact_point_prefill/
+    self.set_contact_point_prefill("prefill")
+
+    # /api/v1/launcher/sync/ (server_config_retrieval)
+    self.sync_launcher(True)
+
+    # /api/v1/qe/sync/ (server_config_retrieval)
+    self.sync_device_features()
+
+
+# DO NOT MOVE ANY OF THE ENDPOINTS THEYRE IN THE CORRECT ORDER
 def login_flow(self, just_logged_in=False, app_refresh_interval=1800):
     self.logger.info("LOGIN FLOW! Just logged-in: {}".format(just_logged_in))
     check_flow = []
     if just_logged_in:
         try:
             # SYNC
+            # /api/v1/qe/sync/ (server_config_retrieval)
+            check_flow.append(self.sync_device_features())
+
+            # /api/v1/launcher/sync/ (server_config_retrieval)
             check_flow.append(self.sync_launcher(False))
-            check_flow.append(self.sync_user_features())
-            # Update feed and timeline
-            check_flow.append(self.get_timeline_feed())
+
+            # /api/v1/zr/token/result/?device_id=android-f14b9731e4869eb&token_hash=&custom_device_id=f3119c98-5663-4c47-95b5-a63b140a2b62&fetch_reason=token_expired
+            check_flow.append(self.get_zr_token_result())
+
+            # /api/v1/multiple_accounts/get_account_family/
+            check_flow.append(self.get_account_family())
+
+            # /api/v1/qe/sync/ (server_config_retrieval)
+            check_flow.append(self.sync_device_features())
+
+            # /api/v1/banyan/banyan/?views=%5B%22story_share_sheet%22%2C%22threads_people_picker%22%2C%22group_stories_share_sheet%22%2C%22reshare_share_sheet%22%5D
+            check_flow.append(self.banyan())
+
+            # /api/v1/igtv/browse_feed/?prefetch=1
+            check_flow.append(self.igtv_browse_feed())
+
+            # /api/v1/creatives/ar_class/ (_csrftoken also add _uuid)
+            check_flow.append(self.creatives_ar_class())
+
+            # /api/v1/feed/reels_tray/ (supported_capabilities_new + reason=cold_start + _csrftoken + _uuid)
             check_flow.append(self.get_reels_tray_feed(reason="cold_start"))
-            check_flow.append(self.get_suggested_searches("users"))
-            # getRecentSearches() ...
-            check_flow.append(self.get_suggested_searches("blended"))
-            # DM-Update
-            check_flow.append(self.get_ranked_recipients("reshare", True))
-            check_flow.append(self.get_ranked_recipients("save", True))
-            check_flow.append(self.get_inbox_v2())
-            check_flow.append(self.get_presence())
-            check_flow.append(self.get_recent_activity())
-            # Config and other stuffs
+
+            # /api/v1/feed/timeline/ (feed_view_info + phone_id + battery_level + timezone_offset + _csrftoken + device_id + request_id + is_pull_to_refresh=0 + _uuid + is_charging=1 + will_sound_on=0 + seesion_id + bloks_versioning_id)
+            check_flow.append(self.get_timeline_feed())
+
+            # /api/v1/feed/reels_media/
+            check_flow.append(self.get_reels_media())
+
+            # /api/v1/push/register/ (device_type=android_mqtt + is_main_push_channel=true + device_sub_type=2 + device_toke + _csrftoken + guid + _uuid + users + family_device_id)
+            # device_type=android_mqtt&is_main_push_channel=true&device_sub_type=2&device_token={"k":"eyJwbiI6ImNvbS5pbnN0YWdyYW0uYW5kcm9pZCIsImRpIjoiNzhlNGMxNmQtN2YzNC00NDlkLTg4OWMtMTAwZDg5OTU0NDJhIiwiYWkiOjU2NzMxMDIwMzQxNTA1MiwiY2siOiIxNjgzNTY3Mzg0NjQyOTQifQ==","v":0,"t":"fbns-b64"}&_csrftoken=mmdoMLXFQEzt2w5xLbfm0FTs7gIgqAlc&guid=f87b5e9f-0663-42f8-9213-ec72cb49c961&_uuid=f87b5e9f-0663-42f8-9213-ec72cb49c961&users=3149016955&family_device_id=9d9aa0f0-40fe-4524-a920-9910f45ba18d
+            check_flow.append(self.push_register())
+
+            # /api/v1/feed/reels_media/
+            check_flow.append(self.get_reels_media())
+
+            # /api/v1/media/blocked/
+            check_flow.append(self.media_blocked())
+
+            # /api/v1/news/inbox/
+            check_flow.append(self.get_news_inbox())
+
+            # /api/v1/loom/fetch_config/
             check_flow.append(self.get_loom_fetch_config())
-            check_flow.append(self.get_profile_notice())
+
+            # /api/v1/scores/bootstrap/users/?surfaces=%5B%22autocomplete_user_list%22%2C%22coefficient_besties_list_ranking%22%2C%22coefficient_rank_recipient_user_suggestion%22%2C%22coefficient_ios_section_test_bootstrap_ranking%22%2C%22coefficient_direct_recipients_ranking_variant_2%22%5D
+            check_flow.append(self.get_scores_bootstrap())
+
+            # /api/v1/business/eligibility/get_monetization_products_eligibility_data/?product_types=branded_content
+            check_flow.append(self.get_monetization_products_eligibility_data())
+
+            # /api/v1/business/branded_content/should_require_professional_account/
+            check_flow.append(self.get_business_branded_content())
+
+            # /api/v1/linked_accounts/get_linkage_status/
+            check_flow.append(self.get_linked_accounts())
+
+            # /api/v1/locations/request_country/
+            check_flow.append(self.get_request_country())
+
+            # /api/v1/qp/get_cooldowns/?signed_body=a7c6081ee2ae5b41a1475f83b6dbc8f1130c67d472f69748221468e1621823b5.%7B%7D&ig_sig_key_version=4
+            check_flow.append(self.get_cooldowns())
+
+            # /api/v1/users/arlink_download_info/?version_override=2.2.1
+            check_flow.append(self.arlink_download_info())
+
+            # push register
+            check_flow.append(self.push_register())
+
+            # /api/v1/users/self.user_id/info/
+            check_flow.append(self.get_username_info(self.user_id))
+
+            # /api/v1/notifications/store_client_push_permissions/
+            check_flow.append(self.log_resurrect_attribution())
+
+            # /api/v1/accounts/process_contact_point_signals
+            check_flow.append(self.process_contact_point_signals())
+
+            # creatives/write_supported_capabilities
+            check_flow.append(self.write_supported_capabilities())
+
+            check_flow.append(self.get_presence())
+            check_flow.append(self.get_direct_v2_inbox())
+            check_flow.append(self.get_direct_v2_inbox2())
+            check_flow.append(self.topical_explore())
+            check_flow.append(self.notification_badge())
             check_flow.append(self.batch_fetch())
-            # getBlockedMedia() ...
-            check_flow.append(self.explore(True))
-            # getQPFetch() ...
-            # getFacebookOTA() ...
+
+            # TODO add facebook_ota
+            # /api/v1/facebook_ota/?fields=update%7Bdownload_uri%2Cdownload_uri_delta_base%2Cversion_code_delta_base%2Cdownload_uri_delta%2Cfallback_to_full_update%2Cfile_size_delta%2Cversion_code%2Cpublished_date%2Cfile_size%2Cota_bundle_type%2Cresources_checksum%2Callowed_networks%2Crelease_id%7D&custom_user_id=3149016955&signed_body=656adcfd879d775324e9c1668534f80a999801c7780f16cc720d7970941195de.&ig_sig_key_version=4&version_code=195435566&version_name=126.0.0.25.121&custom_app_id=124024574287414&custom_device_id=f87b5e9f-0663-42f8-9213-ec72cb49c961 HTTP/1.1
+            # check_flow.append(self.facebook_ota())
         except Exception as e:
             self.logger.error(
                 "Exception raised: {}\n{}".format(e, traceback.format_exc())

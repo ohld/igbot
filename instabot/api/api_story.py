@@ -54,8 +54,6 @@ def upload_story_photo(self, photo, upload_id=None):
     m = MultipartEncoder(data, boundary=self.uuid)
     self.session.headers.update(
         {
-            "Cookie2": "$Version=1",
-            "Accept-Language": "en-US",
             "Accept-Encoding": "gzip, deflate",
             "Content-type": m.content_type,
             "Connection": "close",

@@ -153,7 +153,7 @@ class Bot(object):
         max_likes_to_like=random.randint(50, 100),
         min_likes_to_like=random.randint(50, 100),
         max_messages_per_day=random.randint(50, 100),
-        filter_users=True,
+        filter_users=False,
         filter_private_users=True,
         filter_users_without_profile_photo=False,
         filter_previously_followed=False,

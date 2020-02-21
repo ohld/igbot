@@ -31,6 +31,10 @@ from .api_login import (
     sync_device_features,
     sync_launcher,
     sync_user_features,
+    get_prefill_candidates,
+    get_account_family,
+    get_zr_token_result,
+    banyan,
 )
 from .api_photo import configure_photo, download_photo, upload_photo
 from .api_story import configure_story, download_story, upload_story_photo
@@ -123,14 +127,7 @@ class API(object):
             self.generate_all_uuids()
 
     def set_contact_point_prefill(self, usage="prefill"):
-        data = json.dumps(
-            {
-                "id": self.uuid,
-                "phone_id": self.phone_id,
-                "_csrftoken": self.token,
-                "usage": usage,
-            }
-        )
+        data = json.dumps({"phone_id": self.phone_id, "usage": usage})
         return self.send_request("accounts/contact_point_prefill/", data, login=True)
 
     def get_suggested_searches(self, _type="users"):
@@ -160,6 +157,18 @@ class API(object):
 
     def sync_user_features(self):
         return sync_user_features(self)
+
+    def get_prefill_candidates(self):
+        return get_prefill_candidates(self)
+
+    def get_account_family(self):
+        return get_account_family(self)
+
+    def get_zr_token_result(self):
+        return get_zr_token_result(self)
+
+    def banyan(self):
+        return banyan(self)
 
     def pre_login_flow(self):
         return pre_login_flow(self)
@@ -246,16 +255,20 @@ class API(object):
                         self.set_device()
                     if generate_all_uuids is True:
                         self.generate_all_uuids()
-
             self.pre_login_flow()
             data = json.dumps(
                 {
+                    "jazoest": "22264",
+                    "country_codes": '[{"country_code":"1","source":["default"]}]',
                     "phone_id": self.phone_id,
                     "_csrftoken": self.token,
                     "username": self.username,
+                    "adid": "",
                     "guid": self.uuid,
                     "device_id": self.device_id,
+                    "google_tokens": "[]",
                     "password": self.password,
+                    # "enc_password:" "#PWD_INSTAGRAM:4:TIME:ENCRYPTED_PASSWORD"
                     "login_attempt_count": "0",
                 }
             )
@@ -268,7 +281,7 @@ class API(object):
             elif (
                 self.last_json.get("error_type", "") == "checkpoint_challenge_required"
             ):
-                self.logger.info("Checkpoint challenge required...")
+                # self.logger.info("Checkpoint challenge required...")
                 if ask_for_code is True:
                     solved = self.solve_challenge()
                     if solved:
@@ -276,7 +289,9 @@ class API(object):
                         self.login_flow(True)
                         return True
                     else:
-                        self.logger.error("Failed to login")
+                        self.logger.error(
+                            "Failed to login, unable to solve the challenge"
+                        )
                         self.save_failed_login()
                         return False
                 else:
@@ -291,8 +306,11 @@ class API(object):
                     self.save_failed_login()
                     return False
             else:
-                self.logger.error("Failed to login!")
+                self.logger.error(
+                    "Failed to login go to instagram and change your password"
+                )
                 self.save_failed_login()
+                delete_credentials()
                 return False
 
     def two_factor_auth(self):
@@ -455,15 +473,16 @@ class API(object):
                     )  # Only `send_direct_item` doesn't need a signature
                     if extra_sig is not None and extra_sig != []:
                         post += "&".join(extra_sig)
+                time.sleep(random.randint(1, 2))
                 response = self.session.post(config.API_URL + endpoint, data=post)
             else:  # GET
+                time.sleep(random.randint(1, 2))
                 response = self.session.get(config.API_URL + endpoint)
         except Exception as e:
             self.logger.warning(str(e))
             return False
 
         self.last_response = response
-        time.sleep(random.randint(1, 2))
         if post is not None:
             self.logger.debug(
                 "POST to endpoint: {} returned response: {}".format(endpoint, response)
@@ -518,7 +537,15 @@ class API(object):
             if response.status_code == 429:
                 # if we come to this error, add 5 minutes of sleep everytime we hit the 429 error (aka soft bann) keep increasing untill we are unbanned
                 if timeout_minutes is None:
-                    timeout_minutes = 1
+                    timeout_minutes = 0
+                if timeout_minutes == 15:
+                    # If we have been waiting for more than 15 minutes, lets restart.
+                    self.logger.error(
+                        "Since we hit 30 minutes of time outs, we have to restart. Removing session and cookies. Please relogin."
+                    )
+                    delete_credentials()
+                    time.sleep(30)
+                    sys.exit()
                 timeout_minutes += 5
                 self.logger.warning(
                     "That means 'too many requests'. I'll go to sleep "
@@ -537,7 +564,7 @@ class API(object):
             if response.status_code == 400:
                 response_data = json.loads(response.text)
                 if response_data.get("challenge_required"):
-                    self.logger.warning(
+                    self.logger.error(
                         "Failed to login go to instagram and change your password"
                     )
                     delete_credentials()
@@ -695,21 +722,27 @@ class API(object):
         return self.send_request("qp/batch_fetch/", data)
 
     def get_timeline_feed(self, options=[]):
-        headers = {"X-Ads-Opt-Out": "0", "X-DEVICE-ID": self.uuid}
+        headers = {
+            "X-Ads-Opt-Out": "0",
+            "X-DEVICE-ID": self.uuid,
+            "X-CM-Bandwidth-KBPS": str(random.randint(2000, 5000)),
+            "X-CM-Latency": str(random.randint(1, 5)),
+        }
         data = {
-            "_csrftoken": self.token,
-            "_uuid": self.uuid,
-            "is_prefetch": 0,
+            "feed_view_info": "",
             "phone_id": self.phone_id,
-            "device_id": self.uuid,
-            "client_session_id": self.client_session_id,
             "battery_level": random.randint(25, 100),
-            "is_charging": random.randint(0, 1),
-            "will_sound_on": random.randint(0, 1),
-            "is_on_screen": True,
             "timezone_offset": datetime.datetime.now(pytz.timezone("CET")).strftime(
                 "%z"
             ),
+            "_csrftoken": self.token,
+            "device_id": self.uuid,
+            "request_id": self.device_id,
+            "_uuid": self.uuid,
+            "is_charging": random.randint(0, 1),
+            "will_sound_on": random.randint(0, 1),
+            "session_id": self.client_session_id,
+            "bloks_versioning_id": "e538d4591f238824118bfcb9528c8d005f2ea3becd947a3973c030ac971bb88e",
         }
 
         if "is_pull_to_refresh" in options:
@@ -718,10 +751,6 @@ class API(object):
         elif "is_pull_to_refresh" not in options:
             data["reason"] = "cold_start_fetch"
             data["is_pull_to_refresh"] = "0"
-
-        # unseen_posts
-        # feed_view_info
-        # seen_posts
 
         if "push_disabled" in options:
             data["push_disabled"] = "true"
@@ -979,7 +1008,9 @@ class API(object):
 
         data = self.action_data(
             {
+                "inventory_source": "media_or_ad",
                 "media_id": media_id,
+                "radio_type": "wifi-none",
                 "container_module": container_module,
                 "feed_position": str(feed_position),
                 "is_carousel_bumped_post": "false",
@@ -1004,6 +1035,9 @@ class API(object):
             endpoint="media/{media_id}/like/".format(media_id=media_id),
             post=json_data,
             extra_sig=["d={}".format(double_tap)],
+            headers={
+                "X-IG-WWW-Claim": "hmac.AR1ETv6FsubYON5DwNj_0CLNmbW7hSNR1yIMeXuhHJORN4n7"
+            },
         )
 
     def unlike(self, media_id):
@@ -1047,6 +1081,9 @@ class API(object):
 
     def get_self_username_info(self):
         return self.get_username_info(self.user_id)
+
+    def get_news_inbox(self):
+        return self.send_request("news/inbox/")
 
     def get_recent_activity(self):
         return self.send_request("news/inbox/?limited_activity=true&show_su=true")
@@ -1185,6 +1222,10 @@ class API(object):
         url = "friendships/show/{user_id}/".format(user_id=user_id)
         return self.send_request(url, data)
 
+    def all_friendship(self, user_id):
+        url = "friendships/show_many"
+        return self.send_request(url)
+
     def mute_user(self, user, mute_story=False, mute_posts=False):
         data_dict = {}
         if mute_posts:
@@ -1274,7 +1315,7 @@ class API(object):
             + "."
             + urllib.parse.quote(data)
         )
-        signature = "ig_sig_key_version={sig_key}&signed_body={body}"
+        signature = "signed_body={body}&ig_sig_key_version={sig_key}"
         return signature.format(sig_key=config.SIG_KEY_VERSION, body=body)
 
     @staticmethod
@@ -1556,6 +1597,38 @@ class API(object):
         data = json.dumps(data)
         return self.send_request("feed/reels_tray/", data)
 
+    def get_reels_media(self):
+        data = {
+            "supported_capabilities_new": config.SUPPORTED_CAPABILITIES,
+            "source": "feed_timeline",
+            "_csrftoken": self.token,
+            "_uuid": self.uuid,
+            "_uid": self.user_id,
+            "user_ids": self.user_id,
+        }
+        data = json.dumps(data)
+        return self.send_request("feed/reels_media/", data)
+
+    def push_register(self):
+        data = {
+            "device_type": "android_mqtt",
+            "is_main_push_channel": "true",
+            "device_sub_type": "2",
+            # TODO find out what &device_token={"k":"eyJwbiI6ImNvbS5pbnN0YWdyYW0uYW5kcm9pZCIsImRpIjoiNzhlNGMxNmQtN2YzNC00NDlkLTg4OWMtMTAwZDg5OTU0NDJhIiwiYWkiOjU2NzMxMDIwMzQxNTA1MiwiY2siOiIxNjgzNTY3Mzg0NjQyOTQifQ==","v":0,"t":"fbns-b64"} is
+            "device_token": "",
+            "_csrftoken": self.token,
+            "guid": self.uuid,
+            "_uuid": self.uuid,
+            "users": self.user_id,
+            "familiy_device_id": "9d9aa0f0-40fe-4524-a920-9910f45ba18d",
+        }
+        data = json.dumps(data)
+        return self.send_request("push/register/", data)
+
+    def media_blocked(self):
+        url = "media/blocked/"
+        return self.send_request(url)
+
     def get_users_reel(self, user_ids):
         """
             Input: user_ids - a list of user_id
@@ -1682,19 +1755,121 @@ class API(object):
     def get_loom_fetch_config(self):
         return self.send_request("loom/fetch_config/")
 
+    def get_request_country(self):
+        return self.send_request("locations/request_country/")
+
+    def get_linked_accounts(self):
+        return self.send_request("linked_accounts/get_linkage_status/")
+
     def get_profile_notice(self):
         return self.send_request("users/profile_notice/")
 
+    def get_business_branded_content(self):
+        return self.send_request(
+            "business/branded_content/should_require_professional_account/"
+        )
+
+    def get_monetization_products_eligibility_data(self):
+        return self.send_request(
+            "business/eligibility/get_monetization_products_eligibility_data/?product_types=branded_content"
+        )
+
+    def get_cooldowns(self):
+        body = self.generate_signature()
+        url = ("qp/get_cooldowns/?signed_body={}&ig_sig_key_version={}").format(
+            body, config.SIG_KEY_VERSION
+        )
+        return self.send_request(url)
+
+    def log_resurrect_attribution(self):
+        data = {
+            "_csrftoken": self.token,
+            "_uuid": self.uuid,
+            "_uid": self.user_id,
+        }
+        data = json.dumps(data)
+        return self.send_request("attribution/log_resurrect_attribution/", data)
+
+    def store_client_push_permissions(self):
+        data = {
+            "enabled": "true",
+            "_csrftoken": self.token,
+            "device_id": self.device_id,
+            "_uuid": self.uuid,
+        }
+        data = json.dumps(data)
+        return self.send_request("attribution/log_resurrect_attribution/", data)
+
+    def process_contact_point_signals(self):
+        data = {
+            "phone_id": self.phone_id,
+            "_csrftoken": self.token,
+            "_uid": self.user_id,
+            "device_id": self.device_id,
+            "_uuid": self.uuid,
+            "google_tokens": "",
+        }
+        data = json.dumps(data)
+        return self.send_request("accounts/process_contact_point_signals/", data)
+
+    def write_supported_capabilities(self):
+        data = {
+            "supported_capabilities_new": config.SUPPORTED_CAPABILITIES,
+            "_csrftoken": self.token,
+            "_uid": self.user_id,
+            "_uuid": self.uuid,
+        }
+        data = json.dumps(data)
+        return self.send_request("creatives/write_supported_capabilities/", data)
+
+    def arlink_download_info(self):
+        return self.send_request("users/arlink_download_info/?version_override=2.2.1")
+
+    def get_direct_v2_inbox(self):
+        return self.send_request(
+            "direct_v2/inbox/?visual_message_return_type=unseen&thread_message_limit=10&persistentBadging=true&limit=20"
+        )
+
+    def get_direct_v2_inbox2(self):
+        return self.send_request(
+            "direct_v2/inbox/?visual_message_return_type=unseen&persistentBadging=true&limit=0"
+        )
+
+    def topical_explore(self):
+        url = (
+            "discover/topical_explore/?is_prefetch=true&omit_cover_media=true&use_sectional_payload=true&timezone_offset=0&session_id={}&include_fixed_destinations=true"
+        ).format(self.client_session_id)
+        return self.send_request(url)
+
+    def notification_badge(self):
+        data = {
+            "phone_id": self.phone_id,
+            "_csrftoken": self.token,
+            "user_ids": self.user_id,
+            "device_id": self.device_id,
+            "_uuid": self.uuid,
+        }
+        data = json.dumps(data)
+        return self.send_request("notifications/badge/", data)
+
     # ====== DIRECT METHODS ====== #
     def get_inbox_v2(self):
-        data = json.dumps({"persistentBadging": True, "use_unified_inbox": True})
+        data = json.dumps(
+            {
+                "visual_message_return_type": "unseen",
+                "persistentBadging": "True",
+                "limit": "0",
+            }
+        )
         return self.send_request("direct_v2/inbox/", data)
 
     def get_presence(self):
         return self.send_request("direct_v2/get_presence/")
 
     def get_thread(self, thread_id, cursor_id=None):
-        data = {"use_unified_inbox": "true"}
+        data = json.dumps(
+            {"visual_message_return_type": "unseen", "seq_id": "40065", "limit": "10"}
+        )
         if cursor_id is not None:
             data["cursor"] = cursor_id
         return self.send_request(
@@ -1710,6 +1885,13 @@ class API(object):
         if query is not None:
             data["query"] = query
         return self.send_request("direct_v2/ranked_recipients/", json.dumps(data))
+
+    def get_scores_bootstrap(self):
+        url = "scores/bootstrap/users/?surfaces={surfaces}"
+        url = url.format(
+            surfaces='["autocomplete_user_list","coefficient_besties_list_ranking","coefficient_rank_recipient_user_suggestion","coefficient_ios_section_test_bootstrap_ranking","coefficient_direct_recipients_ranking_variant_2"]'
+        )
+        return self.send_request(url)
 
     def send_direct_item(self, item_type, users, **options):
         data = {"client_context": self.generate_UUID(True), "action": "send_item"}
