@@ -543,7 +543,7 @@ class API(object):
                     # If we have been waiting for more than 15 minutes, lets restart.
                     self.logger.error(
                         "Since we hit 30 minutes of time outs, we have to restart. Removing session and cookies. Please relogin."
-                    )                    
+                    )
                     delete_credentials()
                     time.sleep(30)
                     sys.exit()
@@ -1044,7 +1044,7 @@ class API(object):
             extra_sig=["d={}".format(double_tap)],
             headers={
                 "X-IG-WWW-Claim": "hmac.AR1ETv6FsubYON5DwNj_0CLNmbW7hSNR1yIMeXuhHJORN4n7"
-            },        
+            },
         )
 
     def unlike(self, media_id):
@@ -1171,17 +1171,22 @@ class API(object):
 
     # ====== FRIENDSHIPS METHODS ====== #
     def get_user_followings(self, user_id, max_id=""):
-        url = "friendships/{user_id}/following/?search_surface=follow_list_page&rank_token={rank_token}"
-        url = url.format(user_id=user_id, rank_token=self.rank_token)
-        if max_id:
-            url += "&max_id={max_id}".format(max_id=max_id)
+        url = (
+            "friendships/{user_id}/following/?max_id={max_id}"
+            "&ig_sig_key_version={sig_key}&rank_token={rank_token}"
+        ).format(
+            user_id=user_id,
+            max_id=max_id,
+            sig_key=config.SIG_KEY_VERSION,
+            rank_token=self.rank_token,
+        )
         return self.send_request(url)
 
     def get_self_users_following(self):
         return self.get_user_followings(self.user_id)
 
     def get_user_followers(self, user_id, max_id=""):
-        url = "friendships/{user_id}/followers/?search_surface=follow_list_page&order=default&rank_token={rank_token}"
+        url = "friendships/{user_id}/followers/?rank_token={rank_token}"
         url = url.format(user_id=user_id, rank_token=self.rank_token)
         if max_id:
             url += "&max_id={max_id}".format(max_id=max_id)

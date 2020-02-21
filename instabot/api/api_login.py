@@ -54,7 +54,7 @@ def get_prefill_candidates(self):
     data = {
         "android_device_id": self.device_id,
         "phone_id": self.phone_id,
-        "usages": '[\"account_recovery_omnibox\"]',
+        "usages": '["account_recovery_omnibox"]',
         "_csrftoken": self.token,
         "device_id": self.device_id,
     }
@@ -130,12 +130,12 @@ def login_flow(self, just_logged_in=False, app_refresh_interval=1800):
             # TODO fix invalid reel id list
             # signed_body=0afe4f292ac425ff302808c76d93989524b25074ea77e5794edadf72e0328bc6.{"supported_capabilities_new":"[{\"name\":\"SUPPORTED_SDK_VERSIONS\",\"value\":\"45.0,46.0,47.0,48.0,49.0,50.0,51.0,52.0,53.0,54.0,55.0,56.0,57.0,58.0,59.0,60.0,61.0,62.0,63.0,64.0,65.0,66.0,67.0,68.0,69.0,70.0,71.0,72.0,73.0,74.0,75.0,76.0,77.0,78.0,79.0,80.0,81.0\"},{\"name\":\"FACE_TRACKER_VERSION\",\"value\":\"14\"},{\"name\":\"COMPRESSION\",\"value\":\"ETC2_COMPRESSION\"},{\"name\":\"world_tracker\",\"value\":\"world_tracker_enabled\"}]","source":"feed_timeline","_csrftoken":"mmdoMLXFQEzt2w5xLbfm0FTs7gIgqAlc","_uid":"3149016955","_uuid":"f87b5e9f-0663-42f8-9213-ec72cb49c961","user_ids":["283072796","10680697486","25529439127","218694379","3149016955","33167882"]}&ig_sig_key_version=4
             # check_flow.append(self.get_reels_media())
-            
+
             check_flow.append(self.get_loom_fetch_config())
 
             # getBlockedMedia() ...
             check_flow.append(self.explore(True))
-            
+
             check_flow.append(self.get_recent_activity())
             check_flow.append(self.get_scores_bootstrap())
             check_flow.append(self.get_request_country())
@@ -154,7 +154,6 @@ def login_flow(self, just_logged_in=False, app_refresh_interval=1800):
 
             check_flow.append(self.arlink_download_info())
             check_flow.append(self.get_username_info(self.user_id))
-
 
             # TODO add accounts/process_contact_point_signals/
             # signed_body=2f3d07b0483aefae12d54abf5572d8499b8c878d5939f072522fcf3954cf313c.{"phone_id":"9d9aa0f0-40fe-4524-a920-9910f45ba18d","_csrftoken":"mmdoMLXFQEzt2w5xLbfm0FTs7gIgqAlc","_uid":"3149016955","device_id":"f87b5e9f-0663-42f8-9213-ec72cb49c961","_uuid":"f87b5e9f-0663-42f8-9213-ec72cb49c961","google_tokens":"[]"}&ig_sig_key_version=4

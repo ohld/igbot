@@ -14,7 +14,7 @@ repos:
     rev: 19.10b0
     hooks:
     - id: black
-      language_version: python3.7
+      language_version: python3
 -   repo: https://gitlab.com/pycqa/flake8
     rev: 3.7.9
     hooks:
@@ -22,7 +22,7 @@ repos:
         args:
           - --max-line-length=500
           - --ignore=E203,E266,E501,W503,E402
-          - --max-complexity=30
+          - --max-complexity=31
           - --select=B,C,E,F,W,T4,B9
 -   repo: https://github.com/asottile/pyupgrade
     rev: v1.26.2
