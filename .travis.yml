@@ -25,12 +25,10 @@ matrix:
     - python: "nightly"
 
 install:
-  - pip install tox-travis codecov bumpversion pre_commit pytest-cov
-
+  - pip install tox-travis codecov bumpversion pre_commit
 
 script:
  - tox
- - pytest --cov=./
  - $PRE_COMMIT_CMD
 
 after_success:
