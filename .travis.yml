@@ -25,14 +25,14 @@ matrix:
     - python: "nightly"
 
 install:
-  - pip install tox-travis codecov bumpversion pre_commit
+  - pip install tox-travis bumpversion pre_commit pytest-cov
 
 script:
  - tox
  - $PRE_COMMIT_CMD
 
 after_success:
- - codecov
+ - pytest --cov=./
  - if [ "$TRAVIS_PULL_REQUEST" = "false" ] && [ "$TRAVIS_BRANCH" = "master" ]; then bumpversion --verbose minor && bash push.sh; fi
 
 cache: pip
