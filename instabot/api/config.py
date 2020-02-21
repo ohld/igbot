@@ -36,6 +36,7 @@ REQUEST_HEADERS = {
     "X-IG-Connection-Type": "WIFI",
     "X-IG-Capabilities": "3brTvwE=",
     "X-IG-App-ID": "567067343352427",
+    "X-IG-App-Startup-Country": "US",
     "Accept-Language": "en-US",
     "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
     "Accept-Encoding": "gzip, deflate",

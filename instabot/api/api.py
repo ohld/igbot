@@ -54,7 +54,7 @@ is_py3 = version_info[0] == 3
 is_py37 = version_info[:2] == (3, 7)
 
 
-version = "0.107.0"
+version = "0.108.0"
 current_path = os.path.abspath(os.getcwd())
 
 
@@ -1026,8 +1026,8 @@ class API(object):
             data.update(
                 {"entity_page_name": entity_page_name, "entity_page_id": entity_page_id}
             )
-        if double_tap is None:
-            double_tap = random.randint(0, 1)
+        # if double_tap is None:
+        double_tap = random.randint(0, 1)
         json_data = self.json_data(data)
         # TODO: comment out debug log out when done
         self.logger.debug("post data: {}".format(json_data))

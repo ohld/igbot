@@ -264,7 +264,7 @@ def login_flow(self, just_logged_in=False, app_refresh_interval=1800):
                 check_flow.append(self.sync_device_features())
         except Exception as e:
             self.logger.error(
-                "Exception raised: {}\n{}".format(e, traceback.format_exc())
+                "Error loginin, exception raised: {}\n{}".format(e, traceback.format_exc())
             )
             return False
 
@@ -330,6 +330,7 @@ def load_uuid_and_cookie(self, load_uuid=True, load_cookie=True):
                 )
                 cookie_username = self.cookie_dict["ds_user"]
                 assert cookie_username == self.username.lower()
+                self.cookie_dict["urlgen"]
 
             if load_uuid:
                 self.logger.debug("Loading uuids")
