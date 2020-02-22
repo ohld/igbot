@@ -264,7 +264,9 @@ def login_flow(self, just_logged_in=False, app_refresh_interval=1800):
                 check_flow.append(self.sync_device_features())
         except Exception as e:
             self.logger.error(
-                "Error loginin, exception raised: {}\n{}".format(e, traceback.format_exc())
+                "Error loginin, exception raised: {}\n{}".format(
+                    e, traceback.format_exc()
+                )
             )
             return False
 
