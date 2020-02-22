@@ -146,7 +146,7 @@ def parameter_setting():
         "Proxy: ",
     ]
 
-    with open(settings) as f:
+    with open(setting_file) as f:
         data = f.readlines()
 
     print("Current parameters\n")

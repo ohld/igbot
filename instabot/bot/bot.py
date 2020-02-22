@@ -184,8 +184,8 @@ class Bot(object):
         device=None,
         save_logfile=True,
         log_filename=None,
-        loglevel_file=logging.INFO,
-        loglevel_stream=logging.DEBUG,
+        loglevel_file=logging.DEBUG,
+        loglevel_stream=logging.INFO,
         log_follow_unfollow=True,
     ):
         self.api = API(
