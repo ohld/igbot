@@ -145,7 +145,8 @@ def login_flow(self, just_logged_in=False, app_refresh_interval=1800):
             check_flow.append(self.sync_device_features())
 
             # /api/v1/banyan/banyan/?views=%5B%22story_share_sheet%22%2C%22threads_people_picker%22%2C%22group_stories_share_sheet%22%2C%22reshare_share_sheet%22%5D
-            check_flow.append(self.banyan())
+            # error 400: {"message": "Bad request", "status": "fail"}
+            # check_flow.append(self.banyan())
 
             # /api/v1/igtv/browse_feed/?prefetch=1
             check_flow.append(self.igtv_browse_feed())
@@ -160,14 +161,17 @@ def login_flow(self, just_logged_in=False, app_refresh_interval=1800):
             check_flow.append(self.get_timeline_feed())
 
             # /api/v1/feed/reels_media/
-            check_flow.append(self.get_reels_media())
+            # error 400: {"message": "Invalid reel id list", "status": "fail"}
+            # check_flow.append(self.get_reels_media())
 
             # /api/v1/push/register/ (device_type=android_mqtt + is_main_push_channel=true + device_sub_type=2 + device_toke + _csrftoken + guid + _uuid + users + family_device_id)
             # device_type=android_mqtt&is_main_push_channel=true&device_sub_type=2&device_token={"k":"eyJwbiI6ImNvbS5pbnN0YWdyYW0uYW5kcm9pZCIsImRpIjoiNzhlNGMxNmQtN2YzNC00NDlkLTg4OWMtMTAwZDg5OTU0NDJhIiwiYWkiOjU2NzMxMDIwMzQxNTA1MiwiY2siOiIxNjgzNTY3Mzg0NjQyOTQifQ==","v":0,"t":"fbns-b64"}&_csrftoken=mmdoMLXFQEzt2w5xLbfm0FTs7gIgqAlc&guid=f87b5e9f-0663-42f8-9213-ec72cb49c961&_uuid=f87b5e9f-0663-42f8-9213-ec72cb49c961&users=3149016955&family_device_id=9d9aa0f0-40fe-4524-a920-9910f45ba18d
-            check_flow.append(self.push_register())
+            # error 400: {"message": "no token provided", "status": "fail"}
+            # check_flow.append(self.push_register())
 
             # /api/v1/feed/reels_media/
-            check_flow.append(self.get_reels_media())
+            # error 400: {"message": "Invalid reel id list", "status": "fail"}
+            # check_flow.append(self.get_reels_media())
 
             # /api/v1/media/blocked/
             check_flow.append(self.media_blocked())
@@ -200,19 +204,23 @@ def login_flow(self, just_logged_in=False, app_refresh_interval=1800):
             check_flow.append(self.arlink_download_info())
 
             # push register
-            check_flow.append(self.push_register())
+            # error 400: {"message": "no token provided", "status": "fail"}
+            # check_flow.append(self.push_register())
 
             # /api/v1/users/self.user_id/info/
             check_flow.append(self.get_username_info(self.user_id))
 
             # /api/v1/notifications/store_client_push_permissions/
-            check_flow.append(self.log_resurrect_attribution())
+            # error 400: {"message": "missing param", "status": "fail"}
+            # check_flow.append(self.log_resurrect_attribution())
 
             # /api/v1/accounts/process_contact_point_signals
-            check_flow.append(self.process_contact_point_signals())
+            # error 400: {"message": "", "status": "fail"}
+            # check_flow.append(self.process_contact_point_signals())
 
             # creatives/write_supported_capabilities
-            check_flow.append(self.write_supported_capabilities())
+            # error 500: unknown
+            # check_flow.append(self.write_supported_capabilities())
 
             check_flow.append(self.get_presence())
             check_flow.append(self.get_direct_v2_inbox())

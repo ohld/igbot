@@ -35,6 +35,8 @@ from .api_login import (
     get_account_family,
     get_zr_token_result,
     banyan,
+    igtv_browse_feed,
+    creatives_ar_class,
 )
 from .api_photo import configure_photo, download_photo, upload_photo
 from .api_story import configure_story, download_story, upload_story_photo
@@ -154,6 +156,12 @@ class API(object):
 
     def sync_launcher(self, login=False):
         return sync_launcher(self, login)
+
+    def igtv_browse_feed(self):
+        return igtv_browse_feed(self)
+
+    def creatives_ar_class(self):
+        return creatives_ar_class(self)
 
     def sync_user_features(self):
         return sync_user_features(self)
@@ -540,11 +548,11 @@ class API(object):
                     timeout_minutes = 0
                 if timeout_minutes == 15:
                     # If we have been waiting for more than 15 minutes, lets restart.
+                    time.sleep(1)
                     self.logger.error(
-                        "Since we hit 30 minutes of time outs, we have to restart. Removing session and cookies. Please relogin."
+                        "Since we hit 15 minutes of time outs, we have to restart. Removing session and cookies. Please relogin."
                     )
                     delete_credentials()
-                    time.sleep(30)
                     sys.exit()
                 timeout_minutes += 5
                 self.logger.warning(
@@ -564,6 +572,7 @@ class API(object):
             if response.status_code == 400:
                 response_data = json.loads(response.text)
                 if response_data.get("challenge_required"):
+                    # Try and fix the challenge required error by totally restarting
                     self.logger.error(
                         "Failed to login go to instagram and change your password"
                     )
@@ -1775,7 +1784,7 @@ class API(object):
         )
 
     def get_cooldowns(self):
-        body = self.generate_signature()
+        body = self.generate_signature(config.SIG_KEY_VERSION)
         url = ("qp/get_cooldowns/?signed_body={}&ig_sig_key_version={}").format(
             body, config.SIG_KEY_VERSION
         )
