@@ -370,6 +370,21 @@ class API(object):
         self.logger.info("Username or password is incorrect.")
         delete_credentials()
         sys.exit()
+        
+    def sync_device_features(self, login=False):
+        data = {
+            "id": self.uuid,
+            "server_config_retrieval": "1",
+            "experiments": config.LOGIN_EXPERIMENTS,
+        }
+        if login is False:
+            data["_uuid"] = self.uuid
+            data["_uid"] = self.user_id
+            data["_csrftoken"] = self.token
+        data = json.dumps(data)
+        return self.send_request(
+            "qe/sync/", data, login=login, headers={"X-DEVICE-ID": self.uuid}
+        )
 
     def solve_challenge(self):
         challenge_url = self.last_json["challenge"]["api_path"][1:]
