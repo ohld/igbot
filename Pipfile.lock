@@ -32,10 +32,10 @@
         },
         "huepy": {
             "hashes": [
-                "sha256:200c5af131fe52d3b5a0b2061a1eaaf60b34d6aafb98f11f22f503d14c9bfbf4"
+                "sha256:5b29beef797312fb7606188bc5cd98f78ab8f7e01576427a9312f1c9b20b759d"
             ],
             "index": "pypi",
-            "version": "==0.9.8.1"
+            "version": "==1.2.1"
         },
         "idna": {
             "hashes": [
