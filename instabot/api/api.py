@@ -28,7 +28,6 @@ from .api_login import (
     reinstall_app_simulation,
     save_uuid_and_cookie,
     set_device,
-    sync_device_features,
     sync_launcher,
     sync_user_features,
     get_prefill_candidates,
@@ -151,8 +150,8 @@ class API(object):
         return self.send_request("attribution/log_attribution/", data, login=True)
 
     # ====== ALL METHODS IMPORT FROM api_login ====== #
-    def sync_device_features(self, login=False):
-        return sync_device_features(self, login)
+    # def sync_device_features(self, login=False):
+    # return sync_device_features(self, login)
 
     def sync_launcher(self, login=False):
         return sync_launcher(self, login)
@@ -370,7 +369,7 @@ class API(object):
         self.logger.info("Username or password is incorrect.")
         delete_credentials()
         sys.exit()
-        
+
     def sync_device_features(self, login=False):
         data = {
             "id": self.uuid,

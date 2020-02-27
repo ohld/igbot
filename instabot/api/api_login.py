@@ -104,7 +104,7 @@ def pre_login_flow(self):
     self.set_contact_point_prefill("prefill")
 
     # /api/v1/qe/sync (server_config_retrieval)
-    self.sync_device_features()
+    self.sync_device_features(True)
 
     # /api/v1/launcher/sync/ (server_config_retrieval)
     self.sync_launcher(True)
@@ -119,7 +119,7 @@ def pre_login_flow(self):
     self.sync_launcher(True)
 
     # /api/v1/qe/sync/ (server_config_retrieval)
-    self.sync_device_features()
+    self.sync_device_features(True)
 
 
 # DO NOT MOVE ANY OF THE ENDPOINTS THEYRE IN THE CORRECT ORDER
