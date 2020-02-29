@@ -28,7 +28,6 @@ def sync_device_features(self, login=False):
         "qe/sync/", data, login=login, headers={"X-DEVICE-ID": self.uuid}
     )
 
-
 def sync_launcher(self, login=False):
     data = {
         "id": self.uuid,
