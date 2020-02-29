@@ -12,6 +12,22 @@ from . import config, devices
 # ====== SYNC METHODS ====== #
 
 
+def sync_device_features(self, login=False):
+    data = {
+        "id": self.uuid,
+        "server_config_retrieval": "1",
+        "experiments": config.LOGIN_EXPERIMENTS,
+    }
+    if login is False:
+        data["_uuid"] = self.uuid
+        data["_uid"] = self.user_id
+        data["_csrftoken"] = self.token
+    data = json.dumps(data)
+    self.last_experiments = time.time()
+    return self.send_request(
+        "qe/sync/", data, login=login, headers={"X-DEVICE-ID": self.uuid}
+    )
+
 def sync_launcher(self, login=False):
     data = {
         "id": self.uuid,
@@ -34,16 +50,22 @@ def sync_user_features(self):
     return self.send_request("qe/sync/", data, headers={"X-DEVICE-ID": self.uuid})
 
 
-def get_prefill_candidates(self):
+# "android_device_id":"android-f14b9731e4869eb",
+# "phone_id":"b4bd7978-ca2b-4ea0-a728-deb4180bd6ca",
+# "usages":"[\"account_recovery_omnibox\"]",
+# "_csrftoken":"9LZXBXXOztxNmg3h1r4gNzX5ohoOeBkI",
+# "device_id":"70db6a72-2663-48da-96f5-123edff1d458"
+def get_prefill_candidates(self, login=False):
     data = {
         "android_device_id": self.device_id,
         "phone_id": self.phone_id,
         "usages": '["account_recovery_omnibox"]',
-        "_csrftoken": self.token,
         "device_id": self.device_id,
     }
+    if login is False:
+        data["_csrftoken"] = self.token
     data = json.dumps(data)
-    return self.send_request("accounts/get_prefill_candidates/", data)
+    return self.send_request("accounts/get_prefill_candidates/", data, login=login)
 
 
 def get_account_family(self):
@@ -84,30 +106,34 @@ def creatives_ar_class(self):
 def pre_login_flow(self):
     self.logger.info("Not yet logged in starting: PRE-LOGIN FLOW!")
 
-    # /api/v1/accounts/contact_point_prefill/
-    self.set_contact_point_prefill("prefill")
+    # /api/v1/accounts/get_prefill_candidates
+    self.get_prefill_candidates(True)
 
     # /api/v1/qe/sync (server_config_retrieval)
-    self.sync_device_features()
+    self.sync_device_features(True)
 
     # /api/v1/launcher/sync/ (server_config_retrieval)
     self.sync_launcher(True)
-
-    # /api/v1/accounts/get_prefill_candidates/
-    self.get_prefill_candidates()
 
     # /api/v1/accounts/contact_point_prefill/
     self.set_contact_point_prefill("prefill")
 
-    # /api/v1/launcher/sync/ (server_config_retrieval)
-    self.sync_launcher(True)
+    # /api/v1/accounts/get_prefill_candidates/
+    # self.get_prefill_candidates(True)
+
+    # /api/v1/accounts/contact_point_prefill/
+    # self.set_contact_point_prefill("prefill")
 
     # /api/v1/qe/sync/ (server_config_retrieval)
-    self.sync_device_features()
+    # self.sync_device_features(True)
+
+    # /api/v1/launcher/sync/ (server_config_retrieval)
+    # self.sync_launcher(True)
 
 
 # DO NOT MOVE ANY OF THE ENDPOINTS THEYRE IN THE CORRECT ORDER
 def login_flow(self, just_logged_in=False, app_refresh_interval=1800):
+    self.last_experiments = time.time()
     self.logger.info("LOGIN FLOW! Just logged-in: {}".format(just_logged_in))
     check_flow = []
     if just_logged_in:

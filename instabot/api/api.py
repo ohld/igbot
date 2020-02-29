@@ -28,7 +28,6 @@ from .api_login import (
     reinstall_app_simulation,
     save_uuid_and_cookie,
     set_device,
-    sync_device_features,
     sync_launcher,
     sync_user_features,
     get_prefill_candidates,
@@ -151,8 +150,8 @@ class API(object):
         return self.send_request("attribution/log_attribution/", data, login=True)
 
     # ====== ALL METHODS IMPORT FROM api_login ====== #
-    def sync_device_features(self, login=False):
-        return sync_device_features(self, login)
+    # def sync_device_features(self, login=False):
+    # return sync_device_features(self, login)
 
     def sync_launcher(self, login=False):
         return sync_launcher(self, login)
@@ -166,8 +165,8 @@ class API(object):
     def sync_user_features(self):
         return sync_user_features(self)
 
-    def get_prefill_candidates(self):
-        return get_prefill_candidates(self)
+    def get_prefill_candidates(self, login=False):
+        return get_prefill_candidates(self, login)
 
     def get_account_family(self):
         return get_account_family(self)
@@ -371,6 +370,21 @@ class API(object):
         delete_credentials()
         sys.exit()
 
+    def sync_device_features(self, login=False):
+        data = {
+            "id": self.uuid,
+            "server_config_retrieval": "1",
+            "experiments": config.LOGIN_EXPERIMENTS,
+        }
+        if login is False:
+            data["_uuid"] = self.uuid
+            data["_uid"] = self.user_id
+            data["_csrftoken"] = self.token
+        data = json.dumps(data)
+        return self.send_request(
+            "qe/sync/", data, login=login, headers={"X-DEVICE-ID": self.uuid}
+        )
+
     def solve_challenge(self):
         challenge_url = self.last_json["challenge"]["api_path"][1:]
         try:
@@ -481,10 +495,10 @@ class API(object):
                     )  # Only `send_direct_item` doesn't need a signature
                     if extra_sig is not None and extra_sig != []:
                         post += "&".join(extra_sig)
-                time.sleep(random.randint(1, 2))
+                # time.sleep(random.randint(1, 2))
                 response = self.session.post(config.API_URL + endpoint, data=post)
             else:  # GET
-                time.sleep(random.randint(1, 2))
+                # time.sleep(random.randint(1, 2))
                 response = self.session.get(config.API_URL + endpoint)
         except Exception as e:
             self.logger.warning(str(e))
