@@ -165,8 +165,8 @@ class API(object):
     def sync_user_features(self):
         return sync_user_features(self)
 
-    def get_prefill_candidates(self):
-        return get_prefill_candidates(self)
+    def get_prefill_candidates(self, login=False):
+        return get_prefill_candidates(self, login)
 
     def get_account_family(self):
         return get_account_family(self)
@@ -495,10 +495,10 @@ class API(object):
                     )  # Only `send_direct_item` doesn't need a signature
                     if extra_sig is not None and extra_sig != []:
                         post += "&".join(extra_sig)
-                time.sleep(random.randint(1, 2))
+                # time.sleep(random.randint(1, 2))
                 response = self.session.post(config.API_URL + endpoint, data=post)
             else:  # GET
-                time.sleep(random.randint(1, 2))
+                # time.sleep(random.randint(1, 2))
                 response = self.session.get(config.API_URL + endpoint)
         except Exception as e:
             self.logger.warning(str(e))
