@@ -1,4 +1,4 @@
-version = "0.111.0"
+version = "0.112.0"
 import atexit
 import datetime
 import logging
