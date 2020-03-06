@@ -198,11 +198,11 @@
         },
         "packaging": {
             "hashes": [
-                "sha256:317c1aa861f51d7c22830cccbadd2fcddbc58da9ab9936d5a2c3a39046e18d55",
-                "sha256:e725568545a15ce87ff23631ddacb9f3f4c398031d5faa7b7d01738a9ee0b0e0"
+                "sha256:3c292b474fda1671ec57d46d739d072bfd495a4f51ad01a055121d81e952b7a3",
+                "sha256:82f77b9bee21c1bafbf35a84905d604d5d1223801d639cf3ed140bd651c08752"
             ],
             "index": "pypi",
-            "version": "==20.2"
+            "version": "==20.3"
         },
         "pluggy": {
             "hashes": [
