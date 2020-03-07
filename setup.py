@@ -11,7 +11,7 @@ with open(path.join(here, "README.md"), encoding="utf-8") as f:
 
 setup(
     name="instabot",
-    version="0.110.0",
+    version="0.113.0",
     description="Instagram bot scripts for promotion and API python wrapper.",
     long_description=long_description,
     author="Daniil Okhlopkov, Evgeny Kemerov",
@@ -38,6 +38,7 @@ setup(
         "moviepy>=1.0.1",
         "Pillow>=6.2.2",
         "pytest>=4.6.9",
+        "pycryptodome>=3.9.7",
     ],
     classifiers=[
         # How mature is this project? Common values are
