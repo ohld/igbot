@@ -19,7 +19,7 @@ issueConfigs:
   - "Log"
   - "To Reproduce"
   - "Version"
- - content:
+- content:
 # template 2: question
    - "Before submitting an issue, make sure you have:"
    - "Describe your Question/Issue:"
