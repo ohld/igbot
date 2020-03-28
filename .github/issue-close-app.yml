@@ -23,8 +23,10 @@ issueConfigs:
 # template 2: question
    - "Before submitting an issue, make sure you have:"
    - "Describe your Question/Issue:"
-   - "Paste the output of python -V here:"
-
+- content:
+# template 3: feature_request
+   - "Is your feature request related to a problem? Please describe"
+   - "Describe the solution you'd like"
 # Optional configuration:
 #
 # whether the keywords are case-insensitive
