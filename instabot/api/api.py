@@ -102,7 +102,7 @@ class API(object):
             fh.setLevel(loglevel_file)
             fh.setFormatter(
                 logging.Formatter(
-                    "%(asctime)s - %(name)s (%(module)s) - %(levelname)s - %(message)s"
+                    "%(asctime)s - %(name)s (%(module)s %(pathname)s:%(lineno)s) - %(levelname)s - %(message)s"
                 )
             )
 
@@ -486,6 +486,7 @@ class API(object):
             raise Exception(msg)
         if headers:
             self.session.headers.update(headers)
+
         try:
             self.total_requests += 1
             if post is not None:  # POST
@@ -513,6 +514,7 @@ class API(object):
             self.logger.debug(
                 "GET to endpoint: {} returned response: {}".format(endpoint, response)
             )
+
         if response.status_code == 200:
             try:
                 self.last_json = json.loads(response.text)
@@ -804,6 +806,7 @@ class API(object):
         from_video=False,
         force_resize=False,
         options={},
+        user_tags=None
     ):
         """Upload photo to Instagram
 
@@ -819,18 +822,22 @@ class API(object):
                              configure_timeout, rename (Dict)
                              Designed to reduce the number of function
                              arguments! This is the simplest request object.
+        @param user_tags     Tag other users (List)
+                             usertags = [
+                                {"user_id": user_id, "position": [x, y]}
+                             ]
 
         @return Boolean
         """
         return upload_photo(
-            self, photo, caption, upload_id, from_video, force_resize, options
+            self, photo, caption, upload_id, from_video, force_resize, options, user_tags
         )
 
     def download_photo(self, media_id, filename, media=False, folder="photos"):
         return download_photo(self, media_id, filename, media, folder)
 
-    def configure_photo(self, upload_id, photo, caption=""):
-        return configure_photo(self, upload_id, photo, caption)
+    def configure_photo(self, upload_id, photo, user_tags=None, caption=""):
+        return configure_photo(self, upload_id, photo, user_tags, caption)
 
     # ====== STORY METHODS ====== #
     def download_story(self, filename, story_url, username):
