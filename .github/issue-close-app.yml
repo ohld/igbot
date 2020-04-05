@@ -6,7 +6,6 @@
 # Comment that will be sent if an issue is judged to be closed.
 comment: >-
   This issue has been automatically closed because the issue template is missing or incomplete.
-
   Filling the template is required so standard questions don't need to be asked again each time.
   Our ability to provide assistance is greatly hampered if few minutes are not taken to complete the issue template
   with the requested information. The details requested potentially affect which options to pursue. The small amount
@@ -19,8 +18,18 @@ issueConfigs:
 # template 1: bug report
   - "Example file"
   - "Log"
-  - "Version"
   - "To Reproduce"
+  - "Version"
+- content:
+# template 2: question
+   - "Before submitting an issue, make sure you have:"
+   - "Describe your Question/Issue:"
+- content:
+# template 3: feature_request
+   - "Is your feature request related to a problem? Please describe"
+   - "Describe the solution you'd like"
+   - "Version"
+   - "To Reproduce"
 # - content:
 # template 2: feature request
   # - "Have you looked for this feature in other issues and in the docs"
@@ -30,9 +39,13 @@ issueConfigs:
 #
 # whether the keywords are case-insensitive
 # default value is false, which means keywords are case-sensitive
-caseInsensitive: true
+caseInsensitive: false
 # the label that will be added when the bot close an issue
 # The bot will only add a label if this property is set.
 label: "template missing/incomplete"
 # The issue is judged to be legal if it includes all keywords from any of these two configs.
 # Or it will be closed by the app.
+exception:
+  - "bruvv"
+  - "dependabot-preview"
+  - "ohld"

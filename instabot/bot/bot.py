@@ -1,4 +1,4 @@
-version = "0.113.0"
+version = "0.117.0"
 import atexit
 import datetime
 import logging
@@ -154,7 +154,7 @@ class Bot(object):
         min_likes_to_like=random.randint(50, 100),
         max_messages_per_day=random.randint(50, 100),
         filter_users=False,
-        filter_private_users=True,
+        filter_private_users=False,
         filter_users_without_profile_photo=False,
         filter_previously_followed=False,
         filter_business_accounts=False,
@@ -185,7 +185,7 @@ class Bot(object):
         save_logfile=True,
         log_filename=None,
         loglevel_file=logging.DEBUG,
-        loglevel_stream=logging.DEBUG,
+        loglevel_stream=logging.INFO,
         log_follow_unfollow=True,
     ):
         self.api = API(
