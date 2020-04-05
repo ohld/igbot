@@ -38,6 +38,7 @@ setup(
         "moviepy>=1.0.1",
         "Pillow>=6.2.2",
         "pytest>=4.6.9",
+        "pycryptodome>=3.9.7",
     ],
     classifiers=[
         # How mature is this project? Common values are

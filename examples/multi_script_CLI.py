@@ -56,11 +56,11 @@ def read_input(f, msg, n=None):
 # setting function start here
 def setting_input():
     inputs = [
-        ("How many likes do you want to do in a day?", 100),
-        ("How about unlike? ", 50),
-        ("How many follows do you want to do in a day? ", 75),
+        ("How many likes do you want to do in a day?", 500),
+        ("How about unlike? ", 250),
+        ("How many follows do you want to do in a day? ", 250),
         ("How about unfollow? ", 50),
-        ("How many comments do you want to do in a day? ", 50),
+        ("How many comments do you want to do in a day? ", 100),
         (
             (
                 "Maximal likes in media you will like?\n"
@@ -105,11 +105,11 @@ def setting_input():
             ),
             3,
         ),
-        ("Delay from one like to another like you will perform ", 300),
-        ("Delay from one unlike to another unlike you will perform ", 300),
-        ("Delay from one follow to another follow you will perform ", 600),
-        ("Delay from one unfollow to another unfollow you will perform ", 600),
-        ("Delay from one comment to another comment you will perform ", 1200),
+        ("Delay from one like to another like you will perform ", 20),
+        ("Delay from one unlike to another unlike you will perform ", 20),
+        ("Delay from one follow to another follow you will perform ", 90),
+        ("Delay from one unfollow to another unfollow you will perform ", 90),
+        ("Delay from one comment to another comment you will perform ", 600),
         (
             "Want to use proxy? insert your proxy or leave it blank "
             + "if no. (just enter",

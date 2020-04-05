@@ -1,5 +1,5 @@
-DEFAULT_DEVICE = "one_plus_3"
-APP_VERSION = "117.0.0.28.123"
+DEFAULT_DEVICE = "one_plus_7"
+APP_VERSION = "130.0.0.31.121"
 DEVICES = {
     "one_plus_7": {
         "app_version": APP_VERSION,

@@ -11,6 +11,7 @@ comment: >-
   with the requested information. The details requested potentially affect which options to pursue. The small amount
   of time you will spend completing the template will also help the volunteers, providing assistance to you, to reduce
   the time required to help you.
+
 issueConfigs:
 # There can be several configs for different kind of issues.
 - content:
@@ -27,6 +28,13 @@ issueConfigs:
 # template 3: feature_request
    - "Is your feature request related to a problem? Please describe"
    - "Describe the solution you'd like"
+   - "Version"
+   - "To Reproduce"
+# - content:
+# template 2: feature request
+  # - "Have you looked for this feature in other issues and in the docs"
+  # - "Describe the solution you'd like"
+
 # Optional configuration:
 #
 # whether the keywords are case-insensitive
