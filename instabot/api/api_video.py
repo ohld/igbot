@@ -286,7 +286,6 @@ def resize_video(fname, thumbnail=None):
             print("Resizing video")
             vid = vid.resize(width=1080)
     (w, h) = vid.size
-    return fname, thumbnail, w, h, vid.duration
     if vid.duration > d_lim:
         print("Cutting video to {lim} sec from start".format(lim=d_lim))
         vid = vid.subclip(0, d_lim)
