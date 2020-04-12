@@ -1,4 +1,4 @@
-DEFAULT_DEVICE = "one_plus_7"
+import random
 APP_VERSION = "130.0.0.31.121"
 DEVICES = {
     "one_plus_7": {
@@ -117,3 +117,4 @@ DEVICES = {
         "version_code": "168361634",
     },
 }
+DEFAULT_DEVICE = random.choice(list(DEVICES.keys()))
