@@ -250,7 +250,9 @@ class API(object):
         is_threaded=False,
     ):
         if password is None:
-            username, password = get_credentials(username=username)
+            username, password = get_credentials(
+                base_path=self.base_path, username=username
+            )
 
         set_device = generate_all_uuids = True
         self.set_user(username, password)
@@ -352,7 +354,7 @@ class API(object):
                     "Failed to login go to instagram and change your password"
                 )
                 self.save_failed_login()
-                delete_credentials()
+                delete_credentials(self.base_path)
                 return False
 
     def two_factor_auth(self):
@@ -402,7 +404,7 @@ class API(object):
 
     def save_failed_login(self):
         self.logger.info("Username or password is incorrect.")
-        delete_credentials()
+        delete_credentials(self.base_path)
         sys.exit()
 
     def solve_challenge(self):
@@ -588,7 +590,7 @@ class API(object):
                     self.logger.error(
                         "Since we hit 15 minutes of time outs, we have to restart. Removing session and cookies. Please relogin."
                     )
-                    delete_credentials()
+                    delete_credentials(self.base_path)
                     sys.exit()
                 timeout_minutes += 5
                 self.logger.warning(
@@ -612,7 +614,7 @@ class API(object):
                     self.logger.error(
                         "Failed to login go to instagram and change your password"
                     )
-                    delete_credentials()
+                    delete_credentials(self.base_path)
                 # PERFORM Interactive Two-Factor Authentication
                 if response_data.get("two_factor_required"):
                     try:
