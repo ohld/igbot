@@ -78,10 +78,9 @@ def compatible_aspect_ratio(size):
     return min_ratio <= ratio <= max_ratio
 
 
-def configure_photo(self, upload_id, photo, caption=""):
+def configure_photo(self, upload_id, photo, user_tags=None, caption=""):
     width, height = get_image_size(photo)
-    data = self.json_data(
-        {
+    data_ = {
             "media_folder": "Instagram",
             "source_type": 4,
             "caption": caption,
@@ -94,7 +93,10 @@ def configure_photo(self, upload_id, photo, caption=""):
             },
             "extra": {"source_width": width, "source_height": height},
         }
-    )
+    if user_tags:
+        data_['usertags'] = user_tags
+
+    data = self.json_data(data_)
     return self.send_request("media/configure/?", data)
 
 
@@ -106,6 +108,7 @@ def upload_photo(
     from_video=False,
     force_resize=False,
     options={},
+    user_tags=None
 ):
     """Upload photo to Instagram
 
@@ -121,9 +124,19 @@ def upload_photo(
                          configure_timeout, rename (Dict)
                          Designed to reduce the number of function arguments!
                          This is the simplest request object.
+    @param user_tags     Tag other users (List)
+                         usertags = [
+                            {"user_id": user_id, "position": [x, y]}
+                         ]
 
     @return Boolean
     """
+    if user_tags is None:
+        usertags = None
+    else:
+        tags = {'in': [{'user_id': user['user_id'], 'position': [user['x'], user['y']]} for user in user_tags]}
+        usertags = json.dumps(tags, separators=(',', ':'))
+
     options = dict({"configure_timeout": 15, "rename": True}, **(options or {}))
     if upload_id is None:
         upload_id = str(int(time.time() * 1000))
@@ -137,9 +150,8 @@ def upload_photo(
             return False
     waterfall_id = str(uuid4())
     # upload_name example: '1576102477530_0_7823256191'
-    upload_name = "{upload_id}_0_{rand}".format(
-        upload_id=upload_id, rand=random.randint(1000000000, 9999999999)
-    )
+    # upload_name example:  'fb_uploader_1585807380927'
+    upload_name = "fb_uploader_{upload_id}".format(upload_id=upload_id)
     rupload_params = {
         "retry_context": '{"num_step_auto_retry":0,"num_reupload":0,"num_step_manual_retry":0}',
         "media_type": "1",
@@ -171,6 +183,7 @@ def upload_photo(
         ),
         data=photo_data,
     )
+
     if response.status_code != 200:
         self.logger.error(
             "Photo Upload failed with the following response: {}".format(response)
@@ -184,7 +197,7 @@ def upload_photo(
     for attempt in range(4):
         if configure_timeout:
             time.sleep(configure_timeout)
-        if self.configure_photo(upload_id, photo, caption):
+        if self.configure_photo(upload_id, photo, usertags, caption):
             media = self.last_json.get("media")
             self.expose()
             if options.get("rename"):

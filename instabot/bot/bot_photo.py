@@ -5,7 +5,7 @@ from tqdm import tqdm
 
 
 def upload_photo(
-    self, photo, caption=None, upload_id=None, from_video=False, options={}
+    self, photo, caption=None, upload_id=None, from_video=False, options={}, user_tags=None
 ):
     """Upload photo to Instagram
 
@@ -19,12 +19,13 @@ def upload_photo(
                        configure_timeout, rename (Dict)
                        Designed to reduce the number of function arguments!
                        This is the simplest request object.
+    @param user_tags
 
     @return            Object with state of uploading to Instagram (or False)
     """
     self.small_delay()
     result = self.api.upload_photo(
-        photo, caption, upload_id, from_video, options=options
+        photo, caption, upload_id, from_video, options=options, user_tags=user_tags
     )
     if not result:
         self.logger.info("Photo '{}' is not uploaded.".format(photo))

@@ -785,8 +785,7 @@ class Bot(object):
         return download_photos(self, medias, folder, save_description)
 
     def upload_photo(
-        self, photo, caption=None, upload_id=None, from_video=False, options={}
-    ):
+        self, photo, caption=None, upload_id=None, from_video=False, options={}, user_tags=None):
         """Upload photo to Instagram
         @param photo        Path to photo file (String)
         @param caption      Media description (String)
@@ -799,11 +798,15 @@ class Bot(object):
                             e.g. configure_timeout, rename (Dict)
                             Designed to reduce the number of function
                             arguments! This is the simplest request object.
+        @param user_tags     Tag other users (List)
+                         usertags = [
+                            {"user_id": user_id, "position": [x, y]}
+                         ]
 
         @return             Object with state of uploading to
                             Instagram (or False)
         """
-        return upload_photo(self, photo, caption, upload_id, from_video, options)
+        return upload_photo(self, photo, caption, upload_id, from_video, options, user_tags)
 
     # video
     def upload_video(self, video, caption="", thumbnail=None, options={}):
