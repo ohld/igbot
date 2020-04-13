@@ -6,7 +6,7 @@ import os
 import pickle
 from datetime import datetime
 
-CHECKPOINT_PATH = "config/{fname}.checkpoint"
+CHECKPOINT_PATH = "{fname}.checkpoint"
 
 
 class Checkpoint(object):
