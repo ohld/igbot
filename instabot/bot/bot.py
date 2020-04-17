@@ -104,7 +104,7 @@ from .bot_like import (
     like_user,
     like_users,
 )
-from .bot_photo import download_photo, download_photos, upload_photo
+from .bot_photo import download_photo, download_photos, upload_photo, upload_album
 from .bot_stats import save_user_stats
 from .bot_story import download_stories, upload_story_photo, watch_users_reels
 from .bot_support import (
@@ -785,10 +785,32 @@ class Bot(object):
         return download_photos(self, medias, folder, save_description)
 
     def upload_photo(
-        self, photo, caption=None, upload_id=None, from_video=False, options={}
+        self, photo, caption=None, upload_id=None, from_video=False, options={}, is_sidecar=False
     ):
         """Upload photo to Instagram
         @param photo        Path to photo file (String)
+        @param caption      Media description (String)
+        @param upload_id    Unique upload_id (String). When None, then
+                            generate automatically
+        @param from_video   A flag that signals whether the photo is loaded
+                            from the video or by itself
+                            (Boolean, DEPRECATED: not used)
+        @param options      Object with difference options,
+                            e.g. configure_timeout, rename (Dict)
+                            Designed to reduce the number of function
+                            arguments! This is the simplest request object.
+        @param is_sidecar   An album element (Boolean)
+
+        @return             Object with state of uploading to
+                            Instagram (or False)
+        """
+        return upload_photo(self, photo, caption, upload_id, from_video, options, is_sidecar)
+
+    def upload_album(
+        self, photos, caption=None, upload_id=None, from_video=False, options={}
+    ):
+        """Upload album to Instagram
+        @param photos       List of paths to photo files (List of strings)
         @param caption      Media description (String)
         @param upload_id    Unique upload_id (String). When None, then
                             generate automatically
@@ -803,7 +825,7 @@ class Bot(object):
         @return             Object with state of uploading to
                             Instagram (or False)
         """
-        return upload_photo(self, photo, caption, upload_id, from_video, options)
+        return upload_album(self, photos, caption, upload_id, from_video, options)
 
     # video
     def upload_video(self, video, caption="", thumbnail=None, options={}):

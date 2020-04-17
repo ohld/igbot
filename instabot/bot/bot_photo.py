@@ -5,7 +5,7 @@ from tqdm import tqdm
 
 
 def upload_photo(
-    self, photo, caption=None, upload_id=None, from_video=False, options={}
+    self, photo, caption=None, upload_id=None, from_video=False, options={}, is_sidecar=False
 ):
     """Upload photo to Instagram
 
@@ -19,17 +19,47 @@ def upload_photo(
                        configure_timeout, rename (Dict)
                        Designed to reduce the number of function arguments!
                        This is the simplest request object.
+    @param is_sidecar  An album element (Boolean)
 
     @return            Object with state of uploading to Instagram (or False)
     """
     self.small_delay()
     result = self.api.upload_photo(
-        photo, caption, upload_id, from_video, options=options
+        photo, caption, upload_id, from_video, options=options, is_sidecar=is_sidecar
     )
     if not result:
         self.logger.info("Photo '{}' is not uploaded.".format(photo))
         return False
     self.logger.info("Photo '{}' is uploaded.".format(photo))
+    return result
+
+
+def upload_album(
+    self, photos, caption=None, upload_id=None, from_video=False, options={}
+):
+    """Upload album to Instagram
+
+    @param photos      List of paths to photo files (List of strings)
+    @param caption     Media description (String)
+    @param upload_id   Unique upload_id (String). When None, then
+                       generate automatically
+    @param from_video  A flag that signals whether the photo is loaded from
+                       the video or by itself (Boolean, DEPRECATED: not used)
+    @param options     Object with difference options, e.g.
+                       configure_timeout, rename (Dict)
+                       Designed to reduce the number of function arguments!
+                       This is the simplest request object.
+
+    @return            Object with state of uploading to Instagram (or False)
+    """
+    self.small_delay()
+    result = self.api.upload_album(
+        photos, caption, upload_id, from_video, options=options
+    )
+    if not result:
+        self.logger.info("Photos are not uploaded.")
+        return False
+    self.logger.info("Photo are uploaded.")
     return result
 
 

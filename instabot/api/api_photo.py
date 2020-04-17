@@ -78,23 +78,25 @@ def compatible_aspect_ratio(size):
     return min_ratio <= ratio <= max_ratio
 
 
-def configure_photo(self, upload_id, photo, caption=""):
+def configure_photo(self, upload_id, photo, caption="", is_sidecar=False):
     width, height = get_image_size(photo)
-    data = self.json_data(
-        {
-            "media_folder": "Instagram",
-            "source_type": 4,
-            "caption": caption,
-            "upload_id": upload_id,
-            "device": self.device_settings,
-            "edits": {
-                "crop_original_size": [width * 1.0, height * 1.0],
-                "crop_center": [0.0, 0.0],
-                "crop_zoom": 1.0,
-            },
-            "extra": {"source_width": width, "source_height": height},
-        }
-    )
+    data = {
+        "media_folder": "Instagram",
+        "source_type": 4,
+        "caption": caption,
+        "upload_id": upload_id,
+        "device": self.device_settings,
+        "edits": {
+            "crop_original_size": [width * 1.0, height * 1.0],
+            "crop_center": [0.0, 0.0],
+            "crop_zoom": 1.0,
+            "filter_type": 0
+        },
+        "extra": {"source_width": width, "source_height": height},
+    }
+    if is_sidecar:
+        return data
+    data = self.json_data(data)
     return self.send_request("media/configure/?", data)
 
 
@@ -106,6 +108,7 @@ def upload_photo(
     from_video=False,
     force_resize=False,
     options={},
+    is_sidecar=False
 ):
     """Upload photo to Instagram
 
@@ -121,12 +124,13 @@ def upload_photo(
                          configure_timeout, rename (Dict)
                          Designed to reduce the number of function arguments!
                          This is the simplest request object.
+    @param is_sidecar    An album element (Boolean)
 
-    @return Boolean
+    @return Boolean or Dict for is_sidecar
     """
     options = dict({"configure_timeout": 15, "rename": True}, **(options or {}))
     if upload_id is None:
-        upload_id = str(int(time.time() * 1000))
+        upload_id = int(time.time() * 1000)
     if not photo:
         return False
     if not compatible_aspect_ratio(get_image_size(photo)):
@@ -149,6 +153,8 @@ def upload_photo(
             {"lib_name": "moz", "lib_version": "3.1.m", "quality": "80"}
         ),
     }
+    if is_sidecar:
+        rupload_params["is_sidecar"] = "1"
     photo_data = open(photo, "rb").read()
     photo_len = str(len(photo_data))
     self.session.headers.update(
@@ -176,6 +182,8 @@ def upload_photo(
             "Photo Upload failed with the following response: {}".format(response)
         )
         return False
+    # update the upload id
+    upload_id = int(response.json()['upload_id'])
     if from_video:
         # Not configure when from_video is True
         return True
@@ -184,13 +192,61 @@ def upload_photo(
     for attempt in range(4):
         if configure_timeout:
             time.sleep(configure_timeout)
-        if self.configure_photo(upload_id, photo, caption):
+        if is_sidecar:
+            return self.configure_photo(upload_id, photo, caption, is_sidecar)
+            # @TODO rename the file
+        elif self.configure_photo(upload_id, photo, caption):
             media = self.last_json.get("media")
             self.expose()
             if options.get("rename"):
                 os.rename(photo, "{fname}.REMOVE_ME".format(fname=photo))
             return media
     return False
+
+
+def upload_album(
+    self,
+    photos,
+    caption=None,
+    upload_id=None,
+    from_video=False,
+    force_resize=False,
+    options={}
+):
+    """Upload album to Instagram
+
+    @param photos        List of paths to photo files (List of strings)
+    @param caption       Media description (String)
+    @param upload_id     Unique upload_id (String). When None, then generate
+                         automatically
+    @param from_video    A flag that signals whether the photo is loaded from
+                         the video or by itself
+                         (Boolean, DEPRECATED: not used)
+    @param force_resize  Force photo resize (Boolean)
+    @param options       Object with difference options, e.g.
+                         configure_timeout, rename (Dict)
+                         Designed to reduce the number of function arguments!
+                         This is the simplest request object.
+
+    @return Boolean
+    """
+    if not photos:
+        return False
+    photo_metas = []
+    for photo in photos:
+        result = self.upload_photo(photo, caption, None, from_video, force_resize, options, is_sidecar=True)
+        if not result:
+            self.logger.error("Could not upload photo {photo} for the album!".format(photo=photo))
+            return False
+        photo_metas.append(result)
+    if upload_id is None:
+        upload_id = int(time.time() * 1000)
+    data = self.json_data({
+        "caption": caption,
+        "client_sidecar_id": upload_id,
+        "children_metadata": photo_metas
+    })
+    return self.send_request("media/configure_sidecar/?", post=data)
 
 
 def get_image_size(fname):

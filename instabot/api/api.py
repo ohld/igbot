@@ -41,7 +41,7 @@ from .api_login import (
     creatives_ar_class,
     set_contact_point_prefill,
 )
-from .api_photo import configure_photo, download_photo, upload_photo
+from .api_photo import configure_photo, download_photo, upload_photo, upload_album
 from .api_story import configure_story, download_story, upload_story_photo
 from .api_video import configure_video, download_video, upload_video
 from .prepare import delete_credentials, get_credentials
@@ -761,6 +761,7 @@ class API(object):
         from_video=False,
         force_resize=False,
         options={},
+        is_sidecar=False
     ):
         """Upload photo to Instagram
 
@@ -776,18 +777,49 @@ class API(object):
                              configure_timeout, rename (Dict)
                              Designed to reduce the number of function
                              arguments! This is the simplest request object.
+        @param is_sidecar    An album element (Boolean)
 
         @return Boolean
         """
         return upload_photo(
-            self, photo, caption, upload_id, from_video, force_resize, options
+            self, photo, caption, upload_id, from_video, force_resize, options, is_sidecar
+        )
+
+    def upload_album(
+        self,
+        photos,
+        caption=None,
+        upload_id=None,
+        from_video=False,
+        force_resize=False,
+        options={}
+    ):
+        """Upload album to Instagram
+
+        @param photos        List of paths to photo files (List of strings)
+        @param caption       Media description (String)
+        @param upload_id     Unique upload_id (String). When None, then
+                             generate automatically
+        @param from_video    A flag that signals whether the photo is loaded
+                             from the video or by itself
+                             (Boolean, DEPRECATED: not used)
+        @param force_resize  Force photo resize (Boolean)
+        @param options       Object with difference options, e.g.
+                             configure_timeout, rename (Dict)
+                             Designed to reduce the number of function
+                             arguments! This is the simplest request object.
+
+        @return Boolean
+        """
+        return upload_album(
+            self, photos, caption, upload_id, from_video, force_resize, options
         )
 
     def download_photo(self, media_id, filename, media=False, folder="photos"):
         return download_photo(self, media_id, filename, media, folder)
 
-    def configure_photo(self, upload_id, photo, caption=""):
-        return configure_photo(self, upload_id, photo, caption)
+    def configure_photo(self, upload_id, photo, caption="", is_sidecar=False):
+        return configure_photo(self, upload_id, photo, caption, is_sidecar)
 
     # ====== STORY METHODS ====== #
     def download_story(self, filename, story_url, username):
