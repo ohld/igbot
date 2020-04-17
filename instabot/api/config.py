@@ -3,7 +3,7 @@ import random
 
 API_DOMAIN = "i.instagram.com"
 API_URL = "https://{domain}/api/v1/".format(domain=API_DOMAIN)
-APP_VERSION = "130.0.0.31.121"
+APP_VERSION = "136.0.0.34.124"
 USER_AGENT_BASE = (
     "Instagram {app_version} "
     "Android ({android_version}/{android_release}; "
@@ -11,7 +11,7 @@ USER_AGENT_BASE = (
     "{device}; {model}; {cpu}; en_US; {version_code})"
 )
 SIG_KEY_VERSION = "4"
-IG_SIG_KEY = "f0bdfd5332d66a64d5e04965e6a7ade67c4e2cfc57ea38f0083c0400640a5e20"
+IG_SIG_KEY = "46024e8f31e295869a0e861eaed42cb1dd8454b55232d85f6c6764365079374b"
 
 REQUEST_HEADERS = {
     "X-IG-App-Locale": "en_US",
