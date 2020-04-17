@@ -835,7 +835,7 @@ class API(object):
         @return Boolean
         """
         return upload_album(
-            self, photos, caption, upload_id, from_video, force_resize, options
+            self, photos, caption, upload_id, from_video, force_resize, options, user_tags
         )
 
     def download_photo(self, media_id, filename, media=False, folder="photos"):
