@@ -252,7 +252,7 @@ def upload_album(
         return False
     photo_metas = []
     for photo in photos:
-        result = self.upload_photo(photo, caption, None, from_video, force_resize, options, is_sidecar=True)
+        result = self.upload_photo(photo, caption, None, from_video, force_resize, options, user_tags, is_sidecar=True)
         if not result:
             self.logger.error("Could not upload photo {photo} for the album!".format(photo=photo))
             return False
