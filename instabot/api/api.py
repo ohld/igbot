@@ -110,13 +110,25 @@ class API(object):
                 )
             )
 
-            self.logger.addHandler(fh)
+            handler_existed = False
+            for handler in self.logger.handlers:
+                if isinstance(handler, logging.FileHandler):
+                    handler_existed = True
+                    break
+            if not handler_existed:
+                self.logger.addHandler(fh)
 
         ch = logging.StreamHandler()
         ch.setLevel(loglevel_stream)
         ch.setFormatter(logging.Formatter("%(asctime)s - %(levelname)s - %(message)s"))
 
-        self.logger.addHandler(ch)
+        handler_existed = False
+        for handler in self.logger.handlers:
+            if isinstance(handler, logging.StreamHandler):
+                handler_existed = True
+                break
+        if not handler_existed:
+            self.logger.addHandler(ch)
         self.logger.setLevel(logging.DEBUG)
 
         self.last_json = None
