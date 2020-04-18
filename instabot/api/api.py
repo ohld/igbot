@@ -41,7 +41,7 @@ from .api_login import (
     creatives_ar_class,
     set_contact_point_prefill,
 )
-from .api_photo import configure_photo, download_photo, upload_photo
+from .api_photo import configure_photo, download_photo, upload_photo, upload_album
 from .api_story import configure_story, download_story, upload_story_photo
 from .api_video import configure_video, download_video, upload_video
 from .prepare import delete_credentials, get_credentials
@@ -106,17 +106,29 @@ class API(object):
             fh.setLevel(loglevel_file)
             fh.setFormatter(
                 logging.Formatter(
-                    "%(asctime)s - %(name)s (%(module)s) - %(levelname)s - %(message)s"
+                    "%(asctime)s - %(name)s (%(module)s %(pathname)s:%(lineno)s) - %(levelname)s - %(message)s"
                 )
             )
 
-            self.logger.addHandler(fh)
+            handler_existed = False
+            for handler in self.logger.handlers:
+                if isinstance(handler, logging.FileHandler):
+                    handler_existed = True
+                    break
+            if not handler_existed:
+                self.logger.addHandler(fh)
 
         ch = logging.StreamHandler()
         ch.setLevel(loglevel_stream)
         ch.setFormatter(logging.Formatter("%(asctime)s - %(levelname)s - %(message)s"))
 
-        self.logger.addHandler(ch)
+        handler_existed = False
+        for handler in self.logger.handlers:
+            if isinstance(handler, logging.StreamHandler):
+                handler_existed = True
+                break
+        if not handler_existed:
+            self.logger.addHandler(ch)
         self.logger.setLevel(logging.DEBUG)
 
         self.last_json = None
@@ -250,7 +262,9 @@ class API(object):
         is_threaded=False,
     ):
         if password is None:
-            username, password = get_credentials(username=username)
+            username, password = get_credentials(
+                base_path=self.base_path, username=username
+            )
 
         set_device = generate_all_uuids = True
         self.set_user(username, password)
@@ -352,7 +366,7 @@ class API(object):
                     "Failed to login go to instagram and change your password"
                 )
                 self.save_failed_login()
-                delete_credentials()
+                delete_credentials(self.base_path)
                 return False
 
     def two_factor_auth(self):
@@ -402,7 +416,7 @@ class API(object):
 
     def save_failed_login(self):
         self.logger.info("Username or password is incorrect.")
-        delete_credentials()
+        delete_credentials(self.base_path)
         sys.exit()
 
     def solve_challenge(self):
@@ -508,6 +522,7 @@ class API(object):
             raise Exception(msg)
         if headers:
             self.session.headers.update(headers)
+
         try:
             self.total_requests += 1
             if post is not None:  # POST
@@ -535,6 +550,7 @@ class API(object):
             self.logger.debug(
                 "GET to endpoint: {} returned response: {}".format(endpoint, response)
             )
+
         if response.status_code == 200:
             try:
                 self.last_json = json.loads(response.text)
@@ -588,7 +604,7 @@ class API(object):
                     self.logger.error(
                         "Since we hit 15 minutes of time outs, we have to restart. Removing session and cookies. Please relogin."
                     )
-                    delete_credentials()
+                    delete_credentials(self.base_path)
                     sys.exit()
                 timeout_minutes += 5
                 self.logger.warning(
@@ -612,7 +628,7 @@ class API(object):
                     self.logger.error(
                         "Failed to login go to instagram and change your password"
                     )
-                    delete_credentials()
+                    delete_credentials(self.base_path)
                 # PERFORM Interactive Two-Factor Authentication
                 if response_data.get("two_factor_required"):
                     try:
@@ -761,6 +777,8 @@ class API(object):
         from_video=False,
         force_resize=False,
         options={},
+        user_tags=None,
+        is_sidecar=False
     ):
         """Upload photo to Instagram
 
@@ -776,18 +794,55 @@ class API(object):
                              configure_timeout, rename (Dict)
                              Designed to reduce the number of function
                              arguments! This is the simplest request object.
+        @param user_tags     Tag other users (List)
+                             usertags = [
+                                {"user_id": user_id, "position": [x, y]}
+                             ]
+        @param is_sidecar    An album element (Boolean)
 
         @return Boolean
         """
         return upload_photo(
-            self, photo, caption, upload_id, from_video, force_resize, options
+            self, photo, caption, upload_id, from_video, force_resize, options, user_tags, is_sidecar
+        )
+
+    def upload_album(
+        self,
+        photos,
+        caption=None,
+        upload_id=None,
+        from_video=False,
+        force_resize=False,
+        options={},
+        user_tags=None
+    ):
+        """Upload album to Instagram
+
+        @param photos        List of paths to photo files (List of strings)
+        @param caption       Media description (String)
+        @param upload_id     Unique upload_id (String). When None, then
+                             generate automatically
+        @param from_video    A flag that signals whether the photo is loaded
+                             from the video or by itself
+                             (Boolean, DEPRECATED: not used)
+        @param force_resize  Force photo resize (Boolean)
+        @param options       Object with difference options, e.g.
+                             configure_timeout, rename (Dict)
+                             Designed to reduce the number of function
+                             arguments! This is the simplest request object.
+        @param user_tags
+
+        @return Boolean
+        """
+        return upload_album(
+            self, photos, caption, upload_id, from_video, force_resize, options, user_tags
         )
 
     def download_photo(self, media_id, filename, media=False, folder="photos"):
         return download_photo(self, media_id, filename, media, folder)
 
-    def configure_photo(self, upload_id, photo, caption=""):
-        return configure_photo(self, upload_id, photo, caption)
+    def configure_photo(self, upload_id, photo, caption="", user_tags=None, is_sidecar=False):
+        return configure_photo(self, upload_id, photo, caption, user_tags, is_sidecar)
 
     # ====== STORY METHODS ====== #
     def download_story(self, filename, story_url, username):

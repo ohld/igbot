@@ -16,4 +16,6 @@ mock>=3.0.5
 moviepy>=1.0.1
 Pillow>=6.2.2
 pytest>=4.6.9
+rsa>=4.0
 pycryptodome>=3.9.7
+pycryptodomex>=3.9.7
