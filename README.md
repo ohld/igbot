@@ -1,3 +1,33 @@
+This code is no longer maintaned. Don't try to run anything from here - you will be easily detected and banned by Instagram. 
+
+Join our [Telegram community](https://t.me/instabotproject) to find more tools, projects and growth hacking methods.
+
+Read why you shouldn't run any bots: [it is no longer safe](https://likeup.me/bots-are-dead/?utm_source=instabot-github-readme).
+
+--------------------------
+--------------------------
+--------------------------
+--------------------------
+--------------------------
+--------------------------
+--------------------------
+--------------------------
+--------------------------
+--------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 # Instabot
 
 Free Instagram python bot, [private Instagram API emulator](https://github.com/instagrambot/instabot/tree/master/instabot/api) and a [huge amount of ready-to-use example scripts](https://github.com/instagrambot/instabot/tree/master/examples).
@@ -36,11 +66,10 @@ Instabot has a lot of predefined filters (like skipping very popular accounts be
 
 <img src="https://user-images.githubusercontent.com/5613295/62396777-b5ab8600-b57c-11e9-90a7-56b7294a9a6a.png" width="400">
 
-If this library solved some of your problems, please consider [buying](https://www.buymeacoffee.com/okhlopkov) a coffee, sending some bucks to [PayPal](https://paypal.me/okhlopkov/10) or become our [patron](https://patreon.com/join/morejust). :wink:
-
-<a href="https://www.buymeacoffee.com/okhlopkov" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/yellow_img.png" alt="Buy Me A Coffee" style="height: auto !important;width: auto !important;" ></a>
+JOIN OUR TELEGRAM COMMUNITY OF INSTAGRAM GROWTH HACKERS: https://t.me/instabotproject
 
 # Terms and conditions
+* You will NOT run the code provided in this repo
 * You will NOT use this API for marketing purposes (spam, botting, harassment, massive bulk messaging...).
 * We do NOT give support to anyone who wants to use this API to send spam or commit other crimes.
 * We reserve the right to block any user of this repository that does not meet these conditions.
