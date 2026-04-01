@@ -1,0 +1,16 @@
+from instabot import Bot
+
+# تهيئة البوت
+bot = Bot()
+
+# تسجيل الدخول باستخدام اسم المستخدم وكلمة السر
+bot.login(username="camorroyu", password="yassine2009")
+
+# متابعة حساب 'youssef_camorra_1'
+bot.follow('youssef_camorra_1')  # هنا تتابع الحساب 'youssef_camorra_1'
+
+# إعجاب بالصورة (استبدل بـ post_id الخاص بالمنشور)
+bot.like('post_id')  # استبدل post_id بـ ID المنشور الذي تريد الإعجاب به
+
+# إرسال رسالة مباشرة (استبدل بـ recipient_username)
+bot.send_message('Hello!', ['youssef_camorra_1'])  # إرسال رسالة لـ 'youssef_camorra_1'
